@@ -8,7 +8,7 @@ import buildlogic.apigen.Scalar
  * as a parameter or a [result], and whether it outlives the call ([lvalue]). [CBridges] wraps these for sequences,
  * optionals and functions.
  */
-internal class DirectBridges(
+class DirectBridges internal constructor(
     private val config: ApiGenConfig, private val names: CNames,
     val const: Boolean, val indirection: String?, val result: Boolean, val lvalue: Boolean,
 ) {

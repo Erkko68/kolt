@@ -3,12 +3,7 @@ package buildlogic.apigen
 import buildlogic.apigen.c.GenerateCApiTask
 import buildlogic.apigen.cpp.ApiModelTask
 import buildlogic.apigen.gaps.ApiCoverageTask
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Internal
 import org.gradle.kotlin.dsl.register
 
 /**
@@ -41,7 +36,7 @@ fun Project.registerApiGenTasks(config: ApiGenConfig) {
         group = "build setup"
         description = "Generates the C API from ${config.name}'s headers into ${config.cDir}/<module>/generated."
         configure()
-        inputs.files(provider { apiGen.headerFiles() + apiGen.apiHeadersFile + apiGen.manualHeaders() })
+        inputs.files(provider { apiGen.headerFiles() + apiGen.apiHeadersFile + apiGen.manualHeaders() + apiGen.bridgeHeaders() })
         outputs.dirs(provider { apiGen.generatedDirs() })
     }
 
@@ -53,11 +48,3 @@ fun Project.registerApiGenTasks(config: ApiGenConfig) {
 }
 
 private fun Project.temporaryDirFor(name: String) = layout.buildDirectory.dir("tmp/$name").get().asFile
-
-/** A task driving [ApiGen] for the library [config] describes, under [projectDir]. */
-abstract class ApiGenTask : DefaultTask() {
-    @get:Input abstract val config: Property<ApiGenConfig>
-    @get:Internal abstract val projectDir: DirectoryProperty
-
-    internal fun apiGen() = ApiGen(config.get(), projectDir.get().asFile, temporaryDir)
-}

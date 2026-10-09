@@ -1,5 +1,8 @@
 package buildlogic.apigen
 
+import buildlogic.apigen.c.CBridge
+import buildlogic.apigen.c.DirectBridges
+import buildlogic.apigen.cpp.CppType
 import java.io.Serializable
 
 /**
@@ -44,6 +47,8 @@ data class ApiGenConfig(
      * module's `generated/`: the helpers only the library can write, see [refs], [results] and `Bridge.hpp`'s hooks.
      */
     val bridgeHeader: String? = null,
+    /** C declarations the first module's `Types.h` opens with: what [scalars] and [custom] bridges name. */
+    val typedefs: List<String> = emptyList(),
 
     /** Types C holds as a scalar (IDs, layers), by qualified name. */
     val scalars: Map<String, Scalar> = emptyMap(),
@@ -51,6 +56,8 @@ data class ApiGenConfig(
     val mirrors: Map<String, Mirror> = emptyMap(),
     /** The library's containers C passes as an array and its count, besides `std::vector` and `std::array`. */
     val sequences: Set<String> = emptySet(),
+    /** The [sequences] that only view their elements (a span): a result's outlive the call, and a struct can't keep one. */
+    val views: Set<String> = emptySet(),
     /** The library's string types, each with the spelling that constructs one from a `const char*`. */
     val strings: Map<String, String> = emptyMap(),
     val refs: RefCounting? = null,
@@ -65,6 +72,8 @@ data class ApiGenConfig(
      * left out take their defaults. C names them by the types that tell them apart, like overloads.
      */
     val functionInstantiations: Map<String, List<Map<String, String>>> = emptyMap(),
+    /** The bridges no table expresses. */
+    val custom: CustomBridges = NoCustomBridges,
 ) : Serializable {
     internal val allSequences get() = sequences + STD_SEQUENCES
     internal val allStrings get() = STD_STRINGS + strings
@@ -102,3 +111,23 @@ data class RefCounting(
     val addRef: String,
     val release: String,
 ) : Serializable
+
+/**
+ * The bridges only one library has, which no table of [ApiGenConfig] expresses: the generator asks before its own. An
+ * `object` implements it, so a config holding one stays a task input.
+ */
+interface CustomBridges : Serializable {
+    /**
+     * [decl] as the tables name it, for a template the library also names by typedef: [type] is what resolved to it,
+     * [substitute] replaces the template parameters of the instantiations around it in a spelling.
+     */
+    fun canonical(decl: String, type: CppType, substitute: (String) -> String): String = decl
+
+    /**
+     * The bridge of a value whose type resolved to [decl], spelled through [alias] (the first one) if any, as [direct]
+     * says C++ takes it; null for the generator's own.
+     */
+    fun bridge(decl: String, type: CppType, alias: String?, direct: DirectBridges): CBridge? = null
+}
+
+data object NoCustomBridges : CustomBridges

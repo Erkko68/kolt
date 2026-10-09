@@ -26,6 +26,9 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     /** Hand-written headers: what they declare, the generator leaves alone. */
     fun manualHeaders() = apiHeaders.modules.keys.flatMap { cDir.resolve("$it/manual").listFiles { f -> f.extension == "h" }.orEmpty().toList() }
 
+    /** The hand-written C++ headers the forwarders are compiled against. */
+    fun bridgeHeaders() = apiHeaders.modules.keys.flatMap { cDir.resolve("$it/manual").listFiles { f -> f.extension == "hpp" }.orEmpty().toList() }
+
     fun read(): CppApi = CppApiReader(config, this.workDir.apply { mkdirs() }).read(includeDir, headers)
 
     /** The [CApiWriter] of the API headers; [manualHeaders] say which functions are hand-written. */
@@ -47,10 +50,7 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     }
 
     /** The paths under [cDir] where the generated dirs aren't what [files] says: changed, missing or left over. */
-    fun stale(files: Map<String, String>): Set<String> {
-        val onDisk = generatedDirs().flatMap { dir -> dir.walkTopDown().filter { it.isFile }.map { it.relativeTo(cDir).invariantSeparatorsPath } }
-        return files.filter { (path, text) -> cDir.resolve(path).let { !it.isFile || it.readText() != text } }.keys + (onDisk - files.keys)
-    }
+    fun stale(files: Map<String, String>) = stale(cDir, files, generatedDirs())
 
     /** Checks the generated headers among [files] parse as C, and the forwarders compile against the library's headers. */
     fun checkCompiles(files: Collection<File>) {
@@ -63,4 +63,10 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
         val (exit, errors) = clang(command + listOf("-fsyntax-only", file.path), workDir)
         check(exit == 0) { "Generated C API doesn't compile ($unit):\n$errors" }
     }
+}
+
+/** The paths under [root] where [dirs] aren't what [files] (text by path under [root]) says: changed, missing or left over. */
+internal fun stale(root: File, files: Map<String, String>, dirs: List<File>): Set<String> {
+    val onDisk = dirs.flatMap { dir -> dir.walkTopDown().filter { it.isFile }.map { it.relativeTo(root).invariantSeparatorsPath } }
+    return files.filter { (path, text) -> root.resolve(path).let { !it.isFile || it.readText() != text } }.keys + (onDisk - files.keys)
 }

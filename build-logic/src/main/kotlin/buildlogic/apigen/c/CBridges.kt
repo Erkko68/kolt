@@ -13,7 +13,7 @@ import buildlogic.apigen.cpp.CppType.Kind
  * How a C++ value crosses into C: its C spelling, and the expression converting it to the other side. [out]: a
  * result C returns through a trailing `out` pointer ([CAbi]), which [store] writes given the value and the pointer.
  */
-internal class CBridge(
+class CBridge(
     val c: String,
     val convert: (String) -> String,
     val out: Boolean = false,
@@ -25,12 +25,14 @@ internal class CBridge(
      * result's trailing parameters, as (type, name).
      */
     val extra: List<Pair<String, String>> = emptyList(),
+    /** A typedef its C spelling needs, by C name: a callback's function pointer type. */
+    val typedef: Pair<String, String>? = null,
 )
 
 private fun isArray(type: CppType) = type.spelling.trim().endsWith("]")
 
 /** Why a declaration stays hand-written; the generator leaves a comment saying so instead of code. */
-internal class Unsupported(reason: String) : Exception(reason)
+class Unsupported(reason: String) : Exception(reason)
 
 /** Maps the model's types onto C, recording the math types the module's mirror structs must cover. */
 internal class CBridges(private val api: CppApi, private val config: ApiGenConfig, private val names: CNames) {
@@ -100,6 +102,10 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         }
     }
 
+    /** [spelling], written in [scope], with the template parameters of the instantiations around it replaced. */
+    private fun substitute(spelling: String, scope: String) = instantiations(scope).flatMap { config.instantiations.getValue(it).entries }
+        .fold(spelling) { s, (parameter, argument) -> s.replace(Regex("\\b$parameter\\b"), argument) }
+
     private fun instantiations(name: String) = name.split("::").runningReduce { a, b -> "$a::$b" }.filter { it in config.instantiations }
 
     /** A record C can create, so it has one to copy a result into. */
@@ -109,7 +115,7 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
     fun borrowsPointer(type: CppType): Boolean = when {
         isArray(type) -> borrowsPointer(type.args.single())
         type.decl in api.aliases -> borrowsPointer(api.aliases.getValue(type.decl!!))
-        else -> (type.kind == Kind.BUILTIN && shape(type.spelling).indirection.isNotEmpty()) || type.decl == "std::string_view"
+        else -> (type.kind == Kind.BUILTIN && shape(type.spelling).indirection.isNotEmpty()) || type.decl == "std::string_view" || type.decl in config.views
     }
 
     /** The integer typedef of an enum too wide for a C enum (whose enumerators are ints), or null. */
@@ -122,9 +128,11 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         var indirection = shape.indirection.firstOrNull()
         var const = shape.const
         var target = type
+        var alias: String? = null
         var lastAlias: String? = null
         // An alias brings its own const and indirection: Vec3Arg is a `const Vec3`, Mat44Arg a `const Mat44 &`.
         while (!isArray(target) && target.decl in api.aliases) {
+            alias = alias ?: target.decl
             lastAlias = target.decl
             target = api.aliases.getValue(target.decl!!)
             val aliased = shape(target.spelling)
@@ -135,14 +143,19 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         }
         val bridge = DirectBridges(config, names, const, indirection, result, lvalue)
         if (isArray(target)) return sequence(target, bridge)
-        val decl = target.decl
         if (target.kind == Kind.TEMPLATE_PARAMETER) {
+            val decl = target.decl
             val argument = config.instantiations[decl!!.substringBeforeLast("::")]?.get(decl.substringAfterLast("::"))
                 ?: throw Unsupported("${type.spelling}: template parameter")
             return bridge.builtin(argument)
         }
+        if (target.kind == Kind.FUNCTION && lastAlias != null && indirection != "&") return functionPointer(lastAlias, target, indirection == "*")
+        val decl = target.decl?.let { config.custom.canonical(it, target) { spelling -> substitute(spelling, lastAlias.orEmpty()) } }
+        decl?.let { config.custom.bridge(it, target, alias, bridge) }?.let { custom ->
+            custom.typedef?.let { callbackTypes += it }
+            return custom
+        }
         return when {
-            target.kind == Kind.FUNCTION && lastAlias != null && indirection != "&" -> functionPointer(lastAlias, target, indirection == "*")
             decl in config.allSequences -> sequence(target, bridge)
             decl == "std::optional" -> optional(target, bridge)
             decl == "std::function" && lastAlias != null -> function(lastAlias, target.args.single(), bridge)
@@ -209,9 +222,11 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         if (!bridge.byValue) throw Unsupported("${type.spelling}: by non-const reference")
         // std::array's second argument is its size.
         val element = type.args.first()
-        val mirror = generateSequence(element) { t -> t.decl?.let(api.aliases::get) }.last().decl in config.mirrors &&
+        val resolved = generateSequence(element) { t -> t.decl?.let(api.aliases::get) }.last().decl
+        val mirror = resolved in config.mirrors &&
             shape(element.spelling).indirection.isEmpty()
-        val lvalue = bridge.lvalue || bridge.indirection == "&"
+        // A view's elements outlive it, as an lvalue's do.
+        val lvalue = bridge.lvalue || bridge.indirection == "&" || type.decl in config.views
         val e = if (bridge.result) result(element, lvalue) else param(element)
         if (e.extra.isNotEmpty()) throw Unsupported("${type.spelling}: elements C passes in pieces")
         if (!bridge.result) {
@@ -221,7 +236,7 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
             return CBridge(items, convert, extra = listOf("uint32_t" to "Count"),
                 assign = { field, v -> if (isArray(type)) "$h::assign($field, ${convert(v)});" else "$field = ${convert(v)};" })
         }
-        val handles = e.out && !mirror
+        val handles = e.out && !mirror && resolved in api.records
         val store = if (handles) e.store("x", "out[i]") else "out[i] = ${e.convert("x")};"
         return CBridge(
             "uint32_t",
