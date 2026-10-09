@@ -2,14 +2,17 @@
 # Paths or globs relative to jolt/, grouped by the C module (c/<module>) their declarations are generated into.
 # `!glob` excludes headers; `-regex` leaves out the C++ declarations whose qualified name it matches.
 #
-# Seed: the headers at least two of joltc, SecondHalfGames/JoltC and JoltPhysics.js include.
+# Seed: the headers at least two of joltc, SecondHalfGames/JoltC and JoltPhysics.js include, and what the first slice
+# needs besides: Body.h, BodyInterface.h and Shape.h.
 
 [kolt]
 Jolt/Core/Factory.h
 Jolt/Core/JobSystemThreadPool.h
 Jolt/Core/TempAllocator.h
+Jolt/Physics/Body/Body.h
 Jolt/Physics/Body/BodyActivationListener.h
 Jolt/Physics/Body/BodyCreationSettings.h
+Jolt/Physics/Body/BodyInterface.h
 Jolt/Physics/Body/BodyLockMulti.h
 Jolt/Physics/Character/CharacterVirtual.h
 Jolt/Physics/Collision/BroadPhase/BroadPhaseLayerInterfaceMask.h
@@ -37,6 +40,7 @@ Jolt/Physics/Collision/Shape/OffsetCenterOfMassShape.h
 Jolt/Physics/Collision/Shape/PlaneShape.h
 Jolt/Physics/Collision/Shape/RotatedTranslatedShape.h
 Jolt/Physics/Collision/Shape/ScaledShape.h
+Jolt/Physics/Collision/Shape/Shape.h
 Jolt/Physics/Collision/Shape/SphereShape.h
 Jolt/Physics/Collision/Shape/StaticCompoundShape.h
 Jolt/Physics/Collision/Shape/TaperedCapsuleShape.h
