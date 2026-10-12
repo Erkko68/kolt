@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::SliderConstraint`. */
 class SliderConstraint internal constructor(internal val sliderConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSliderConstraint_asTwoBodyConstraint(sliderConstraintHandle), owned), AutoCloseable {

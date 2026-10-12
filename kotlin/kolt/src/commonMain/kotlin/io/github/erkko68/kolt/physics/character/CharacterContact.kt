@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::CharacterContact`. */
 class CharacterContact internal constructor(internal val characterContactHandle: NativePointer, owned: Boolean = false) : CharacterContactKey(JphCharacterContact_asCharacterContactKey(characterContactHandle), owned), AutoCloseable {

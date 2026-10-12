@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::RayCastResult`. */
 class RayCastResult internal constructor(internal val rayCastResultHandle: NativePointer, owned: Boolean = false) : BroadPhaseCastResult(JphRayCastResult_asBroadPhaseCastResult(rayCastResultHandle), owned), AutoCloseable {

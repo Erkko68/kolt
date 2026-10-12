@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::ShapeSettings`. */
 open class ShapeSettings internal constructor(internal val shapeSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphShapeSettings_asSerializableObject(shapeSettingsHandle), owned), AutoCloseable {

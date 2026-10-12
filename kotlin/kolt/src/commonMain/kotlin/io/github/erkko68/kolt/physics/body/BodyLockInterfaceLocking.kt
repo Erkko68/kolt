@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::BodyLockInterfaceLocking`. */
 class BodyLockInterfaceLocking internal constructor(internal val bodyLockInterfaceLockingHandle: NativePointer, owned: Boolean = false) : BodyLockInterface(JphBodyLockInterfaceLocking_asBodyLockInterface(bodyLockInterfaceLockingHandle), owned), AutoCloseable {

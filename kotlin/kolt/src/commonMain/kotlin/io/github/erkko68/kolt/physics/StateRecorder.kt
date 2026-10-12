@@ -31,6 +31,35 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::StateRecorder`. */
-class StateRecorder internal constructor(internal val stateRecorderHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+open class StateRecorder internal constructor(internal val stateRecorderHandle: NativePointer, owned: Boolean = false) : StreamIn(JphStateRecorder_asStreamIn(stateRecorderHandle), owned) {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphStateRecorder_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != StateRecorder::class) JphStateRecorder_bindUpcalls(stateRecorderHandle, Upcalls.reference(this))
+    }
+
+    fun setValidating(validating: Boolean) =
+        JphStateRecorder_SetValidating(stateRecorderHandle, validating)
+
+    val isValidating: Boolean
+        get() = JphStateRecorder_IsValidating(stateRecorderHandle)
+
+    var isLastPart: Boolean
+        get() = JphStateRecorder_IsLastPart(stateRecorderHandle)
+        set(isLastPart) = JphStateRecorder_SetIsLastPart(stateRecorderHandle, isLastPart)
+
+    /** This object as its other base, borrowed. */
+    fun asStreamOut() = StreamOut(JphStateRecorder_asStreamOut(stateRecorderHandle))
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> readBytes(readPointerSlot(args, 0), readSlot(args, 1).toInt())
+            1 -> writeSlot(result, if (isEOF) 1L else 0L)
+            2 -> writeSlot(result, if (isFailed) 1L else 0L)
+            else -> return false
+        }
+        return true
+    }
+}

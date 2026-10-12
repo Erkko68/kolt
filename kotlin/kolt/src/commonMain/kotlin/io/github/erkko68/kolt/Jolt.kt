@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 fun estimateCollisionResponse(body1: Body, body2: Body, manifold: ContactManifold, result: CollisionEstimationResult, combinedFriction: Float, combinedRestitution: Float, minVelocityForRestitution: Float, numIterations: Int) =
     Jph_EstimateCollisionResponse(body1.bodyHandle, body2.bodyHandle, manifold.contactManifoldHandle, result.collisionEstimationResultHandle, combinedFriction, combinedRestitution, minVelocityForRestitution, numIterations)

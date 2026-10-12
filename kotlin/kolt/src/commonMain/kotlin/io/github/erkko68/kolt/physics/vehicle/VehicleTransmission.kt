@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.*
 import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::VehicleTransmission`. */
 class VehicleTransmission internal constructor(internal val vehicleTransmissionHandle: NativePointer, owned: Boolean = false) : VehicleTransmissionSettings(JphVehicleTransmission_asVehicleTransmissionSettings(vehicleTransmissionHandle), owned), AutoCloseable {

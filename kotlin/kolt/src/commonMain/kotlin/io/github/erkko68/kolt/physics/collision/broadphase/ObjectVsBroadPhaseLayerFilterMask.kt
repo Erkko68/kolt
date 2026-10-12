@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::ObjectVsBroadPhaseLayerFilterMask`. */
 class ObjectVsBroadPhaseLayerFilterMask internal constructor(internal val objectVsBroadPhaseLayerFilterMaskHandle: NativePointer, owned: Boolean = false) : ObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterMask_asObjectVsBroadPhaseLayerFilter(objectVsBroadPhaseLayerFilterMaskHandle), owned), AutoCloseable {

@@ -31,6 +31,48 @@ import io.github.erkko68.kolt.physics.softbody.*
 import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::SkeletonPose`. */
-class SkeletonPose internal constructor(internal val skeletonPoseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class SkeletonPose internal constructor(internal val skeletonPoseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphSkeletonPose_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphSkeletonPose_destroy(skeletonPoseHandle) }
+
+    var skeleton: Skeleton?
+        get() = JphSkeletonPose_GetSkeleton(skeletonPoseHandle).takeIf { it != NullPointer }?.let { Skeleton(it) }
+        set(skeleton) = JphSkeletonPose_SetSkeleton(skeletonPoseHandle, skeleton?.skeletonHandle ?: NullPointer)
+
+    var rootOffset: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphSkeletonPose_GetRootOffset(skeletonPoseHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(offset) = interopScope { JphSkeletonPose_SetRootOffset(skeletonPoseHandle, toInterop(offset.toArray())) }
+
+    val jointCount: Int
+        get() = JphSkeletonPose_GetJointCount(skeletonPoseHandle)
+
+    fun getJoint(joint: Int): SkeletalAnimationJointState =
+        SkeletalAnimationJointState(JphSkeletonPose_GetJoint(skeletonPoseHandle, joint))
+
+    val jointMatrices: List<Mat44>
+        get() = interopScope {
+            val count = JphSkeletonPose_GetJointMatrices(skeletonPoseHandle, NullPointer, 0)
+            val returned = FloatArray(count * 16)
+            val returnedPointer = toInterop(returned)
+            JphSkeletonPose_GetJointMatrices(skeletonPoseHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            List(count) { Mat44(returned.copyOfRange(it * 16, it * 16 + 16)) }
+        }
+
+    fun calculateJointMatrices() =
+        JphSkeletonPose_CalculateJointMatrices(skeletonPoseHandle)
+
+    fun calculateJointStates() =
+        JphSkeletonPose_CalculateJointStates(skeletonPoseHandle)
+}

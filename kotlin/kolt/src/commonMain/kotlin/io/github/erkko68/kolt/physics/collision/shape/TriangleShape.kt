@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::TriangleShape`. */
 class TriangleShape internal constructor(internal val triangleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTriangleShape_asConvexShape(triangleShapeHandle), owned), AutoCloseable {

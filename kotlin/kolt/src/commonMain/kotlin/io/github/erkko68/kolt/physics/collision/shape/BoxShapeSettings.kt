@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::BoxShapeSettings`. */
 class BoxShapeSettings internal constructor(internal val boxShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphBoxShapeSettings_asConvexShapeSettings(boxShapeSettingsHandle), owned), AutoCloseable {

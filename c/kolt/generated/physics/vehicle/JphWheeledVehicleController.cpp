@@ -76,4 +76,8 @@ float JphWheeledVehicleController_GetWheelSpeedAtClutch(const JphWheeledVehicleC
     return kolt::cpp(self)->GetWheelSpeedAtClutch();
 }
 
+void JphWheeledVehicleController_SetTireMaxImpulseCallback(JphWheeledVehicleController* self, JphWheeledVehicleControllerTireMaxImpulseCallback inTireMaxImpulseCallback) {
+    kolt::cpp(self)->SetTireMaxImpulseCallback(inTireMaxImpulseCallback ? JPH::WheeledVehicleController::TireMaxImpulseCallback([=](auto&& a0, auto&& a1, auto&& a2, auto&& a3, auto&& a4, auto&& a5, auto&& a6, auto&& a7, auto&& a8) { inTireMaxImpulseCallback(static_cast<uint32_t>(a0), &a1, &a2, a3, a4, a5, a6, a7, a8); }) : nullptr);
+}
+
 } // extern "C"

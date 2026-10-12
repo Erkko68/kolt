@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::TempAllocatorMalloc`. */
 class TempAllocatorMalloc internal constructor(internal val tempAllocatorMallocHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorMalloc_asTempAllocator(tempAllocatorMallocHandle), owned), AutoCloseable {

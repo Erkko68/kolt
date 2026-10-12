@@ -31,6 +31,26 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::PhysicsStepListener`. */
-class PhysicsStepListener internal constructor(internal val physicsStepListenerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+open class PhysicsStepListener internal constructor(internal val physicsStepListenerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphPhysicsStepListener_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != PhysicsStepListener::class) JphPhysicsStepListener_bindUpcalls(physicsStepListenerHandle, Upcalls.reference(this))
+    }
+
+    override fun close() =
+        closeOnce { JphPhysicsStepListener_destroy(physicsStepListenerHandle) }
+
+    open fun onStep(context: PhysicsStepListenerContext) =
+        JphPhysicsStepListener_OnStep(physicsStepListenerHandle, context.physicsStepListenerContextHandle)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> onStep(PhysicsStepListenerContext(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
+}

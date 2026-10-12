@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::ScaledShape`. */
 class ScaledShape internal constructor(internal val scaledShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphScaledShape_asDecoratedShape(scaledShapeHandle), owned), AutoCloseable {

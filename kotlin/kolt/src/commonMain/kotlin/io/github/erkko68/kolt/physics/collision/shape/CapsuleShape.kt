@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::CapsuleShape`. */
 class CapsuleShape internal constructor(internal val capsuleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphCapsuleShape_asConvexShape(capsuleShapeHandle), owned), AutoCloseable {

@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::ShapeCastSettings`. */
 class ShapeCastSettings internal constructor(internal val shapeCastSettingsHandle: NativePointer, owned: Boolean = false) : CollideSettingsBase(JphShapeCastSettings_asCollideSettingsBase(shapeCastSettingsHandle), owned), AutoCloseable {

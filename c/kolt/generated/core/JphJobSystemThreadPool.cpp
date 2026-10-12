@@ -24,6 +24,14 @@ JphJobSystem* JphJobSystemThreadPool_asJobSystem(JphJobSystemThreadPool* self) {
     return kolt::c(static_cast<JPH::JobSystem*>(kolt::cpp(self)));
 }
 
+void JphJobSystemThreadPool_SetThreadInitFunction(JphJobSystemThreadPool* self, JphJobSystemThreadPoolInitExitFunction inInitFunction) {
+    kolt::cpp(self)->SetThreadInitFunction(inInitFunction ? JPH::JobSystemThreadPool::InitExitFunction([=](auto&& a0) { inInitFunction(static_cast<int32_t>(a0)); }) : nullptr);
+}
+
+void JphJobSystemThreadPool_SetThreadExitFunction(JphJobSystemThreadPool* self, JphJobSystemThreadPoolInitExitFunction inExitFunction) {
+    kolt::cpp(self)->SetThreadExitFunction(inExitFunction ? JPH::JobSystemThreadPool::InitExitFunction([=](auto&& a0) { inExitFunction(static_cast<int32_t>(a0)); }) : nullptr);
+}
+
 void JphJobSystemThreadPool_Init(JphJobSystemThreadPool* self, uint32_t inMaxJobs, uint32_t inMaxBarriers, int32_t inNumThreads) {
     kolt::cpp(self)->Init(static_cast<unsigned int>(inMaxJobs), static_cast<unsigned int>(inMaxBarriers), static_cast<int>(inNumThreads));
 }

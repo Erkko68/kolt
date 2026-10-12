@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.*
 import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::VehicleCollisionTesterCastCylinder`. */
 class VehicleCollisionTesterCastCylinder internal constructor(internal val vehicleCollisionTesterCastCylinderHandle: NativePointer, owned: Boolean = false) : VehicleCollisionTester(JphVehicleCollisionTesterCastCylinder_asVehicleCollisionTester(vehicleCollisionTesterCastCylinderHandle), owned), AutoCloseable {

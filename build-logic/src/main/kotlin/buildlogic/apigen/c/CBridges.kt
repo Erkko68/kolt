@@ -369,7 +369,8 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         if (args.any { it.out || it.extra.isNotEmpty() }) throw Unsupported("$alias: arguments C takes in pieces")
         val name = names.type(alias)
         callbackTypes[name] = "typedef void (*$name)(${args.joinToString { it.c }.ifEmpty { "void" }});"
-        val params = args.indices.joinToString { "auto a$it" }
+        // By reference: one may be a class that can't be copied, or a value the callback writes.
+        val params = args.indices.joinToString { "auto&& a$it" }
         return CBridge(name, { n ->
             "$n ? ${cpp(alias)}([=]($params) { $n(${args.withIndex().joinToString { (i, a) -> a.convert("a$i") }}); }) : nullptr"
         })

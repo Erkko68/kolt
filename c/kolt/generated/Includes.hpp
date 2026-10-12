@@ -9,6 +9,8 @@
 #include <Jolt/Core/JobSystemThreadPool.h>
 #include <Jolt/Core/JobSystemWithBarrier.h>
 #include <Jolt/Core/LinearCurve.h>
+#include <Jolt/Core/StreamIn.h>
+#include <Jolt/Core/StreamOut.h>
 #include <Jolt/Core/TempAllocator.h>
 #include <Jolt/Geometry/AABox.h>
 #include <Jolt/Geometry/IndexedTriangle.h>
@@ -86,14 +88,19 @@
 #include <Jolt/Physics/Constraints/GearConstraint.h>
 #include <Jolt/Physics/Constraints/HingeConstraint.h>
 #include <Jolt/Physics/Constraints/MotorSettings.h>
+#include <Jolt/Physics/Constraints/PathConstraint.h>
+#include <Jolt/Physics/Constraints/PathConstraintPath.h>
+#include <Jolt/Physics/Constraints/PathConstraintPathHermite.h>
 #include <Jolt/Physics/Constraints/PointConstraint.h>
 #include <Jolt/Physics/Constraints/PulleyConstraint.h>
+#include <Jolt/Physics/Constraints/RackAndPinionConstraint.h>
 #include <Jolt/Physics/Constraints/SixDOFConstraint.h>
 #include <Jolt/Physics/Constraints/SliderConstraint.h>
 #include <Jolt/Physics/Constraints/SpringSettings.h>
 #include <Jolt/Physics/Constraints/SwingTwistConstraint.h>
 #include <Jolt/Physics/Constraints/TwoBodyConstraint.h>
 #include <Jolt/Physics/PhysicsSettings.h>
+#include <Jolt/Physics/PhysicsStepListener.h>
 #include <Jolt/Physics/PhysicsSystem.h>
 #include <Jolt/Physics/Ragdoll/Ragdoll.h>
 #include <Jolt/Physics/SoftBody/SoftBodyContactListener.h>
@@ -102,6 +109,8 @@
 #include <Jolt/Physics/SoftBody/SoftBodyMotionProperties.h>
 #include <Jolt/Physics/SoftBody/SoftBodySharedSettings.h>
 #include <Jolt/Physics/SoftBody/SoftBodyVertex.h>
+#include <Jolt/Physics/StateRecorder.h>
+#include <Jolt/Physics/StateRecorderImpl.h>
 #include <Jolt/Physics/Vehicle/MotorcycleController.h>
 #include <Jolt/Physics/Vehicle/TrackedVehicleController.h>
 #include <Jolt/Physics/Vehicle/VehicleAntiRollBar.h>
@@ -115,6 +124,8 @@
 #include <Jolt/Physics/Vehicle/Wheel.h>
 #include <Jolt/Physics/Vehicle/WheeledVehicleController.h>
 #include <Jolt/RegisterTypes.h>
+#include <Jolt/Skeleton/Skeleton.h>
+#include <Jolt/Skeleton/SkeletonPose.h>
 #include "Types.h"
 
 namespace kolt {
@@ -251,6 +262,11 @@ KOLT_TYPE(JphObjectVsBroadPhaseLayerFilterTable, JPH::ObjectVsBroadPhaseLayerFil
 KOLT_TYPE(JphOffsetCenterOfMassShape, JPH::OffsetCenterOfMassShape)
 KOLT_TYPE(JphOffsetCenterOfMassShapeSettings, JPH::OffsetCenterOfMassShapeSettings)
 KOLT_TYPE(JphOrientedBox, JPH::OrientedBox)
+KOLT_TYPE(JphPathConstraint, JPH::PathConstraint)
+KOLT_TYPE(JphPathConstraintPath, JPH::PathConstraintPath)
+KOLT_TYPE(JphPathConstraintPathHermite, JPH::PathConstraintPathHermite)
+KOLT_TYPE(JphPathConstraintPathHermitePoint, JPH::PathConstraintPathHermite::Point)
+KOLT_TYPE(JphPathConstraintSettings, JPH::PathConstraintSettings)
 KOLT_TYPE(JphPhysicsMaterial, JPH::PhysicsMaterial)
 KOLT_TYPE(JphPhysicsSettings, JPH::PhysicsSettings)
 KOLT_TYPE(JphPhysicsStepListener, JPH::PhysicsStepListener)
@@ -265,6 +281,8 @@ KOLT_TYPE(JphPulleyConstraint, JPH::PulleyConstraint)
 KOLT_TYPE(JphPulleyConstraintSettings, JPH::PulleyConstraintSettings)
 KOLT_TYPE(JphRRayCast, JPH::RRayCast)
 KOLT_TYPE(JphRShapeCast, JPH::RShapeCast)
+KOLT_TYPE(JphRackAndPinionConstraint, JPH::RackAndPinionConstraint)
+KOLT_TYPE(JphRackAndPinionConstraintSettings, JPH::RackAndPinionConstraintSettings)
 KOLT_TYPE(JphRagdoll, JPH::Ragdoll)
 KOLT_TYPE(JphRagdollSettings, JPH::RagdollSettings)
 KOLT_TYPE(JphRagdollSettingsAdditionalConstraint, JPH::RagdollSettings::AdditionalConstraint)
@@ -323,6 +341,7 @@ KOLT_TYPE(JphSphereShapeSettings, JPH::SphereShapeSettings)
 KOLT_TYPE(JphSpringSettings, JPH::SpringSettings)
 KOLT_TYPE(JphStateRecorder, JPH::StateRecorder)
 KOLT_TYPE(JphStateRecorderFilter, JPH::StateRecorderFilter)
+KOLT_TYPE(JphStateRecorderImpl, JPH::StateRecorderImpl)
 KOLT_TYPE(JphStaticCompoundShape, JPH::StaticCompoundShape)
 KOLT_TYPE(JphStaticCompoundShapeSettings, JPH::StaticCompoundShapeSettings)
 KOLT_TYPE(JphStreamIn, JPH::StreamIn)

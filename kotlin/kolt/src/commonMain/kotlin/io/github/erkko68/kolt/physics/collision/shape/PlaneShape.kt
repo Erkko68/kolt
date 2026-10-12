@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::PlaneShape`. */
 class PlaneShape internal constructor(internal val planeShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphPlaneShape_asShape(planeShapeHandle), owned), AutoCloseable {

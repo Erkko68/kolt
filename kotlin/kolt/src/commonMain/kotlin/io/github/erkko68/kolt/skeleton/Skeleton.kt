@@ -31,9 +31,80 @@ import io.github.erkko68.kolt.physics.softbody.*
 import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::Skeleton`. */
-class Skeleton internal constructor(internal val skeletonHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+class Skeleton internal constructor(internal val skeletonHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphSkeleton_create(), owned = true)
+
+    fun addRef() =
+        own { JphSkeleton_addRef(skeletonHandle) }
+
+    override fun close() =
+        closeOnce { JphSkeleton_release(skeletonHandle) }
+
+    val joints: List<Skeleton.Joint>
+        get() = interopScope {
+            val count = JphSkeleton_GetJoints(skeletonHandle, NullPointer, 0)
+            val returned = List(count) { Skeleton.Joint(JphSkeletonJoint_create(), owned = true) }
+            JphSkeleton_GetJoints(skeletonHandle, toInterop(returned.map { it.skeletonJointHandle }), count)
+            returned
+        }
+
+    val jointCount: Int
+        get() = JphSkeleton_GetJointCount(skeletonHandle)
+
+    fun getJoint(joint: Int): Skeleton.Joint =
+        Skeleton.Joint(JphSkeleton_GetJoint(skeletonHandle, joint))
+
+    fun addJoint(name: String?, parentName: String?): Int =
+        interopScope { JphSkeleton_AddJoint_string_view(skeletonHandle, toInterop(name), toInterop(parentName)) }
+
+    fun addJoint(name: String?, parentIndex: Int): Int =
+        interopScope { JphSkeleton_AddJoint_int(skeletonHandle, toInterop(name), parentIndex) }
+
+    fun getJointIndex(name: String?): Int =
+        interopScope { JphSkeleton_GetJointIndex(skeletonHandle, toInterop(name)) }
+
+    fun calculateParentJointIndices() =
+        JphSkeleton_CalculateParentJointIndices(skeletonHandle)
+
+    fun areJointsCorrectlyOrdered(): Boolean =
+        JphSkeleton_AreJointsCorrectlyOrdered(skeletonHandle)
+
+    fun saveBinaryState(stream: StreamOut) =
+        JphSkeleton_SaveBinaryState(skeletonHandle, stream.streamOutHandle)
+
     /** C++ `JPH::Skeleton::Joint`. */
-    class Joint internal constructor(internal val skeletonJointHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    class Joint internal constructor(internal val skeletonJointHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+        constructor() : this(JphSkeletonJoint_create(), owned = true)
+        constructor(name: String?, parentName: String?, parentJointIndex: Int) : this(interopScope { JphSkeletonJoint_create_string_view_string_view_int(toInterop(name), toInterop(parentName), parentJointIndex) }, owned = true)
+    
+        override fun close() =
+            closeOnce { JphSkeletonJoint_destroy(skeletonJointHandle) }
+    
+        var name: String?
+            get() = stringFromInterop(JphSkeletonJoint_GetName(skeletonJointHandle))
+            set(value) = interopScope { JphSkeletonJoint_SetName(skeletonJointHandle, toInterop(value)) }
+    
+        var parentName: String?
+            get() = stringFromInterop(JphSkeletonJoint_GetParentName(skeletonJointHandle))
+            set(value) = interopScope { JphSkeletonJoint_SetParentName(skeletonJointHandle, toInterop(value)) }
+    
+        var parentJointIndex: Int
+            get() = JphSkeletonJoint_GetParentJointIndex(skeletonJointHandle)
+            set(value) = JphSkeletonJoint_SetParentJointIndex(skeletonJointHandle, value)
     }
+    
+    companion object {
+        fun restoreFromBinaryState(stream: StreamIn): Skeleton =
+            interopScope {
+                val error = ByteArray(256)
+                val errorPointer = toInterop(error)
+                val returned = JphSkeleton_sRestoreFromBinaryState(stream.streamInHandle, errorPointer, error.size)
+                errorPointer.fromInterop(error)
+                if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
+                Skeleton(returned, owned = true)
+            }
+    }
+}

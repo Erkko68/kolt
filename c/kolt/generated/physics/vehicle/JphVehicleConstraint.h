@@ -22,14 +22,13 @@ void JphVehicleConstraint_SetMaxPitchRollAngle(JphVehicleConstraint* self, float
 float JphVehicleConstraint_GetMaxPitchRollAngle(const JphVehicleConstraint* self);
 void JphVehicleConstraint_SetVehicleCollisionTester(JphVehicleConstraint* self, const JphVehicleCollisionTester* inTester);
 const JphVehicleCollisionTester* JphVehicleConstraint_GetVehicleCollisionTester(const JphVehicleConstraint* self);
-// TODO(handwritten) JphVehicleConstraint_SetCombineFriction: void JPH::VehicleConstraint::SetCombineFriction(const CombineFunction & inCombineFriction)
-//     const CombineFunction &: unresolved
+void JphVehicleConstraint_SetCombineFriction(JphVehicleConstraint* self, JphVehicleConstraintCombineFunction inCombineFriction);
 // TODO(handwritten) JphVehicleConstraint_SetPreStepCallback: void JPH::VehicleConstraint::SetPreStepCallback(const StepCallback & inPreStepCallback)
-//     const StepCallback &: unresolved
+//     JPH::VehicleConstraint::StepCallback: arguments C takes in pieces
 // TODO(handwritten) JphVehicleConstraint_SetPostCollideCallback: void JPH::VehicleConstraint::SetPostCollideCallback(const StepCallback & inPostCollideCallback)
-//     const StepCallback &: unresolved
+//     JPH::VehicleConstraint::StepCallback: arguments C takes in pieces
 // TODO(handwritten) JphVehicleConstraint_SetPostStepCallback: void JPH::VehicleConstraint::SetPostStepCallback(const StepCallback & inPostStepCallback)
-//     const StepCallback &: unresolved
+//     JPH::VehicleConstraint::StepCallback: arguments C takes in pieces
 void JphVehicleConstraint_OverrideGravity(JphVehicleConstraint* self, const JphVec3* inGravity);
 bool JphVehicleConstraint_IsGravityOverridden(const JphVehicleConstraint* self);
 void JphVehicleConstraint_GetGravityOverride(const JphVehicleConstraint* self, JphVec3* out);

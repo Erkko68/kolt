@@ -31,6 +31,34 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::StreamIn`. */
-class StreamIn internal constructor(internal val streamInHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+open class StreamIn internal constructor(internal val streamInHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphStreamIn_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != StreamIn::class) JphStreamIn_bindUpcalls(streamInHandle, Upcalls.reference(this))
+    }
+
+    override fun close() =
+        closeOnce { JphStreamIn_destroy(streamInHandle) }
+
+    open fun readBytes(data: NativePointer, numBytes: Int) =
+        JphStreamIn_ReadBytes(streamInHandle, data, numBytes)
+
+    open val isEOF: Boolean
+        get() = JphStreamIn_IsEOF(streamInHandle)
+
+    open val isFailed: Boolean
+        get() = JphStreamIn_IsFailed(streamInHandle)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> readBytes(readPointerSlot(args, 0), readSlot(args, 1).toInt())
+            1 -> writeSlot(result, if (isEOF) 1L else 0L)
+            2 -> writeSlot(result, if (isFailed) 1L else 0L)
+            else -> return false
+        }
+        return true
+    }
+}

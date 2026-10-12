@@ -14,10 +14,8 @@ JphJobSystemThreadPool* JphJobSystemThreadPool_create(void);
 void JphJobSystemThreadPool_destroy(JphJobSystemThreadPool* self);
 JphJobSystemWithBarrier* JphJobSystemThreadPool_asJobSystemWithBarrier(JphJobSystemThreadPool* self);
 JphJobSystem* JphJobSystemThreadPool_asJobSystem(JphJobSystemThreadPool* self);
-// TODO(handwritten) JphJobSystemThreadPool_SetThreadInitFunction: void JPH::JobSystemThreadPool::SetThreadInitFunction(const InitExitFunction & inInitFunction)
-//     const InitExitFunction &: unresolved
-// TODO(handwritten) JphJobSystemThreadPool_SetThreadExitFunction: void JPH::JobSystemThreadPool::SetThreadExitFunction(const InitExitFunction & inExitFunction)
-//     const InitExitFunction &: unresolved
+void JphJobSystemThreadPool_SetThreadInitFunction(JphJobSystemThreadPool* self, JphJobSystemThreadPoolInitExitFunction inInitFunction);
+void JphJobSystemThreadPool_SetThreadExitFunction(JphJobSystemThreadPool* self, JphJobSystemThreadPoolInitExitFunction inExitFunction);
 void JphJobSystemThreadPool_Init(JphJobSystemThreadPool* self, uint32_t inMaxJobs, uint32_t inMaxBarriers, int32_t inNumThreads);
 void JphJobSystemThreadPool_SetNumThreads(JphJobSystemThreadPool* self, int32_t inNumThreads);
 

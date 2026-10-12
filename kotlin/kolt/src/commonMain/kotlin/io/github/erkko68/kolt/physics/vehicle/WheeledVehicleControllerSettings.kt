@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.*
 import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::WheeledVehicleControllerSettings`. */
 open class WheeledVehicleControllerSettings internal constructor(internal val wheeledVehicleControllerSettingsHandle: NativePointer, owned: Boolean = false) : VehicleControllerSettings(JphWheeledVehicleControllerSettings_asVehicleControllerSettings(wheeledVehicleControllerSettingsHandle), owned), AutoCloseable {

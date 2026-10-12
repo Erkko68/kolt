@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::DistanceConstraintSettings`. */
 class DistanceConstraintSettings internal constructor(internal val distanceConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphDistanceConstraintSettings_asTwoBodyConstraintSettings(distanceConstraintSettingsHandle), owned), AutoCloseable {

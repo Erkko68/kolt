@@ -28,8 +28,7 @@ uint32_t JphWheeledVehicleController_GetDifferentials(JphWheeledVehicleControlle
 float JphWheeledVehicleController_GetDifferentialLimitedSlipRatio(const JphWheeledVehicleController* self);
 void JphWheeledVehicleController_SetDifferentialLimitedSlipRatio(JphWheeledVehicleController* self, float inV);
 float JphWheeledVehicleController_GetWheelSpeedAtClutch(const JphWheeledVehicleController* self);
-// TODO(handwritten) JphWheeledVehicleController_SetTireMaxImpulseCallback: void JPH::WheeledVehicleController::SetTireMaxImpulseCallback(const TireMaxImpulseCallback & inTireMaxImpulseCallback)
-//     const TireMaxImpulseCallback &: unresolved
+void JphWheeledVehicleController_SetTireMaxImpulseCallback(JphWheeledVehicleController* self, JphWheeledVehicleControllerTireMaxImpulseCallback inTireMaxImpulseCallback);
 
 
 #ifdef __cplusplus

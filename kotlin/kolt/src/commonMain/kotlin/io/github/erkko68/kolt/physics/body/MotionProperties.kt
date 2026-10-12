@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::MotionProperties`. */
 open class MotionProperties internal constructor(internal val motionPropertiesHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {

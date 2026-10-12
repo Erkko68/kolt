@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::SixDOFConstraint`. */
 class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSixDOFConstraint_asTwoBodyConstraint(sixDOFConstraintHandle), owned), AutoCloseable {

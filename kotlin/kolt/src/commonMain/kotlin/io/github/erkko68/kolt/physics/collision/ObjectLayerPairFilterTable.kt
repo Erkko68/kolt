@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::ObjectLayerPairFilterTable`. */
 class ObjectLayerPairFilterTable internal constructor(internal val objectLayerPairFilterTableHandle: NativePointer, owned: Boolean = false) : ObjectLayerPairFilter(JphObjectLayerPairFilterTable_asObjectLayerPairFilter(objectLayerPairFilterTableHandle), owned), AutoCloseable {

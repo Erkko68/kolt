@@ -31,6 +31,38 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::StateRecorderFilter`. */
-class StateRecorderFilter internal constructor(internal val stateRecorderFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+open class StateRecorderFilter internal constructor(internal val stateRecorderFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphStateRecorderFilter_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != StateRecorderFilter::class) JphStateRecorderFilter_bindUpcalls(stateRecorderFilterHandle, Upcalls.reference(this))
+    }
+
+    override fun close() =
+        closeOnce { JphStateRecorderFilter_destroy(stateRecorderFilterHandle) }
+
+    open fun shouldSaveBody(body: Body): Boolean =
+        JphStateRecorderFilter_ShouldSaveBody(stateRecorderFilterHandle, body.bodyHandle)
+
+    open fun shouldSaveConstraint(constraint: Constraint): Boolean =
+        JphStateRecorderFilter_ShouldSaveConstraint(stateRecorderFilterHandle, constraint.constraintHandle)
+
+    open fun shouldSaveContact(body1: BodyID, body2: BodyID): Boolean =
+        JphStateRecorderFilter_ShouldSaveContact(stateRecorderFilterHandle, body1.value, body2.value)
+
+    open fun shouldRestoreContact(body1: BodyID, body2: BodyID): Boolean =
+        JphStateRecorderFilter_ShouldRestoreContact(stateRecorderFilterHandle, body1.value, body2.value)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, if (shouldSaveBody(Body(readPointerSlot(args, 0)))) 1L else 0L)
+            1 -> writeSlot(result, if (shouldSaveConstraint(Constraint(readPointerSlot(args, 0)))) 1L else 0L)
+            2 -> writeSlot(result, if (shouldSaveContact(BodyID(readSlot(args, 0).toInt()), BodyID(readSlot(args, 1).toInt()))) 1L else 0L)
+            3 -> writeSlot(result, if (shouldRestoreContact(BodyID(readSlot(args, 0).toInt()), BodyID(readSlot(args, 1).toInt()))) 1L else 0L)
+            else -> return false
+        }
+        return true
+    }
+}

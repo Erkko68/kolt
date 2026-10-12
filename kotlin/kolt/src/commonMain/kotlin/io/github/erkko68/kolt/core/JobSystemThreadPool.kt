@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::JobSystemThreadPool`. */
 class JobSystemThreadPool internal constructor(internal val jobSystemThreadPoolHandle: NativePointer, owned: Boolean = false) : JobSystemWithBarrier(JphJobSystemThreadPool_asJobSystemWithBarrier(jobSystemThreadPoolHandle), owned), AutoCloseable {

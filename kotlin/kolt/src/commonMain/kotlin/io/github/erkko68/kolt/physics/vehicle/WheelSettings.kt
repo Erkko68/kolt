@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.*
 import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::WheelSettings`. */
 open class WheelSettings internal constructor(internal val wheelSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphWheelSettings_asSerializableObject(wheelSettingsHandle), owned), AutoCloseable {

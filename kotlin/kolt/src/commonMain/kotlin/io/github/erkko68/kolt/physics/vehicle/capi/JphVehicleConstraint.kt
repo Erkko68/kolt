@@ -31,6 +31,9 @@ internal external fun JphVehicleConstraint_SetVehicleCollisionTester(self: Nativ
 @ExternalSymbolName("JphVehicleConstraint_GetVehicleCollisionTester")
 internal external fun JphVehicleConstraint_GetVehicleCollisionTester(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphVehicleConstraint_SetCombineFriction")
+internal external fun JphVehicleConstraint_SetCombineFriction(self: NativePointer, inCombineFriction: NativePointer)
+
 @ExternalSymbolName("JphVehicleConstraint_OverrideGravity")
 internal external fun JphVehicleConstraint_OverrideGravity(self: NativePointer, inGravity: NativePointer)
 

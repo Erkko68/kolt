@@ -143,6 +143,11 @@ typedef struct JphObjectVsBroadPhaseLayerFilterTable JphObjectVsBroadPhaseLayerF
 typedef struct JphOffsetCenterOfMassShape JphOffsetCenterOfMassShape;
 typedef struct JphOffsetCenterOfMassShapeSettings JphOffsetCenterOfMassShapeSettings;
 typedef struct JphOrientedBox JphOrientedBox;
+typedef struct JphPathConstraint JphPathConstraint;
+typedef struct JphPathConstraintPath JphPathConstraintPath;
+typedef struct JphPathConstraintPathHermite JphPathConstraintPathHermite;
+typedef struct JphPathConstraintPathHermitePoint JphPathConstraintPathHermitePoint;
+typedef struct JphPathConstraintSettings JphPathConstraintSettings;
 typedef struct JphPhysicsMaterial JphPhysicsMaterial;
 typedef struct JphPhysicsSettings JphPhysicsSettings;
 typedef struct JphPhysicsStepListener JphPhysicsStepListener;
@@ -157,6 +162,8 @@ typedef struct JphPulleyConstraint JphPulleyConstraint;
 typedef struct JphPulleyConstraintSettings JphPulleyConstraintSettings;
 typedef struct JphRRayCast JphRRayCast;
 typedef struct JphRShapeCast JphRShapeCast;
+typedef struct JphRackAndPinionConstraint JphRackAndPinionConstraint;
+typedef struct JphRackAndPinionConstraintSettings JphRackAndPinionConstraintSettings;
 typedef struct JphRagdoll JphRagdoll;
 typedef struct JphRagdollSettings JphRagdollSettings;
 typedef struct JphRagdollSettingsAdditionalConstraint JphRagdollSettingsAdditionalConstraint;
@@ -215,6 +222,7 @@ typedef struct JphSphereShapeSettings JphSphereShapeSettings;
 typedef struct JphSpringSettings JphSpringSettings;
 typedef struct JphStateRecorder JphStateRecorder;
 typedef struct JphStateRecorderFilter JphStateRecorderFilter;
+typedef struct JphStateRecorderImpl JphStateRecorderImpl;
 typedef struct JphStaticCompoundShape JphStaticCompoundShape;
 typedef struct JphStaticCompoundShapeSettings JphStaticCompoundShapeSettings;
 typedef struct JphStreamIn JphStreamIn;
@@ -390,6 +398,16 @@ typedef enum JphEOverrideMassProperties {
     JPH_EOVERRIDE_MASS_PROPERTIES_MASS_AND_INERTIA_PROVIDED = 2,
 } JphEOverrideMassProperties;
 
+// JPH::EPathRotationConstraintType
+typedef enum JphEPathRotationConstraintType {
+    JPH_EPATH_ROTATION_CONSTRAINT_TYPE_FREE = 0,
+    JPH_EPATH_ROTATION_CONSTRAINT_TYPE_CONSTRAIN_AROUND_TANGENT = 1,
+    JPH_EPATH_ROTATION_CONSTRAINT_TYPE_CONSTRAIN_AROUND_NORMAL = 2,
+    JPH_EPATH_ROTATION_CONSTRAINT_TYPE_CONSTRAIN_AROUND_BINORMAL = 3,
+    JPH_EPATH_ROTATION_CONSTRAINT_TYPE_CONSTRAIN_TO_PATH = 4,
+    JPH_EPATH_ROTATION_CONSTRAINT_TYPE_FULLY_CONSTRAINED = 5,
+} JphEPathRotationConstraintType;
+
 // JPH::EPhysicsUpdateError
 typedef enum JphEPhysicsUpdateError {
     JPH_EPHYSICS_UPDATE_ERROR_NONE = 0,
@@ -527,7 +545,10 @@ typedef enum JphValidateResult {
     JPH_VALIDATE_RESULT_REJECT_ALL_CONTACTS_FOR_THIS_BODY_PAIR = 3,
 } JphValidateResult;
 
+typedef void (*JphJobSystemThreadPoolInitExitFunction)(int32_t);
 typedef int32_t (*JphUpcall)(void* userData, int32_t method, const uint64_t* args, uint64_t* result);
+typedef void (*JphVehicleConstraintCombineFunction)(uint32_t, float*, float*, const JphBody*, uint32_t);
+typedef void (*JphWheeledVehicleControllerTireMaxImpulseCallback)(uint32_t, float*, float*, float, float, float, float, float, float);
 
 #ifdef __cplusplus
 }

@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::IgnoreSingleBodyFilterChained`. */
 class IgnoreSingleBodyFilterChained internal constructor(internal val ignoreSingleBodyFilterChainedHandle: NativePointer, owned: Boolean = false) : BodyFilter(JphIgnoreSingleBodyFilterChained_asBodyFilter(ignoreSingleBodyFilterChainedHandle), owned), AutoCloseable {

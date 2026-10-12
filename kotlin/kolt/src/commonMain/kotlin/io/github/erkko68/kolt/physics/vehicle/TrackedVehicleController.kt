@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.*
 import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::TrackedVehicleController`. */
 class TrackedVehicleController internal constructor(internal val trackedVehicleControllerHandle: NativePointer, owned: Boolean = false) : VehicleController(JphTrackedVehicleController_asVehicleController(trackedVehicleControllerHandle), owned), AutoCloseable {

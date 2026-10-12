@@ -14,7 +14,7 @@ void JphHingeConstraint_addRef(const JphHingeConstraint* self);
 void JphHingeConstraint_release(const JphHingeConstraint* self);
 JphTwoBodyConstraint* JphHingeConstraint_asTwoBodyConstraint(JphHingeConstraint* self);
 JphConstraint* JphHingeConstraint_asConstraint(JphHingeConstraint* self);
-// skipped Vector<2> JPH::HingeConstraint::GetTotalLambdaRotation() const: JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition)
+// skipped Vector<2> JPH::HingeConstraint::GetTotalLambdaRotation() const: JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition|PathConstraint::GetTotalLambda(Position|RotationHinge))
 void JphHingeConstraint_GetLocalSpacePoint1(const JphHingeConstraint* self, JphVec3* out);
 void JphHingeConstraint_GetLocalSpacePoint2(const JphHingeConstraint* self, JphVec3* out);
 void JphHingeConstraint_GetLocalSpaceHingeAxis1(const JphHingeConstraint* self, JphVec3* out);

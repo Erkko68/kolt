@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::PhysicsMaterial`. */
 open class PhysicsMaterial internal constructor(internal val physicsMaterialHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphPhysicsMaterial_asSerializableObject(physicsMaterialHandle), owned), AutoCloseable {

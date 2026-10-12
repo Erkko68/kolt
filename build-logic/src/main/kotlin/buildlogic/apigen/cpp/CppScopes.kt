@@ -13,6 +13,7 @@ internal class CppScopes {
     private val aliasTargets = HashMap<String, String>()
     private val usingNamespaces = HashMap<String, MutableList<String>>()
     private val usingNames = HashMap<String, MutableMap<String, String>>()
+    private val externalNames = HashMap<String, MutableMap<String, String>>()
     private val bases = HashMap<String, List<String>>()
     private val partial = ArrayList<String>()
 
@@ -29,6 +30,9 @@ internal class CppScopes {
     }
     fun usingName(scope: String, qualified: String) {
         usingNames.getOrPut(scope, ::HashMap)[qualified.substringAfterLast("::")] = qualified
+        // Not a base's member or constructors (`using Base::Base`), which the dump declares.
+        val owner = lookup(qualified.substringBeforeLast("::").substringBefore('<'), scope)
+        if (owner == null || names[owner] == Decl.NAMESPACE) externalNames.getOrPut(scope, ::HashMap)[qualified.substringAfterLast("::")] = qualified
     }
 
     fun resolve(spelling: String, scope: String): CppType {
@@ -59,7 +63,8 @@ internal class CppScopes {
                 usingNamespaces[enclosing].orEmpty().map { qualify(it, head) } +
                 // A base template's parameters aren't its members (BuilderNameMixin<Builder>'s Builder).
                 inherited(enclosing).map { qualify(it, head) }.filter { names[it] != Decl.TEMPLATE_PARAMETER }
-            val found = candidates.firstOrNull { it in names } ?: continue
+            // A using-declaration of a namespace the dump leaves out names what clang found (`using std::string_view`).
+            val found = candidates.firstOrNull { it in names } ?: externalNames[enclosing]?.get(head) ?: continue
             return if (rest.isEmpty()) found else member(found, rest)
         }
         // Clang compiled the header, so the name exists, in a namespace the dump skipped or a global using-directive

@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::JobSystemWithBarrier`. */
 open class JobSystemWithBarrier internal constructor(internal val jobSystemWithBarrierHandle: NativePointer, owned: Boolean = false) : JobSystem(JphJobSystemWithBarrier_asJobSystem(jobSystemWithBarrierHandle), owned), AutoCloseable {

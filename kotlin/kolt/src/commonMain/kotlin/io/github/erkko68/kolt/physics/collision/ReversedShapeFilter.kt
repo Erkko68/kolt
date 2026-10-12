@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::ReversedShapeFilter`. */
 class ReversedShapeFilter internal constructor(internal val reversedShapeFilterHandle: NativePointer, owned: Boolean = false) : ShapeFilter(JphReversedShapeFilter_asShapeFilter(reversedShapeFilterHandle), owned), AutoCloseable {

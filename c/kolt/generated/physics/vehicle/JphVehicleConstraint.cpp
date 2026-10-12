@@ -40,6 +40,10 @@ const JphVehicleCollisionTester* JphVehicleConstraint_GetVehicleCollisionTester(
     return kolt::c(kolt::cpp(self)->GetVehicleCollisionTester());
 }
 
+void JphVehicleConstraint_SetCombineFriction(JphVehicleConstraint* self, JphVehicleConstraintCombineFunction inCombineFriction) {
+    kolt::cpp(self)->SetCombineFriction(inCombineFriction ? JPH::VehicleConstraint::CombineFunction([=](auto&& a0, auto&& a1, auto&& a2, auto&& a3, auto&& a4) { inCombineFriction(static_cast<uint32_t>(a0), &a1, &a2, kolt::c(&a3), (a4).GetValue()); }) : nullptr);
+}
+
 void JphVehicleConstraint_OverrideGravity(JphVehicleConstraint* self, const JphVec3* inGravity) {
     kolt::cpp(self)->OverrideGravity(kolt::math<JPH::Vec3>(*inGravity));
 }

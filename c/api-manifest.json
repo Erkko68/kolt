@@ -45,6 +45,8 @@
 {"name":"JphJobSystemThreadPool_destroy","returns":"void","params":[["self","ptr"]]},
 {"name":"JphJobSystemThreadPool_asJobSystemWithBarrier","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphJobSystemThreadPool_asJobSystem","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphJobSystemThreadPool_SetThreadInitFunction","returns":"void","params":[["self","ptr"],["inInitFunction","ptr"]]},
+{"name":"JphJobSystemThreadPool_SetThreadExitFunction","returns":"void","params":[["self","ptr"],["inExitFunction","ptr"]]},
 {"name":"JphJobSystemThreadPool_Init","returns":"void","params":[["self","ptr"],["inMaxJobs","i32"],["inMaxBarriers","i32"],["inNumThreads","i32"]]},
 {"name":"JphJobSystemThreadPool_SetNumThreads","returns":"void","params":[["self","ptr"],["inNumThreads","i32"]]}
 ],
@@ -73,6 +75,21 @@
 {"name":"JphLinearCurve_RestoreBinaryState","returns":"void","params":[["self","ptr"],["inStream","ptr"]]},
 {"name":"JphLinearCurve_GetPoints","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphLinearCurve_SetPoints","returns":"void","params":[["self","ptr"],["value","ptr"],["valueCount","i32"]]}
+],
+"kolt/generated/core/JphStreamIn.h": [
+{"name":"JphStreamIn_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphStreamIn_createUpcalls","returns":"ptr","params":[["call","ptr"]]},
+{"name":"JphStreamIn_bindUpcalls","returns":"void","params":[["self","ptr"],["userData","ptr"]]},
+{"name":"JphStreamIn_ReadBytes","returns":"void","params":[["self","ptr"],["outData","ptr"],["inNumBytes","i32"]]},
+{"name":"JphStreamIn_IsEOF","returns":"bool","params":[["self","ptr"]]},
+{"name":"JphStreamIn_IsFailed","returns":"bool","params":[["self","ptr"]]}
+],
+"kolt/generated/core/JphStreamOut.h": [
+{"name":"JphStreamOut_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphStreamOut_createUpcalls","returns":"ptr","params":[["call","ptr"]]},
+{"name":"JphStreamOut_bindUpcalls","returns":"void","params":[["self","ptr"],["userData","ptr"]]},
+{"name":"JphStreamOut_WriteBytes","returns":"void","params":[["self","ptr"],["inData","ptr"],["inNumBytes","i32"]]},
+{"name":"JphStreamOut_IsFailed","returns":"bool","params":[["self","ptr"]]}
 ],
 "kolt/generated/core/JphTempAllocator.h": [
 {"name":"JphTempAllocator_destroy","returns":"void","params":[["self","ptr"]]}
@@ -266,6 +283,24 @@
 {"name":"JphPhysicsSettings_GetCheckActiveEdges","returns":"bool","params":[["self","ptr"]]},
 {"name":"JphPhysicsSettings_SetCheckActiveEdges","returns":"void","params":[["self","ptr"],["value","bool"]]}
 ],
+"kolt/generated/physics/JphPhysicsStepListener.h": [
+{"name":"JphPhysicsStepListener_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPhysicsStepListener_createUpcalls","returns":"ptr","params":[["call","ptr"]]},
+{"name":"JphPhysicsStepListener_bindUpcalls","returns":"void","params":[["self","ptr"],["userData","ptr"]]},
+{"name":"JphPhysicsStepListener_OnStep","returns":"void","params":[["self","ptr"],["inContext","ptr"]]}
+],
+"kolt/generated/physics/JphPhysicsStepListenerContext.h": [
+{"name":"JphPhysicsStepListenerContext_create","returns":"ptr","params":[]},
+{"name":"JphPhysicsStepListenerContext_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPhysicsStepListenerContext_GetDeltaTime","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPhysicsStepListenerContext_SetDeltaTime","returns":"void","params":[["self","ptr"],["value","f32"]]},
+{"name":"JphPhysicsStepListenerContext_GetIsFirstStep","returns":"bool","params":[["self","ptr"]]},
+{"name":"JphPhysicsStepListenerContext_SetIsFirstStep","returns":"void","params":[["self","ptr"],["value","bool"]]},
+{"name":"JphPhysicsStepListenerContext_GetIsLastStep","returns":"bool","params":[["self","ptr"]]},
+{"name":"JphPhysicsStepListenerContext_SetIsLastStep","returns":"void","params":[["self","ptr"],["value","bool"]]},
+{"name":"JphPhysicsStepListenerContext_GetPhysicsSystem","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPhysicsStepListenerContext_SetPhysicsSystem","returns":"void","params":[["self","ptr"],["value","ptr"]]}
+],
 "kolt/generated/physics/JphPhysicsSystem.h": [
 {"name":"JphPhysicsSystem_create","returns":"ptr","params":[]},
 {"name":"JphPhysicsSystem_destroy","returns":"void","params":[["self","ptr"]]},
@@ -313,6 +348,38 @@
 {"name":"JphPhysicsSystem_GetActiveBodies","returns":"i32","params":[["self","ptr"],["inType","i32"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphPhysicsSystem_WereBodiesInContact","returns":"bool","params":[["self","ptr"],["inBody1ID","i32"],["inBody2ID","i32"]]},
 {"name":"JphPhysicsSystem_GetBounds","returns":"void","params":[["self","ptr"],["out","ptr"]]}
+],
+"kolt/generated/physics/JphStateRecorder.h": [
+{"name":"JphStateRecorder_createUpcalls","returns":"ptr","params":[["call","ptr"]]},
+{"name":"JphStateRecorder_bindUpcalls","returns":"void","params":[["self","ptr"],["userData","ptr"]]},
+{"name":"JphStateRecorder_asStreamIn","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphStateRecorder_asStreamOut","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphStateRecorder_SetValidating","returns":"void","params":[["self","ptr"],["inValidating","bool"]]},
+{"name":"JphStateRecorder_IsValidating","returns":"bool","params":[["self","ptr"]]},
+{"name":"JphStateRecorder_SetIsLastPart","returns":"void","params":[["self","ptr"],["inIsLastPart","bool"]]},
+{"name":"JphStateRecorder_IsLastPart","returns":"bool","params":[["self","ptr"]]}
+],
+"kolt/generated/physics/JphStateRecorderFilter.h": [
+{"name":"JphStateRecorderFilter_create","returns":"ptr","params":[]},
+{"name":"JphStateRecorderFilter_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphStateRecorderFilter_createUpcalls","returns":"ptr","params":[["call","ptr"]]},
+{"name":"JphStateRecorderFilter_bindUpcalls","returns":"void","params":[["self","ptr"],["userData","ptr"]]},
+{"name":"JphStateRecorderFilter_ShouldSaveBody","returns":"bool","params":[["self","ptr"],["inBody","ptr"]]},
+{"name":"JphStateRecorderFilter_ShouldSaveConstraint","returns":"bool","params":[["self","ptr"],["inConstraint","ptr"]]},
+{"name":"JphStateRecorderFilter_ShouldSaveContact","returns":"bool","params":[["self","ptr"],["inBody1","i32"],["inBody2","i32"]]},
+{"name":"JphStateRecorderFilter_ShouldRestoreContact","returns":"bool","params":[["self","ptr"],["inBody1","i32"],["inBody2","i32"]]}
+],
+"kolt/generated/physics/JphStateRecorderImpl.h": [
+{"name":"JphStateRecorderImpl_create","returns":"ptr","params":[]},
+{"name":"JphStateRecorderImpl_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphStateRecorderImpl_asStateRecorder","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphStateRecorderImpl_asStreamIn","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphStateRecorderImpl_asStreamOut","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphStateRecorderImpl_Rewind","returns":"void","params":[["self","ptr"]]},
+{"name":"JphStateRecorderImpl_Clear","returns":"void","params":[["self","ptr"]]},
+{"name":"JphStateRecorderImpl_IsEqual","returns":"bool","params":[["self","ptr"],["inReference","ptr"]]},
+{"name":"JphStateRecorderImpl_GetData","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"JphStateRecorderImpl_GetDataSize","returns":"i32","params":[["self","ptr"]]}
 ],
 "kolt/generated/physics/body/JphBody.h": [
 {"name":"JphBody_GetID","returns":"i32","params":[["self","ptr"]]},
@@ -2459,6 +2526,80 @@
 {"name":"JphMotorSettings_GetMaxTorqueLimit","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphMotorSettings_SetMaxTorqueLimit","returns":"void","params":[["self","ptr"],["value","f32"]]}
 ],
+"kolt/generated/physics/constraints/JphPathConstraint.h": [
+{"name":"JphPathConstraint_create","returns":"ptr","params":[["inBody1","ptr"],["inBody2","ptr"],["inSettings","ptr"]]},
+{"name":"JphPathConstraint_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_asTwoBodyConstraint","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_asConstraint","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_SetPath","returns":"void","params":[["self","ptr"],["inPath","ptr"],["inPathFraction","f32"]]},
+{"name":"JphPathConstraint_GetPath","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_GetPathFraction","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_SetMaxFrictionForce","returns":"void","params":[["self","ptr"],["inFrictionForce","f32"]]},
+{"name":"JphPathConstraint_GetMaxFrictionForce","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_GetPositionMotorSettings","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_SetPositionMotorState","returns":"void","params":[["self","ptr"],["inState","i32"]]},
+{"name":"JphPathConstraint_GetPositionMotorState","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_SetTargetVelocity","returns":"void","params":[["self","ptr"],["inVelocity","f32"]]},
+{"name":"JphPathConstraint_GetTargetVelocity","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_SetTargetPathFraction","returns":"void","params":[["self","ptr"],["inFraction","f32"]]},
+{"name":"JphPathConstraint_GetTargetPathFraction","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_GetTotalLambdaPositionLimits","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_GetTotalLambdaMotor","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPathConstraint_GetTotalLambdaRotation","returns":"void","params":[["self","ptr"],["out","ptr"]]}
+],
+"kolt/generated/physics/constraints/JphPathConstraintPath.h": [
+{"name":"JphPathConstraintPath_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPath_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPath_createUpcalls","returns":"ptr","params":[["call","ptr"]]},
+{"name":"JphPathConstraintPath_bindUpcalls","returns":"void","params":[["self","ptr"],["userData","ptr"]]},
+{"name":"JphPathConstraintPath_asSerializableObject","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPath_GetPathMaxFraction","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPath_GetClosestPoint","returns":"f32","params":[["self","ptr"],["inPosition","ptr"],["inFractionHint","f32"]]},
+{"name":"JphPathConstraintPath_GetPointOnPath","returns":"void","params":[["self","ptr"],["inFraction","f32"],["outPathPosition","ptr"],["outPathTangent","ptr"],["outPathNormal","ptr"],["outPathBinormal","ptr"]]},
+{"name":"JphPathConstraintPath_SetIsLooping","returns":"void","params":[["self","ptr"],["inIsLooping","bool"]]},
+{"name":"JphPathConstraintPath_IsLooping","returns":"bool","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPath_SaveBinaryState","returns":"void","params":[["self","ptr"],["inStream","ptr"]]},
+{"name":"JphPathConstraintPath_sRestoreFromBinaryState","returns":"ptr","params":[["inStream","ptr"],["outError","ptr"],["outErrorCapacity","i32"]]}
+],
+"kolt/generated/physics/constraints/JphPathConstraintPathHermite.h": [
+{"name":"JphPathConstraintPathHermitePoint_create","returns":"ptr","params":[]},
+{"name":"JphPathConstraintPathHermitePoint_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPathHermitePoint_GetPosition","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphPathConstraintPathHermitePoint_SetPosition","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphPathConstraintPathHermitePoint_GetTangent","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphPathConstraintPathHermitePoint_SetTangent","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphPathConstraintPathHermitePoint_GetNormal","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphPathConstraintPathHermitePoint_SetNormal","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphPathConstraintPathHermite_create","returns":"ptr","params":[]},
+{"name":"JphPathConstraintPathHermite_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPathHermite_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPathHermite_asPathConstraintPath","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPathHermite_asSerializableObject","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraintPathHermite_AddPoint","returns":"void","params":[["self","ptr"],["inPosition","ptr"],["inTangent","ptr"],["inNormal","ptr"]]}
+],
+"kolt/generated/physics/constraints/JphPathConstraintSettings.h": [
+{"name":"JphPathConstraintSettings_create","returns":"ptr","params":[]},
+{"name":"JphPathConstraintSettings_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPathConstraintSettings_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphPathConstraintSettings_asTwoBodyConstraintSettings","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraintSettings_asConstraintSettings","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraintSettings_asSerializableObject","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraintSettings_GetPath","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPathConstraintSettings_SetPath","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphPathConstraintSettings_GetPathPosition","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphPathConstraintSettings_SetPathPosition","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphPathConstraintSettings_GetPathRotation","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphPathConstraintSettings_SetPathRotation","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphPathConstraintSettings_GetPathFraction","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPathConstraintSettings_SetPathFraction","returns":"void","params":[["self","ptr"],["value","f32"]]},
+{"name":"JphPathConstraintSettings_GetMaxFrictionForce","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphPathConstraintSettings_SetMaxFrictionForce","returns":"void","params":[["self","ptr"],["value","f32"]]},
+{"name":"JphPathConstraintSettings_GetPositionMotorSettings","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphPathConstraintSettings_SetPositionMotorSettings","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphPathConstraintSettings_GetRotationConstraintType","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphPathConstraintSettings_SetRotationConstraintType","returns":"void","params":[["self","ptr"],["value","i32"]]}
+],
 "kolt/generated/physics/constraints/JphPointConstraint.h": [
 {"name":"JphPointConstraint_create","returns":"ptr","params":[["inBody1","ptr"],["inBody2","ptr"],["inSettings","ptr"]]},
 {"name":"JphPointConstraint_addRef","returns":"void","params":[["self","ptr"]]},
@@ -2520,6 +2661,31 @@
 {"name":"JphPulleyConstraintSettings_SetMinLength","returns":"void","params":[["self","ptr"],["value","f32"]]},
 {"name":"JphPulleyConstraintSettings_GetMaxLength","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphPulleyConstraintSettings_SetMaxLength","returns":"void","params":[["self","ptr"],["value","f32"]]}
+],
+"kolt/generated/physics/constraints/JphRackAndPinionConstraint.h": [
+{"name":"JphRackAndPinionConstraint_create","returns":"ptr","params":[["inBody1","ptr"],["inBody2","ptr"],["inSettings","ptr"]]},
+{"name":"JphRackAndPinionConstraint_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraint_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraint_asTwoBodyConstraint","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraint_asConstraint","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraint_SetConstraints","returns":"void","params":[["self","ptr"],["inPinion","ptr"],["inRack","ptr"]]},
+{"name":"JphRackAndPinionConstraint_GetTotalLambda","returns":"f32","params":[["self","ptr"]]}
+],
+"kolt/generated/physics/constraints/JphRackAndPinionConstraintSettings.h": [
+{"name":"JphRackAndPinionConstraintSettings_create","returns":"ptr","params":[]},
+{"name":"JphRackAndPinionConstraintSettings_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_asTwoBodyConstraintSettings","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_asConstraintSettings","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_asSerializableObject","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_SetRatio","returns":"void","params":[["self","ptr"],["inNumTeethRack","i32"],["inRackLength","f32"],["inNumTeethPinion","i32"]]},
+{"name":"JphRackAndPinionConstraintSettings_GetSpace","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_SetSpace","returns":"void","params":[["self","ptr"],["value","i32"]]},
+{"name":"JphRackAndPinionConstraintSettings_GetHingeAxis","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_SetHingeAxis","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_GetSliderAxis","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_SetSliderAxis","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphRackAndPinionConstraintSettings_GetRatio","returns":"f32","params":[["self","ptr"]]}
 ],
 "kolt/generated/physics/constraints/JphSixDOFConstraint.h": [
 {"name":"JphSixDOFConstraint_create","returns":"ptr","params":[["inBody1","ptr"],["inBody2","ptr"],["inSettings","ptr"]]},
@@ -3263,6 +3429,7 @@
 {"name":"JphVehicleConstraint_GetMaxPitchRollAngle","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphVehicleConstraint_SetVehicleCollisionTester","returns":"void","params":[["self","ptr"],["inTester","ptr"]]},
 {"name":"JphVehicleConstraint_GetVehicleCollisionTester","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphVehicleConstraint_SetCombineFriction","returns":"void","params":[["self","ptr"],["inCombineFriction","ptr"]]},
 {"name":"JphVehicleConstraint_OverrideGravity","returns":"void","params":[["self","ptr"],["inGravity","ptr"]]},
 {"name":"JphVehicleConstraint_IsGravityOverridden","returns":"bool","params":[["self","ptr"]]},
 {"name":"JphVehicleConstraint_GetGravityOverride","returns":"void","params":[["self","ptr"],["out","ptr"]]},
@@ -3584,7 +3751,8 @@
 {"name":"JphWheeledVehicleController_GetDifferentials","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphWheeledVehicleController_GetDifferentialLimitedSlipRatio","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphWheeledVehicleController_SetDifferentialLimitedSlipRatio","returns":"void","params":[["self","ptr"],["inV","f32"]]},
-{"name":"JphWheeledVehicleController_GetWheelSpeedAtClutch","returns":"f32","params":[["self","ptr"]]}
+{"name":"JphWheeledVehicleController_GetWheelSpeedAtClutch","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphWheeledVehicleController_SetTireMaxImpulseCallback","returns":"void","params":[["self","ptr"],["inTireMaxImpulseCallback","ptr"]]}
 ],
 "kolt/generated/physics/vehicle/JphWheeledVehicleControllerSettings.h": [
 {"name":"JphWheeledVehicleControllerSettings_create","returns":"ptr","params":[]},
@@ -3602,6 +3770,45 @@
 {"name":"JphWheeledVehicleControllerSettings_SetDifferentials","returns":"void","params":[["self","ptr"],["value","ptr"],["valueCount","i32"]]},
 {"name":"JphWheeledVehicleControllerSettings_GetDifferentialLimitedSlipRatio","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphWheeledVehicleControllerSettings_SetDifferentialLimitedSlipRatio","returns":"void","params":[["self","ptr"],["value","f32"]]}
+],
+"kolt/generated/skeleton/JphSkeleton.h": [
+{"name":"JphSkeletonJoint_create","returns":"ptr","params":[]},
+{"name":"JphSkeletonJoint_create_string_view_string_view_int","returns":"ptr","params":[["inName","ptr"],["inParentName","ptr"],["inParentJointIndex","i32"]]},
+{"name":"JphSkeletonJoint_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSkeletonJoint_GetName","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphSkeletonJoint_SetName","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphSkeletonJoint_GetParentName","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphSkeletonJoint_SetParentName","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphSkeletonJoint_GetParentJointIndex","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphSkeletonJoint_SetParentJointIndex","returns":"void","params":[["self","ptr"],["value","i32"]]},
+{"name":"JphSkeleton_create","returns":"ptr","params":[]},
+{"name":"JphSkeleton_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSkeleton_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSkeleton_GetJoints","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"JphSkeleton_GetJointCount","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphSkeleton_GetJoint","returns":"ptr","params":[["self","ptr"],["inJoint","i32"]]},
+{"name":"JphSkeleton_AddJoint_string_view","returns":"i32","params":[["self","ptr"],["inName","ptr"],["inParentName","ptr"]]},
+{"name":"JphSkeleton_AddJoint_int","returns":"i32","params":[["self","ptr"],["inName","ptr"],["inParentIndex","i32"]]},
+{"name":"JphSkeleton_GetJointIndex","returns":"i32","params":[["self","ptr"],["inName","ptr"]]},
+{"name":"JphSkeleton_CalculateParentJointIndices","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSkeleton_AreJointsCorrectlyOrdered","returns":"bool","params":[["self","ptr"]]},
+{"name":"JphSkeleton_SaveBinaryState","returns":"void","params":[["self","ptr"],["inStream","ptr"]]},
+{"name":"JphSkeleton_sRestoreFromBinaryState","returns":"ptr","params":[["inStream","ptr"],["outError","ptr"],["outErrorCapacity","i32"]]}
+],
+"kolt/generated/skeleton/JphSkeletonPose.h": [
+{"name":"JphSkeletonPose_create","returns":"ptr","params":[]},
+{"name":"JphSkeletonPose_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSkeletonPose_SetSkeleton","returns":"void","params":[["self","ptr"],["inSkeleton","ptr"]]},
+{"name":"JphSkeletonPose_GetSkeleton","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphSkeletonPose_SetRootOffset","returns":"void","params":[["self","ptr"],["inOffset","ptr"]]},
+{"name":"JphSkeletonPose_GetRootOffset","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphSkeletonPose_GetJointCount","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphSkeletonPose_GetJoints","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"JphSkeletonPose_GetJoint","returns":"ptr","params":[["self","ptr"],["inJoint","i32"]]},
+{"name":"JphSkeletonPose_GetJointMatrices","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"JphSkeletonPose_GetJointMatrix","returns":"ptr","params":[["self","ptr"],["inJoint","i32"]]},
+{"name":"JphSkeletonPose_CalculateJointMatrices","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSkeletonPose_CalculateJointStates","returns":"void","params":[["self","ptr"]]}
 ],
 "kolt/manual/JphJoltManual.h": [
 {"name":"Jph_RegisterDefaultAllocator","returns":"void","params":[]},

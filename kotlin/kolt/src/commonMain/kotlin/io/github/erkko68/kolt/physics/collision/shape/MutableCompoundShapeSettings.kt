@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::MutableCompoundShapeSettings`. */
 class MutableCompoundShapeSettings internal constructor(internal val mutableCompoundShapeSettingsHandle: NativePointer, owned: Boolean = false) : CompoundShapeSettings(JphMutableCompoundShapeSettings_asCompoundShapeSettings(mutableCompoundShapeSettingsHandle), owned), AutoCloseable {

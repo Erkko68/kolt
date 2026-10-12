@@ -13,6 +13,8 @@ Jolt/Core/JobSystem.h
 Jolt/Core/JobSystemThreadPool.h
 Jolt/Core/JobSystemWithBarrier.h
 Jolt/Core/LinearCurve.h
+Jolt/Core/StreamIn.h
+Jolt/Core/StreamOut.h
 Jolt/Core/TempAllocator.h
 Jolt/Geometry/AABox.h
 Jolt/Geometry/IndexedTriangle.h
@@ -90,14 +92,19 @@ Jolt/Physics/Constraints/FixedConstraint.h
 Jolt/Physics/Constraints/GearConstraint.h
 Jolt/Physics/Constraints/HingeConstraint.h
 Jolt/Physics/Constraints/MotorSettings.h
+Jolt/Physics/Constraints/PathConstraint.h
+Jolt/Physics/Constraints/PathConstraintPath.h
+Jolt/Physics/Constraints/PathConstraintPathHermite.h
 Jolt/Physics/Constraints/PointConstraint.h
 Jolt/Physics/Constraints/PulleyConstraint.h
+Jolt/Physics/Constraints/RackAndPinionConstraint.h
 Jolt/Physics/Constraints/SixDOFConstraint.h
 Jolt/Physics/Constraints/SliderConstraint.h
 Jolt/Physics/Constraints/SpringSettings.h
 Jolt/Physics/Constraints/SwingTwistConstraint.h
 Jolt/Physics/Constraints/TwoBodyConstraint.h
 Jolt/Physics/PhysicsSettings.h
+Jolt/Physics/PhysicsStepListener.h
 Jolt/Physics/PhysicsSystem.h
 Jolt/Physics/Ragdoll/Ragdoll.h
 Jolt/Physics/SoftBody/SoftBodyContactListener.h
@@ -106,6 +113,8 @@ Jolt/Physics/SoftBody/SoftBodyManifold.h
 Jolt/Physics/SoftBody/SoftBodyMotionProperties.h
 Jolt/Physics/SoftBody/SoftBodySharedSettings.h
 Jolt/Physics/SoftBody/SoftBodyVertex.h
+Jolt/Physics/StateRecorder.h
+Jolt/Physics/StateRecorderImpl.h
 Jolt/Physics/Vehicle/MotorcycleController.h
 Jolt/Physics/Vehicle/TrackedVehicleController.h
 Jolt/Physics/Vehicle/VehicleAntiRollBar.h
@@ -119,6 +128,8 @@ Jolt/Physics/Vehicle/VehicleTransmission.h
 Jolt/Physics/Vehicle/Wheel.h
 Jolt/Physics/Vehicle/WheeledVehicleController.h
 Jolt/RegisterTypes.h
+Jolt/Skeleton/Skeleton.h
+Jolt/Skeleton/SkeletonPose.h
 
 # Jolt's own machinery: the classes only it creates, and what only it calls.
 -JPH::RTTI
@@ -148,6 +159,9 @@ Jolt/RegisterTypes.h
 -JPH::(VehicleConstraint|PhysicsSystem)::GetCombine(Friction|Restitution)
 -JPH::WheeledVehicleController::GetTireMaxImpulseCallback
 -JPH::PhysicsSystem::GetSimCollideBodyVsBody
--JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition)
+-JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition|PathConstraint::GetTotalLambda(Position|RotationHinge))
 -JPH::AABox::GetSupportingFace
 -JPH::Color::operator\(\)
+# A stream is the bytes it reads and writes: ReadBytes, WriteBytes.
+-JPH::StreamIn::Read
+-JPH::StreamOut::Write

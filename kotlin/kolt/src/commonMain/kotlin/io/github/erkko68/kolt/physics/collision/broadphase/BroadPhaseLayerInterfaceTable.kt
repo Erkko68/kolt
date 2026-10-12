@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::BroadPhaseLayerInterfaceTable`. */
 class BroadPhaseLayerInterfaceTable internal constructor(internal val broadPhaseLayerInterfaceTableHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceTableHandle), owned), AutoCloseable {

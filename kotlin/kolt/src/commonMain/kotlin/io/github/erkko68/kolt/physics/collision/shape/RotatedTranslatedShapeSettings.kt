@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::RotatedTranslatedShapeSettings`. */
 class RotatedTranslatedShapeSettings internal constructor(internal val rotatedTranslatedShapeSettingsHandle: NativePointer, owned: Boolean = false) : DecoratedShapeSettings(JphRotatedTranslatedShapeSettings_asDecoratedShapeSettings(rotatedTranslatedShapeSettingsHandle), owned), AutoCloseable {

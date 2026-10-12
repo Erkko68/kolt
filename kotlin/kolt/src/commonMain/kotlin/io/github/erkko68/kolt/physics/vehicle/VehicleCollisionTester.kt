@@ -31,6 +31,7 @@ import io.github.erkko68.kolt.physics.softbody.*
 import io.github.erkko68.kolt.physics.softbody.capi.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
+import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::VehicleCollisionTester`. */
 open class VehicleCollisionTester internal constructor(internal val vehicleCollisionTesterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
