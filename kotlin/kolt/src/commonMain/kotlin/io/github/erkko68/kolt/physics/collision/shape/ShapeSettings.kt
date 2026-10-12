@@ -33,7 +33,16 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ShapeSettings`. */
+/**
+ * Class that can construct shapes and that is serializable using the ObjectStream system.
+ * Can be used to store shape data in 'uncooked' form (i.e. in a form that is still human readable and authorable).
+ * Once the shape has been created using the Create() function, the data will be moved into the Shape class
+ * in a form that is optimized for collision detection. After this, the ShapeSettings object is no longer needed
+ * and can be destroyed. Each shape class has a derived class of the ShapeSettings object to store shape specific
+ * data.
+ *
+ * C++ `JPH::ShapeSettings`.
+ */
 open class ShapeSettings internal constructor(internal val shapeSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphShapeSettings_asSerializableObject(shapeSettingsHandle), owned), AutoCloseable {
     open fun addRef() =
         own { JphShapeSettings_addRef(shapeSettingsHandle) }
@@ -41,6 +50,7 @@ open class ShapeSettings internal constructor(internal val shapeSettingsHandle: 
     override fun close() =
         closeOnce { JphShapeSettings_release(shapeSettingsHandle) }
 
+    /** Create a shape according to the settings specified by this object. */
     fun create(): Shape =
         interopScope {
             val error = ByteArray(256)
@@ -51,9 +61,14 @@ open class ShapeSettings internal constructor(internal val shapeSettingsHandle: 
             Shape(returned, owned = true)
         }
 
+    /**
+     * When creating a shape, the result is cached so that calling Create() again will return the same shape.
+     * If you make changes to the ShapeSettings you need to call this function to clear the cached result to allow Create() to build a new shape.
+     */
     fun clearCachedResult() =
         JphShapeSettings_ClearCachedResult(shapeSettingsHandle)
 
+    /** User data (to be used freely by the application) */
     var userData: Long
         get() = interopScope {
             val returned = LongArray(1)

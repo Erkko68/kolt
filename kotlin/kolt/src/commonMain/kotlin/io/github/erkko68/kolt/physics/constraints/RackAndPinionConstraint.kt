@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::RackAndPinionConstraint`. */
+/**
+ * A rack and pinion constraint constrains the rotation of body1 to the translation of body 2.
+ * Note that this constraint needs to be used in conjunction with a hinge constraint for body 1 and a slider constraint for body 2.
+ *
+ * C++ `JPH::RackAndPinionConstraint`.
+ */
 class RackAndPinionConstraint internal constructor(internal val rackAndPinionConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphRackAndPinionConstraint_asTwoBodyConstraint(rackAndPinionConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: RackAndPinionConstraintSettings) : this(JphRackAndPinionConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.rackAndPinionConstraintSettingsHandle), owned = true)
 
@@ -43,9 +48,11 @@ class RackAndPinionConstraint internal constructor(internal val rackAndPinionCon
     override fun close() =
         closeOnce { JphRackAndPinionConstraint_release(rackAndPinionConstraintHandle) }
 
+    /** The constraints that constrain the rack and pinion (a slider and a hinge), optional and used to calculate the position error and fix numerical drift. */
     fun setConstraints(pinion: Constraint?, rack: Constraint?) =
         JphRackAndPinionConstraint_SetConstraints(rackAndPinionConstraintHandle, pinion?.constraintHandle ?: NullPointer, rack?.constraintHandle ?: NullPointer)
 
+    /** Get Lagrange multiplier from last physics update (the linear/angular impulse applied to satisfy the constraint) */
     val totalLambda: Float
         get() = JphRackAndPinionConstraint_GetTotalLambda(rackAndPinionConstraintHandle)
 }

@@ -33,5 +33,9 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CollisionCollectorTraitsCastRay`. */
+/**
+ * Traits to use for CastRay
+ *
+ * C++ `JPH::CollisionCollectorTraitsCastRay`.
+ */
 class CollisionCollectorTraitsCastRay internal constructor(internal val collisionCollectorTraitsCastRayHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

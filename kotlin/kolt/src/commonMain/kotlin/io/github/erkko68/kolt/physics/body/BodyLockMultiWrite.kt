@@ -33,5 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyLockMultiWrite`. */
+/**
+ * Specialization that locks multiple bodies for writing to.
+ *
+ * See: BodyLockMultiRead for usage patterns.
+ *
+ * C++ `JPH::BodyLockMultiWrite`.
+ */
 class BodyLockMultiWrite internal constructor(internal val bodyLockMultiWriteHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

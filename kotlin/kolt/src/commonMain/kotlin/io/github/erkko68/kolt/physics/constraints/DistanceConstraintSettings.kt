@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::DistanceConstraintSettings`. */
+/**
+ * Distance constraint settings, used to create a distance constraint
+ *
+ * C++ `JPH::DistanceConstraintSettings`.
+ */
 class DistanceConstraintSettings internal constructor(internal val distanceConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphDistanceConstraintSettings_asTwoBodyConstraintSettings(distanceConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphDistanceConstraintSettings_create(), owned = true)
 
@@ -43,10 +47,16 @@ class DistanceConstraintSettings internal constructor(internal val distanceConst
     override fun close() =
         closeOnce { JphDistanceConstraintSettings_release(distanceConstraintSettingsHandle) }
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphDistanceConstraintSettings_GetSpace(distanceConstraintSettingsHandle))
         set(value) = JphDistanceConstraintSettings_SetSpace(distanceConstraintSettingsHandle, value.value)
 
+    /**
+     * Body 1 constraint reference frame (space determined by mSpace).
+     * Constraint will keep mPoint1 (a point on body 1) and mPoint2 (a point on body 2) at the same distance.
+     * Note that this constraint can be used as a cheap PointConstraint by setting mPoint1 = mPoint2 (but this removes only 1 degree of freedom instead of 3).
+     */
     var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -57,6 +67,7 @@ class DistanceConstraintSettings internal constructor(internal val distanceConst
         }
         set(value) = interopScope { JphDistanceConstraintSettings_SetPoint1(distanceConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 constraint reference frame (space determined by mSpace) */
     var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -67,6 +78,7 @@ class DistanceConstraintSettings internal constructor(internal val distanceConst
         }
         set(value) = interopScope { JphDistanceConstraintSettings_SetPoint2(distanceConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Ability to override the distance range at which the two points are kept apart. If the value is negative, it will be replaced by the distance between mPoint1 and mPoint2 (works only if mSpace is world space). */
     var minDistance: Float
         get() = JphDistanceConstraintSettings_GetMinDistance(distanceConstraintSettingsHandle)
         set(value) = JphDistanceConstraintSettings_SetMinDistance(distanceConstraintSettingsHandle, value)
@@ -75,6 +87,7 @@ class DistanceConstraintSettings internal constructor(internal val distanceConst
         get() = JphDistanceConstraintSettings_GetMaxDistance(distanceConstraintSettingsHandle)
         set(value) = JphDistanceConstraintSettings_SetMaxDistance(distanceConstraintSettingsHandle, value)
 
+    /** When enabled, this makes the limits soft. When the constraint exceeds the limits, a spring force will pull it back. */
     var limitsSpringSettings: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)

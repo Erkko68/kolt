@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::MeshShapeSettings`. */
+/**
+ * Class that constructs a MeshShape
+ *
+ * C++ `JPH::MeshShapeSettings`.
+ */
 class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphMeshShapeSettings_asShapeSettings(meshShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphMeshShapeSettings_create(), owned = true)
     constructor(triangles: List<Triangle>, materials: List<PhysicsMaterial>) : this(interopScope { JphMeshShapeSettings_create_TriangleList_PhysicsMaterialList(toInterop(triangles.map { it.triangleHandle }), triangles.size, toInterop(materials.map { it.physicsMaterialHandle }), materials.size) }, owned = true)
@@ -45,9 +49,11 @@ class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandl
     override fun close() =
         closeOnce { JphMeshShapeSettings_release(meshShapeSettingsHandle) }
 
+    /** Sanitize the mesh data. Remove duplicate and degenerate triangles. This is called automatically when constructing the MeshShapeSettings with a list of (indexed-) triangles. */
     fun sanitize() =
         JphMeshShapeSettings_Sanitize(meshShapeSettingsHandle)
 
+    /** Vertices belonging to mIndexedTriangles */
     var triangleVertices: List<Float3>
         get() = interopScope {
             val count = JphMeshShapeSettings_GetTriangleVertices(meshShapeSettingsHandle, NullPointer, 0)
@@ -59,6 +65,14 @@ class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandl
         }
         set(value) = interopScope { JphMeshShapeSettings_SetTriangleVertices(meshShapeSettingsHandle, toInterop(FloatArray(value.size * 3).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), value.size) }
 
+    /**
+     * Original list of indexed triangles (triangles will be reordered internally in the mesh shape).
+     * Triangles must be provided in counter clockwise order.
+     * Degenerate triangles will automatically be removed during mesh creation but no other mesh simplifications are performed, use an external library if this is desired.
+     * For simulation, the triangles are considered to be single sided.
+     * For ray casts you can choose to make triangles double sided by setting RayCastSettings::mBackFaceMode to EBackFaceMode::CollideWithBackFaces.
+     * For collide shape tests you can use CollideShapeSettings::mBackFaceMode and for shape casts you can use ShapeCastSettings::mBackFaceModeTriangles.
+     */
     var indexedTriangles: List<IndexedTriangle>
         get() = interopScope {
             val count = JphMeshShapeSettings_GetIndexedTriangles(meshShapeSettingsHandle, NullPointer, 0)
@@ -68,6 +82,7 @@ class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandl
         }
         set(value) = interopScope { JphMeshShapeSettings_SetIndexedTriangles(meshShapeSettingsHandle, toInterop(value.map { it.indexedTriangleHandle }), value.size) }
 
+    /** Materials assigned to the triangles. Each triangle specifies which material it uses through its mMaterialIndex */
     var materials: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphMeshShapeSettings_GetMaterials(meshShapeSettingsHandle, NullPointer, 0)
@@ -77,25 +92,45 @@ class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandl
         }
         set(value) = interopScope { JphMeshShapeSettings_SetMaterials(meshShapeSettingsHandle, toInterop(value.map { it.physicsMaterialHandle }), value.size) }
 
+    /**
+     * Maximum number of triangles in each leaf of the axis aligned box tree. This is a balance between memory and performance. Can be in the range \[1, MeshShape::MaxTrianglesPerLeaf\].
+     * Sensible values are between 4 (for better performance) and 8 (for less memory usage).
+     */
     var maxTrianglesPerLeaf: Int
         get() = JphMeshShapeSettings_GetMaxTrianglesPerLeaf(meshShapeSettingsHandle)
         set(value) = JphMeshShapeSettings_SetMaxTrianglesPerLeaf(meshShapeSettingsHandle, value)
 
+    /**
+     * Cosine of the threshold angle (if the angle between the two triangles is bigger than this, the edge is active, note that a concave edge is always inactive).
+     * Setting this value too small can cause ghost collisions with edges, setting it too big can cause depenetration artifacts (objects not depenetrating quickly).
+     * Valid ranges are between cos(0 degrees) and cos(90 degrees). The default value is cos(5 degrees).
+     * Negative values will make all edges active and causes EActiveEdgeMode::CollideOnlyWithActive to behave as EActiveEdgeMode::CollideWithAll.
+     * This speeds up the build process but will require all bodies that can interact with the mesh to use BodyCreationSettings::mEnhancedInternalEdgeRemoval = true.
+     */
     var activeEdgeCosThresholdAngle: Float
         get() = JphMeshShapeSettings_GetActiveEdgeCosThresholdAngle(meshShapeSettingsHandle)
         set(value) = JphMeshShapeSettings_SetActiveEdgeCosThresholdAngle(meshShapeSettingsHandle, value)
 
+    /**
+     * When true, we store the user data coming from Triangle::mUserData or IndexedTriangle::mUserData in the mesh shape.
+     * This can be used to store additional data like the original index of the triangle in the mesh.
+     * Can be retrieved using MeshShape::GetTriangleUserData.
+     * Turning this on increases the memory used by the MeshShape by roughly 25%.
+     */
     var perTriangleUserData: Boolean
         get() = JphMeshShapeSettings_GetPerTriangleUserData(meshShapeSettingsHandle)
         set(value) = JphMeshShapeSettings_SetPerTriangleUserData(meshShapeSettingsHandle, value)
 
+    /** Determines the quality of the tree building process. */
     var buildQuality: MeshShapeSettings.EBuildQuality
         get() = MeshShapeSettings.EBuildQuality.of(JphMeshShapeSettings_GetBuildQuality(meshShapeSettingsHandle))
         set(value) = JphMeshShapeSettings_SetBuildQuality(meshShapeSettingsHandle, value.value)
 
     /** C++ `JPH::MeshShapeSettings::EBuildQuality`. */
     enum class EBuildQuality(internal val value: Int) {
+        /** Favor runtime performance, takes more time to build the MeshShape but performs better */
         FavorRuntimePerformance(0),
+        /** Favor build speed, build the tree faster but the MeshShape will be slower */
         FavorBuildSpeed(1);
     
         internal companion object {

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::HeightFieldShapeSettings`. */
+/**
+ * Class that constructs a HeightFieldShape
+ *
+ * C++ `JPH::HeightFieldShapeSettings`.
+ */
 class HeightFieldShapeSettings internal constructor(internal val heightFieldShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphHeightFieldShapeSettings_asShapeSettings(heightFieldShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphHeightFieldShapeSettings_create(), owned = true)
     constructor(samples: FloatArray, offset: Vec3, scale: Vec3, sampleCount: Int, materialIndices: ByteArray, materialList: List<PhysicsMaterial>) : this(interopScope { JphHeightFieldShapeSettings_create_float_Vec3Arg_Vec3Arg_uint32_uint8_PhysicsMaterialList(toInterop(samples), toInterop(offset.toArray()), toInterop(scale.toArray()), sampleCount, toInterop(materialIndices), toInterop(materialList.map { it.physicsMaterialHandle }), materialList.size) }, owned = true)
@@ -44,6 +48,12 @@ class HeightFieldShapeSettings internal constructor(internal val heightFieldShap
     override fun close() =
         closeOnce { JphHeightFieldShapeSettings_release(heightFieldShapeSettingsHandle) }
 
+    /**
+     * Determine the minimal and maximal value of mHeightSamples (will ignore cNoCollisionValue)
+     * @return The minimal value of mHeightSamples or FLT_MAX if no samples have collision
+     * @return The maximal value of mHeightSamples or -FLT_MAX if no samples have collision
+     * @return (value - outMinValue) * outQuantizationScale quantizes a height sample to 16 bits
+     */
     fun determineMinAndMaxSample(): Triple<Float, Float, Float> =
         interopScope {
             val minValueArray = FloatArray(1)
@@ -59,9 +69,18 @@ class HeightFieldShapeSettings internal constructor(internal val heightFieldShap
             Triple(minValueArray.readF32(0), maxValueArray.readF32(0), quantizationScaleArray.readF32(0))
         }
 
+    /**
+     * Given mBlockSize, mSampleCount and mHeightSamples, calculate the amount of bits needed to stay below absolute error inMaxError
+     * @param maxError Maximum allowed error in mHeightSamples after compression (note that this does not take mScale.Y into account)
+     * @return Needed bits per sample in the range \[1, 16\].
+     */
     fun calculateBitsPerSampleForError(maxError: Float): Int =
         JphHeightFieldShapeSettings_CalculateBitsPerSampleForError(heightFieldShapeSettingsHandle, maxError)
 
+    /**
+     * The height field is a surface defined by: mOffset + mScale * (x, mHeightSamples\[y * mSampleCount + x\], y).
+     * where x and y are integers in the range x and y e \[0, mSampleCount - 1\].
+     */
     var offset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -86,26 +105,43 @@ class HeightFieldShapeSettings internal constructor(internal val heightFieldShap
         get() = JphHeightFieldShapeSettings_GetSampleCount(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetSampleCount(heightFieldShapeSettingsHandle, value)
 
+    /** Artificial minimal value of mHeightSamples, used for compression and can be used to update the terrain after creating with lower height values. If there are any lower values in mHeightSamples, this value will be ignored. */
     var minHeightValue: Float
         get() = JphHeightFieldShapeSettings_GetMinHeightValue(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetMinHeightValue(heightFieldShapeSettingsHandle, value)
 
+    /** Artificial maximum value of mHeightSamples, used for compression and can be used to update the terrain after creating with higher height values. If there are any higher values in mHeightSamples, this value will be ignored. */
     var maxHeightValue: Float
         get() = JphHeightFieldShapeSettings_GetMaxHeightValue(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetMaxHeightValue(heightFieldShapeSettingsHandle, value)
 
+    /**
+     * When bigger than mMaterials.size() the internal material list will be preallocated to support this number of materials.
+     * This avoids reallocations when calling HeightFieldShape::SetMaterials with new materials later.
+     */
     var materialsCapacity: Int
         get() = JphHeightFieldShapeSettings_GetMaterialsCapacity(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetMaterialsCapacity(heightFieldShapeSettingsHandle, value)
 
+    /**
+     * The heightfield is divided in blocks of mBlockSize * mBlockSize * 2 triangles and the acceleration structure culls blocks only,
+     * bigger block sizes reduce memory consumption but also reduce query performance. Valid values are \[2, 8\], does not need to be
+     * a power of 2. Note that at run-time we'll perform one more grid subdivision, so the effective block size is half of what is provided here.
+     */
     var blockSize: Int
         get() = JphHeightFieldShapeSettings_GetBlockSize(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetBlockSize(heightFieldShapeSettingsHandle, value)
 
+    /**
+     * How many bits per sample to use to compress the height field. Can be in the range \[1, 16\].
+     * Note that each sample is compressed relative to the min/max value of its block of mBlockSize * mBlockSize samples so the effective precision is higher.
+     * Also note that increasing mBlockSize saves more memory than reducing the amount of bits per sample.
+     */
     var bitsPerSample: Int
         get() = JphHeightFieldShapeSettings_GetBitsPerSample(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetBitsPerSample(heightFieldShapeSettingsHandle, value)
 
+    /** An array of mSampleCount^2 height samples. Samples are stored in row major order, so the sample at (x, y) is at index y * mSampleCount + x. */
     var heightSamples: FloatArray
         get() = interopScope {
             val count = JphHeightFieldShapeSettings_GetHeightSamples(heightFieldShapeSettingsHandle, NullPointer, 0)
@@ -117,6 +153,7 @@ class HeightFieldShapeSettings internal constructor(internal val heightFieldShap
         }
         set(value) = interopScope { JphHeightFieldShapeSettings_SetHeightSamples(heightFieldShapeSettingsHandle, toInterop(value), value.size) }
 
+    /** An array of (mSampleCount - 1)^2 material indices. */
     var materialIndices: IntArray
         get() = interopScope {
             val count = JphHeightFieldShapeSettings_GetMaterialIndices(heightFieldShapeSettingsHandle, NullPointer, 0)
@@ -128,6 +165,7 @@ class HeightFieldShapeSettings internal constructor(internal val heightFieldShap
         }
         set(value) = interopScope { JphHeightFieldShapeSettings_SetMaterialIndices(heightFieldShapeSettingsHandle, toInterop(value), value.size) }
 
+    /** The materials of square at (x, y) is: mMaterials\[mMaterialIndices\[x + y * (mSampleCount - 1)\]\] */
     var materials: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphHeightFieldShapeSettings_GetMaterials(heightFieldShapeSettingsHandle, NullPointer, 0)
@@ -137,6 +175,11 @@ class HeightFieldShapeSettings internal constructor(internal val heightFieldShap
         }
         set(value) = interopScope { JphHeightFieldShapeSettings_SetMaterials(heightFieldShapeSettingsHandle, toInterop(value.map { it.physicsMaterialHandle }), value.size) }
 
+    /**
+     * Cosine of the threshold angle (if the angle between the two triangles is bigger than this, the edge is active, note that a concave edge is always inactive).
+     * Setting this value too small can cause ghost collisions with edges, setting it too big can cause depenetration artifacts (objects not depenetrating quickly).
+     * Valid ranges are between cos(0 degrees) and cos(90 degrees). The default value is cos(5 degrees).
+     */
     var activeEdgeCosThresholdAngle: Float
         get() = JphHeightFieldShapeSettings_GetActiveEdgeCosThresholdAngle(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetActiveEdgeCosThresholdAngle(heightFieldShapeSettingsHandle, value)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::OrientedBox`. */
+/**
+ * Oriented box
+ *
+ * C++ `JPH::OrientedBox`.
+ */
 class OrientedBox internal constructor(internal val orientedBoxHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphOrientedBox_create(), owned = true)
     constructor(orientation: Mat44, halfExtents: Vec3) : this(interopScope { JphOrientedBox_create_Mat44Arg_Vec3Arg(toInterop(orientation.toArray()), toInterop(halfExtents.toArray())) }, owned = true)
@@ -42,12 +46,15 @@ class OrientedBox internal constructor(internal val orientedBoxHandle: NativePoi
     override fun close() =
         closeOnce { JphOrientedBox_destroy(orientedBoxHandle) }
 
+    /** Test if oriented box overlaps with axis aligned box each other */
     fun overlaps(box: AABox, epsilon: Float): Boolean =
         JphOrientedBox_Overlaps_AABox_float(orientedBoxHandle, box.aaBoxHandle, epsilon)
 
+    /** Test if two oriented boxes overlap each other */
     fun overlaps(box: OrientedBox, epsilon: Float): Boolean =
         JphOrientedBox_Overlaps_OrientedBox_float(orientedBoxHandle, box.orientedBoxHandle, epsilon)
 
+    /** Transform that positions and rotates the local space axis aligned box into world space */
     var orientation: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -58,6 +65,7 @@ class OrientedBox internal constructor(internal val orientedBoxHandle: NativePoi
         }
         set(value) = interopScope { JphOrientedBox_SetOrientation(orientedBoxHandle, toInterop(value.toArray())) }
 
+    /** Half extents (half the size of the edge) of the local space axis aligned box */
     var halfExtents: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

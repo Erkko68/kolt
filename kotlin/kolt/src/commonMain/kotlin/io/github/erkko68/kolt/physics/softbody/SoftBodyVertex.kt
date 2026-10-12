@@ -33,19 +33,29 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SoftBodyVertex`. */
+/**
+ * Run time information for a single particle of a soft body
+ * Note that at run-time you should only modify the inverse mass and/or velocity of a vertex to control the soft body.
+ * Modifying the position can lead to missed collisions.
+ * The other members are used internally by the soft body solver.
+ *
+ * C++ `JPH::SoftBodyVertex`.
+ */
 class SoftBodyVertex internal constructor(internal val softBodyVertexHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSoftBodyVertex_create(), owned = true)
 
     override fun close() =
         closeOnce { JphSoftBodyVertex_destroy(softBodyVertexHandle) }
 
+    /** Reset collision information to prepare for a new collision check */
     fun resetCollision() =
         JphSoftBodyVertex_ResetCollision(softBodyVertexHandle)
 
+    /** Mark this vertex as being in contact with inBodyID */
     fun markCCDContact(bodyID: BodyID, contactPlane: Plane) =
         JphSoftBodyVertex_MarkCCDContact(softBodyVertexHandle, bodyID.value, contactPlane.planeHandle)
 
+    /** Internal use only. Position at the previous time step */
     var previousPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -56,6 +66,7 @@ class SoftBodyVertex internal constructor(internal val softBodyVertexHandle: Nat
         }
         set(value) = interopScope { JphSoftBodyVertex_SetPreviousPosition(softBodyVertexHandle, toInterop(value.toArray())) }
 
+    /** Position, relative to the center of mass of the soft body */
     var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -66,6 +77,7 @@ class SoftBodyVertex internal constructor(internal val softBodyVertexHandle: Nat
         }
         set(value) = interopScope { JphSoftBodyVertex_SetPosition(softBodyVertexHandle, toInterop(value.toArray())) }
 
+    /** Velocity, relative to the center of mass of the soft body */
     var velocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -76,6 +88,7 @@ class SoftBodyVertex internal constructor(internal val softBodyVertexHandle: Nat
         }
         set(value) = interopScope { JphSoftBodyVertex_SetVelocity(softBodyVertexHandle, toInterop(value.toArray())) }
 
+    /** Internal use only. Nearest collision plane, relative to the center of mass of the soft body */
     var collisionPlane: Plane
         get() = run {
             val returned = Plane(JphPlane_create(), owned = true)
@@ -84,18 +97,22 @@ class SoftBodyVertex internal constructor(internal val softBodyVertexHandle: Nat
         }
         set(value) = JphSoftBodyVertex_SetCollisionPlane(softBodyVertexHandle, value.planeHandle)
 
+    /** Internal use only. Index in the colliding shapes list of the body we may collide with */
     var collidingShapeIndex: Int
         get() = JphSoftBodyVertex_GetCollidingShapeIndex(softBodyVertexHandle)
         set(value) = JphSoftBodyVertex_SetCollidingShapeIndex(softBodyVertexHandle, value)
 
+    /** True if the vertex has collided with anything in the last update */
     var hasContact: Boolean
         get() = JphSoftBodyVertex_GetHasContact(softBodyVertexHandle)
         set(value) = JphSoftBodyVertex_SetHasContact(softBodyVertexHandle, value)
 
+    /** Internal use only. Used while finding the collision plane, stores the largest penetration found so far */
     var largestPenetration: Float
         get() = JphSoftBodyVertex_GetLargestPenetration(softBodyVertexHandle)
         set(value) = JphSoftBodyVertex_SetLargestPenetration(softBodyVertexHandle, value)
 
+    /** Inverse mass (1 / mass) */
     var invMass: Float
         get() = JphSoftBodyVertex_GetInvMass(softBodyVertexHandle)
         set(value) = JphSoftBodyVertex_SetInvMass(softBodyVertexHandle, value)

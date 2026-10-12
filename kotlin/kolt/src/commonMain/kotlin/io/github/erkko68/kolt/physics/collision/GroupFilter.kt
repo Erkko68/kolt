@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::GroupFilter`. */
+/**
+ * Abstract class that checks if two CollisionGroups collide
+ *
+ * C++ `JPH::GroupFilter`.
+ */
 open class GroupFilter internal constructor(internal val groupFilterHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphGroupFilter_asSerializableObject(groupFilterHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphGroupFilter_createUpcalls(Upcalls.function), owned = true) {
@@ -46,9 +50,11 @@ open class GroupFilter internal constructor(internal val groupFilterHandle: Nati
     override fun close() =
         closeOnce { JphGroupFilter_release(groupFilterHandle) }
 
+    /** Check if two groups collide */
     open fun canCollide(group1: CollisionGroup, group2: CollisionGroup): Boolean =
         JphGroupFilter_CanCollide(groupFilterHandle, group1.collisionGroupHandle, group2.collisionGroupHandle)
 
+    /** Saves the contents of the group filter in binary form to inStream. */
     open fun saveBinaryState(stream: StreamOut) =
         JphGroupFilter_SaveBinaryState(groupFilterHandle, stream.streamOutHandle)
 
@@ -62,6 +68,7 @@ open class GroupFilter internal constructor(internal val groupFilterHandle: Nati
     }
 
     companion object {
+        /** Creates a GroupFilter of the correct type and restores its contents from the binary stream inStream. */
         fun restoreFromBinaryState(stream: StreamIn): GroupFilter =
             interopScope {
                 val error = ByteArray(256)

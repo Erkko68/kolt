@@ -33,7 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TrackedVehicleControllerSettings`. */
+/**
+ * Settings of a vehicle with tank tracks
+ *
+ * Default settings are based around what I could find about the M1 Abrams tank.
+ * Note to avoid issues with very heavy objects vs very light objects the mass of the tank should be a lot lower (say 10x) than that of a real tank. That means that the engine/brake torque is also 10x less.
+ *
+ * C++ `JPH::TrackedVehicleControllerSettings`.
+ */
 open class TrackedVehicleControllerSettings internal constructor(internal val trackedVehicleControllerSettingsHandle: NativePointer, owned: Boolean = false) : VehicleControllerSettings(JphTrackedVehicleControllerSettings_asVehicleControllerSettings(trackedVehicleControllerSettingsHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphTrackedVehicleControllerSettings_createUpcalls(Upcalls.function), owned = true) {
@@ -46,6 +53,7 @@ open class TrackedVehicleControllerSettings internal constructor(internal val tr
     override fun close() =
         closeOnce { JphTrackedVehicleControllerSettings_release(trackedVehicleControllerSettingsHandle) }
 
+    /** The properties of the engine */
     var engine: VehicleEngineSettings
         get() = run {
             val returned = VehicleEngineSettings(JphVehicleEngineSettings_create(), owned = true)
@@ -54,6 +62,7 @@ open class TrackedVehicleControllerSettings internal constructor(internal val tr
         }
         set(value) = JphTrackedVehicleControllerSettings_SetEngine(trackedVehicleControllerSettingsHandle, value.vehicleEngineSettingsHandle)
 
+    /** The properties of the transmission (aka gear box) */
     var transmission: VehicleTransmissionSettings
         get() = run {
             val returned = VehicleTransmissionSettings(JphVehicleTransmissionSettings_create(), owned = true)
@@ -62,6 +71,7 @@ open class TrackedVehicleControllerSettings internal constructor(internal val tr
         }
         set(value) = JphTrackedVehicleControllerSettings_SetTransmission(trackedVehicleControllerSettingsHandle, value.vehicleTransmissionSettingsHandle)
 
+    /** List of tracks and their properties */
     var tracks: List<VehicleTrackSettings>
         get() = interopScope {
             val count = JphTrackedVehicleControllerSettings_GetTracks(trackedVehicleControllerSettingsHandle, NullPointer, 0)

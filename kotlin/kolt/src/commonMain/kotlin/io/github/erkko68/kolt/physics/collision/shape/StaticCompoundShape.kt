@@ -33,7 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::StaticCompoundShape`. */
+/**
+ * A compound shape, sub shapes can be rotated and translated.
+ * Sub shapes cannot be modified once the shape is constructed.
+ * Shifts all child objects so that they're centered around the center of mass.
+ *
+ * C++ `JPH::StaticCompoundShape`.
+ */
 class StaticCompoundShape internal constructor(internal val staticCompoundShapeHandle: NativePointer, owned: Boolean = false) : CompoundShape(JphStaticCompoundShape_asCompoundShape(staticCompoundShapeHandle), owned), AutoCloseable {
     constructor() : this(JphStaticCompoundShape_create(), owned = true)
 

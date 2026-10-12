@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ObjectVsBroadPhaseLayerFilter`. */
+/**
+ * Class to test if an object can collide with a broadphase layer. Used while finding collision pairs.
+ *
+ * C++ `JPH::ObjectVsBroadPhaseLayerFilter`.
+ */
 open class ObjectVsBroadPhaseLayerFilter internal constructor(internal val objectVsBroadPhaseLayerFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphObjectVsBroadPhaseLayerFilter_createUpcalls(Upcalls.function), owned = true) {
@@ -43,6 +47,7 @@ open class ObjectVsBroadPhaseLayerFilter internal constructor(internal val objec
     override fun close() =
         closeOnce { JphObjectVsBroadPhaseLayerFilter_destroy(objectVsBroadPhaseLayerFilterHandle) }
 
+    /** Returns true if an object layer should collide with a broadphase layer */
     open fun shouldCollide(layer1: Int, layer2: BroadPhaseLayer): Boolean =
         JphObjectVsBroadPhaseLayerFilter_ShouldCollide(objectVsBroadPhaseLayerFilterHandle, layer1, layer2.value)
 

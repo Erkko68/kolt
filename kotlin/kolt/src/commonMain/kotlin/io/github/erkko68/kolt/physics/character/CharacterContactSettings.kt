@@ -33,17 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterContactSettings`. */
+/**
+ * This class contains settings that allow you to override the behavior of a character's collision response
+ *
+ * C++ `JPH::CharacterContactSettings`.
+ */
 class CharacterContactSettings internal constructor(internal val characterContactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCharacterContactSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphCharacterContactSettings_destroy(characterContactSettingsHandle) }
 
+    /** True when the object can push the virtual character. */
     var canPushCharacter: Boolean
         get() = JphCharacterContactSettings_GetCanPushCharacter(characterContactSettingsHandle)
         set(value) = JphCharacterContactSettings_SetCanPushCharacter(characterContactSettingsHandle, value)
 
+    /**
+     * True when the virtual character can apply impulses (push) the body.
+     * Note that this only works against rigid bodies. Other CharacterVirtual objects can only be moved in their own update,
+     * so you must ensure that in their OnCharacterContactAdded mCanPushCharacter is true.
+     */
     var canReceiveImpulses: Boolean
         get() = JphCharacterContactSettings_GetCanReceiveImpulses(characterContactSettingsHandle)
         set(value) = JphCharacterContactSettings_SetCanReceiveImpulses(characterContactSettingsHandle, value)

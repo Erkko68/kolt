@@ -33,13 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::RayCastResult`. */
+/**
+ * Specialization of cast result against a shape
+ *
+ * C++ `JPH::RayCastResult`.
+ */
 class RayCastResult internal constructor(internal val rayCastResultHandle: NativePointer, owned: Boolean = false) : BroadPhaseCastResult(JphRayCastResult_asBroadPhaseCastResult(rayCastResultHandle), owned), AutoCloseable {
     constructor() : this(JphRayCastResult_create(), owned = true)
 
     override fun close() =
         closeOnce { JphRayCastResult_destroy(rayCastResultHandle) }
 
+    /** Sub shape ID of shape that we collided against */
     var subShapeID2: SubShapeID
         get() = SubShapeID(JphRayCastResult_GetSubShapeID2(rayCastResultHandle))
         set(value) = JphRayCastResult_SetSubShapeID2(rayCastResultHandle, value.value)

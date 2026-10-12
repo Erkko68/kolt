@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::FixedConstraint`. */
+/**
+ * A fixed constraint welds two bodies together removing all degrees of freedom between them.
+ * This variant uses Euler angles for the rotation constraint.
+ *
+ * C++ `JPH::FixedConstraint`.
+ */
 class FixedConstraint internal constructor(internal val fixedConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphFixedConstraint_asTwoBodyConstraint(fixedConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: FixedConstraintSettings) : this(JphFixedConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.fixedConstraintSettingsHandle), owned = true)
 
@@ -43,6 +48,7 @@ class FixedConstraint internal constructor(internal val fixedConstraintHandle: N
     override fun close() =
         closeOnce { JphFixedConstraint_release(fixedConstraintHandle) }
 
+    /** Get Lagrange multiplier from last physics update (the linear/angular impulse applied to satisfy the constraint) */
     val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

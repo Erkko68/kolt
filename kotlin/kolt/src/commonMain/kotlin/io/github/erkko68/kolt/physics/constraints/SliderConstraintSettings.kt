@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SliderConstraintSettings`. */
+/**
+ * Slider constraint settings, used to create a slider constraint
+ *
+ * C++ `JPH::SliderConstraintSettings`.
+ */
 class SliderConstraintSettings internal constructor(internal val sliderConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSliderConstraintSettings_asTwoBodyConstraintSettings(sliderConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphSliderConstraintSettings_create(), owned = true)
 
@@ -43,17 +47,24 @@ class SliderConstraintSettings internal constructor(internal val sliderConstrain
     override fun close() =
         closeOnce { JphSliderConstraintSettings_release(sliderConstraintSettingsHandle) }
 
+    /** Simple way of setting the slider and normal axis in world space (assumes the bodies are already oriented correctly when the constraint is created) */
     fun setSliderAxis(sliderAxis: Vec3) =
         interopScope { JphSliderConstraintSettings_SetSliderAxis(sliderConstraintSettingsHandle, toInterop(sliderAxis.toArray())) }
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphSliderConstraintSettings_GetSpace(sliderConstraintSettingsHandle))
         set(value) = JphSliderConstraintSettings_SetSpace(sliderConstraintSettingsHandle, value.value)
 
+    /** When mSpace is WorldSpace mPoint1 and mPoint2 can be automatically calculated based on the positions of the bodies when the constraint is created (the current relative position/orientation is chosen as the '0' position). Set this to false if you want to supply the attachment points yourself. */
     var autoDetectPoint: Boolean
         get() = JphSliderConstraintSettings_GetAutoDetectPoint(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetAutoDetectPoint(sliderConstraintSettingsHandle, value)
 
+    /**
+     * Body 1 constraint reference frame (space determined by mSpace).
+     * Slider axis is the axis along which movement is possible (direction), normal axis is a perpendicular vector to define the frame.
+     */
     var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -84,6 +95,7 @@ class SliderConstraintSettings internal constructor(internal val sliderConstrain
         }
         set(value) = interopScope { JphSliderConstraintSettings_SetNormalAxis1(sliderConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 constraint reference frame (space determined by mSpace) */
     var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -114,6 +126,7 @@ class SliderConstraintSettings internal constructor(internal val sliderConstrain
         }
         set(value) = interopScope { JphSliderConstraintSettings_SetNormalAxis2(sliderConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** When the bodies move so that mPoint1 coincides with mPoint2 the slider position is defined to be 0, movement will be limited between \[mLimitsMin, mLimitsMax\] where mLimitsMin e \[-inf, 0\] and mLimitsMax e \[0, inf\] */
     var limitsMin: Float
         get() = JphSliderConstraintSettings_GetLimitsMin(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetLimitsMin(sliderConstraintSettingsHandle, value)
@@ -122,6 +135,7 @@ class SliderConstraintSettings internal constructor(internal val sliderConstrain
         get() = JphSliderConstraintSettings_GetLimitsMax(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetLimitsMax(sliderConstraintSettingsHandle, value)
 
+    /** When enabled, this makes the limits soft. When the constraint exceeds the limits, a spring force will pull it back. */
     var limitsSpringSettings: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
@@ -130,10 +144,12 @@ class SliderConstraintSettings internal constructor(internal val sliderConstrain
         }
         set(value) = JphSliderConstraintSettings_SetLimitsSpringSettings(sliderConstraintSettingsHandle, value.springSettingsHandle)
 
+    /** Maximum amount of friction force to apply (N) when not driven by a motor. */
     var maxFrictionForce: Float
         get() = JphSliderConstraintSettings_GetMaxFrictionForce(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetMaxFrictionForce(sliderConstraintSettingsHandle, value)
 
+    /** In case the constraint is powered, this determines the motor settings around the sliding axis */
     var motorSettings: MotorSettings
         get() = run {
             val returned = MotorSettings(JphMotorSettings_create(), owned = true)

@@ -33,34 +33,80 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::NarrowPhaseQuery`. */
+/**
+ * Class that provides an interface for doing precise collision detection against the broad and then the narrow phase.
+ * Unlike a BroadPhaseQuery, the NarrowPhaseQuery will test against shapes and will return collision information against triangles, spheres etc.
+ *
+ * C++ `JPH::NarrowPhaseQuery`.
+ */
 class NarrowPhaseQuery internal constructor(internal val narrowPhaseQueryHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphNarrowPhaseQuery_create(), owned = true)
 
     override fun close() =
         closeOnce { JphNarrowPhaseQuery_destroy(narrowPhaseQueryHandle) }
 
+    /** Initialize the interface (should only be called by PhysicsSystem) */
     fun init(bodyLockInterface: BodyLockInterface, broadPhaseQuery: BroadPhaseQuery) =
         JphNarrowPhaseQuery_Init(narrowPhaseQueryHandle, bodyLockInterface.bodyLockInterfaceHandle, broadPhaseQuery.broadPhaseQueryHandle)
 
+    /**
+     * Cast a ray and find the closest hit. Returns true if it finds a hit. Hits further than ioHit.mFraction will not be considered and in this case ioHit will remain unmodified (and the function will return false).
+     * Convex objects will be treated as solid (meaning if the ray starts inside, you'll get a hit fraction of 0) and back face hits against triangles are returned.
+     * If you want the surface normal of the hit use Body::GetWorldSpaceSurfaceNormal(ioHit.mSubShapeID2, inRay.GetPointOnRay(ioHit.mFraction)) on body with ID ioHit.mBodyID.
+     */
     fun castRay(ray: RRayCast, hit: RayCastResult, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter): Boolean =
         JphNarrowPhaseQuery_CastRay_RayCastResult_BroadPhaseLayerFilter_ObjectLayerFilter_BodyFilter(narrowPhaseQueryHandle, ray.rRayCastHandle, hit.rayCastResultHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle)
 
+    /**
+     * Cast a ray, allows collecting multiple hits. Note that this version is more flexible but also slightly slower than the CastRay function that returns only a single hit.
+     * If you want the surface normal of the hit use Body::GetWorldSpaceSurfaceNormal(collected sub shape ID, inRay.GetPointOnRay(collected fraction)) on body with collected body ID.
+     */
     fun castRay(ray: RRayCast, rayCastSettings: RayCastSettings, collector: CastRayCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter) =
         JphNarrowPhaseQuery_CastRay_RayCastSettings_CastRayCollector_BroadPhaseLayerFilter_ObjectLayerFilter_BodyFilter_ShapeFilter(narrowPhaseQueryHandle, ray.rRayCastHandle, rayCastSettings.rayCastSettingsHandle, collector.castRayCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle)
 
+    /**
+     * Check if inPoint is inside any shapes. For this tests all shapes are treated as if they were solid.
+     * For a mesh shape, this test will only provide sensible information if the mesh is a closed manifold.
+     * For each shape that collides, ioCollector will receive a hit
+     */
     fun collidePoint(point: Vec3, collector: CollidePointCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter) =
         interopScope { JphNarrowPhaseQuery_CollidePoint(narrowPhaseQueryHandle, toInterop(point.toArray()), collector.collidePointCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle) }
 
+    /**
+     * Collide a shape with the system
+     * @param shape Shape to test
+     * @param shapeScale Scale in local space of shape
+     * @param centerOfMassTransform Center of mass transform for the shape
+     * @param collideShapeSettings Settings
+     * @param baseOffset All hit results will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. inCenterOfMassTransform.GetTranslation() since floats are most accurate near the origin
+     * @param collector Collector that receives the hits
+     * @param broadPhaseLayerFilter Filter that filters at broadphase level
+     * @param objectLayerFilter Filter that filters at layer level
+     * @param bodyFilter Filter that filters at body level
+     * @param shapeFilter Filter that filters at shape level
+     */
     fun collideShape(shape: Shape?, shapeScale: Vec3, centerOfMassTransform: Mat44, collideShapeSettings: CollideShapeSettings, baseOffset: Vec3, collector: CollideShapeCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter) =
         interopScope { JphNarrowPhaseQuery_CollideShape(narrowPhaseQueryHandle, shape?.shapeHandle ?: NullPointer, toInterop(shapeScale.toArray()), toInterop(centerOfMassTransform.toArray()), collideShapeSettings.collideShapeSettingsHandle, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle) }
 
+    /** Same as CollideShape, but uses InternalEdgeRemovingCollector to remove internal edges from the collision results (a.k.a. ghost collisions) */
     fun collideShapeWithInternalEdgeRemoval(shape: Shape?, shapeScale: Vec3, centerOfMassTransform: Mat44, collideShapeSettings: CollideShapeSettings, baseOffset: Vec3, collector: CollideShapeCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter) =
         interopScope { JphNarrowPhaseQuery_CollideShapeWithInternalEdgeRemoval(narrowPhaseQueryHandle, shape?.shapeHandle ?: NullPointer, toInterop(shapeScale.toArray()), toInterop(centerOfMassTransform.toArray()), collideShapeSettings.collideShapeSettingsHandle, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle) }
 
+    /**
+     * Cast a shape and report any hits to ioCollector
+     * @param shapeCast The shape cast and its position and direction
+     * @param shapeCastSettings Settings for the shape cast
+     * @param baseOffset All hit results will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. inShapeCast.mCenterOfMassStart.GetTranslation() since floats are most accurate near the origin
+     * @param collector Collector that receives the hits
+     * @param broadPhaseLayerFilter Filter that filters at broadphase level
+     * @param objectLayerFilter Filter that filters at layer level
+     * @param bodyFilter Filter that filters at body level
+     * @param shapeFilter Filter that filters at shape level
+     */
     fun castShape(shapeCast: RShapeCast, shapeCastSettings: ShapeCastSettings, baseOffset: Vec3, collector: CastShapeCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter) =
         interopScope { JphNarrowPhaseQuery_CastShape(narrowPhaseQueryHandle, shapeCast.rShapeCastHandle, shapeCastSettings.shapeCastSettingsHandle, toInterop(baseOffset.toArray()), collector.castShapeCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle) }
 
+    /** Collect all leaf transformed shapes that fall inside world space box inBox */
     fun collectTransformedShapes(box: AABox, collector: TransformedShapeCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter) =
         JphNarrowPhaseQuery_CollectTransformedShapes(narrowPhaseQueryHandle, box.aaBoxHandle, collector.transformedShapeCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle)
 }

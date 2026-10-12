@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BoxShapeSettings`. */
+/**
+ * Class that constructs a BoxShape
+ *
+ * C++ `JPH::BoxShapeSettings`.
+ */
 class BoxShapeSettings internal constructor(internal val boxShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphBoxShapeSettings_asConvexShapeSettings(boxShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphBoxShapeSettings_create(), owned = true)
     constructor(halfExtent: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphBoxShapeSettings_create_Vec3Arg_float_PhysicsMaterial(toInterop(halfExtent.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
@@ -44,6 +48,7 @@ class BoxShapeSettings internal constructor(internal val boxShapeSettingsHandle:
     override fun close() =
         closeOnce { JphBoxShapeSettings_release(boxShapeSettingsHandle) }
 
+    /** Half the size of the box (including convex radius) */
     var halfExtent: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

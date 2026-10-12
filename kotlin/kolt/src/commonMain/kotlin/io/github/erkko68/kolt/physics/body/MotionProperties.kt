@@ -33,22 +33,30 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::MotionProperties`. */
+/**
+ * The Body class only keeps track of state for static bodies, the MotionProperties class keeps the additional state needed for a moving Body. It has a 1-on-1 relationship with the body.
+ *
+ * C++ `JPH::MotionProperties`.
+ */
 open class MotionProperties internal constructor(internal val motionPropertiesHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphMotionProperties_create(), owned = true)
 
     override fun close() =
         closeOnce { JphMotionProperties_destroy(motionPropertiesHandle) }
 
+    /** Motion quality, or how well it detects collisions when it has a high velocity */
     val motionQuality: EMotionQuality
         get() = EMotionQuality.of(JphMotionProperties_GetMotionQuality(motionPropertiesHandle))
 
+    /** Get the allowed degrees of freedom that this body has (this can be changed by calling SetMassProperties) */
     val allowedDOFs: EAllowedDOFs
         get() = EAllowedDOFs.of(JphMotionProperties_GetAllowedDOFs(motionPropertiesHandle))
 
+    /** If this body can go to sleep. */
     val allowSleeping: Boolean
         get() = JphMotionProperties_GetAllowSleeping(motionPropertiesHandle)
 
+    /** Get world space linear velocity of the center of mass */
     var linearVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -59,9 +67,15 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
         }
         set(linearVelocity) = interopScope { JphMotionProperties_SetLinearVelocity(motionPropertiesHandle, toInterop(linearVelocity.toArray())) }
 
+    /**
+     * Set world space linear velocity of the center of mass, will make sure the value is clamped against the maximum linear velocity.
+     * Note that it is illegal to set a non-zero linear velocity on a sleeping body without waking it up afterwards.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::SetLinearVelocity instead.
+     */
     fun setLinearVelocityClamped(linearVelocity: Vec3) =
         interopScope { JphMotionProperties_SetLinearVelocityClamped(motionPropertiesHandle, toInterop(linearVelocity.toArray())) }
 
+    /** Get world space angular velocity of the center of mass */
     var angularVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -72,41 +86,59 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
         }
         set(angularVelocity) = interopScope { JphMotionProperties_SetAngularVelocity(motionPropertiesHandle, toInterop(angularVelocity.toArray())) }
 
+    /**
+     * Set world space angular velocity of the center of mass, will make sure the value is clamped against the maximum angular velocity.
+     * Note that it is illegal to set a non-zero angular velocity on a sleeping body without waking it up afterwards.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::SetAngularVelocity instead.
+     */
     fun setAngularVelocityClamped(angularVelocity: Vec3) =
         interopScope { JphMotionProperties_SetAngularVelocityClamped(motionPropertiesHandle, toInterop(angularVelocity.toArray())) }
 
+    /**
+     * Set velocity of body such that it will be rotate/translate by inDeltaPosition/Rotation in inDeltaTime seconds.
+     * Note that it is illegal to provide non-zero delta position/rotation on a sleeping body without waking it up afterwards.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::MoveKinematic instead.
+     */
     fun moveKinematic(deltaPosition: Vec3, deltaRotation: Quat, deltaTime: Float) =
         interopScope { JphMotionProperties_MoveKinematic(motionPropertiesHandle, toInterop(deltaPosition.toArray()), toInterop(deltaRotation.toArray()), deltaTime) }
 
+    /** Maximum linear velocity that a body can achieve. Used to prevent the system from exploding. */
     var maxLinearVelocity: Float
         get() = JphMotionProperties_GetMaxLinearVelocity(motionPropertiesHandle)
         set(linearVelocity) = JphMotionProperties_SetMaxLinearVelocity(motionPropertiesHandle, linearVelocity)
 
+    /** Maximum angular velocity that a body can achieve. Used to prevent the system from exploding. */
     var maxAngularVelocity: Float
         get() = JphMotionProperties_GetMaxAngularVelocity(motionPropertiesHandle)
         set(angularVelocity) = JphMotionProperties_SetMaxAngularVelocity(motionPropertiesHandle, angularVelocity)
 
+    /** Clamp velocity according to limit */
     fun clampLinearVelocity() =
         JphMotionProperties_ClampLinearVelocity(motionPropertiesHandle)
 
     fun clampAngularVelocity() =
         JphMotionProperties_ClampAngularVelocity(motionPropertiesHandle)
 
+    /** Get linear damping: dv/dt = -c * v. c. Value should be zero or positive and is usually close to 0. */
     var linearDamping: Float
         get() = JphMotionProperties_GetLinearDamping(motionPropertiesHandle)
         set(linearDamping) = JphMotionProperties_SetLinearDamping(motionPropertiesHandle, linearDamping)
 
+    /** Get angular damping: dw/dt = -c * w. c. Value should be zero or positive and is usually close to 0. */
     var angularDamping: Float
         get() = JphMotionProperties_GetAngularDamping(motionPropertiesHandle)
         set(angularDamping) = JphMotionProperties_SetAngularDamping(motionPropertiesHandle, angularDamping)
 
+    /** Get gravity factor (1 = normal gravity, 0 = no gravity) */
     var gravityFactor: Float
         get() = JphMotionProperties_GetGravityFactor(motionPropertiesHandle)
         set(gravityFactor) = JphMotionProperties_SetGravityFactor(motionPropertiesHandle, gravityFactor)
 
+    /** Set the mass and inertia tensor */
     fun setMassProperties(allowedDOFs: EAllowedDOFs, massProperties: MassProperties) =
         JphMotionProperties_SetMassProperties(motionPropertiesHandle, allowedDOFs.value, massProperties.massPropertiesHandle)
 
+    /** Get inverse mass (1 / mass). Should only be called on a dynamic object (static or kinematic bodies have infinite mass so should be treated as 1 / mass = 0) */
     var inverseMass: Float
         get() = JphMotionProperties_GetInverseMass(motionPropertiesHandle)
         set(inverseMass) = JphMotionProperties_SetInverseMass(motionPropertiesHandle, inverseMass)
@@ -114,6 +146,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
     val inverseMassUnchecked: Float
         get() = JphMotionProperties_GetInverseMassUnchecked(motionPropertiesHandle)
 
+    /** Diagonal of inverse inertia matrix: D. Should only be called on a dynamic object (static or kinematic bodies have infinite mass so should be treated as D = 0) */
     val inverseInertiaDiagonal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -123,6 +156,13 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
+    /**
+     * Rotation (R) that takes inverse inertia diagonal to local space:
+     *
+     * ```
+     * I_{body}^{-1} = R \: D \: R^{-1}
+     * ```
+     */
     val inertiaRotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -132,12 +172,43 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Quat(returned)
         }
 
+    /**
+     * Set the inverse inertia tensor in local space by setting the diagonal and the rotation:
+     *
+     * ```
+     * I_{body}^{-1} = R \: D \: R^{-1}
+     * ```
+     *
+     * .
+     * Note that mass and inertia are linearly related (e.g. inertia of a sphere with mass m and radius r is
+     *
+     * ```
+     * 2/5 \: m \: r^2
+     * ```
+     *
+     * ).
+     * If you change inertia, mass should probably change as well. You can use ScaleToMass to update mass and inertia at the same time.
+     * If all your rotation degrees of freedom are restricted, make sure this is zero (see EAllowedDOFs).
+     */
     fun setInverseInertia(diagonal: Vec3, rot: Quat) =
         interopScope { JphMotionProperties_SetInverseInertia(motionPropertiesHandle, toInterop(diagonal.toArray()), toInterop(rot.toArray())) }
 
+    /**
+     * Sets the mass to inMass and scale the inertia tensor based on the ratio between the old and new mass.
+     * Note that this only works when the current mass is finite (i.e. the body is dynamic and translational degrees of freedom are not restricted).
+     */
     fun scaleToMass(mass: Float) =
         JphMotionProperties_ScaleToMass(motionPropertiesHandle, mass)
 
+    /**
+     * Get inverse inertia matrix (
+     *
+     * ```
+     * I_{body}^{-1}
+     * ```
+     *
+     * ). Will be a matrix of zeros for a static or kinematic object.
+     */
     val localSpaceInverseInertia: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -147,6 +218,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Mat44(returned)
         }
 
+    /** Same as GetLocalSpaceInverseInertia() but doesn't check if the body is dynamic */
     val localSpaceInverseInertiaUnchecked: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -156,6 +228,15 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Mat44(returned)
         }
 
+    /**
+     * Get inverse inertia matrix (
+     *
+     * ```
+     * I^{-1}
+     * ```
+     *
+     * ) for a given object rotation (translation will be ignored). Zero if object is static or kinematic.
+     */
     fun getInverseInertiaForRotation(rotation: Mat44): Mat44 =
         interopScope {
             val returned = FloatArray(16)
@@ -165,6 +246,15 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Mat44(returned)
         }
 
+    /**
+     * Multiply a vector with the inverse world space inertia tensor (
+     *
+     * ```
+     * I_{world}^{-1}
+     * ```
+     *
+     * ). Zero if object is static or kinematic.
+     */
     fun multiplyWorldSpaceInverseInertiaByVector(bodyRotation: Quat, v: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -174,6 +264,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
+    /** Velocity of point inPoint (in center of mass space, e.g. on the surface of the body) of the body (unit: m/s) */
     fun getPointVelocityCOM(pointRelativeToCOM: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -210,6 +301,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
     fun resetMotion() =
         JphMotionProperties_ResetMotion(motionPropertiesHandle)
 
+    /** Returns a vector where the linear components that are not allowed by mAllowedDOFs are set to 0 and the rest to 0xffffffff */
     val linearDOFsMask: UVec4
         get() = interopScope {
             val returned = IntArray(4)
@@ -219,6 +311,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             UVec4(returned)
         }
 
+    /** Takes a translation vector inV and returns a vector where the components that are not allowed by mAllowedDOFs are set to 0 */
     fun lockTranslation(v: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -228,6 +321,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
+    /** Returns a vector where the angular components that are not allowed by mAllowedDOFs are set to 0 and the rest to 0xffffffff */
     val angularDOFsMask: UVec4
         get() = interopScope {
             val returned = IntArray(4)
@@ -237,6 +331,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             UVec4(returned)
         }
 
+    /** Takes an angular velocity / torque vector inV and returns a vector where the components that are not allowed by mAllowedDOFs are set to 0 */
     fun lockAngular(v: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -246,14 +341,21 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
+    /** Used only when this body is dynamic and colliding. Override for the number of solver velocity iterations to run, 0 means use the default in PhysicsSettings::mNumVelocitySteps. The number of iterations to use is the max of all contacts and constraints in the island. */
     var numVelocityStepsOverride: Int
         get() = JphMotionProperties_GetNumVelocityStepsOverride(motionPropertiesHandle)
         set(n) = JphMotionProperties_SetNumVelocityStepsOverride(motionPropertiesHandle, n)
 
+    /** Used only when this body is dynamic and colliding. Override for the number of solver position iterations to run, 0 means use the default in PhysicsSettings::mNumPositionSteps. The number of iterations to use is the max of all contacts and constraints in the island. */
     var numPositionStepsOverride: Int
         get() = JphMotionProperties_GetNumPositionStepsOverride(motionPropertiesHandle)
         set(n) = JphMotionProperties_SetNumPositionStepsOverride(motionPropertiesHandle, n)
 
+    /**
+     * Update linear and angular velocity (used during constraint solving)
+     * {
+     * @
+     */
     fun applyLinearVelocityStep(linearVelocity: Vec3) =
         interopScope { JphMotionProperties_ApplyLinearVelocityStep(motionPropertiesHandle, toInterop(linearVelocity.toArray())) }
 
@@ -272,15 +374,19 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
     fun subAngularVelocityStep(angularVelocityChange: Vec3) =
         interopScope { JphMotionProperties_SubAngularVelocityStep(motionPropertiesHandle, toInterop(angularVelocityChange.toArray())) }
 
+    /** Reset the sleep test timer without resetting the sleep test spheres */
     fun resetSleepTestTimer() =
         JphMotionProperties_ResetSleepTestTimer(motionPropertiesHandle)
 
+    /** Accumulate sleep time and return if a body can go to sleep */
     fun accumulateSleepTime(deltaTime: Float, timeBeforeSleep: Float): ECanSleep =
         ECanSleep.of(JphMotionProperties_AccumulateSleepTime(motionPropertiesHandle, deltaTime, timeBeforeSleep))
 
+    /** Saving state for replay */
     open fun saveState(stream: StateRecorder) =
         JphMotionProperties_SaveState(motionPropertiesHandle, stream.stateRecorderHandle)
 
+    /** Restoring state for replay */
     open fun restoreState(stream: StateRecorder) =
         JphMotionProperties_RestoreState(motionPropertiesHandle, stream.stateRecorderHandle)
 }

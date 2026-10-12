@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyFilter`. */
+/**
+ * Class function to filter out bodies, returns true if test should collide with body
+ *
+ * C++ `JPH::BodyFilter`.
+ */
 open class BodyFilter internal constructor(internal val bodyFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphBodyFilter_createUpcalls(Upcalls.function), owned = true) {
@@ -43,9 +47,11 @@ open class BodyFilter internal constructor(internal val bodyFilterHandle: Native
     override fun close() =
         closeOnce { JphBodyFilter_destroy(bodyFilterHandle) }
 
+    /** Filter function. Returns true if we should collide with inBodyID */
     open fun shouldCollide(bodyID: BodyID): Boolean =
         JphBodyFilter_ShouldCollide(bodyFilterHandle, bodyID.value)
 
+    /** Filter function. Returns true if we should collide with inBody (this is called after the body is locked and makes it possible to filter based on body members) */
     open fun shouldCollideLocked(body: Body): Boolean =
         JphBodyFilter_ShouldCollideLocked(bodyFilterHandle, body.bodyHandle)
 

@@ -33,19 +33,31 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EShapeType`. */
+/**
+ * Shapes are categorized in groups, each shape can return which group it belongs to through its Shape::GetType function.
+ *
+ * C++ `JPH::EShapeType`.
+ */
 enum class EShapeType(internal val value: Int) {
+    /** Used by ConvexShape, all shapes that use the generic convex vs convex collision detection system (box, sphere, capsule, tapered capsule, cylinder, triangle) */
     Convex(0),
+    /** Used by CompoundShape */
     Compound(1),
+    /** Used by DecoratedShape */
     Decorated(2),
+    /** Used by MeshShape */
     Mesh(3),
+    /** Used by HeightFieldShape */
     HeightField(4),
+    /** Used by SoftBodyShape */
     SoftBody(5),
     User1(6),
     User2(7),
     User3(8),
     User4(9),
+    /** Used by PlaneShape */
     Plane(10),
+    /** Used by EmptyShape */
     Empty(11);
 
     internal companion object {

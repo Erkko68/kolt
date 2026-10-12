@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterContact`. */
+/**
+ * Encapsulates a collision contact between a character and another rigid body / character
+ *
+ * C++ `JPH::CharacterContact`.
+ */
 class CharacterContact internal constructor(internal val characterContactHandle: NativePointer, owned: Boolean = false) : CharacterContactKey(JphCharacterContact_asCharacterContactKey(characterContactHandle), owned), AutoCloseable {
     constructor() : this(JphCharacterContact_create(), owned = true)
 
@@ -46,6 +50,7 @@ class CharacterContact internal constructor(internal val characterContactHandle:
     override fun restoreState(stream: StateRecorder) =
         JphCharacterContact_RestoreState(characterContactHandle, stream.stateRecorderHandle)
 
+    /** Position where the character makes contact */
     var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -56,6 +61,7 @@ class CharacterContact internal constructor(internal val characterContactHandle:
         }
         set(value) = interopScope { JphCharacterContact_SetPosition(characterContactHandle, toInterop(value.toArray())) }
 
+    /** Velocity of the contact point */
     var linearVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -66,6 +72,7 @@ class CharacterContact internal constructor(internal val characterContactHandle:
         }
         set(value) = interopScope { JphCharacterContact_SetLinearVelocity(characterContactHandle, toInterop(value.toArray())) }
 
+    /** Contact normal, pointing towards the character */
     var contactNormal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -76,6 +83,7 @@ class CharacterContact internal constructor(internal val characterContactHandle:
         }
         set(value) = interopScope { JphCharacterContact_SetContactNormal(characterContactHandle, toInterop(value.toArray())) }
 
+    /** Surface normal of the contact. Has been flipped if the contact is back facing (mIsBackFacingContact) and is equal to the contact normal if the contact normal is pointing up more. */
     var surfaceNormal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -86,26 +94,36 @@ class CharacterContact internal constructor(internal val characterContactHandle:
         }
         set(value) = interopScope { JphCharacterContact_SetSurfaceNormal(characterContactHandle, toInterop(value.toArray())) }
 
+    /**
+     * Distance to the contact
+     * <
+     * = 0 means that it is an actual contact, > 0 means predictive
+     */
     var distance: Float
         get() = JphCharacterContact_GetDistance(characterContactHandle)
         set(value) = JphCharacterContact_SetDistance(characterContactHandle, value)
 
+    /** Fraction along the path where this contact takes place */
     var fraction: Float
         get() = JphCharacterContact_GetFraction(characterContactHandle)
         set(value) = JphCharacterContact_SetFraction(characterContactHandle, value)
 
+    /** Motion type of B, used to determine the priority of the contact */
     var motionTypeB: EMotionType
         get() = EMotionType.of(JphCharacterContact_GetMotionTypeB(characterContactHandle))
         set(value) = JphCharacterContact_SetMotionTypeB(characterContactHandle, value.value)
 
+    /** If B is a sensor */
     var isSensorB: Boolean
         get() = JphCharacterContact_GetIsSensorB(characterContactHandle)
         set(value) = JphCharacterContact_SetIsSensorB(characterContactHandle, value)
 
+    /** Character we're colliding with (if not nullptr). Note that this may be a dangling pointer when accessed through GetActiveContacts(), use mCharacterIDB instead. */
     var characterB: CharacterVirtual?
         get() = JphCharacterContact_GetCharacterB(characterContactHandle).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }
         set(value) = JphCharacterContact_SetCharacterB(characterContactHandle, value?.characterVirtualHandle ?: NullPointer)
 
+    /** User data of B */
     var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -116,22 +134,27 @@ class CharacterContact internal constructor(internal val characterContactHandle:
         }
         set(value) = JphCharacterContact_SetUserData(characterContactHandle, value)
 
+    /** Material of B */
     var material: PhysicsMaterial?
         get() = JphCharacterContact_GetMaterial(characterContactHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(value) = JphCharacterContact_SetMaterial(characterContactHandle, value?.physicsMaterialHandle ?: NullPointer)
 
+    /** If the character actually collided with the contact (can be false if a predictive contact never becomes a real one) */
     var hadCollision: Boolean
         get() = JphCharacterContact_GetHadCollision(characterContactHandle)
         set(value) = JphCharacterContact_SetHadCollision(characterContactHandle, value)
 
+    /** If the contact validate callback chose to discard this contact or when the body is a sensor */
     var wasDiscarded: Boolean
         get() = JphCharacterContact_GetWasDiscarded(characterContactHandle)
         set(value) = JphCharacterContact_SetWasDiscarded(characterContactHandle, value)
 
+    /** When true, the velocity of the contact point can push the character */
     var canPushCharacter: Boolean
         get() = JphCharacterContact_GetCanPushCharacter(characterContactHandle)
         set(value) = JphCharacterContact_SetCanPushCharacter(characterContactHandle, value)
 
+    /** If this contact came from a back facing triangle / collision shape */
     var isBackFacingContact: Boolean
         get() = JphCharacterContact_GetIsBackFacingContact(characterContactHandle)
         set(value) = JphCharacterContact_SetIsBackFacingContact(characterContactHandle, value)

@@ -33,6 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BroadPhaseLayer`. */
+/**
+ * An object layer can be mapped to a broadphase layer. Objects with the same broadphase layer will end up in the same sub structure (usually a tree) of the broadphase.
+ * When there are many layers, this reduces the total amount of sub structures the broad phase needs to manage. Usually you want objects that don't collide with each other
+ * in different broad phase layers, but there could be exceptions if objects layers only contain a minor amount of objects so it is not beneficial to give each layer its
+ * own sub structure in the broadphase.
+ * Note: This class requires explicit casting from and to Type to avoid confusion with ObjectLayer
+ *
+ * C++ `JPH::BroadPhaseLayer`.
+ */
 @kotlin.jvm.JvmInline
 value class BroadPhaseLayer(val value: Int)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SixDOFConstraintSettings`. */
+/**
+ * 6 Degree Of Freedom Constraint setup structure. Allows control over each of the 6 degrees of freedom.
+ *
+ * C++ `JPH::SixDOFConstraintSettings`.
+ */
 class SixDOFConstraintSettings internal constructor(internal val sixDOFConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSixDOFConstraintSettings_asTwoBodyConstraintSettings(sixDOFConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphSixDOFConstraintSettings_create(), owned = true)
 
@@ -43,25 +47,34 @@ class SixDOFConstraintSettings internal constructor(internal val sixDOFConstrain
     override fun close() =
         closeOnce { JphSixDOFConstraintSettings_release(sixDOFConstraintSettingsHandle) }
 
+    /** Make axis free (unconstrained) */
     fun makeFreeAxis(axis: SixDOFConstraintSettings.EAxis) =
         JphSixDOFConstraintSettings_MakeFreeAxis(sixDOFConstraintSettingsHandle, axis.value)
 
     fun isFreeAxis(axis: SixDOFConstraintSettings.EAxis): Boolean =
         JphSixDOFConstraintSettings_IsFreeAxis(sixDOFConstraintSettingsHandle, axis.value)
 
+    /** Make axis fixed (fixed at value 0) */
     fun makeFixedAxis(axis: SixDOFConstraintSettings.EAxis) =
         JphSixDOFConstraintSettings_MakeFixedAxis(sixDOFConstraintSettingsHandle, axis.value)
 
     fun isFixedAxis(axis: SixDOFConstraintSettings.EAxis): Boolean =
         JphSixDOFConstraintSettings_IsFixedAxis(sixDOFConstraintSettingsHandle, axis.value)
 
+    /**
+     * Set a valid range for the constraint (if inMax
+     * <
+     * inMin, the axis will become fixed)
+     */
     fun setLimitedAxis(axis: SixDOFConstraintSettings.EAxis, min: Float, max: Float) =
         JphSixDOFConstraintSettings_SetLimitedAxis(sixDOFConstraintSettingsHandle, axis.value, min, max)
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphSixDOFConstraintSettings_GetSpace(sixDOFConstraintSettingsHandle))
         set(value) = JphSixDOFConstraintSettings_SetSpace(sixDOFConstraintSettingsHandle, value.value)
 
+    /** Body 1 constraint reference frame (space determined by mSpace) */
     var position1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -92,6 +105,7 @@ class SixDOFConstraintSettings internal constructor(internal val sixDOFConstrain
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetAxisY1(sixDOFConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 constraint reference frame (space determined by mSpace) */
     var position2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -122,6 +136,11 @@ class SixDOFConstraintSettings internal constructor(internal val sixDOFConstrain
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetAxisY2(sixDOFConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /**
+     * Friction settings.
+     * For translation: Max friction force in N. 0 = no friction.
+     * For rotation: Max friction torque in Nm. 0 = no friction.
+     */
     var maxFriction: FloatArray
         get() = interopScope {
             val count = JphSixDOFConstraintSettings_GetMaxFriction(sixDOFConstraintSettingsHandle, NullPointer, 0)
@@ -133,10 +152,44 @@ class SixDOFConstraintSettings internal constructor(internal val sixDOFConstrain
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetMaxFriction(sixDOFConstraintSettingsHandle, toInterop(value), value.size) }
 
+    /** The type of swing constraint that we want to use. */
     var swingType: ESwingType
         get() = ESwingType.of(JphSixDOFConstraintSettings_GetSwingType(sixDOFConstraintSettingsHandle))
         set(value) = JphSixDOFConstraintSettings_SetSwingType(sixDOFConstraintSettingsHandle, value.value)
 
+    /**
+     * Limits.
+     * For translation: Min and max linear limits in m (0 is frame of body 1 and 2 coincide).
+     * For rotation: Min and max angular limits in rad (0 is frame of body 1 and 2 coincide). See comments at Axis enum for limit ranges.
+     *
+     * Remove degree of freedom by setting min = FLT_MAX and max = -FLT_MAX. The constraint will be driven to 0 for this axis.
+     *
+     * Free movement over an axis is allowed when min = -FLT_MAX and max = FLT_MAX.
+     *
+     * Rotation limit around X-Axis: When limited, should be
+     *
+     * ```
+     * \in \[-\pi, \pi\]
+     * ```
+     *
+     * . Can be asymmetric around zero.
+     *
+     * Rotation limit around Y-Z Axis: Forms a pyramid or cone shaped limit:
+     * * For pyramid, should be
+     *
+     * ```
+     * \in \[-\pi, \pi\]
+     * ```
+     *
+     * and does not need to be symmetrical around zero.
+     * * For cone should be
+     *
+     * ```
+     * \in \[0, \pi\]
+     * ```
+     *
+     * and needs to be symmetrical around zero (min limit is assumed to be -max limit).
+     */
     var limitMin: FloatArray
         get() = interopScope {
             val count = JphSixDOFConstraintSettings_GetLimitMin(sixDOFConstraintSettingsHandle, NullPointer, 0)
@@ -159,6 +212,10 @@ class SixDOFConstraintSettings internal constructor(internal val sixDOFConstrain
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetLimitMax(sixDOFConstraintSettingsHandle, toInterop(value), value.size) }
 
+    /**
+     * When enabled, this makes the limits soft. When the constraint exceeds the limits, a spring force will pull it back.
+     * Only soft translation limits are supported, soft rotation limits are not currently supported.
+     */
     var limitsSpringSettings: List<SpringSettings>
         get() = interopScope {
             val count = JphSixDOFConstraintSettings_GetLimitsSpringSettings(sixDOFConstraintSettingsHandle, NullPointer, 0)
@@ -168,6 +225,7 @@ class SixDOFConstraintSettings internal constructor(internal val sixDOFConstrain
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetLimitsSpringSettings(sixDOFConstraintSettingsHandle, toInterop(value.map { it.springSettingsHandle }), value.size) }
 
+    /** Motor settings for each axis */
     var motorSettings: List<MotorSettings>
         get() = interopScope {
             val count = JphSixDOFConstraintSettings_GetMotorSettings(sixDOFConstraintSettingsHandle, NullPointer, 0)
@@ -177,7 +235,11 @@ class SixDOFConstraintSettings internal constructor(internal val sixDOFConstrain
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetMotorSettings(sixDOFConstraintSettingsHandle, toInterop(value.map { it.motorSettingsHandle }), value.size) }
 
-    /** C++ `JPH::SixDOFConstraintSettings::EAxis`. */
+    /**
+     * Constraint is split up into translation/rotation around X, Y and Z axis.
+     *
+     * C++ `JPH::SixDOFConstraintSettings::EAxis`.
+     */
     enum class EAxis(internal val value: Int) {
         TranslationX(0),
         TranslationY(1),

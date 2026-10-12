@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CompoundShape`. */
+/**
+ * Base class for a compound shape
+ *
+ * C++ `JPH::CompoundShape`.
+ */
 open class CompoundShape internal constructor(internal val compoundShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphCompoundShape_asShape(compoundShapeHandle), owned), AutoCloseable {
     override fun addRef() =
         own { JphCompoundShape_addRef(compoundShapeHandle) }
@@ -41,6 +45,13 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
     override fun close() =
         closeOnce { JphCompoundShape_release(compoundShapeHandle) }
 
+    /**
+     * Get which sub shape's bounding boxes overlap with an axis aligned box
+     * @param box The axis aligned box to test against (relative to the center of mass of this shape)
+     * @param subShapeIndices Buffer where to place the indices of the sub shapes that intersect
+     * @param maxSubShapeIndices How many indices will fit in the buffer (normally you'd provide a buffer of GetNumSubShapes() indices)
+     * @return How many indices were placed in outSubShapeIndices
+     */
     fun getIntersectingSubShapes(box: AABox, subShapeIndices: IntArray, maxSubShapeIndices: Int): Int =
         interopScope {
             val subShapeIndicesPointer = toInterop(subShapeIndices)
@@ -49,6 +60,13 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
             nativeResult
         }
 
+    /**
+     * Get which sub shape's bounding boxes overlap with an axis aligned box
+     * @param box The axis aligned box to test against (relative to the center of mass of this shape)
+     * @param subShapeIndices Buffer where to place the indices of the sub shapes that intersect
+     * @param maxSubShapeIndices How many indices will fit in the buffer (normally you'd provide a buffer of GetNumSubShapes() indices)
+     * @return How many indices were placed in outSubShapeIndices
+     */
     fun getIntersectingSubShapes(box: OrientedBox, subShapeIndices: IntArray, maxSubShapeIndices: Int): Int =
         interopScope {
             val subShapeIndicesPointer = toInterop(subShapeIndices)
@@ -57,6 +75,7 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
             nativeResult
         }
 
+    /** Access to the sub shapes of this compound */
     val subShapes: List<CompoundShape.SubShape>
         get() = interopScope {
             val count = JphCompoundShape_GetSubShapes(compoundShapeHandle, NullPointer, 0)
@@ -65,9 +84,11 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
             returned
         }
 
+    /** Get the total number of sub shapes */
     val numSubShapes: Int
         get() = JphCompoundShape_GetNumSubShapes(compoundShapeHandle)
 
+    /** Access to a particular sub shape */
     fun getSubShape(idx: Int): CompoundShape.SubShape =
         run {
             val returned = CompoundShape.SubShape(JphCompoundShapeSubShape_create(), owned = true)
@@ -75,15 +96,28 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
             returned
         }
 
+    /** Get the user data associated with a shape in this compound */
     fun getCompoundUserData(idx: Int): Int =
         JphCompoundShape_GetCompoundUserData(compoundShapeHandle, idx)
 
+    /** Set the user data associated with a shape in this compound */
     fun setCompoundUserData(idx: Int, userData: Int) =
         JphCompoundShape_SetCompoundUserData(compoundShapeHandle, idx, userData)
 
+    /**
+     * Check if a sub shape ID is still valid for this shape
+     * @param subShapeID Sub shape id that indicates the leaf shape relative to this shape
+     * @return True if the ID is valid, false if not
+     */
     fun isSubShapeIDValid(subShapeID: SubShapeID): Boolean =
         JphCompoundShape_IsSubShapeIDValid(compoundShapeHandle, subShapeID.value)
 
+    /**
+     * Convert SubShapeID to sub shape index
+     * @param subShapeID Sub shape id that indicates the leaf shape relative to this shape
+     * @return The index of the sub shape of this compound
+     * @return This is the sub shape ID for the sub shape of the compound after popping off the index
+     */
     fun getSubShapeIndexFromID(subShapeID: SubShapeID): Pair<Int, SubShapeID> =
         interopScope {
             val remainderArray = IntArray(1)
@@ -93,6 +127,12 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
             Pair(nativeResult, SubShapeID(remainderArray[0]))
         }
 
+    /**
+     * Convert a sub shape index to a sub shape ID
+     * @param idx Index of the sub shape of this compound
+     * @param parentSubShapeID Parent SubShapeID (describing the path to the compound shape)
+     * @return A sub shape ID creator that contains the full path to the sub shape with index inIdx
+     */
     fun getSubShapeIDFromIndex(idx: Int, parentSubShapeID: SubShapeIDCreator): SubShapeIDCreator =
         run {
             val returned = SubShapeIDCreator(JphSubShapeIDCreator_create(), owned = true)
@@ -107,9 +147,20 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
         override fun close() =
             closeOnce { JphCompoundShapeSubShape_destroy(compoundShapeSubShapeHandle) }
     
+        /**
+         * Update the transform of this sub shape
+         * @param position New position
+         * @param rotation New orientation
+         * @param centerOfMass The center of mass of the compound shape
+         */
         fun setTransform(position: Vec3, rotation: Quat, centerOfMass: Vec3) =
             interopScope { JphCompoundShapeSubShape_SetTransform(compoundShapeSubShapeHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), toInterop(centerOfMass.toArray())) }
     
+        /**
+         * Get the local transform for this shape given the scale of the child shape
+         * The total transform of the child shape will be GetLocalTransformNoScale(inScale) * Mat44::sScaling(TransformScale(inScale))
+         * @param scale The scale of the child shape (in local space of this shape)
+         */
         fun getLocalTransformNoScale(scale: Vec3): Mat44 =
             interopScope {
                 val returned = FloatArray(16)
@@ -119,9 +170,11 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
                 Mat44(returned)
             }
     
+        /** Test if inScale is valid for this sub shape */
         fun isValidScale(scale: Vec3): Boolean =
             interopScope { JphCompoundShapeSubShape_IsValidScale(compoundShapeSubShapeHandle, toInterop(scale.toArray())) }
     
+        /** Transform the scale to the local space of the child shape */
         fun transformScale(scale: Vec3): Vec3 =
             interopScope {
                 val returned = FloatArray(4)
@@ -131,6 +184,7 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
                 Vec3(returned)
             }
     
+        /** Uncompress the center of mass position */
         var positionCOM: Vec3
             get() = interopScope {
                 val returned = FloatArray(4)
@@ -141,6 +195,7 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
             }
             set(positionCOM) = interopScope { JphCompoundShapeSubShape_SetPositionCOM(compoundShapeSubShapeHandle, toInterop(positionCOM.toArray())) }
     
+        /** Uncompress the rotation */
         var rotation: Quat
             get() = interopScope {
                 val returned = FloatArray(4)
@@ -155,10 +210,12 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
             get() = JphCompoundShapeSubShape_GetShape(compoundShapeSubShapeHandle).takeIf { it != NullPointer }?.let { Shape(it) }
             set(value) = JphCompoundShapeSubShape_SetShape(compoundShapeSubShapeHandle, value?.shapeHandle ?: NullPointer)
     
+        /** User data value (put here because it falls in padding bytes) */
         var userData: Int
             get() = JphCompoundShapeSubShape_GetUserData(compoundShapeSubShapeHandle)
             set(value) = JphCompoundShapeSubShape_SetUserData(compoundShapeSubShapeHandle, value)
     
+        /** If mRotation is close to identity (put here because it falls in padding bytes) */
         var isRotationIdentity: Boolean
             get() = JphCompoundShapeSubShape_GetIsRotationIdentity(compoundShapeSubShapeHandle)
             set(value) = JphCompoundShapeSubShape_SetIsRotationIdentity(compoundShapeSubShapeHandle, value)

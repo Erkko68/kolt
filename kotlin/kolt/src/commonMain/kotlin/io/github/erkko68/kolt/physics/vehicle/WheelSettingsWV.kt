@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::WheelSettingsWV`. */
+/**
+ * WheelSettings object specifically for WheeledVehicleController
+ *
+ * C++ `JPH::WheelSettingsWV`.
+ */
 open class WheelSettingsWV internal constructor(internal val wheelSettingsWVHandle: NativePointer, owned: Boolean = false) : WheelSettings(JphWheelSettingsWV_asWheelSettings(wheelSettingsWVHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphWheelSettingsWV_createUpcalls(Upcalls.function), owned = true) {
@@ -46,18 +50,22 @@ open class WheelSettingsWV internal constructor(internal val wheelSettingsWVHand
     override fun close() =
         closeOnce { JphWheelSettingsWV_release(wheelSettingsWVHandle) }
 
+    /** Moment of inertia (kg m^2), for a cylinder this would be 0.5 * M * R^2 which is 0.9 for a wheel with a mass of 20 kg and radius 0.3 m */
     var inertia: Float
         get() = JphWheelSettingsWV_GetInertia(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetInertia(wheelSettingsWVHandle, value)
 
+    /** Angular damping factor of the wheel: dw/dt = -c * w. Value should be zero or positive and is usually close to 0. */
     var angularDamping: Float
         get() = JphWheelSettingsWV_GetAngularDamping(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetAngularDamping(wheelSettingsWVHandle, value)
 
+    /** How much this wheel can steer (radians) */
     var maxSteerAngle: Float
         get() = JphWheelSettingsWV_GetMaxSteerAngle(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetMaxSteerAngle(wheelSettingsWVHandle, value)
 
+    /** On the Y-axis: friction in the forward direction of the tire. Friction is normally between 0 (no friction) and 1 (full friction) although friction can be a little bit higher than 1 because of the profile of a tire. On the X-axis: the slip ratio (fraction) defined as (omega_wheel * r_wheel - v_longitudinal) / |v_longitudinal|. You can see slip ratio as the amount the wheel is spinning relative to the floor: 0 means the wheel has full traction and is rolling perfectly in sync with the ground, 1 is for example when the wheel is locked and sliding over the ground. */
     var longitudinalFriction: LinearCurve
         get() = run {
             val returned = LinearCurve(JphLinearCurve_create(), owned = true)
@@ -66,6 +74,7 @@ open class WheelSettingsWV internal constructor(internal val wheelSettingsWVHand
         }
         set(value) = JphWheelSettingsWV_SetLongitudinalFriction(wheelSettingsWVHandle, value.linearCurveHandle)
 
+    /** On the Y-axis: friction in the sideways direction of the tire. Friction is normally between 0 (no friction) and 1 (full friction) although friction can be a little bit higher than 1 because of the profile of a tire. On the X-axis: the slip angle (degrees) defined as angle between relative contact velocity and tire direction. */
     var lateralFriction: LinearCurve
         get() = run {
             val returned = LinearCurve(JphLinearCurve_create(), owned = true)
@@ -74,10 +83,12 @@ open class WheelSettingsWV internal constructor(internal val wheelSettingsWVHand
         }
         set(value) = JphWheelSettingsWV_SetLateralFriction(wheelSettingsWVHandle, value.linearCurveHandle)
 
+    /** How much torque (Nm) the brakes can apply to this wheel */
     var maxBrakeTorque: Float
         get() = JphWheelSettingsWV_GetMaxBrakeTorque(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetMaxBrakeTorque(wheelSettingsWVHandle, value)
 
+    /** How much torque (Nm) the hand brake can apply to this wheel (usually only applied to the rear wheels) */
     var maxHandBrakeTorque: Float
         get() = JphWheelSettingsWV_GetMaxHandBrakeTorque(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetMaxHandBrakeTorque(wheelSettingsWVHandle, value)

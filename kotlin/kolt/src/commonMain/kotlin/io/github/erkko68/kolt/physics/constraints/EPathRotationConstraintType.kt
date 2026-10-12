@@ -33,13 +33,23 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EPathRotationConstraintType`. */
+/**
+ * How to constrain the rotation of the body to a PathConstraint
+ *
+ * C++ `JPH::EPathRotationConstraintType`.
+ */
 enum class EPathRotationConstraintType(internal val value: Int) {
+    /** Do not constrain the rotation of the body at all */
     Free(0),
+    /** Only allow rotation around the tangent vector (following the path) */
     ConstrainAroundTangent(1),
+    /** Only allow rotation around the normal vector (perpendicular to the path) */
     ConstrainAroundNormal(2),
+    /** Only allow rotation around the binormal vector (perpendicular to the path) */
     ConstrainAroundBinormal(3),
+    /** Fully constrain the rotation of body 2 to the path (following the tangent and normal of the path) */
     ConstrainToPath(4),
+    /** Fully constrain the rotation of the body 2 to the rotation of body 1 */
     FullyConstrained(5);
 
     internal companion object {

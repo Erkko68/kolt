@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PointConstraintSettings`. */
+/**
+ * Point constraint settings, used to create a point constraint
+ *
+ * C++ `JPH::PointConstraintSettings`.
+ */
 class PointConstraintSettings internal constructor(internal val pointConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphPointConstraintSettings_asTwoBodyConstraintSettings(pointConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphPointConstraintSettings_create(), owned = true)
 
@@ -43,10 +47,12 @@ class PointConstraintSettings internal constructor(internal val pointConstraintS
     override fun close() =
         closeOnce { JphPointConstraintSettings_release(pointConstraintSettingsHandle) }
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphPointConstraintSettings_GetSpace(pointConstraintSettingsHandle))
         set(value) = JphPointConstraintSettings_SetSpace(pointConstraintSettingsHandle, value.value)
 
+    /** Body 1 constraint position (space determined by mSpace). */
     var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -57,6 +63,10 @@ class PointConstraintSettings internal constructor(internal val pointConstraintS
         }
         set(value) = interopScope { JphPointConstraintSettings_SetPoint1(pointConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /**
+     * Body 2 constraint position (space determined by mSpace).
+     * Note: Normally you would set mPoint1 = mPoint2 if the bodies are already placed how you want to constrain them (if mSpace = world space).
+     */
     var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

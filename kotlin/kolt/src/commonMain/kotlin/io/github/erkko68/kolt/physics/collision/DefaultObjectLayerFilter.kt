@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::DefaultObjectLayerFilter`. */
+/**
+ * Default filter class that uses the pair filter in combination with a specified layer to filter layers
+ *
+ * C++ `JPH::DefaultObjectLayerFilter`.
+ */
 class DefaultObjectLayerFilter internal constructor(internal val defaultObjectLayerFilterHandle: NativePointer, owned: Boolean = false) : ObjectLayerFilter(JphDefaultObjectLayerFilter_asObjectLayerFilter(defaultObjectLayerFilterHandle), owned), AutoCloseable {
     constructor(objectLayerPairFilter: ObjectLayerPairFilter, layer: Int) : this(JphDefaultObjectLayerFilter_create(objectLayerPairFilter.objectLayerPairFilterHandle, layer), owned = true)
 

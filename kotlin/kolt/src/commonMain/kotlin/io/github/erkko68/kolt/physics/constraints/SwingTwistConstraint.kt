@@ -33,7 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SwingTwistConstraint`. */
+/**
+ * A swing twist constraint is a specialized constraint for humanoid ragdolls that allows limited rotation only
+ *
+ * See: SwingTwistConstraintSettings for a description of the limits
+ *
+ * C++ `JPH::SwingTwistConstraint`.
+ */
 class SwingTwistConstraint internal constructor(internal val swingTwistConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSwingTwistConstraint_asTwoBodyConstraint(swingTwistConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: SwingTwistConstraintSettings) : this(JphSwingTwistConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.swingTwistConstraintSettingsHandle), owned = true)
 
@@ -43,6 +49,7 @@ class SwingTwistConstraint internal constructor(internal val swingTwistConstrain
     override fun close() =
         closeOnce { JphSwingTwistConstraint_release(swingTwistConstraintHandle) }
 
+    /** Constraint reference frame */
     val localSpacePosition1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -79,6 +86,7 @@ class SwingTwistConstraint internal constructor(internal val swingTwistConstrain
             Quat(returned)
         }
 
+    /** Constraint limits */
     var normalHalfConeAngle: Float
         get() = JphSwingTwistConstraint_GetNormalHalfConeAngle(swingTwistConstraintHandle)
         set(angle) = JphSwingTwistConstraint_SetNormalHalfConeAngle(swingTwistConstraintHandle, angle)
@@ -101,10 +109,12 @@ class SwingTwistConstraint internal constructor(internal val swingTwistConstrain
     val twistMotorSettings: MotorSettings
         get() = MotorSettings(JphSwingTwistConstraint_GetTwistMotorSettings(swingTwistConstraintHandle))
 
+    /** Friction control */
     var maxFrictionTorque: Float
         get() = JphSwingTwistConstraint_GetMaxFrictionTorque(swingTwistConstraintHandle)
         set(frictionTorque) = JphSwingTwistConstraint_SetMaxFrictionTorque(swingTwistConstraintHandle, frictionTorque)
 
+    /** Controls if the motors are on or off */
     var swingMotorState: EMotorState
         get() = EMotorState.of(JphSwingTwistConstraint_GetSwingMotorState(swingTwistConstraintHandle))
         set(state) = JphSwingTwistConstraint_SetSwingMotorState(swingTwistConstraintHandle, state.value)
@@ -113,6 +123,7 @@ class SwingTwistConstraint internal constructor(internal val swingTwistConstrain
         get() = EMotorState.of(JphSwingTwistConstraint_GetTwistMotorState(swingTwistConstraintHandle))
         set(state) = JphSwingTwistConstraint_SetTwistMotorState(swingTwistConstraintHandle, state.value)
 
+    /** Set the target angular velocity of body 2 in constraint space of body 2 */
     var targetAngularVelocityCS: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -123,9 +134,11 @@ class SwingTwistConstraint internal constructor(internal val swingTwistConstrain
         }
         set(angularVelocity) = interopScope { JphSwingTwistConstraint_SetTargetAngularVelocityCS(swingTwistConstraintHandle, toInterop(angularVelocity.toArray())) }
 
+    /** Set the target angular velocity of body 2 in body 2 space */
     fun setTargetAngularVelocityBS(angularVelocity: Vec3) =
         interopScope { JphSwingTwistConstraint_SetTargetAngularVelocityBS(swingTwistConstraintHandle, toInterop(angularVelocity.toArray())) }
 
+    /** Set the target orientation in constraint space (drives constraint to: GetRotationInConstraintSpace() == inOrientation) */
     var targetOrientationCS: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -136,9 +149,17 @@ class SwingTwistConstraint internal constructor(internal val swingTwistConstrain
         }
         set(orientation) = interopScope { JphSwingTwistConstraint_SetTargetOrientationCS(swingTwistConstraintHandle, toInterop(orientation.toArray())) }
 
+    /**
+     * Set the target orientation in body space (R2 = R1 * inOrientation, where R1 and R2 are the world space rotations for body 1 and 2).
+     * Solve: R2 * ConstraintToBody2 = R1 * ConstraintToBody1 * q (see SwingTwistConstraint::GetSwingTwist) and R2 = R1 * inOrientation for q.
+     */
     fun setTargetOrientationBS(orientation: Quat) =
         interopScope { JphSwingTwistConstraint_SetTargetOrientationBS(swingTwistConstraintHandle, toInterop(orientation.toArray())) }
 
+    /**
+     * Get current rotation of constraint in constraint space.
+     * Solve: R2 * ConstraintToBody2 = R1 * ConstraintToBody1 * q for q.
+     */
     val rotationInConstraintSpace: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -148,6 +169,7 @@ class SwingTwistConstraint internal constructor(internal val swingTwistConstrain
             Quat(returned)
         }
 
+    /** Get Lagrange multiplier from last physics update (the linear/angular impulse applied to satisfy the constraint) */
     val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

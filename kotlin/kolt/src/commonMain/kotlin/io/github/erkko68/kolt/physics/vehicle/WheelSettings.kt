@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::WheelSettings`. */
+/**
+ * Base class for wheel settings, each VehicleController can implement a derived class of this
+ *
+ * C++ `JPH::WheelSettings`.
+ */
 open class WheelSettings internal constructor(internal val wheelSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphWheelSettings_asSerializableObject(wheelSettingsHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphWheelSettings_createUpcalls(Upcalls.function), owned = true) {
@@ -46,12 +50,15 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
     override fun close() =
         closeOnce { JphWheelSettings_release(wheelSettingsHandle) }
 
+    /** Saves the contents in binary form to inStream. */
     open fun saveBinaryState(stream: StreamOut) =
         JphWheelSettings_SaveBinaryState(wheelSettingsHandle, stream.streamOutHandle)
 
+    /** Restores the contents in binary form to inStream. */
     open fun restoreBinaryState(stream: StreamIn) =
         JphWheelSettings_RestoreBinaryState(wheelSettingsHandle, stream.streamInHandle)
 
+    /** Attachment point of wheel suspension in local space of the body */
     var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -62,6 +69,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetPosition(wheelSettingsHandle, toInterop(value.toArray())) }
 
+    /** Where tire forces (suspension and traction) are applied, in local space of the body. A good default is the center of the wheel in its neutral pose. See mEnableSuspensionForcePoint. */
     var suspensionForcePoint: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -72,6 +80,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetSuspensionForcePoint(wheelSettingsHandle, toInterop(value.toArray())) }
 
+    /** Direction of the suspension in local space of the body, should point down */
     var suspensionDirection: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -82,6 +91,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetSuspensionDirection(wheelSettingsHandle, toInterop(value.toArray())) }
 
+    /** Direction of the steering axis in local space of the body, should point up (e.g. for a bike would be -mSuspensionDirection) */
     var steeringAxis: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -92,6 +102,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetSteeringAxis(wheelSettingsHandle, toInterop(value.toArray())) }
 
+    /** Up direction when the wheel is in the neutral steering position (usually VehicleConstraintSettings::mUp but can be used to give the wheel camber or for a bike would be -mSuspensionDirection) */
     var wheelUp: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -102,6 +113,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetWheelUp(wheelSettingsHandle, toInterop(value.toArray())) }
 
+    /** Forward direction when the wheel is in the neutral steering position (usually VehicleConstraintSettings::mForward but can be used to give the wheel toe, does not need to be perpendicular to mWheelUp) */
     var wheelForward: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -112,18 +124,22 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetWheelForward(wheelSettingsHandle, toInterop(value.toArray())) }
 
+    /** How long the suspension is in max raised position relative to the attachment point (m) */
     var suspensionMinLength: Float
         get() = JphWheelSettings_GetSuspensionMinLength(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetSuspensionMinLength(wheelSettingsHandle, value)
 
+    /** How long the suspension is in max droop position relative to the attachment point (m) */
     var suspensionMaxLength: Float
         get() = JphWheelSettings_GetSuspensionMaxLength(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetSuspensionMaxLength(wheelSettingsHandle, value)
 
+    /** The natural length (m) of the suspension spring is defined as mSuspensionMaxLength + mSuspensionPreloadLength. Can be used to preload the suspension as the spring is compressed by mSuspensionPreloadLength when the suspension is in max droop position. Note that this means when the vehicle touches the ground there is a discontinuity so it will also make the vehicle more bouncy as we're updating with discrete time steps. */
     var suspensionPreloadLength: Float
         get() = JphWheelSettings_GetSuspensionPreloadLength(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetSuspensionPreloadLength(wheelSettingsHandle, value)
 
+    /** Settings for the suspension spring */
     var suspensionSpring: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
@@ -132,14 +148,17 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = JphWheelSettings_SetSuspensionSpring(wheelSettingsHandle, value.springSettingsHandle)
 
+    /** Radius of the wheel (m) */
     var radius: Float
         get() = JphWheelSettings_GetRadius(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetRadius(wheelSettingsHandle, value)
 
+    /** Width of the wheel (m) */
     var width: Float
         get() = JphWheelSettings_GetWidth(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetWidth(wheelSettingsHandle, value)
 
+    /** Enables mSuspensionForcePoint, if disabled, the forces are applied at the collision contact point. This leads to a more accurate simulation when interacting with dynamic objects but makes the vehicle less stable. When setting this to true, all forces will be applied to a fixed point on the vehicle body. */
     var enableSuspensionForcePoint: Boolean
         get() = JphWheelSettings_GetEnableSuspensionForcePoint(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetEnableSuspensionForcePoint(wheelSettingsHandle, value)

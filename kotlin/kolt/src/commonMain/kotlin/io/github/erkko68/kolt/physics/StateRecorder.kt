@@ -33,19 +33,38 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::StateRecorder`. */
+/**
+ * Class that records the state of a physics system. Can be used to check if the simulation is deterministic by putting the recorder in validation mode.
+ * Can be used to restore the state to an earlier point in time. Note that only the state that is modified by the simulation is saved, configuration settings
+ * like body friction or restitution, motion quality etc. are not saved and need to be saved by the user if desired.
+ *
+ * C++ `JPH::StateRecorder`.
+ */
 open class StateRecorder internal constructor(internal val stateRecorderHandle: NativePointer, owned: Boolean = false) : StreamIn(JphStateRecorder_asStreamIn(stateRecorderHandle), owned) {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphStateRecorder_createUpcalls(Upcalls.function), owned = true) {
         if (this::class != StateRecorder::class) JphStateRecorder_bindUpcalls(stateRecorderHandle, Upcalls.reference(this))
     }
 
+    /**
+     * Sets the stream in validation mode. In this case the physics system ensures that before it calls ReadBytes that it will
+     * ensure that those bytes contain the current state. This makes it possible to step and save the state, restore to the previous
+     * step and step again and when the recorded state is not the same it can restore the expected state and any byte that changes
+     * due to a ReadBytes function can be caught to find out which part of the simulation is not deterministic.
+     * Note that validation only works when saving the full state of the simulation (EStateRecorderState::All, StateRecorderFilter == nullptr).
+     */
     fun setValidating(validating: Boolean) =
         JphStateRecorder_SetValidating(stateRecorderHandle, validating)
 
     val isValidating: Boolean
         get() = JphStateRecorder_IsValidating(stateRecorderHandle)
 
+    /**
+     * This allows splitting the state in multiple parts. While restoring, only the last part should have this flag set to true.
+     * Note that you should ensure that the different parts contain information for disjoint sets of bodies, constraints and contacts.
+     * E.g. if you restore the same contact twice, you get undefined behavior. In order to create disjoint sets you can use the StateRecorderFilter.
+     * Note that validation is not compatible with restoring a simulation state in multiple parts.
+     */
     var isLastPart: Boolean
         get() = JphStateRecorder_IsLastPart(stateRecorderHandle)
         set(isLastPart) = JphStateRecorder_SetIsLastPart(stateRecorderHandle, isLastPart)

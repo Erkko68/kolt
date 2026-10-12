@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SoftBodyCreationSettings`. */
+/**
+ * This class contains the information needed to create a soft body object
+ * Note: Soft bodies are still in development and come with several caveats. Read the Architecture and API documentation for more information!
+ *
+ * C++ `JPH::SoftBodyCreationSettings`.
+ */
 class SoftBodyCreationSettings internal constructor(internal val softBodyCreationSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSoftBodyCreationSettings_create(), owned = true)
     constructor(settings: SoftBodySharedSettings?, position: Vec3, rotation: Quat, objectLayer: Int) : this(interopScope { JphSoftBodyCreationSettings_create_SoftBodySharedSettings_RVec3Arg_QuatArg_ObjectLayer(settings?.softBodySharedSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), objectLayer) }, owned = true)
@@ -41,16 +46,20 @@ class SoftBodyCreationSettings internal constructor(internal val softBodyCreatio
     override fun close() =
         closeOnce { JphSoftBodyCreationSettings_destroy(softBodyCreationSettingsHandle) }
 
+    /** Saves the state of this object in binary form to inStream. Doesn't store the shared settings nor the group filter. */
     fun saveBinaryState(stream: StreamOut) =
         JphSoftBodyCreationSettings_SaveBinaryState(softBodyCreationSettingsHandle, stream.streamOutHandle)
 
+    /** Restore the state of this object from inStream. Doesn't restore the shared settings nor the group filter. */
     fun restoreBinaryState(stream: StreamIn) =
         JphSoftBodyCreationSettings_RestoreBinaryState(softBodyCreationSettingsHandle, stream.streamInHandle)
 
+    /** Defines the configuration of this soft body */
     var settings: SoftBodySharedSettings?
         get() = JphSoftBodyCreationSettings_GetSettings(softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { SoftBodySharedSettings(it) }
         set(value) = JphSoftBodyCreationSettings_SetSettings(softBodyCreationSettingsHandle, value?.softBodySharedSettingsHandle ?: NullPointer)
 
+    /** Initial position of the soft body */
     var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -61,6 +70,7 @@ class SoftBodyCreationSettings internal constructor(internal val softBodyCreatio
         }
         set(value) = interopScope { JphSoftBodyCreationSettings_SetPosition(softBodyCreationSettingsHandle, toInterop(value.toArray())) }
 
+    /** Initial rotation of the soft body */
     var rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -71,6 +81,7 @@ class SoftBodyCreationSettings internal constructor(internal val softBodyCreatio
         }
         set(value) = interopScope { JphSoftBodyCreationSettings_SetRotation(softBodyCreationSettingsHandle, toInterop(value.toArray())) }
 
+    /** User data value (can be used by application) */
     var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -81,10 +92,12 @@ class SoftBodyCreationSettings internal constructor(internal val softBodyCreatio
         }
         set(value) = JphSoftBodyCreationSettings_SetUserData(softBodyCreationSettingsHandle, value)
 
+    /** The collision layer this body belongs to (determines if two objects can collide) */
     var objectLayer: Int
         get() = JphSoftBodyCreationSettings_GetObjectLayer(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetObjectLayer(softBodyCreationSettingsHandle, value)
 
+    /** The collision group this body belongs to (determines if two objects can collide) */
     var collisionGroup: CollisionGroup
         get() = run {
             val returned = CollisionGroup(JphCollisionGroup_create(), owned = true)
@@ -93,50 +106,62 @@ class SoftBodyCreationSettings internal constructor(internal val softBodyCreatio
         }
         set(value) = JphSoftBodyCreationSettings_SetCollisionGroup(softBodyCreationSettingsHandle, value.collisionGroupHandle)
 
+    /** Number of solver iterations */
     var numIterations: Int
         get() = JphSoftBodyCreationSettings_GetNumIterations(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetNumIterations(softBodyCreationSettingsHandle, value)
 
+    /** Linear damping: dv/dt = -mLinearDamping * v. Value should be zero or positive and is usually close to 0. */
     var linearDamping: Float
         get() = JphSoftBodyCreationSettings_GetLinearDamping(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetLinearDamping(softBodyCreationSettingsHandle, value)
 
+    /** Maximum linear velocity that a vertex can reach (m/s) */
     var maxLinearVelocity: Float
         get() = JphSoftBodyCreationSettings_GetMaxLinearVelocity(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetMaxLinearVelocity(softBodyCreationSettingsHandle, value)
 
+    /** Restitution when colliding */
     var restitution: Float
         get() = JphSoftBodyCreationSettings_GetRestitution(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetRestitution(softBodyCreationSettingsHandle, value)
 
+    /** Friction coefficient when colliding */
     var friction: Float
         get() = JphSoftBodyCreationSettings_GetFriction(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetFriction(softBodyCreationSettingsHandle, value)
 
+    /** n * R * T, amount of substance * ideal gas constant * absolute temperature, see https://en.wikipedia.org/wiki/Pressure */
     var pressure: Float
         get() = JphSoftBodyCreationSettings_GetPressure(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetPressure(softBodyCreationSettingsHandle, value)
 
+    /** Value to multiply gravity with for this body */
     var gravityFactor: Float
         get() = JphSoftBodyCreationSettings_GetGravityFactor(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetGravityFactor(softBodyCreationSettingsHandle, value)
 
+    /** How big the particles are, can be used to push the vertices a little bit away from the surface of other bodies to prevent z-fighting */
     var vertexRadius: Float
         get() = JphSoftBodyCreationSettings_GetVertexRadius(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetVertexRadius(softBodyCreationSettingsHandle, value)
 
+    /** Update the position of the body while simulating (set to false for something that is attached to the static world) */
     var updatePosition: Boolean
         get() = JphSoftBodyCreationSettings_GetUpdatePosition(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetUpdatePosition(softBodyCreationSettingsHandle, value)
 
+    /** Bake specified mRotation in the vertices and set the body rotation to identity (simulation is slightly more accurate if the rotation of a soft body is kept to identity) */
     var makeRotationIdentity: Boolean
         get() = JphSoftBodyCreationSettings_GetMakeRotationIdentity(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetMakeRotationIdentity(softBodyCreationSettingsHandle, value)
 
+    /** If this body can go to sleep or not */
     var allowSleeping: Boolean
         get() = JphSoftBodyCreationSettings_GetAllowSleeping(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetAllowSleeping(softBodyCreationSettingsHandle, value)
 
+    /** If the faces in this soft body should be treated as double sided for the purpose of collision detection (ray cast / collide shape / cast shape) */
     var facesDoubleSided: Boolean
         get() = JphSoftBodyCreationSettings_GetFacesDoubleSided(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetFacesDoubleSided(softBodyCreationSettingsHandle, value)

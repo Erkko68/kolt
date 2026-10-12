@@ -33,7 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ObjectLayerPairFilterMask`. */
+/**
+ * Filter class to test if two objects can collide based on their object layer. Used while finding collision pairs.
+ * Uses group bits and mask bits. Two layers can collide if Object1.Group
+ * &
+ * Object2.Mask is non-zero and Object2.Group
+ * &
+ * Object1.Mask is non-zero.
+ * The behavior is similar to that in e.g. Bullet.
+ * This implementation works together with BroadPhaseLayerInterfaceMask and ObjectVsBroadPhaseLayerFilterMask
+ *
+ * C++ `JPH::ObjectLayerPairFilterMask`.
+ */
 open class ObjectLayerPairFilterMask internal constructor(internal val objectLayerPairFilterMaskHandle: NativePointer, owned: Boolean = false) : ObjectLayerPairFilter(JphObjectLayerPairFilterMask_asObjectLayerPairFilter(objectLayerPairFilterMaskHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphObjectLayerPairFilterMask_createUpcalls(Upcalls.function), owned = true) {
@@ -52,12 +63,15 @@ open class ObjectLayerPairFilterMask internal constructor(internal val objectLay
     }
 
     companion object {
+        /** Construct an ObjectLayer from a group and mask bits */
         fun getObjectLayer(group: Int, mask: Int): Int =
             JphObjectLayerPairFilterMask_sGetObjectLayer(group, mask)
 
+        /** Get the group bits from an ObjectLayer */
         fun getGroup(objectLayer: Int): Int =
             JphObjectLayerPairFilterMask_sGetGroup(objectLayer)
 
+        /** Get the mask bits from an ObjectLayer */
         fun getMask(objectLayer: Int): Int =
             JphObjectLayerPairFilterMask_sGetMask(objectLayer)
     }

@@ -33,7 +33,32 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleConstraint`. */
+/**
+ * Constraint that simulates a vehicle
+ * Note: Don't forget to register the constraint as a StepListener with the PhysicsSystem!
+ *
+ * When the vehicle drives over very light objects (rubble) you may see the car body dip down. This is a known issue and is an artifact of the iterative solver that Jolt is using.
+ * Basically if a light object is sandwiched between two heavy objects (the static floor and the car body), the light object is not able to transfer enough force from the ground to
+ * the car body to keep the car body up. You can see this effect in the HeavyOnLightTest sample, the boxes on the right have a lot of penetration because they're on top of light objects.
+ *
+ * There are a couple of ways to improve this:
+ *
+ * 1. You can increase the number of velocity steps (global settings PhysicsSettings::mNumVelocitySteps or if you only want to increase it on
+ * the vehicle you can use VehicleConstraintSettings::mNumVelocityStepsOverride). E.g. going from 10 to 30 steps in the HeavyOnLightTest sample makes the penetration a lot less.
+ * The number of position steps can also be increased (the first prevents the body from going down, the second corrects it if the problem did
+ * occur which inevitably happens due to numerical drift). This solution costs CPU cycles.
+ *
+ * 2. You can reduce the mass difference between the vehicle body and the rubble on the floor (by making the rubble heavier or the car lighter).
+ *
+ * 3. You could filter out collisions between the vehicle collision test and the rubble completely. This would make the wheels ignore the rubble but would cause the vehicle to drive
+ * through it as if nothing happened. You could create fake wheels (keyframed bodies) that move along with the vehicle and that only collide with rubble (and not the vehicle or the ground).
+ * This would cause the vehicle to push away the rubble without the rubble being able to affect the vehicle (unless it hits the main body of course).
+ *
+ * Note that when driving over rubble, you may see the wheel jump up and down quite quickly because one frame a collision is found and the next frame not.
+ * To alleviate this, it may be needed to smooth the motion of the visual mesh for the wheel.
+ *
+ * C++ `JPH::VehicleConstraint`.
+ */
 class VehicleConstraint internal constructor(internal val vehicleConstraintHandle: NativePointer, owned: Boolean = false) : Constraint(JphVehicleConstraint_asConstraint(vehicleConstraintHandle), owned), AutoCloseable {
     constructor(vehicleBody: Body, settings: VehicleConstraintSettings) : this(JphVehicleConstraint_create(vehicleBody.bodyHandle, settings.vehicleConstraintSettingsHandle), owned = true)
 
@@ -43,14 +68,20 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
     override fun close() =
         closeOnce { JphVehicleConstraint_release(vehicleConstraintHandle) }
 
+    /** Defines the maximum pitch/roll angle (rad), can be used to avoid the car from getting upside down. The vehicle up direction will stay within a cone centered around the up axis with half top angle mMaxPitchRollAngle, set to pi to turn off. */
     var maxPitchRollAngle: Float
         get() = JphVehicleConstraint_GetMaxPitchRollAngle(vehicleConstraintHandle)
         set(maxPitchRollAngle) = JphVehicleConstraint_SetMaxPitchRollAngle(vehicleConstraintHandle, maxPitchRollAngle)
 
+    /** Set the interface that tests collision between wheel and ground */
     var vehicleCollisionTester: VehicleCollisionTester?
         get() = JphVehicleConstraint_GetVehicleCollisionTester(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleCollisionTester(it) }
         set(tester) = JphVehicleConstraint_SetVehicleCollisionTester(vehicleConstraintHandle, tester?.vehicleCollisionTesterHandle ?: NullPointer)
 
+    /**
+     * Set the function that combines the friction of two bodies and returns it
+     * Default method is the geometric mean: sqrt(friction1 * friction2).
+     */
     fun setCombineFriction(combineFriction: ((Int, Float, Float, Body, SubShapeID) -> Pair<Float, Float>)?) =
         run {
             val combineFrictionUser = if (combineFriction == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> val returned = combineFriction(readSlot(args, 0).toInt(), readFloats(readPointerSlot(args, 1), 1).readF32(0), readFloats(readPointerSlot(args, 2), 1).readF32(0), Body(readPointerSlot(args, 3)), SubShapeID(readSlot(args, 4).toInt())); writeFloats(readPointerSlot(args, 1), floatArrayOf(returned.first)); writeFloats(readPointerSlot(args, 2), floatArrayOf(returned.second)) })
@@ -75,6 +106,7 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
             JphVehicleConstraint_SetPostStepCallback(vehicleConstraintHandle, Upcalls.function, postStepCallbackUser)
         }
 
+    /** Override gravity for this vehicle. Note that overriding gravity will set the gravity factor of the vehicle body to 0 and apply gravity in the PhysicsStepListener instead. */
     fun overrideGravity(gravity: Vec3) =
         interopScope { JphVehicleConstraint_OverrideGravity(vehicleConstraintHandle, toInterop(gravity.toArray())) }
 
@@ -93,6 +125,7 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
     fun resetGravityOverride() =
         JphVehicleConstraint_ResetGravityOverride(vehicleConstraintHandle)
 
+    /** Get the local space forward vector of the vehicle */
     val localForward: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -102,6 +135,7 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
             Vec3(returned)
         }
 
+    /** Get the local space up vector of the vehicle */
     val localUp: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -111,6 +145,7 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
             Vec3(returned)
         }
 
+    /** Vector indicating the world space up direction (used to limit vehicle pitch/roll), calculated every frame by inverting gravity */
     val worldUp: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -120,12 +155,15 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
             Vec3(returned)
         }
 
+    /** Access to the vehicle body */
     val vehicleBody: Body?
         get() = JphVehicleConstraint_GetVehicleBody(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
+    /** Access to the vehicle controller interface (determines acceleration / deceleration) */
     val controller: VehicleController?
         get() = JphVehicleConstraint_GetController(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleController(it) }
 
+    /** Get the state of a wheels (writable interface, allows you to make changes to the configuration which will take effect the next time step) */
     val wheels: List<Wheel>
         get() = interopScope {
             val count = JphVehicleConstraint_GetWheels(vehicleConstraintHandle, NullPointer, 0)
@@ -134,9 +172,17 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
             readPointers(returnedPointer, count).map { Wheel(it) }
         }
 
+    /** Get the state of a wheel */
     fun getWheel(idx: Int): Wheel? =
         JphVehicleConstraint_GetWheel(vehicleConstraintHandle, idx).takeIf { it != NullPointer }?.let { Wheel(it) }
 
+    /**
+     * Get the basis vectors for the wheel in local space to the vehicle body (note: basis does not rotate when the wheel rotates around its axis)
+     * @param wheel Wheel to fetch basis for
+     * @return Forward vector for the wheel
+     * @return Up vector for the wheel
+     * @return Right vector for the wheel
+     */
     fun getWheelLocalBasis(wheel: Wheel?): Triple<Vec3, Vec3, Vec3> =
         interopScope {
             val forwardArray = FloatArray(4)
@@ -152,6 +198,12 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
             Triple(Vec3(forwardArray), Vec3(upArray), Vec3(rightArray))
         }
 
+    /**
+     * Get the transform of a wheel in local space to the vehicle body, returns a matrix that transforms a cylinder aligned with the Y axis in body space (not COM space)
+     * @param wheelIndex Index of the wheel to fetch
+     * @param wheelRight Unit vector that indicates right in model space of the wheel (so if you only have 1 wheel model, you probably want to specify the opposite direction for the left and right wheels)
+     * @param wheelUp Unit vector that indicates up in model space of the wheel
+     */
     fun getWheelLocalTransform(wheelIndex: Int, wheelRight: Vec3, wheelUp: Vec3): Mat44 =
         interopScope {
             val returned = FloatArray(16)
@@ -161,6 +213,12 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
             Mat44(returned)
         }
 
+    /**
+     * Get the transform of a wheel in world space, returns a matrix that transforms a cylinder aligned with the Y axis in world space
+     * @param wheelIndex Index of the wheel to fetch
+     * @param wheelRight Unit vector that indicates right in model space of the wheel (so if you only have 1 wheel model, you probably want to specify the opposite direction for the left and right wheels)
+     * @param wheelUp Unit vector that indicates up in model space of the wheel
+     */
     fun getWheelWorldTransform(wheelIndex: Int, wheelRight: Vec3, wheelUp: Vec3): Mat44 =
         interopScope {
             val returned = FloatArray(16)
@@ -178,10 +236,23 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
             returned
         }
 
+    /**
+     * Number of simulation steps between wheel collision tests when the vehicle is active. Default is 1. 0 = never, 1 = every step, 2 = every other step, etc.
+     * Note that if a vehicle has multiple wheels and the number of steps > 1, the wheels will be tested in a round robin fashion.
+     * If there are multiple vehicles, the tests will be spread out based on the BodyID of the vehicle.
+     * If you set this to test less than every step, you may see simulation artifacts. This setting can be used to reduce the cost of simulating vehicles in the distance.
+     */
     var numStepsBetweenCollisionTestActive: Int
         get() = JphVehicleConstraint_GetNumStepsBetweenCollisionTestActive(vehicleConstraintHandle)
         set(steps) = JphVehicleConstraint_SetNumStepsBetweenCollisionTestActive(vehicleConstraintHandle, steps)
 
+    /**
+     * Number of simulation steps between wheel collision tests when the vehicle is inactive. Default is 1. 0 = never, 1 = every step, 2 = every other step, etc.
+     * Note that if a vehicle has multiple wheels and the number of steps > 1, the wheels will be tested in a round robin fashion.
+     * If there are multiple vehicles, the tests will be spread out based on the BodyID of the vehicle.
+     * This number can be lower than the number of steps when the vehicle is active as the only purpose of this test is
+     * to allow the vehicle to wake up in response to bodies moving into the wheels but not touching the body of the vehicle.
+     */
     var numStepsBetweenCollisionTestInactive: Int
         get() = JphVehicleConstraint_GetNumStepsBetweenCollisionTestInactive(vehicleConstraintHandle)
         set(steps) = JphVehicleConstraint_SetNumStepsBetweenCollisionTestInactive(vehicleConstraintHandle, steps)

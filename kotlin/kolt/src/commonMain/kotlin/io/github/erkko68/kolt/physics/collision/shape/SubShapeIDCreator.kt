@@ -33,13 +33,19 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SubShapeIDCreator`. */
+/**
+ * A sub shape id creator can be used to create a new sub shape id by recursing through the shape
+ * hierarchy and pushing new ID's onto the chain
+ *
+ * C++ `JPH::SubShapeIDCreator`.
+ */
 class SubShapeIDCreator internal constructor(internal val subShapeIDCreatorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSubShapeIDCreator_create(), owned = true)
 
     override fun close() =
         closeOnce { JphSubShapeIDCreator_destroy(subShapeIDCreatorHandle) }
 
+    /** Add a new id to the chain of id's and return it */
     fun pushID(value: Int, bits: Int): SubShapeIDCreator =
         run {
             val returned = SubShapeIDCreator(JphSubShapeIDCreator_create(), owned = true)
@@ -50,6 +56,7 @@ class SubShapeIDCreator internal constructor(internal val subShapeIDCreatorHandl
     val id: SubShapeID
         get() = SubShapeID(JphSubShapeIDCreator_GetID(subShapeIDCreatorHandle))
 
+    /** Get the number of bits that have been written to the sub shape ID so far */
     val numBitsWritten: Int
         get() = JphSubShapeIDCreator_GetNumBitsWritten(subShapeIDCreatorHandle)
 }

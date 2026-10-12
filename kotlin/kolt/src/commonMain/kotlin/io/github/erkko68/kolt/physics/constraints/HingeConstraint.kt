@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::HingeConstraint`. */
+/**
+ * A hinge constraint constrains 2 bodies on a single point and allows only a single axis of rotation
+ *
+ * C++ `JPH::HingeConstraint`.
+ */
 class HingeConstraint internal constructor(internal val hingeConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphHingeConstraint_asTwoBodyConstraint(hingeConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: HingeConstraintSettings) : this(JphHingeConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.hingeConstraintSettingsHandle), owned = true)
 
@@ -43,6 +47,7 @@ class HingeConstraint internal constructor(internal val hingeConstraintHandle: N
     override fun close() =
         closeOnce { JphHingeConstraint_release(hingeConstraintHandle) }
 
+    /** Get the attachment point for body 1 relative to body 1 COM (transform by Body::GetCenterOfMassTransform to take to world space) */
     val localSpacePoint1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -52,6 +57,7 @@ class HingeConstraint internal constructor(internal val hingeConstraintHandle: N
             Vec3(returned)
         }
 
+    /** Get the attachment point for body 2 relative to body 2 COM (transform by Body::GetCenterOfMassTransform to take to world space) */
     val localSpacePoint2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -97,6 +103,7 @@ class HingeConstraint internal constructor(internal val hingeConstraintHandle: N
             Vec3(returned)
         }
 
+    /** Get the current rotation angle from the rest position */
     val currentAngle: Float
         get() = JphHingeConstraint_GetCurrentAngle(hingeConstraintHandle)
 
@@ -119,9 +126,15 @@ class HingeConstraint internal constructor(internal val hingeConstraintHandle: N
         get() = JphHingeConstraint_GetTargetAngle(hingeConstraintHandle)
         set(angle) = JphHingeConstraint_SetTargetAngle(hingeConstraintHandle, angle)
 
+    /**
+     * Set the target orientation in body space (R2 = R1 * inOrientation, where R1 and R2 are the world space rotations for body 1 and 2).
+     * Calculates the local space target angle and calls SetTargetAngle. Motor state must be EMotorState::Position or EMotorState::PositionAndVelocity for this to have any effect.
+     * May set the wrong angle if inOrientation contains large rotations around other axis than the hinge axis.
+     */
     fun setTargetOrientationBS(orientation: Quat) =
         interopScope { JphHingeConstraint_SetTargetOrientationBS(hingeConstraintHandle, toInterop(orientation.toArray())) }
 
+    /** Update the rotation limits of the hinge, value in radians (see HingeConstraintSettings) */
     fun setLimits(limitsMin: Float, limitsMax: Float) =
         JphHingeConstraint_SetLimits(hingeConstraintHandle, limitsMin, limitsMax)
 
@@ -138,6 +151,7 @@ class HingeConstraint internal constructor(internal val hingeConstraintHandle: N
         get() = SpringSettings(JphHingeConstraint_GetLimitsSpringSettings(hingeConstraintHandle))
         set(limitsSpringSettings) = JphHingeConstraint_SetLimitsSpringSettings(hingeConstraintHandle, limitsSpringSettings.springSettingsHandle)
 
+    /** Get Lagrange multiplier from last physics update (the linear/angular impulse applied to satisfy the constraint) */
     val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

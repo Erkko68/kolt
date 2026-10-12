@@ -33,23 +33,31 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleTransmissionSettings`. */
+/**
+ * Configuration for the transmission of a vehicle (gear box)
+ *
+ * C++ `JPH::VehicleTransmissionSettings`.
+ */
 open class VehicleTransmissionSettings internal constructor(internal val vehicleTransmissionSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphVehicleTransmissionSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphVehicleTransmissionSettings_destroy(vehicleTransmissionSettingsHandle) }
 
+    /** Saves the contents in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphVehicleTransmissionSettings_SaveBinaryState(vehicleTransmissionSettingsHandle, stream.streamOutHandle)
 
+    /** Restores the contents in binary form to inStream. */
     fun restoreBinaryState(stream: StreamIn) =
         JphVehicleTransmissionSettings_RestoreBinaryState(vehicleTransmissionSettingsHandle, stream.streamInHandle)
 
+    /** How to switch gears */
     var mode: ETransmissionMode
         get() = ETransmissionMode.of(JphVehicleTransmissionSettings_GetMode(vehicleTransmissionSettingsHandle))
         set(value) = JphVehicleTransmissionSettings_SetMode(vehicleTransmissionSettingsHandle, value.value)
 
+    /** Ratio in rotation rate between engine and gear box, first element is 1st gear, 2nd element 2nd gear etc. */
     var gearRatios: FloatArray
         get() = interopScope {
             val count = JphVehicleTransmissionSettings_GetGearRatios(vehicleTransmissionSettingsHandle, NullPointer, 0)
@@ -61,6 +69,7 @@ open class VehicleTransmissionSettings internal constructor(internal val vehicle
         }
         set(value) = interopScope { JphVehicleTransmissionSettings_SetGearRatios(vehicleTransmissionSettingsHandle, toInterop(value), value.size) }
 
+    /** Ratio in rotation rate between engine and gear box when driving in reverse */
     var reverseGearRatios: FloatArray
         get() = interopScope {
             val count = JphVehicleTransmissionSettings_GetReverseGearRatios(vehicleTransmissionSettingsHandle, NullPointer, 0)
@@ -72,26 +81,32 @@ open class VehicleTransmissionSettings internal constructor(internal val vehicle
         }
         set(value) = interopScope { JphVehicleTransmissionSettings_SetReverseGearRatios(vehicleTransmissionSettingsHandle, toInterop(value), value.size) }
 
+    /** How long it takes to switch gears (s), only used in auto mode */
     var switchTime: Float
         get() = JphVehicleTransmissionSettings_GetSwitchTime(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetSwitchTime(vehicleTransmissionSettingsHandle, value)
 
+    /** How long it takes to release the clutch (go to full friction), only used in auto mode */
     var clutchReleaseTime: Float
         get() = JphVehicleTransmissionSettings_GetClutchReleaseTime(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetClutchReleaseTime(vehicleTransmissionSettingsHandle, value)
 
+    /** How long to wait after releasing the clutch before another switch is attempted (s), only used in auto mode */
     var switchLatency: Float
         get() = JphVehicleTransmissionSettings_GetSwitchLatency(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetSwitchLatency(vehicleTransmissionSettingsHandle, value)
 
+    /** If RPM of engine is bigger then this we will shift a gear up, only used in auto mode */
     var shiftUpRPM: Float
         get() = JphVehicleTransmissionSettings_GetShiftUpRPM(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetShiftUpRPM(vehicleTransmissionSettingsHandle, value)
 
+    /** If RPM of engine is smaller then this we will shift a gear down, only used in auto mode */
     var shiftDownRPM: Float
         get() = JphVehicleTransmissionSettings_GetShiftDownRPM(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetShiftDownRPM(vehicleTransmissionSettingsHandle, value)
 
+    /** Strength of the clutch when fully engaged. Total torque a clutch applies is Torque = ClutchStrength * (Velocity Engine - Avg Velocity Wheels At Clutch) (units: k m^2 s^-1) */
     var clutchStrength: Float
         get() = JphVehicleTransmissionSettings_GetClutchStrength(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetClutchStrength(vehicleTransmissionSettingsHandle, value)

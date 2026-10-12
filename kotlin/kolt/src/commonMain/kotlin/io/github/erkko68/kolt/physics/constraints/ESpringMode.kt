@@ -33,10 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ESpringMode`. */
+/**
+ * Enum used by constraints to specify how the spring is defined
+ *
+ * C++ `JPH::ESpringMode`.
+ */
 enum class ESpringMode(internal val value: Int) {
+    /** Frequency and damping are specified. */
     FrequencyAndDamping(0),
+    /** Stiffness and damping are specified. */
     StiffnessAndDamping(1),
+    /** Stiffness and damping divided by mass / inertia are specified (also known as acceleration mode). This makes it easier to tune the spring and makes it mass independent. */
     MassNormalizedStiffnessAndDamping(2);
 
     internal companion object {

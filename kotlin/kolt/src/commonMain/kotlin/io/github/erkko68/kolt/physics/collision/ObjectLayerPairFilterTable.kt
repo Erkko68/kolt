@@ -33,19 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ObjectLayerPairFilterTable`. */
+/**
+ * Filter class to test if two objects can collide based on their object layer. Used while finding collision pairs.
+ * This implementation uses a table to determine if two layers can collide.
+ *
+ * C++ `JPH::ObjectLayerPairFilterTable`.
+ */
 class ObjectLayerPairFilterTable internal constructor(internal val objectLayerPairFilterTableHandle: NativePointer, owned: Boolean = false) : ObjectLayerPairFilter(JphObjectLayerPairFilterTable_asObjectLayerPairFilter(objectLayerPairFilterTableHandle), owned), AutoCloseable {
     constructor(numObjectLayers: Int) : this(JphObjectLayerPairFilterTable_create(numObjectLayers), owned = true)
 
     override fun close() =
         closeOnce { JphObjectLayerPairFilterTable_destroy(objectLayerPairFilterTableHandle) }
 
+    /** Get the number of object layers */
     val numObjectLayers: Int
         get() = JphObjectLayerPairFilterTable_GetNumObjectLayers(objectLayerPairFilterTableHandle)
 
+    /** Disable collision between two object layers */
     fun disableCollision(layer1: Int, layer2: Int) =
         JphObjectLayerPairFilterTable_DisableCollision(objectLayerPairFilterTableHandle, layer1, layer2)
 
+    /** Enable collision between two object layers */
     fun enableCollision(layer1: Int, layer2: Int) =
         JphObjectLayerPairFilterTable_EnableCollision(objectLayerPairFilterTableHandle, layer1, layer2)
 }

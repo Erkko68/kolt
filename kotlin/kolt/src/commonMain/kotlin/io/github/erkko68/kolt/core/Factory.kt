@@ -33,16 +33,22 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Factory`. */
+/**
+ * This class is responsible for creating instances of classes based on their name or hash and is mainly used for deserialization of saved data.
+ *
+ * C++ `JPH::Factory`.
+ */
 class Factory internal constructor(internal val factoryHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphFactory_create(), owned = true)
 
     override fun close() =
         closeOnce { JphFactory_destroy(factoryHandle) }
 
+    /** Create an object */
     fun createObject(name: String?): NativePointer =
         interopScope { JphFactory_CreateObject(factoryHandle, toInterop(name)) }
 
+    /** Unregisters all types */
     fun clear() =
         JphFactory_Clear(factoryHandle)
 }

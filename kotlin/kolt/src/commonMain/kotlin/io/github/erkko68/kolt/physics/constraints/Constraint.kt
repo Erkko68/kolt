@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Constraint`. */
+/**
+ * Base class for all physics constraints. A constraint removes one or more degrees of freedom for a rigid body.
+ *
+ * C++ `JPH::Constraint`.
+ */
 open class Constraint internal constructor(internal val constraintHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     open fun addRef() =
         own { JphConstraint_addRef(constraintHandle) }
@@ -41,28 +45,38 @@ open class Constraint internal constructor(internal val constraintHandle: Native
     override fun close() =
         closeOnce { JphConstraint_release(constraintHandle) }
 
+    /** Get the type of a constraint */
     val type: EConstraintType
         get() = EConstraintType.of(JphConstraint_GetType(constraintHandle))
 
+    /** Get the sub type of a constraint */
     val subType: EConstraintSubType
         get() = EConstraintSubType.of(JphConstraint_GetSubType(constraintHandle))
 
+    /**
+     * Priority of the constraint when solving. Higher numbers have are more likely to be solved correctly.
+     * Note that if you want a deterministic simulation and you cannot guarantee the order in which constraints are added/removed, you can make the priority for all constraints unique to get a deterministic ordering.
+     */
     var constraintPriority: Int
         get() = JphConstraint_GetConstraintPriority(constraintHandle)
         set(priority) = JphConstraint_SetConstraintPriority(constraintHandle, priority)
 
+    /** Used only when the constraint is active. Override for the number of solver velocity iterations to run, 0 means use the default in PhysicsSettings::mNumVelocitySteps. The number of iterations to use is the max of all contacts and constraints in the island. */
     var numVelocityStepsOverride: Int
         get() = JphConstraint_GetNumVelocityStepsOverride(constraintHandle)
         set(n) = JphConstraint_SetNumVelocityStepsOverride(constraintHandle, n)
 
+    /** Used only when the constraint is active. Override for the number of solver position iterations to run, 0 means use the default in PhysicsSettings::mNumPositionSteps. The number of iterations to use is the max of all contacts and constraints in the island. */
     var numPositionStepsOverride: Int
         get() = JphConstraint_GetNumPositionStepsOverride(constraintHandle)
         set(n) = JphConstraint_SetNumPositionStepsOverride(constraintHandle, n)
 
+    /** Test if a constraint is enabled. */
     var enabled: Boolean
         get() = JphConstraint_GetEnabled(constraintHandle)
         set(enabled) = JphConstraint_SetEnabled(constraintHandle, enabled)
 
+    /** Access to the user data, can be used for anything by the application */
     var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -73,21 +87,41 @@ open class Constraint internal constructor(internal val constraintHandle: Native
         }
         set(userData) = JphConstraint_SetUserData(constraintHandle, userData)
 
+    /**
+     * Notify the constraint that the shape of a body has changed and that its center of mass has moved by inDeltaCOM.
+     * Bodies don't know which constraints are connected to them so the user is responsible for notifying the relevant constraints when a body changes.
+     * @param bodyID ID of the body that has changed
+     * @param deltaCOM The delta of the center of mass of the body (shape->GetCenterOfMass() - shape_before_change->GetCenterOfMass())
+     */
     fun notifyShapeChanged(bodyID: BodyID, deltaCOM: Vec3) =
         interopScope { JphConstraint_NotifyShapeChanged(constraintHandle, bodyID.value, toInterop(deltaCOM.toArray())) }
 
+    /**
+     * Notify the system that the configuration of the bodies and/or constraint has changed enough so that the warm start impulses should not be applied the next frame.
+     * You can use this function for example when repositioning a ragdoll through Ragdoll::SetPose in such a way that the orientation of the bodies completely changes so that
+     * the previous frame impulses are no longer a good approximation of what the impulses will be in the next frame. Calling this function when there are no big changes
+     * will result in the constraints being much 'softer' than usual so they are more easily violated (e.g. a long chain of bodies might sag a bit if you call this every frame).
+     */
     fun resetWarmStart() =
         JphConstraint_ResetWarmStart(constraintHandle)
 
+    /**
+     * Solver interface
+     * {
+     * @
+     */
     val isActive: Boolean
         get() = JphConstraint_IsActive(constraintHandle)
 
+    /** Saving state for replay */
     fun saveState(stream: StateRecorder) =
         JphConstraint_SaveState(constraintHandle, stream.stateRecorderHandle)
 
+    /** Restoring state for replay */
     fun restoreState(stream: StateRecorder) =
         JphConstraint_RestoreState(constraintHandle, stream.stateRecorderHandle)
 
+    /** Debug function to convert a constraint to its settings, note that this will not save to which bodies the constraint is connected to */
     val constraintSettings: ConstraintSettings?
         get() = JphConstraint_GetConstraintSettings(constraintHandle).takeIf { it != NullPointer }?.let { ConstraintSettings(it, owned = true) }
 }

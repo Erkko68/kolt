@@ -33,20 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CollidePointResult`. */
+/**
+ * Structure that holds the result of colliding a point against a shape
+ *
+ * C++ `JPH::CollidePointResult`.
+ */
 class CollidePointResult internal constructor(internal val collidePointResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCollidePointResult_create(), owned = true)
 
     override fun close() =
         closeOnce { JphCollidePointResult_destroy(collidePointResultHandle) }
 
+    /** Function required by the CollisionCollector. A smaller fraction is considered to be a 'better hit'. For point queries there is no sensible return value. */
     val earlyOutFraction: Float
         get() = JphCollidePointResult_GetEarlyOutFraction(collidePointResultHandle)
 
+    /** Body that was hit */
     var bodyID: BodyID
         get() = BodyID(JphCollidePointResult_GetBodyID(collidePointResultHandle))
         set(value) = JphCollidePointResult_SetBodyID(collidePointResultHandle, value.value)
 
+    /** Sub shape ID of shape that we collided against */
     var subShapeID2: SubShapeID
         get() = SubShapeID(JphCollidePointResult_GetSubShapeID2(collidePointResultHandle))
         set(value) = JphCollidePointResult_SetSubShapeID2(collidePointResultHandle, value.value)

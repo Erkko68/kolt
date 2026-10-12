@@ -33,44 +33,60 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::MotorcycleController`. */
+/**
+ * Runtime controller class
+ *
+ * C++ `JPH::MotorcycleController`.
+ */
 class MotorcycleController internal constructor(internal val motorcycleControllerHandle: NativePointer, owned: Boolean = false) : WheeledVehicleController(JphMotorcycleController_asWheeledVehicleController(motorcycleControllerHandle), owned), AutoCloseable {
     constructor(settings: MotorcycleControllerSettings, constraint: VehicleConstraint) : this(JphMotorcycleController_create(settings.motorcycleControllerSettingsHandle, constraint.vehicleConstraintHandle), owned = true)
 
     override fun close() =
         closeOnce { JphMotorcycleController_destroy(motorcycleControllerHandle) }
 
+    /** Get the distance between the front and back wheels */
     val wheelBase: Float
         get() = JphMotorcycleController_GetWheelBase(motorcycleControllerHandle)
 
+    /** Enable or disable the lean spring. This allows you to temporarily disable the lean spring to allow the motorcycle to fall over. */
     fun enableLeanController(enable: Boolean) =
         JphMotorcycleController_EnableLeanController(motorcycleControllerHandle, enable)
 
+    /** Check if the lean spring is enabled. */
     val isLeanControllerEnabled: Boolean
         get() = JphMotorcycleController_IsLeanControllerEnabled(motorcycleControllerHandle)
 
+    /** Enable or disable the lean steering limit. When enabled (default) the steering angle is limited based on the vehicle speed to prevent steering that would cause an inertial force that causes the motorcycle to topple over. */
     fun enableLeanSteeringLimit(enable: Boolean) =
         JphMotorcycleController_EnableLeanSteeringLimit(motorcycleControllerHandle, enable)
 
     val isLeanSteeringLimitEnabled: Boolean
         get() = JphMotorcycleController_IsLeanSteeringLimitEnabled(motorcycleControllerHandle)
 
+    /** Spring constant for the lean spring */
     var leanSpringConstant: Float
         get() = JphMotorcycleController_GetLeanSpringConstant(motorcycleControllerHandle)
         set(constant) = JphMotorcycleController_SetLeanSpringConstant(motorcycleControllerHandle, constant)
 
+    /** Spring damping constant for the lean spring */
     var leanSpringDamping: Float
         get() = JphMotorcycleController_GetLeanSpringDamping(motorcycleControllerHandle)
         set(damping) = JphMotorcycleController_SetLeanSpringDamping(motorcycleControllerHandle, damping)
 
+    /** The lean spring applies an additional force equal to this coefficient * Integral(delta angle, 0, t), this effectively makes the lean spring a PID controller */
     var leanSpringIntegrationCoefficient: Float
         get() = JphMotorcycleController_GetLeanSpringIntegrationCoefficient(motorcycleControllerHandle)
         set(coefficient) = JphMotorcycleController_SetLeanSpringIntegrationCoefficient(motorcycleControllerHandle, coefficient)
 
+    /** How much to decay the angle integral when the wheels are not touching the floor: new_value = e^(-decay * t) * initial_value */
     var leanSpringIntegrationCoefficientDecay: Float
         get() = JphMotorcycleController_GetLeanSpringIntegrationCoefficientDecay(motorcycleControllerHandle)
         set(decay) = JphMotorcycleController_SetLeanSpringIntegrationCoefficientDecay(motorcycleControllerHandle, decay)
 
+    /**
+     * How much to smooth the lean angle (0 = no smoothing, 1 = lean angle never changes)
+     * Note that this is frame rate dependent because the formula is: smoothing_factor * previous + (1 - smoothing_factor) * current
+     */
     var leanSmoothingFactor: Float
         get() = JphMotorcycleController_GetLeanSmoothingFactor(motorcycleControllerHandle)
         set(factor) = JphMotorcycleController_SetLeanSmoothingFactor(motorcycleControllerHandle, factor)

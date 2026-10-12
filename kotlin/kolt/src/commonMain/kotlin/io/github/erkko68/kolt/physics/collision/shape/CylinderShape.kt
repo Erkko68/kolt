@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CylinderShape`. */
+/**
+ * A cylinder
+ *
+ * C++ `JPH::CylinderShape`.
+ */
 class CylinderShape internal constructor(internal val cylinderShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphCylinderShape_asConvexShape(cylinderShapeHandle), owned), AutoCloseable {
     constructor() : this(JphCylinderShape_create(), owned = true)
     constructor(halfHeight: Float, radius: Float, convexRadius: Float, material: PhysicsMaterial?) : this(JphCylinderShape_create_float_float_float_PhysicsMaterial(halfHeight, radius, convexRadius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
@@ -44,12 +48,15 @@ class CylinderShape internal constructor(internal val cylinderShapeHandle: Nativ
     override fun close() =
         closeOnce { JphCylinderShape_release(cylinderShapeHandle) }
 
+    /** Get half height of cylinder */
     val halfHeight: Float
         get() = JphCylinderShape_GetHalfHeight(cylinderShapeHandle)
 
+    /** Get radius of cylinder */
     val radius: Float
         get() = JphCylinderShape_GetRadius(cylinderShapeHandle)
 
+    /** Get the convex radius of this cylinder */
     val convexRadius: Float
         get() = JphCylinderShape_GetConvexRadius(cylinderShapeHandle)
 }

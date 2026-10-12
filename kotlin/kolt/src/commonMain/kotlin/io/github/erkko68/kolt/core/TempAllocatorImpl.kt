@@ -33,25 +33,34 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TempAllocatorImpl`. */
+/**
+ * Default implementation of the temp allocator that allocates a large block through malloc upfront
+ *
+ * C++ `JPH::TempAllocatorImpl`.
+ */
 class TempAllocatorImpl internal constructor(internal val tempAllocatorImplHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorImpl_asTempAllocator(tempAllocatorImplHandle), owned), AutoCloseable {
     constructor(size: Int) : this(JphTempAllocatorImpl_create(size), owned = true)
 
     override fun close() =
         closeOnce { JphTempAllocatorImpl_destroy(tempAllocatorImplHandle) }
 
+    /** Check if no allocations have been made */
     val isEmpty: Boolean
         get() = JphTempAllocatorImpl_IsEmpty(tempAllocatorImplHandle)
 
+    /** Get the total size of the fixed buffer */
     val size: Int
         get() = JphTempAllocatorImpl_GetSize(tempAllocatorImplHandle)
 
+    /** Get current usage in bytes of the buffer */
     val usage: Int
         get() = JphTempAllocatorImpl_GetUsage(tempAllocatorImplHandle)
 
+    /** Check if an allocation of inSize can be made in this fixed buffer allocator */
     fun canAllocate(size: Int): Boolean =
         JphTempAllocatorImpl_CanAllocate(tempAllocatorImplHandle, size)
 
+    /** Check if memory block at inAddress is owned by this allocator */
     fun ownsMemory(address: NativePointer): Boolean =
         JphTempAllocatorImpl_OwnsMemory(tempAllocatorImplHandle, address)
 }

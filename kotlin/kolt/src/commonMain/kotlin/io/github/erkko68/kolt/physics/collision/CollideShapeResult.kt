@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CollideShapeResult`. */
+/**
+ * Class that contains all information of two colliding shapes
+ *
+ * C++ `JPH::CollideShapeResult`.
+ */
 open class CollideShapeResult internal constructor(internal val collideShapeResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCollideShapeResult_create(), owned = true)
     constructor(contactPointOn1: Vec3, contactPointOn2: Vec3, penetrationAxis: Vec3, penetrationDepth: Float, subShapeID1: SubShapeID, subShapeID2: SubShapeID, bodyID2: BodyID) : this(interopScope { JphCollideShapeResult_create_Vec3Arg_Vec3Arg_Vec3Arg_float_SubShapeID_SubShapeID_BodyID(toInterop(contactPointOn1.toArray()), toInterop(contactPointOn2.toArray()), toInterop(penetrationAxis.toArray()), penetrationDepth, subShapeID1.value, subShapeID2.value, bodyID2.value) }, owned = true)
@@ -41,9 +45,11 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
     override fun close() =
         closeOnce { JphCollideShapeResult_destroy(collideShapeResultHandle) }
 
+    /** Function required by the CollisionCollector. A smaller fraction is considered to be a 'better hit'. We use -penetration depth to get the hit with the biggest penetration depth */
     open val earlyOutFraction: Float
         get() = JphCollideShapeResult_GetEarlyOutFraction(collideShapeResultHandle)
 
+    /** Reverses the hit result, swapping contact point 1 with contact point 2 etc. */
     fun reversed(): CollideShapeResult =
         run {
             val returned = CollideShapeResult(JphCollideShapeResult_create(), owned = true)
@@ -51,6 +57,7 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
             returned
         }
 
+    /** Contact point on the surface of shape 1 (in world space or relative to base offset) */
     var contactPointOn1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -61,6 +68,7 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
         }
         set(value) = interopScope { JphCollideShapeResult_SetContactPointOn1(collideShapeResultHandle, toInterop(value.toArray())) }
 
+    /** Contact point on the surface of shape 2 (in world space or relative to base offset). If the penetration depth is 0, this will be the same as mContactPointOn1. */
     var contactPointOn2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -71,6 +79,7 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
         }
         set(value) = interopScope { JphCollideShapeResult_SetContactPointOn2(collideShapeResultHandle, toInterop(value.toArray())) }
 
+    /** Direction to move shape 2 out of collision along the shortest path (magnitude is meaningless, in world space). You can use -mPenetrationAxis.Normalized() as contact normal. */
     var penetrationAxis: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -81,22 +90,27 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
         }
         set(value) = interopScope { JphCollideShapeResult_SetPenetrationAxis(collideShapeResultHandle, toInterop(value.toArray())) }
 
+    /** Penetration depth (move shape 2 by this distance to resolve the collision). If CollideShapeSettings::mMaxSeparationDistance > 0 this number can be negative to indicate that the objects are separated by -mPenetrationDepth. The contact points are the closest points in that case. */
     var penetrationDepth: Float
         get() = JphCollideShapeResult_GetPenetrationDepth(collideShapeResultHandle)
         set(value) = JphCollideShapeResult_SetPenetrationDepth(collideShapeResultHandle, value)
 
+    /** Sub shape ID that identifies the face on shape 1 */
     var subShapeID1: SubShapeID
         get() = SubShapeID(JphCollideShapeResult_GetSubShapeID1(collideShapeResultHandle))
         set(value) = JphCollideShapeResult_SetSubShapeID1(collideShapeResultHandle, value.value)
 
+    /** Sub shape ID that identifies the face on shape 2 */
     var subShapeID2: SubShapeID
         get() = SubShapeID(JphCollideShapeResult_GetSubShapeID2(collideShapeResultHandle))
         set(value) = JphCollideShapeResult_SetSubShapeID2(collideShapeResultHandle, value.value)
 
+    /** BodyID to which shape 2 belongs to */
     var bodyID2: BodyID
         get() = BodyID(JphCollideShapeResult_GetBodyID2(collideShapeResultHandle))
         set(value) = JphCollideShapeResult_SetBodyID2(collideShapeResultHandle, value.value)
 
+    /** Colliding face on shape 1 (optional result, in world space or relative to base offset) */
     var shape1Face: List<Vec3>
         get() = interopScope {
             val count = JphCollideShapeResult_GetShape1Face(collideShapeResultHandle, NullPointer, 0)
@@ -108,6 +122,7 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
         }
         set(value) = interopScope { JphCollideShapeResult_SetShape1Face(collideShapeResultHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
 
+    /** Colliding face on shape 2 (optional result, in world space or relative to base offset) */
     var shape2Face: List<Vec3>
         get() = interopScope {
             val count = JphCollideShapeResult_GetShape2Face(collideShapeResultHandle, NullPointer, 0)

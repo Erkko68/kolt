@@ -33,9 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EBackFaceMode`. */
+/**
+ * How collision detection functions will treat back facing triangles
+ *
+ * C++ `JPH::EBackFaceMode`.
+ */
 enum class EBackFaceMode(internal val value: Int) {
+    /** Ignore collision with back facing surfaces/triangles */
     IgnoreBackFaces(0),
+    /** Collide with back facing surfaces/triangles */
     CollideWithBackFaces(1);
 
     internal companion object {

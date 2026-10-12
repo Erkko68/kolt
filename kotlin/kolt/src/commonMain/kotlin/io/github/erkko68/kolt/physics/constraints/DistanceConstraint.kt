@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::DistanceConstraint`. */
+/**
+ * This constraint is a stiff spring that holds 2 points at a fixed distance from each other
+ *
+ * C++ `JPH::DistanceConstraint`.
+ */
 class DistanceConstraint internal constructor(internal val distanceConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphDistanceConstraint_asTwoBodyConstraint(distanceConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: DistanceConstraintSettings) : this(JphDistanceConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.distanceConstraintSettingsHandle), owned = true)
 
@@ -43,6 +47,7 @@ class DistanceConstraint internal constructor(internal val distanceConstraintHan
     override fun close() =
         closeOnce { JphDistanceConstraint_release(distanceConstraintHandle) }
 
+    /** Update the minimum and maximum distance for the constraint */
     fun setDistance(minDistance: Float, maxDistance: Float) =
         JphDistanceConstraint_SetDistance(distanceConstraintHandle, minDistance, maxDistance)
 
@@ -56,6 +61,7 @@ class DistanceConstraint internal constructor(internal val distanceConstraintHan
         get() = SpringSettings(JphDistanceConstraint_GetLimitsSpringSettings(distanceConstraintHandle))
         set(limitsSpringSettings) = JphDistanceConstraint_SetLimitsSpringSettings(distanceConstraintHandle, limitsSpringSettings.springSettingsHandle)
 
+    /** Get Lagrange multiplier from last physics update (the linear impulse applied to satisfy the constraint) */
     val totalLambdaPosition: Float
         get() = JphDistanceConstraint_GetTotalLambdaPosition(distanceConstraintHandle)
 }

@@ -33,11 +33,16 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyLockInterface`. */
+/**
+ * Base class interface for locking a body. Usually you will use BodyLockRead / BodyLockWrite / BodyLockMultiRead / BodyLockMultiWrite instead.
+ *
+ * C++ `JPH::BodyLockInterface`.
+ */
 open class BodyLockInterface internal constructor(internal val bodyLockInterfaceHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     override fun close() =
         closeOnce { JphBodyLockInterface_destroy(bodyLockInterfaceHandle) }
 
+    /** Convert body ID to body */
     fun tryGetBody(bodyID: BodyID): Body? =
         JphBodyLockInterface_TryGetBody(bodyLockInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { Body(it) }
 }

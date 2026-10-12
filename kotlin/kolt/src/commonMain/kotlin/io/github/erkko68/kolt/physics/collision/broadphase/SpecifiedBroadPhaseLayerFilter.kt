@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SpecifiedBroadPhaseLayerFilter`. */
+/**
+ * Allows objects from a specific broad phase layer only
+ *
+ * C++ `JPH::SpecifiedBroadPhaseLayerFilter`.
+ */
 class SpecifiedBroadPhaseLayerFilter internal constructor(internal val specifiedBroadPhaseLayerFilterHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerFilter(JphSpecifiedBroadPhaseLayerFilter_asBroadPhaseLayerFilter(specifiedBroadPhaseLayerFilterHandle), owned), AutoCloseable {
     constructor(layer: BroadPhaseLayer) : this(JphSpecifiedBroadPhaseLayerFilter_create(layer.value), owned = true)
 

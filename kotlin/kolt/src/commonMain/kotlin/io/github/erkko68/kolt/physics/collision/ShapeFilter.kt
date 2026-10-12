@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ShapeFilter`. */
+/**
+ * Filter class
+ *
+ * C++ `JPH::ShapeFilter`.
+ */
 open class ShapeFilter internal constructor(internal val shapeFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphShapeFilter_createUpcalls(Upcalls.function), owned = true) {
@@ -43,12 +47,32 @@ open class ShapeFilter internal constructor(internal val shapeFilterHandle: Nati
     override fun close() =
         closeOnce { JphShapeFilter_destroy(shapeFilterHandle) }
 
+    /**
+     * Filter function to determine if we should collide with a shape. Returns true if the filter passes.
+     * This overload is called when the query doesn't have a source shape (e.g. ray cast / collide point)
+     * @param shape2 Shape we're colliding against
+     * @param subShapeIDOfShape2 The sub shape ID that will lead from the root shape to inShape2 (i.e. the shape of mBodyID2)
+     */
     open fun shouldCollide(shape2: Shape?, subShapeIDOfShape2: SubShapeID): Boolean =
         JphShapeFilter_ShouldCollide(shapeFilterHandle, shape2?.shapeHandle ?: NullPointer, subShapeIDOfShape2.value)
 
+    /**
+     * Filter function to determine if two shapes should collide. Returns true if the filter passes.
+     * This overload is called when querying a shape vs a shape (e.g. collide object / cast object).
+     * It is called at each level of the shape hierarchy, so if you have a compound shape with a box, this function will be called twice.
+     * It will not be called on triangles that are part of another shape, i.e a mesh shape will not trigger a callback per triangle. You can filter out individual triangles in the CollisionCollector::AddHit function by their sub shape ID.
+     * @param shape1 1st shape that is colliding
+     * @param subShapeIDOfShape1 The sub shape ID that will lead from the root shape to inShape1 (i.e. the shape that is used to collide or cast against shape 2)
+     * @param shape2 2nd shape that is colliding
+     * @param subShapeIDOfShape2 The sub shape ID that will lead from the root shape to inShape2 (i.e. the shape of mBodyID2)
+     */
     open fun shouldCollide(shape1: Shape?, subShapeIDOfShape1: SubShapeID, shape2: Shape?, subShapeIDOfShape2: SubShapeID): Boolean =
         JphShapeFilter_ShouldCollide_Shape_SubShapeID(shapeFilterHandle, shape1?.shapeHandle ?: NullPointer, subShapeIDOfShape1.value, shape2?.shapeHandle ?: NullPointer, subShapeIDOfShape2.value)
 
+    /**
+     * Used during NarrowPhase queries and TransformedShape queries. Set to the body ID of inShape2 before calling ShouldCollide.
+     * Provides context to the filter to indicate which body is colliding.
+     */
     var bodyID2: BodyID
         get() = BodyID(JphShapeFilter_GetBodyID2(shapeFilterHandle))
         set(value) = JphShapeFilter_SetBodyID2(shapeFilterHandle, value.value)

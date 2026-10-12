@@ -33,9 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ETransmissionMode`. */
+/**
+ * How gears are shifted
+ *
+ * C++ `JPH::ETransmissionMode`.
+ */
 enum class ETransmissionMode(internal val value: Int) {
+    /** Automatically shift gear up and down */
     Auto(0),
+    /** Manual gear shift (call SetTransmissionInput) */
     Manual(1);
 
     internal companion object {

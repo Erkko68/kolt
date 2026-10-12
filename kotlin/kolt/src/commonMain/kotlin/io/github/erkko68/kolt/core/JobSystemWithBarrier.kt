@@ -33,11 +33,29 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::JobSystemWithBarrier`. */
+/**
+ * Implementation of the Barrier class for a JobSystem
+ *
+ * This class can be used to make it easier to create a new JobSystem implementation that integrates with your own job system.
+ * It will implement all functionality relating to barriers, so the only functions that are left to be implemented are:
+ *
+ * * JobSystem::GetMaxConcurrency
+ * * JobSystem::CreateJob
+ * * JobSystem::FreeJob
+ * * JobSystem::QueueJob/QueueJobs
+ *
+ * See instructions in JobSystem for more information on how to implement these.
+ *
+ * C++ `JPH::JobSystemWithBarrier`.
+ */
 open class JobSystemWithBarrier internal constructor(internal val jobSystemWithBarrierHandle: NativePointer, owned: Boolean = false) : JobSystem(JphJobSystemWithBarrier_asJobSystem(jobSystemWithBarrierHandle), owned), AutoCloseable {
     override fun close() =
         closeOnce { JphJobSystemWithBarrier_destroy(jobSystemWithBarrierHandle) }
 
+    /**
+     * Initialize the barriers
+     * @param maxBarriers Max number of barriers that can be allocated at any time
+     */
     fun init(maxBarriers: Int) =
         JphJobSystemWithBarrier_Init(jobSystemWithBarrierHandle, maxBarriers)
 }

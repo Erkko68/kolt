@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::RayCastBodyCollector`. */
+/**
+ * Virtual interface that allows collecting multiple collision results
+ *
+ * C++ `JPH::RayCastBodyCollector`.
+ */
 open class RayCastBodyCollector internal constructor(internal val rayCastBodyCollectorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphRayCastBodyCollector_createUpcalls(Upcalls.function), owned = true) {
@@ -43,40 +47,59 @@ open class RayCastBodyCollector internal constructor(internal val rayCastBodyCol
     override fun close() =
         closeOnce { JphRayCastBodyCollector_destroy(rayCastBodyCollectorHandle) }
 
+    /** If you want to reuse this collector, call Reset() */
     open fun reset() =
         JphRayCastBodyCollector_Reset(rayCastBodyCollectorHandle)
 
+    /**
+     * When running a query through the NarrowPhaseQuery class, this will be called for every body that is potentially colliding.
+     * It allows collecting additional information needed by the collision collector implementation from the body under lock protection
+     * before AddHit is called (e.g. the user data pointer or the velocity of the body).
+     */
     open fun onBody(body: Body) =
         JphRayCastBodyCollector_OnBody(rayCastBodyCollectorHandle, body.bodyHandle)
 
+    /** When running a query through the NarrowPhaseQuery class, this will be called after all AddHit calls have been made for a particular body. */
     open fun onBodyEnd() =
         JphRayCastBodyCollector_OnBodyEnd(rayCastBodyCollectorHandle)
 
+    /**
+     * Set by the collision detection functions to the current TransformedShape that we're colliding against before calling the AddHit function.
+     * Note: Only valid during AddHit! For performance reasons, the pointer is not reset after leaving AddHit so the context may point to freed memory.
+     */
     var context: TransformedShape?
         get() = JphRayCastBodyCollector_GetContext(rayCastBodyCollectorHandle).takeIf { it != NullPointer }?.let { TransformedShape(it) }
         set(context) = JphRayCastBodyCollector_SetContext(rayCastBodyCollectorHandle, context?.transformedShapeHandle ?: NullPointer)
 
+    /** This function can be used to set some user data on the collision collector */
     open fun setUserData(userData: Long) =
         JphRayCastBodyCollector_SetUserData(rayCastBodyCollectorHandle, userData)
 
+    /** This function will be called for every hit found, it's up to the application to decide how to store the hit */
     open fun addHit(result: BroadPhaseCastResult) =
         JphRayCastBodyCollector_AddHit(rayCastBodyCollectorHandle, result.broadPhaseCastResultHandle)
 
+    /** Update the early out fraction (should be lower than before) */
     fun updateEarlyOutFraction(fraction: Float) =
         JphRayCastBodyCollector_UpdateEarlyOutFraction(rayCastBodyCollectorHandle, fraction)
 
+    /** Reset the early out fraction to a specific value */
     fun resetEarlyOutFraction(fraction: Float) =
         JphRayCastBodyCollector_ResetEarlyOutFraction(rayCastBodyCollectorHandle, fraction)
 
+    /** Force the collision detection algorithm to terminate as soon as possible. Call this from the AddHit function when a satisfying hit is found. */
     fun forceEarlyOut() =
         JphRayCastBodyCollector_ForceEarlyOut(rayCastBodyCollectorHandle)
 
+    /** When true, the collector will no longer accept any additional hits and the collision detection routine should early out as soon as possible */
     fun shouldEarlyOut(): Boolean =
         JphRayCastBodyCollector_ShouldEarlyOut(rayCastBodyCollectorHandle)
 
+    /** Get the current early out value */
     val earlyOutFraction: Float
         get() = JphRayCastBodyCollector_GetEarlyOutFraction(rayCastBodyCollectorHandle)
 
+    /** Get the current early out value but make sure it's bigger than zero, this is used for shape casting as negative values are used for penetration */
     val positiveEarlyOutFraction: Float
         get() = JphRayCastBodyCollector_GetPositiveEarlyOutFraction(rayCastBodyCollectorHandle)
 

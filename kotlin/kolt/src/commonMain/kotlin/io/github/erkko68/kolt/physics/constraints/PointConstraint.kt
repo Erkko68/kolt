@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PointConstraint`. */
+/**
+ * A point constraint constrains 2 bodies on a single point (removing 3 degrees of freedom)
+ *
+ * C++ `JPH::PointConstraint`.
+ */
 class PointConstraint internal constructor(internal val pointConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphPointConstraint_asTwoBodyConstraint(pointConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: PointConstraintSettings) : this(JphPointConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.pointConstraintSettingsHandle), owned = true)
 
@@ -43,12 +47,15 @@ class PointConstraint internal constructor(internal val pointConstraintHandle: N
     override fun close() =
         closeOnce { JphPointConstraint_release(pointConstraintHandle) }
 
+    /** Update the attachment point for body 1 */
     fun setPoint1(space: EConstraintSpace, point1: Vec3) =
         interopScope { JphPointConstraint_SetPoint1(pointConstraintHandle, space.value, toInterop(point1.toArray())) }
 
+    /** Update the attachment point for body 2 */
     fun setPoint2(space: EConstraintSpace, point2: Vec3) =
         interopScope { JphPointConstraint_SetPoint2(pointConstraintHandle, space.value, toInterop(point2.toArray())) }
 
+    /** Get the attachment point for body 1 relative to body 1 COM (transform by Body::GetCenterOfMassTransform to take to world space) */
     val localSpacePoint1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -58,6 +65,7 @@ class PointConstraint internal constructor(internal val pointConstraintHandle: N
             Vec3(returned)
         }
 
+    /** Get the attachment point for body 2 relative to body 2 COM (transform by Body::GetCenterOfMassTransform to take to world space) */
     val localSpacePoint2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -67,6 +75,7 @@ class PointConstraint internal constructor(internal val pointConstraintHandle: N
             Vec3(returned)
         }
 
+    /** Get Lagrange multiplier from last physics update (the linear impulse applied to satisfy the constraint) */
     val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

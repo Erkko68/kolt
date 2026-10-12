@@ -33,9 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ESwingType`. */
+/**
+ * How the swing limit behaves
+ *
+ * C++ `JPH::ESwingType`.
+ */
 enum class ESwingType(internal val value: Int) {
+    /** Swing is limited by a cone shape, note that this cone starts to deform for larger swing angles. Cone limits only support limits that are symmetric around 0. */
     Cone(0),
+    /** Swing is limited by a pyramid shape, note that this pyramid starts to deform for larger swing angles. */
     Pyramid(1);
 
     internal companion object {

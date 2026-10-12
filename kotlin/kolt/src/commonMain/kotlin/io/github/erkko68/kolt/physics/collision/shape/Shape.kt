@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Shape`. */
+/**
+ * Base class for all shapes (collision volume of a body). Defines a virtual interface for collision detection.
+ *
+ * C++ `JPH::Shape`.
+ */
 open class Shape internal constructor(internal val shapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     open fun addRef() =
         own { JphShape_addRef(shapeHandle) }
@@ -41,12 +45,14 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
     override fun close() =
         closeOnce { JphShape_release(shapeHandle) }
 
+    /** Get type */
     val type: EShapeType
         get() = EShapeType.of(JphShape_GetType(shapeHandle))
 
     val subType: EShapeSubType
         get() = EShapeSubType.of(JphShape_GetSubType(shapeHandle))
 
+    /** User data (to be used freely by the application) */
     var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -57,9 +63,11 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
         }
         set(userData) = JphShape_SetUserData(shapeHandle, userData)
 
+    /** Check if this shape can only be used to create a static body or if it can also be dynamic/kinematic */
     fun mustBeStatic(): Boolean =
         JphShape_MustBeStatic(shapeHandle)
 
+    /** All shapes are centered around their center of mass. This function returns the center of mass position that needs to be applied to transform the shape to where it was created. */
     val centerOfMass: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -69,6 +77,7 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             Vec3(returned)
         }
 
+    /** Get local bounding box including convex radius, this box is centered around the center of mass rather than the world transform */
     val localBounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
@@ -76,9 +85,15 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             returned
         }
 
+    /** Get the max number of sub shape ID bits that are needed to be able to address any leaf shape in this shape. Used mainly for checking that it is smaller or equal than SubShapeID::MaxBits. */
     val subShapeIDBitsRecursive: Int
         get() = JphShape_GetSubShapeIDBitsRecursive(shapeHandle)
 
+    /**
+     * Get world space bounds including convex radius.
+     * This shape is scaled by inScale in local space first.
+     * This function can be overridden to return a closer fitting world space bounding box, by default it will just transform what GetLocalBounds() returns.
+     */
     fun getWorldSpaceBounds(centerOfMassTransform: Mat44, scale: Vec3): AABox =
         interopScope {
             val returned = AABox(JphAABox_create(), owned = true)
@@ -86,6 +101,7 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             returned
         }
 
+    /** Get world space bounds including convex radius. */
     fun getWorldSpaceBounds(centerOfMassTransform: DMat44, scale: Vec3): AABox =
         interopScope {
             val returned = AABox(JphAABox_create(), owned = true)
@@ -93,9 +109,14 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             returned
         }
 
+    /**
+     * Returns the radius of the biggest sphere that fits entirely in the shape. In case this shape consists of multiple sub shapes, it returns the smallest sphere of the parts.
+     * This can be used as a measure of how far the shape can be moved without risking going through geometry.
+     */
     val innerRadius: Float
         get() = JphShape_GetInnerRadius(shapeHandle)
 
+    /** Calculate the mass and inertia of this shape */
     val massProperties: MassProperties
         get() = run {
             val returned = MassProperties(JphMassProperties_create(), owned = true)
@@ -103,6 +124,12 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             returned
         }
 
+    /**
+     * Get the leaf shape for a particular sub shape ID.
+     * @param subShapeID The full sub shape ID that indicates the path to the leaf shape
+     * @return The shape or null if the sub shape ID is invalid
+     * @return What remains of the sub shape ID after removing the path to the leaf shape (could e.g. refer to a triangle within a MeshShape)
+     */
     fun getLeafShape(subShapeID: SubShapeID): Pair<Shape?, SubShapeID> =
         interopScope {
             val remainderArray = IntArray(1)
@@ -112,9 +139,14 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             Pair(nativeResult, SubShapeID(remainderArray[0]))
         }
 
+    /** Get the material assigned to a particular sub shape ID */
     fun getMaterial(subShapeID: SubShapeID): PhysicsMaterial? =
         JphShape_GetMaterial(shapeHandle, subShapeID.value).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
+    /**
+     * Get the surface normal of a particular sub shape ID and point on surface (all vectors are relative to center of mass for this shape).
+     * Note: When you have a CollideShapeResult or ShapeCastResult you should use -mPenetrationAxis.Normalized() as contact normal as GetSurfaceNormal will only return face normals (and not vertex or edge normals).
+     */
     fun getSurfaceNormal(subShapeID: SubShapeID, localSurfacePosition: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -124,6 +156,15 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             Vec3(returned)
         }
 
+    /**
+     * Get the vertices of the face that faces inDirection the most (includes any convex radius). Note that this function can only return faces of
+     * convex shapes or triangles, which is why a sub shape ID to get to that leaf must be provided.
+     * @param subShapeID Sub shape ID of target shape
+     * @param direction Direction that the face should be facing (in local space to this shape)
+     * @param centerOfMassTransform Transform to transform outVertices with
+     * @param scale Scale in local space of the shape (scales relative to its center of mass)
+     * @return Resulting face. The returned face can be empty if the shape doesn't have polygons to return (e.g. because it's a sphere). The face will be returned in world space.
+     */
     fun getSupportingFace(subShapeID: SubShapeID, direction: Vec3, scale: Vec3, centerOfMassTransform: Mat44): List<Vec3> =
         interopScope {
             val count = JphShape_GetSupportingFace(shapeHandle, subShapeID.value, toInterop(direction.toArray()), toInterop(scale.toArray()), toInterop(centerOfMassTransform.toArray()), NullPointer, 0)
@@ -134,6 +175,7 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             List(count) { Vec3(returned.copyOfRange(it * 4, it * 4 + 4)) }
         }
 
+    /** Get the user data of a particular sub shape ID. Corresponds with the value stored in Shape::GetUserData of the leaf shape pointed to by inSubShapeID. */
     fun getSubShapeUserData(subShapeID: SubShapeID): Long =
         interopScope {
             val returned = LongArray(1)
@@ -143,6 +185,15 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             returned[0]
         }
 
+    /**
+     * Get the direct child sub shape and its transform for a sub shape ID.
+     * @param subShapeID Sub shape ID that indicates the path to the leaf shape
+     * @param positionCOM The position of the center of mass of this shape
+     * @param rotation The orientation of this shape
+     * @param scale Scale in local space of the shape (scales relative to its center of mass)
+     * @return Direct child sub shape and its transform, note that the body ID and sub shape ID will be invalid
+     * @return The remainder of the sub shape ID after removing the sub shape
+     */
     fun getSubShapeTransformedShape(subShapeID: SubShapeID, positionCOM: Vec3, rotation: Quat, scale: Vec3): Pair<TransformedShape, SubShapeID> =
         interopScope {
             val remainderArray = IntArray(1)
@@ -169,21 +220,53 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             Triple(totalVolumeArray.readF32(0), submergedVolumeArray.readF32(0), Vec3(centerOfBuoyancyArray))
         }
 
+    /**
+     * Cast a ray against this shape, returns true if it finds a hit closer than ioHit.mFraction and updates that fraction. Otherwise ioHit is left untouched and the function returns false.
+     * Note that the ray should be relative to the center of mass of this shape (i.e. subtract Shape::GetCenterOfMass() from RayCast::mOrigin if you want to cast against the shape in the space it was created).
+     * Convex objects will be treated as solid (meaning if the ray starts inside, you'll get a hit fraction of 0) and back face hits against triangles are returned.
+     * If you want the surface normal of the hit use GetSurfaceNormal(ioHit.mSubShapeID2, inRay.GetPointOnRay(ioHit.mFraction)).
+     */
     fun castRay(ray: RayCast, subShapeIDCreator: SubShapeIDCreator, hit: RayCastResult): Boolean =
         JphShape_CastRay_SubShapeIDCreator_RayCastResult(shapeHandle, ray.rayCastHandle, subShapeIDCreator.subShapeIDCreatorHandle, hit.rayCastResultHandle)
 
+    /**
+     * Cast a ray against this shape. Allows returning multiple hits through ioCollector. Note that this version is more flexible but also slightly slower than the CastRay function that returns only a single hit.
+     * If you want the surface normal of the hit use GetSurfaceNormal(collected sub shape ID, inRay.GetPointOnRay(collected faction)).
+     */
     fun castRay(ray: RayCast, rayCastSettings: RayCastSettings, subShapeIDCreator: SubShapeIDCreator, collector: CastRayCollector, shapeFilter: ShapeFilter) =
         JphShape_CastRay_RayCastSettings_SubShapeIDCreator_CastRayCollector_ShapeFilter(shapeHandle, ray.rayCastHandle, rayCastSettings.rayCastSettingsHandle, subShapeIDCreator.subShapeIDCreatorHandle, collector.castRayCollectorHandle, shapeFilter.shapeFilterHandle)
 
+    /**
+     * Check if inPoint is inside this shape. For this tests all shapes are treated as if they were solid.
+     * Note that inPoint should be relative to the center of mass of this shape (i.e. subtract Shape::GetCenterOfMass() from inPoint if you want to test against the shape in the space it was created).
+     * For a mesh shape, this test will only provide sensible information if the mesh is a closed manifold.
+     * For each shape that collides, ioCollector will receive a hit.
+     */
     fun collidePoint(point: Vec3, subShapeIDCreator: SubShapeIDCreator, collector: CollidePointCollector, shapeFilter: ShapeFilter) =
         interopScope { JphShape_CollidePoint(shapeHandle, toInterop(point.toArray()), subShapeIDCreator.subShapeIDCreatorHandle, collector.collidePointCollectorHandle, shapeFilter.shapeFilterHandle) }
 
+    /**
+     * Collect the leaf transformed shapes of all leaf shapes of this shape.
+     * inBox is the world space axis aligned box which leaf shapes should collide with.
+     * inPositionCOM/inRotation/inScale describes the transform of this shape.
+     * inSubShapeIDCreator represents the current sub shape ID of this shape.
+     */
     fun collectTransformedShapes(box: AABox, positionCOM: Vec3, rotation: Quat, scale: Vec3, subShapeIDCreator: SubShapeIDCreator, collector: TransformedShapeCollector, shapeFilter: ShapeFilter) =
         interopScope { JphShape_CollectTransformedShapes(shapeHandle, box.aaBoxHandle, toInterop(positionCOM.toArray()), toInterop(rotation.toArray()), toInterop(scale.toArray()), subShapeIDCreator.subShapeIDCreatorHandle, collector.transformedShapeCollectorHandle, shapeFilter.shapeFilterHandle) }
 
+    /**
+     * Transforms this shape and all of its children with inTransform, resulting shape(s) are passed to ioCollector.
+     * Note that not all shapes support all transforms (especially true for scaling), the resulting shape will try to match the transform as accurately as possible.
+     * @param centerOfMassTransform The transform (rotation, translation, scale) that the center of mass of the shape should get
+     * @param collector The transformed shapes will be passed to this collector
+     */
     fun transformShape(centerOfMassTransform: Mat44, collector: TransformedShapeCollector) =
         interopScope { JphShape_TransformShape(shapeHandle, toInterop(centerOfMassTransform.toArray()), collector.transformedShapeCollectorHandle) }
 
+    /**
+     * Scale this shape. Note that not all shapes support all scales, this will return a shape that matches the scale as accurately as possible. See Shape::IsValidScale for more information.
+     * @param scale The scale to use for this shape (note: this scale is applied to the entire shape in the space it was created, most other functions apply the scale in the space of the leaf shapes and from the center of mass!)
+     */
     fun scaleShape(scale: Vec3): Shape =
         interopScope {
             val error = ByteArray(256)
@@ -194,9 +277,28 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             Shape(returned, owned = true)
         }
 
+    /**
+     * To start iterating over triangles, call this function first.
+     * ioContext is a temporary buffer and should remain untouched until the last call to GetTrianglesNext.
+     * inBox is the world space bounding in which you want to get the triangles.
+     * inPositionCOM/inRotation/inScale describes the transform of this shape.
+     * To get the actual triangles call GetTrianglesNext.
+     */
     fun getTrianglesStart(context: Shape.GetTrianglesContext, box: AABox, positionCOM: Vec3, rotation: Quat, scale: Vec3) =
         interopScope { JphShape_GetTrianglesStart(shapeHandle, context.shapeGetTrianglesContextHandle, box.aaBoxHandle, toInterop(positionCOM.toArray()), toInterop(rotation.toArray()), toInterop(scale.toArray())) }
 
+    /**
+     * Call this repeatedly to get all triangles in the box.
+     * outTriangleVertices should be large enough to hold 3 * inMaxTriangleRequested entries.
+     * outMaterials (if it is not null) should contain inMaxTrianglesRequested entries.
+     * The function returns the amount of triangles that it found (which will be
+     * <
+     * = inMaxTrianglesRequested), or 0 if there are no more triangles.
+     * Note that the function can return a value
+     * <
+     * inMaxTrianglesRequested and still have more triangles to process (triangles can be returned in blocks).
+     * Note that the function may return triangles outside of the requested box, only coarse culling is performed on the returned triangles.
+     */
     fun getTrianglesNext(context: Shape.GetTrianglesContext, maxTrianglesRequested: Int, triangleVertices: MutableList<Float3>, materials: MutableList<PhysicsMaterial?>): Int =
         interopScope {
             val triangleVerticesArray = FloatArray(triangleVertices.size * 3).also { a -> triangleVertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }
@@ -209,9 +311,11 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             nativeResult
         }
 
+    /** Saves the contents of the shape in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphShape_SaveBinaryState(shapeHandle, stream.streamOutHandle)
 
+    /** Outputs the material references that this shape has to outMaterials. */
     fun saveMaterialState(): List<PhysicsMaterial> =
         interopScope {
             val count = JphShape_SaveMaterialState(shapeHandle, NullPointer, 0)
@@ -220,6 +324,7 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             readPointers(returnedPointer, count).map { PhysicsMaterial(it, owned = true) }
         }
 
+    /** Outputs the shape references that this shape has to outSubShapes. */
     fun saveSubShapeState(): List<Shape> =
         interopScope {
             val count = JphShape_SaveSubShapeState(shapeHandle, NullPointer, 0)
@@ -228,15 +333,37 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             readPointers(returnedPointer, count).map { Shape(it, owned = true) }
         }
 
+    /** Get stats of this shape. Use for logging / data collection purposes only. Does not add values from child shapes, use GetStatsRecursive for this. */
     val stats: Shape.Stats
         get() = Shape.Stats(JphShape_GetStats(shapeHandle), owned = true)
 
     val volume: Float
         get() = JphShape_GetVolume(shapeHandle)
 
+    /**
+     * Test if inScale is a valid scale for this shape. Some shapes can only be scaled uniformly, compound shapes cannot handle shapes
+     * being rotated and scaled (this would cause shearing), scale can never be zero. When the scale is invalid, the function will return false.
+     *
+     * Here's a list of supported scales:
+     * * SphereShape: Scale must be uniform (signs of scale are ignored).
+     * * BoxShape: Any scale supported (signs of scale are ignored).
+     * * TriangleShape: Any scale supported when convex radius is zero, otherwise only uniform scale supported.
+     * * CapsuleShape: Scale must be uniform (signs of scale are ignored).
+     * * TaperedCapsuleShape: Scale must be uniform (sign of Y scale can be used to flip the capsule).
+     * * CylinderShape: Scale must be uniform in XZ plane, Y can scale independently (signs of scale are ignored).
+     * * RotatedTranslatedShape: Scale must not cause shear in the child shape.
+     * * CompoundShape: Scale must not cause shear in any of the child shapes.
+     */
     fun isValidScale(scale: Vec3): Boolean =
         interopScope { JphShape_IsValidScale(shapeHandle, toInterop(scale.toArray())) }
 
+    /**
+     * This function will make sure that if you wrap this shape in a ScaledShape that the scale is valid.
+     * Note that this involves discarding components of the scale that are invalid, so the resulting scaled shape may be different than the requested scale.
+     * Compare the return value of this function with the scale you passed in to detect major inconsistencies and possibly warn the user.
+     * @param scale Local space scale for this shape.
+     * @return Scale that can be used to wrap this shape in a ScaledShape. IsValidScale will return true for this scale.
+     */
     fun makeScaleValid(scale: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -246,7 +373,11 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             Vec3(returned)
         }
 
-    /** C++ `JPH::Shape::GetTrianglesContext`. */
+    /**
+     * An opaque buffer that holds shape specific information during GetTrianglesStart/Next.
+     *
+     * C++ `JPH::Shape::GetTrianglesContext`.
+     */
     class GetTrianglesContext internal constructor(internal val shapeGetTrianglesContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphShapeGetTrianglesContext_create(), owned = true)
     
@@ -265,23 +396,30 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             set(value) = interopScope { JphShapeGetTrianglesContext_SetData(shapeGetTrianglesContextHandle, toInterop(value), value.size) }
     }
     
-    /** C++ `JPH::Shape::Stats`. */
+    /**
+     * Class that holds information about the shape that can be used for logging / data collection purposes
+     *
+     * C++ `JPH::Shape::Stats`.
+     */
     class Stats internal constructor(internal val shapeStatsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor(sizeBytes: Int, numTriangles: Int) : this(JphShapeStats_create(sizeBytes, numTriangles), owned = true)
     
         override fun close() =
             closeOnce { JphShapeStats_destroy(shapeStatsHandle) }
     
+        /** Amount of memory used by this shape (size in bytes) */
         var sizeBytes: Int
             get() = JphShapeStats_GetSizeBytes(shapeStatsHandle)
             set(value) = JphShapeStats_SetSizeBytes(shapeStatsHandle, value)
     
+        /** Number of triangles in this shape (when applicable) */
         var numTriangles: Int
             get() = JphShapeStats_GetNumTriangles(shapeStatsHandle)
             set(value) = JphShapeStats_SetNumTriangles(shapeStatsHandle, value)
     }
     
     companion object {
+        /** Creates a Shape of the correct type and restores its contents from the binary stream inStream. */
         fun restoreFromBinaryState(stream: StreamIn): Shape =
             interopScope {
                 val error = ByteArray(256)

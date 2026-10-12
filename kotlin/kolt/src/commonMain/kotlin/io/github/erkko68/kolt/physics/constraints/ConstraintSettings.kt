@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ConstraintSettings`. */
+/**
+ * Class used to store the configuration of a constraint. Allows run-time creation of constraints.
+ *
+ * C++ `JPH::ConstraintSettings`.
+ */
 open class ConstraintSettings internal constructor(internal val constraintSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphConstraintSettings_asSerializableObject(constraintSettingsHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphConstraintSettings_createUpcalls(Upcalls.function), owned = true) {
@@ -46,29 +50,39 @@ open class ConstraintSettings internal constructor(internal val constraintSettin
     override fun close() =
         closeOnce { JphConstraintSettings_release(constraintSettingsHandle) }
 
+    /** Saves the contents of the constraint settings in binary form to inStream. */
     open fun saveBinaryState(stream: StreamOut) =
         JphConstraintSettings_SaveBinaryState(constraintSettingsHandle, stream.streamOutHandle)
 
+    /** If this constraint is enabled initially. Use Constraint::SetEnabled to toggle after creation. */
     var enabled: Boolean
         get() = JphConstraintSettings_GetEnabled(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetEnabled(constraintSettingsHandle, value)
 
+    /**
+     * Priority of the constraint when solving. Higher numbers are more likely to be solved correctly.
+     * Note that if you want a deterministic simulation and you cannot guarantee the order in which constraints are added/removed, you can make the priority for all constraints unique to get a deterministic ordering.
+     */
     var constraintPriority: Int
         get() = JphConstraintSettings_GetConstraintPriority(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetConstraintPriority(constraintSettingsHandle, value)
 
+    /** Used only when the constraint is active. Override for the number of solver velocity iterations to run, 0 means use the default in PhysicsSettings::mNumVelocitySteps. The number of iterations to use is the max of all contacts and constraints in the island. */
     var numVelocityStepsOverride: Int
         get() = JphConstraintSettings_GetNumVelocityStepsOverride(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetNumVelocityStepsOverride(constraintSettingsHandle, value)
 
+    /** Used only when the constraint is active. Override for the number of solver position iterations to run, 0 means use the default in PhysicsSettings::mNumPositionSteps. The number of iterations to use is the max of all contacts and constraints in the island. */
     var numPositionStepsOverride: Int
         get() = JphConstraintSettings_GetNumPositionStepsOverride(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetNumPositionStepsOverride(constraintSettingsHandle, value)
 
+    /** Size of constraint when drawing it through the debug renderer */
     var drawConstraintSize: Float
         get() = JphConstraintSettings_GetDrawConstraintSize(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetDrawConstraintSize(constraintSettingsHandle, value)
 
+    /** User data value (can be used by application) */
     var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -88,6 +102,7 @@ open class ConstraintSettings internal constructor(internal val constraintSettin
     }
 
     companion object {
+        /** Creates a constraint of the correct type and restores its contents from the binary stream inStream. */
         fun restoreFromBinaryState(stream: StreamIn): ConstraintSettings =
             interopScope {
                 val error = ByteArray(256)

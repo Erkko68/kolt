@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::IgnoreSingleBodyFilter`. */
+/**
+ * A simple body filter implementation that ignores a single, specified body
+ *
+ * C++ `JPH::IgnoreSingleBodyFilter`.
+ */
 class IgnoreSingleBodyFilter internal constructor(internal val ignoreSingleBodyFilterHandle: NativePointer, owned: Boolean = false) : BodyFilter(JphIgnoreSingleBodyFilter_asBodyFilter(ignoreSingleBodyFilterHandle), owned), AutoCloseable {
     constructor(bodyID: BodyID) : this(JphIgnoreSingleBodyFilter_create(bodyID.value), owned = true)
 

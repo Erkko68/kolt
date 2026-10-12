@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CompoundShapeSettings`. */
+/**
+ * Base class settings to construct a compound shape
+ *
+ * C++ `JPH::CompoundShapeSettings`.
+ */
 open class CompoundShapeSettings internal constructor(internal val compoundShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphCompoundShapeSettings_asShapeSettings(compoundShapeSettingsHandle), owned), AutoCloseable {
     override fun addRef() =
         own { JphCompoundShapeSettings_addRef(compoundShapeSettingsHandle) }
@@ -41,9 +45,11 @@ open class CompoundShapeSettings internal constructor(internal val compoundShape
     override fun close() =
         closeOnce { JphCompoundShapeSettings_release(compoundShapeSettingsHandle) }
 
+    /** Add a shape to the compound. */
     fun addShape(position: Vec3, rotation: Quat, shape: ShapeSettings?, userData: Int) =
         interopScope { JphCompoundShapeSettings_AddShape_ShapeSettings_uint32(compoundShapeSettingsHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeSettingsHandle ?: NullPointer, userData) }
 
+    /** Add a shape to the compound. Variant that uses a concrete shape, which means this object cannot be serialized. */
     fun addShape(position: Vec3, rotation: Quat, shape: Shape?, userData: Int) =
         interopScope { JphCompoundShapeSettings_AddShape_Shape_uint32(compoundShapeSettingsHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer, userData) }
 
@@ -63,14 +69,17 @@ open class CompoundShapeSettings internal constructor(internal val compoundShape
         override fun close() =
             closeOnce { JphCompoundShapeSettingsSubShapeSettings_destroy(compoundShapeSettingsSubShapeSettingsHandle) }
     
+        /** Sub shape (either this or mShapePtr needs to be filled up) */
         var shape: ShapeSettings?
             get() = JphCompoundShapeSettingsSubShapeSettings_GetShape(compoundShapeSettingsSubShapeSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
             set(value) = JphCompoundShapeSettingsSubShapeSettings_SetShape(compoundShapeSettingsSubShapeSettingsHandle, value?.shapeSettingsHandle ?: NullPointer)
     
+        /** Sub shape (either this or mShape needs to be filled up) */
         var shapePtr: Shape?
             get() = JphCompoundShapeSettingsSubShapeSettings_GetShapePtr(compoundShapeSettingsSubShapeSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
             set(value) = JphCompoundShapeSettingsSubShapeSettings_SetShapePtr(compoundShapeSettingsSubShapeSettingsHandle, value?.shapeHandle ?: NullPointer)
     
+        /** Position of the sub shape */
         var position: Vec3
             get() = interopScope {
                 val returned = FloatArray(4)
@@ -81,6 +90,7 @@ open class CompoundShapeSettings internal constructor(internal val compoundShape
             }
             set(value) = interopScope { JphCompoundShapeSettingsSubShapeSettings_SetPosition(compoundShapeSettingsSubShapeSettingsHandle, toInterop(value.toArray())) }
     
+        /** Rotation of the sub shape */
         var rotation: Quat
             get() = interopScope {
                 val returned = FloatArray(4)
@@ -91,6 +101,11 @@ open class CompoundShapeSettings internal constructor(internal val compoundShape
             }
             set(value) = interopScope { JphCompoundShapeSettingsSubShapeSettings_SetRotation(compoundShapeSettingsSubShapeSettingsHandle, toInterop(value.toArray())) }
     
+        /**
+         * User data value (can be used by the application for any purpose).
+         * Note this value can be retrieved through GetSubShape(...).mUserData, not through GetSubShapeUserData(...) as that returns Shape::GetUserData() of the leaf shape.
+         * Use GetSubShapeIndexFromID get a shape index from a SubShapeID to pass to GetSubShape.
+         */
         var userData: Int
             get() = JphCompoundShapeSettingsSubShapeSettings_GetUserData(compoundShapeSettingsSubShapeSettingsHandle)
             set(value) = JphCompoundShapeSettingsSubShapeSettings_SetUserData(compoundShapeSettingsSubShapeSettingsHandle, value)

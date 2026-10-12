@@ -33,9 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EBodyType`. */
+/**
+ * Type of body
+ *
+ * C++ `JPH::EBodyType`.
+ */
 enum class EBodyType(internal val value: Int) {
+    /** Rigid body consisting of a rigid shape */
     RigidBody(0),
+    /** Soft body consisting of a deformable shape */
     SoftBody(1);
 
     internal companion object {

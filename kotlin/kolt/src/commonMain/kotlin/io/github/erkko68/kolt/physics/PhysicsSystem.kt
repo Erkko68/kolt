@@ -33,38 +33,72 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PhysicsSystem`. */
+/**
+ * The main class for the physics system. It contains all rigid bodies and simulates them.
+ *
+ * The main simulation is performed by the Update() call on multiple threads (if the JobSystem is configured to use them). Please refer to the general architecture overview in the Docs folder for more information.
+ *
+ * C++ `JPH::PhysicsSystem`.
+ */
 class PhysicsSystem internal constructor(internal val physicsSystemHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphPhysicsSystem_create(), owned = true)
 
     override fun close() =
         closeOnce { JphPhysicsSystem_destroy(physicsSystemHandle) }
 
+    /**
+     * Initialize the system.
+     * @param maxBodies Maximum number of bodies to support.
+     * @param numBodyMutexes Number of body mutexes to use. Should be a power of 2 in the range \[1, 64\], use 0 to auto detect.
+     * @param maxBodyPairs Maximum amount of body pairs to process (anything else will fall through the world), this number should generally be much higher than the max amount of contact points as there will be lots of bodies close that are not actually touching.
+     * @param maxContactConstraints Maximum amount of contact constraints to process (anything else will fall through the world).
+     * @param broadPhaseLayerInterface Information on the mapping of object layers to broad phase layers. Since this is a virtual interface, the instance needs to stay alive during the lifetime of the PhysicsSystem.
+     * @param objectVsBroadPhaseLayerFilter Filter callback function that is used to determine if an object layer collides with a broad phase layer. Since this is a virtual interface, the instance needs to stay alive during the lifetime of the PhysicsSystem.
+     * @param objectLayerPairFilter Filter callback function that is used to determine if two object layers collide. Since this is a virtual interface, the instance needs to stay alive during the lifetime of the PhysicsSystem.
+     */
     fun init(maxBodies: Int, numBodyMutexes: Int, maxBodyPairs: Int, maxContactConstraints: Int, broadPhaseLayerInterface: BroadPhaseLayerInterface, objectVsBroadPhaseLayerFilter: ObjectVsBroadPhaseLayerFilter, objectLayerPairFilter: ObjectLayerPairFilter) =
         JphPhysicsSystem_Init(physicsSystemHandle, maxBodies, numBodyMutexes, maxBodyPairs, maxContactConstraints, broadPhaseLayerInterface.broadPhaseLayerInterfaceHandle, objectVsBroadPhaseLayerFilter.objectVsBroadPhaseLayerFilterHandle, objectLayerPairFilter.objectLayerPairFilterHandle)
 
+    /** Listener that is notified whenever a body is activated/deactivated */
     var bodyActivationListener: BodyActivationListener?
         get() = JphPhysicsSystem_GetBodyActivationListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { BodyActivationListener(it) }
         set(listener) = JphPhysicsSystem_SetBodyActivationListener(physicsSystemHandle, listener?.bodyActivationListenerHandle ?: NullPointer)
 
+    /**
+     * Listener that is notified whenever a contact point between two bodies is added/updated/removed.
+     * You can't change contact listener during PhysicsSystem::Update but it can be changed at any other time.
+     */
     var contactListener: ContactListener?
         get() = JphPhysicsSystem_GetContactListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { ContactListener(it) }
         set(listener) = JphPhysicsSystem_SetContactListener(physicsSystemHandle, listener?.contactListenerHandle ?: NullPointer)
 
+    /** Listener that is notified whenever a contact point between a soft body and another body */
     var softBodyContactListener: SoftBodyContactListener?
         get() = JphPhysicsSystem_GetSoftBodyContactListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { SoftBodyContactListener(it) }
         set(listener) = JphPhysicsSystem_SetSoftBodyContactListener(physicsSystemHandle, listener?.softBodyContactListenerHandle ?: NullPointer)
 
+    /**
+     * Set/get the shape filter that will be used during simulation. This can be used to exclude shapes within a body from colliding with each other.
+     * E.g. if you have a high detail and a low detail collision model, you can attach them to the same body in a StaticCompoundShape and use the ShapeFilter
+     * to exclude the high detail collision model when simulating and exclude the low detail collision model when casting rays. Note that in this case
+     * you would need to pass the inverse of inShapeFilter to the CastRay function. Pass a nullptr to disable the shape filter.
+     * The PhysicsSystem does not own the ShapeFilter, make sure it stays alive during the lifetime of the PhysicsSystem.
+     */
     var simShapeFilter: SimShapeFilter?
         get() = JphPhysicsSystem_GetSimShapeFilter(physicsSystemHandle).takeIf { it != NullPointer }?.let { SimShapeFilter(it) }
         set(shapeFilter) = JphPhysicsSystem_SetSimShapeFilter(physicsSystemHandle, shapeFilter?.simShapeFilterHandle ?: NullPointer)
 
+    /**
+     * Advanced use only: Set the function that will be used to collide two bodies during simulation.
+     * This function is expected to eventually call CollideShapeCollector::AddHit all contact points between the shapes of body 1 and 2 in their given transforms.
+     */
     fun setSimCollideBodyVsBody(bodyVsBody: ((Body, Body, Mat44, Mat44, CollideShapeSettings, CollideShapeCollector, ShapeFilter) -> Unit)?) =
         run {
             val bodyVsBodyUser = if (bodyVsBody == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> bodyVsBody(Body(readPointerSlot(args, 0)), Body(readPointerSlot(args, 1)), Mat44(readFloats(readPointerSlot(args, 2), 16)), Mat44(readFloats(readPointerSlot(args, 3), 16)), CollideShapeSettings(readPointerSlot(args, 4)), CollideShapeCollector(readPointerSlot(args, 5)), ShapeFilter(readPointerSlot(args, 6))) })
             JphPhysicsSystem_SetSimCollideBodyVsBody(physicsSystemHandle, Upcalls.function, bodyVsBodyUser)
         }
 
+    /** Control the main constants of the physics simulation */
     var physicsSettings: PhysicsSettings
         get() = run {
             val returned = PhysicsSettings(JphPhysicsSettings_create(), owned = true)
@@ -79,27 +113,34 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
     val bodyInterfaceNoLock: BodyInterface
         get() = BodyInterface(JphPhysicsSystem_GetBodyInterfaceNoLock(physicsSystemHandle))
 
+    /** Access to the broadphase interface that allows coarse collision queries */
     val broadPhaseQuery: BroadPhaseQuery
         get() = BroadPhaseQuery(JphPhysicsSystem_GetBroadPhaseQuery(physicsSystemHandle))
 
+    /** Interface that allows fine collision queries against first the broad phase and then the narrow phase. */
     val narrowPhaseQuery: NarrowPhaseQuery
         get() = NarrowPhaseQuery(JphPhysicsSystem_GetNarrowPhaseQuery(physicsSystemHandle))
 
     val narrowPhaseQueryNoLock: NarrowPhaseQuery
         get() = NarrowPhaseQuery(JphPhysicsSystem_GetNarrowPhaseQueryNoLock(physicsSystemHandle))
 
+    /** Add constraint to the world */
     fun addConstraint(constraint: Constraint?) =
         JphPhysicsSystem_AddConstraint(physicsSystemHandle, constraint?.constraintHandle ?: NullPointer)
 
+    /** Remove constraint from the world */
     fun removeConstraint(constraint: Constraint?) =
         JphPhysicsSystem_RemoveConstraint(physicsSystemHandle, constraint?.constraintHandle ?: NullPointer)
 
+    /** Batch add constraints. */
     fun addConstraints(constraints: List<Constraint>, number: Int) =
         interopScope { JphPhysicsSystem_AddConstraints(physicsSystemHandle, toInterop(constraints.map { it.constraintHandle }), number) }
 
+    /** Batch remove constraints. */
     fun removeConstraints(constraints: List<Constraint>, number: Int) =
         interopScope { JphPhysicsSystem_RemoveConstraints(physicsSystemHandle, toInterop(constraints.map { it.constraintHandle }), number) }
 
+    /** Get a list of all constraints */
     val constraints: List<Constraint>
         get() = interopScope {
             val count = JphPhysicsSystem_GetConstraints(physicsSystemHandle, NullPointer, 0)
@@ -108,30 +149,53 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
             readPointers(returnedPointer, count).map { Constraint(it, owned = true) }
         }
 
+    /**
+     * Optimize the broadphase, needed only if you've added many bodies prior to calling Update() for the first time.
+     * Don't call this every frame as PhysicsSystem::Update spreads out the same work over multiple frames.
+     * If you add many bodies through BodyInterface::AddBodiesPrepare/AddBodiesFinalize and if the bodies in a batch are
+     * in a roughly unoccupied space (e.g. a new level section) then a call to OptimizeBroadPhase is also not needed
+     * as batch adding creates an efficient bounding volume hierarchy.
+     * Don't call this function while bodies are being modified from another thread or use the locking BodyInterface to modify bodies.
+     */
     fun optimizeBroadPhase() =
         JphPhysicsSystem_OptimizeBroadPhase(physicsSystemHandle)
 
+    /** Adds a new step listener */
     fun addStepListener(listener: PhysicsStepListener?) =
         JphPhysicsSystem_AddStepListener(physicsSystemHandle, listener?.physicsStepListenerHandle ?: NullPointer)
 
+    /** Removes a step listener */
     fun removeStepListener(listener: PhysicsStepListener?) =
         JphPhysicsSystem_RemoveStepListener(physicsSystemHandle, listener?.physicsStepListenerHandle ?: NullPointer)
 
+    /**
+     * Simulate the system.
+     * The world steps for a total of inDeltaTime seconds. This is divided in inCollisionSteps iterations.
+     * Each iteration consists of collision detection followed by an integration step.
+     * This function internally spawns jobs using inJobSystem and waits for them to complete, so no jobs will be running when this function returns.
+     * The temp allocator is used, for example, to store the list of bodies that are in contact, how they form islands together
+     * and data to solve the contacts between bodies. At the end of the Update call, all allocated memory will have been freed.
+     */
     fun update(deltaTime: Float, collisionSteps: Int, tempAllocator: TempAllocator?, jobSystem: JobSystem?): EPhysicsUpdateError =
         EPhysicsUpdateError.of(JphPhysicsSystem_Update(physicsSystemHandle, deltaTime, collisionSteps, tempAllocator?.tempAllocatorHandle ?: NullPointer, jobSystem?.jobSystemHandle ?: NullPointer))
 
+    /** Saving state for replay */
     fun saveState(stream: StateRecorder, state: EStateRecorderState, filter: StateRecorderFilter?) =
         JphPhysicsSystem_SaveState(physicsSystemHandle, stream.stateRecorderHandle, state.value, filter?.stateRecorderFilterHandle ?: NullPointer)
 
+    /** Restoring state for replay. Returns false if failed. */
     fun restoreState(stream: StateRecorder, filter: StateRecorderFilter?): Boolean =
         JphPhysicsSystem_RestoreState(physicsSystemHandle, stream.stateRecorderHandle, filter?.stateRecorderFilterHandle ?: NullPointer)
 
+    /** Saving state of a single body. */
     fun saveBodyState(body: Body, stream: StateRecorder) =
         JphPhysicsSystem_SaveBodyState(physicsSystemHandle, body.bodyHandle, stream.stateRecorderHandle)
 
+    /** Restoring state of a single body. */
     fun restoreBodyState(body: Body, stream: StateRecorder) =
         JphPhysicsSystem_RestoreBodyState(physicsSystemHandle, body.bodyHandle, stream.stateRecorderHandle)
 
+    /** Set gravity value */
     var gravity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -142,36 +206,50 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
         }
         set(gravity) = interopScope { JphPhysicsSystem_SetGravity(physicsSystemHandle, toInterop(gravity.toArray())) }
 
+    /** Returns a locking interface that won't actually lock the body. Use with great care! */
     val bodyLockInterfaceNoLock: BodyLockInterfaceNoLock
         get() = BodyLockInterfaceNoLock(JphPhysicsSystem_GetBodyLockInterfaceNoLock(physicsSystemHandle))
 
+    /** Returns a locking interface that locks the body so other threads cannot modify it. */
     val bodyLockInterface: BodyLockInterfaceLocking
         get() = BodyLockInterfaceLocking(JphPhysicsSystem_GetBodyLockInterface(physicsSystemHandle))
 
+    /** Return the BroadPhaseLayerInterface that this class has been initialized with */
     val broadPhaseLayerInterface: BroadPhaseLayerInterface
         get() = BroadPhaseLayerInterface(JphPhysicsSystem_GetBroadPhaseLayerInterface(physicsSystemHandle))
 
+    /** Broadphase layer filter that decides if two objects can collide, this was passed to the Init function. */
     val objectVsBroadPhaseLayerFilter: ObjectVsBroadPhaseLayerFilter
         get() = ObjectVsBroadPhaseLayerFilter(JphPhysicsSystem_GetObjectVsBroadPhaseLayerFilter(physicsSystemHandle))
 
+    /** Object layer filter that decides if two objects can collide, this was passed to the Init function. */
     val objectLayerPairFilter: ObjectLayerPairFilter
         get() = ObjectLayerPairFilter(JphPhysicsSystem_GetObjectLayerPairFilter(physicsSystemHandle))
 
+    /** Get an broadphase layer filter that uses the default pair filter and a specified object layer to determine if broadphase layers collide */
     fun getDefaultBroadPhaseLayerFilter(layer: Int): DefaultBroadPhaseLayerFilter =
         DefaultBroadPhaseLayerFilter(JphPhysicsSystem_GetDefaultBroadPhaseLayerFilter(physicsSystemHandle, layer), owned = true)
 
+    /** Get an object layer filter that uses the default pair filter and a specified layer to determine if layers collide */
     fun getDefaultLayerFilter(layer: Int): DefaultObjectLayerFilter =
         DefaultObjectLayerFilter(JphPhysicsSystem_GetDefaultLayerFilter(physicsSystemHandle, layer), owned = true)
 
+    /** Gets the current amount of bodies that are in the body manager */
     val numBodies: Int
         get() = JphPhysicsSystem_GetNumBodies(physicsSystemHandle)
 
+    /** Gets the current amount of active bodies that are in the body manager */
     fun getNumActiveBodies(type: EBodyType): Int =
         JphPhysicsSystem_GetNumActiveBodies(physicsSystemHandle, type.value)
 
+    /** Get the maximum amount of bodies that this physics system supports */
     val maxBodies: Int
         get() = JphPhysicsSystem_GetMaxBodies(physicsSystemHandle)
 
+    /**
+     * Get copy of the list of all bodies under protection of a lock.
+     * @return On return, this will contain the list of BodyIDs
+     */
     val bodies: List<BodyID>
         get() = interopScope {
             val count = JphPhysicsSystem_GetBodies(physicsSystemHandle, NullPointer, 0)
@@ -182,6 +260,11 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
             returned.map { BodyID(it) }
         }
 
+    /**
+     * Get copy of the list of active bodies under protection of a lock.
+     * @param type The type of bodies to get
+     * @return On return, this will contain the list of BodyIDs
+     */
     fun getActiveBodies(type: EBodyType): List<BodyID> =
         interopScope {
             val count = JphPhysicsSystem_GetActiveBodies(physicsSystemHandle, type.value, NullPointer, 0)
@@ -192,9 +275,20 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
             returned.map { BodyID(it) }
         }
 
+    /**
+     * Check if 2 bodies were in contact during the last simulation step. Since contacts are only detected between active bodies, so at least one of the bodies must be active in order for this function to work.
+     * It queries the state at the time of the last PhysicsSystem::Update and will return true if the bodies were in contact, even if one of the bodies was moved / removed afterwards.
+     * This function can be called from any thread when the PhysicsSystem::Update is not running. During PhysicsSystem::Update this function is only valid during contact callbacks:
+     * - During the ContactListener::OnContactAdded callback this function can be used to determine if a different contact pair between the bodies was active in the previous simulation step (function returns true) or if this is the first step that the bodies are touching (function returns false).
+     * - During the ContactListener::OnContactRemoved callback this function can be used to determine if this is the last contact pair between the bodies (function returns false) or if there are other contacts still present (function returns true).
+     */
     fun wereBodiesInContact(body1ID: BodyID, body2ID: BodyID): Boolean =
         JphPhysicsSystem_WereBodiesInContact(physicsSystemHandle, body1ID.value, body2ID.value)
 
+    /**
+     * Get the bounding box of all bodies in the physics system.
+     * Deprecated: Use GetBroadPhaseQuery().GetBounds() instead.
+     */
     val bounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
@@ -203,6 +297,7 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
         }
 
     companion object {
+        /** Advanced use only: Default function that is used to collide two bodies during simulation. */
         fun defaultSimCollideBodyVsBody(body1: Body, body2: Body, centerOfMassTransform1: Mat44, centerOfMassTransform2: Mat44, collideShapeSettings: CollideShapeSettings, collector: CollideShapeCollector, shapeFilter: ShapeFilter) =
             interopScope { JphPhysicsSystem_sDefaultSimCollideBodyVsBody(body1.bodyHandle, body2.bodyHandle, toInterop(centerOfMassTransform1.toArray()), toInterop(centerOfMassTransform2.toArray()), collideShapeSettings.collideShapeSettingsHandle, collector.collideShapeCollectorHandle, shapeFilter.shapeFilterHandle) }
     }

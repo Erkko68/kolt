@@ -33,9 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EConstraintSpace`. */
+/**
+ * Certain constraints support setting them up in local or world space. This governs what is used.
+ *
+ * C++ `JPH::EConstraintSpace`.
+ */
 enum class EConstraintSpace(internal val value: Int) {
+    /** All constraint properties are specified in local space to center of mass of the bodies that are being constrained (so e.g. 'constraint position 1' will be local to body 1 COM, 'constraint position 2' will be local to body 2 COM). Note that this means you need to subtract Shape::GetCenterOfMass() from positions! */
     LocalToBodyCOM(0),
+    /** All constraint properties are specified in world space */
     WorldSpace(1);
 
     internal companion object {

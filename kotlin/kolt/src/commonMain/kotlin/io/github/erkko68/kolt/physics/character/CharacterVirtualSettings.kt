@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterVirtualSettings`. */
+/**
+ * Contains the configuration of a character
+ *
+ * C++ `JPH::CharacterVirtualSettings`.
+ */
 class CharacterVirtualSettings internal constructor(internal val characterVirtualSettingsHandle: NativePointer, owned: Boolean = false) : CharacterBaseSettings(JphCharacterVirtualSettings_asCharacterBaseSettings(characterVirtualSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCharacterVirtualSettings_create(), owned = true)
 
@@ -43,6 +47,7 @@ class CharacterVirtualSettings internal constructor(internal val characterVirtua
     override fun close() =
         closeOnce { JphCharacterVirtualSettings_release(characterVirtualSettingsHandle) }
 
+    /** ID to give to this character. This is used for deterministically sorting and as an identifier to represent the character in the contact removal callback. */
     var id: CharacterID
         get() = run {
             val returned = CharacterID(JphCharacterID_create(), owned = true)
@@ -51,14 +56,17 @@ class CharacterVirtualSettings internal constructor(internal val characterVirtua
         }
         set(value) = JphCharacterVirtualSettings_SetID(characterVirtualSettingsHandle, value.characterIDHandle)
 
+    /** Character mass (kg). Used to push down objects with gravity when the character is standing on top. */
     var mass: Float
         get() = JphCharacterVirtualSettings_GetMass(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMass(characterVirtualSettingsHandle, value)
 
+    /** Maximum force with which the character can push other bodies (N). */
     var maxStrength: Float
         get() = JphCharacterVirtualSettings_GetMaxStrength(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMaxStrength(characterVirtualSettingsHandle, value)
 
+    /** An extra offset applied to the shape in local space. This allows applying an extra offset to the shape in local space. */
     var shapeOffset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -69,54 +77,75 @@ class CharacterVirtualSettings internal constructor(internal val characterVirtua
         }
         set(value) = interopScope { JphCharacterVirtualSettings_SetShapeOffset(characterVirtualSettingsHandle, toInterop(value.toArray())) }
 
+    /** When colliding with back faces, the character will not be able to move through back facing triangles. Use this if you have triangles that need to collide on both sides. */
     var backFaceMode: EBackFaceMode
         get() = EBackFaceMode.of(JphCharacterVirtualSettings_GetBackFaceMode(characterVirtualSettingsHandle))
         set(value) = JphCharacterVirtualSettings_SetBackFaceMode(characterVirtualSettingsHandle, value.value)
 
+    /** How far to scan outside of the shape for predictive contacts. A value of 0 will most likely cause the character to get stuck as it cannot properly calculate a sliding direction anymore. A value that's too high will cause ghost collisions. */
     var predictiveContactDistance: Float
         get() = JphCharacterVirtualSettings_GetPredictiveContactDistance(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetPredictiveContactDistance(characterVirtualSettingsHandle, value)
 
+    /** Max amount of collision loops */
     var maxCollisionIterations: Int
         get() = JphCharacterVirtualSettings_GetMaxCollisionIterations(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMaxCollisionIterations(characterVirtualSettingsHandle, value)
 
+    /** How often to try stepping in the constraint solving */
     var maxConstraintIterations: Int
         get() = JphCharacterVirtualSettings_GetMaxConstraintIterations(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMaxConstraintIterations(characterVirtualSettingsHandle, value)
 
+    /** Early out condition: If this much time is left to simulate we are done */
     var minTimeRemaining: Float
         get() = JphCharacterVirtualSettings_GetMinTimeRemaining(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMinTimeRemaining(characterVirtualSettingsHandle, value)
 
+    /** How far we're willing to penetrate geometry */
     var collisionTolerance: Float
         get() = JphCharacterVirtualSettings_GetCollisionTolerance(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetCollisionTolerance(characterVirtualSettingsHandle, value)
 
+    /** How far we try to stay away from the geometry, this ensures that the sweep will hit as little as possible lowering the collision cost and reducing the risk of getting stuck */
     var characterPadding: Float
         get() = JphCharacterVirtualSettings_GetCharacterPadding(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetCharacterPadding(characterVirtualSettingsHandle, value)
 
+    /** Max num hits to collect in order to avoid excess of contact points collection */
     var maxNumHits: Int
         get() = JphCharacterVirtualSettings_GetMaxNumHits(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMaxNumHits(characterVirtualSettingsHandle, value)
 
+    /** Cos(angle) where angle is the maximum angle between two hits contact normals that are allowed to be merged during hit reduction. Default is around 2.5 degrees. Set to -1 to turn off. */
     var hitReductionCosMaxAngle: Float
         get() = JphCharacterVirtualSettings_GetHitReductionCosMaxAngle(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetHitReductionCosMaxAngle(characterVirtualSettingsHandle, value)
 
+    /** This value governs how fast a penetration will be resolved, 0 = nothing is resolved, 1 = everything in one update */
     var penetrationRecoverySpeed: Float
         get() = JphCharacterVirtualSettings_GetPenetrationRecoverySpeed(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetPenetrationRecoverySpeed(characterVirtualSettingsHandle, value)
 
+    /**
+     * This character can optionally have an inner rigid body. This rigid body can be used to give the character presence in the world. When set it means that:
+     * - Regular collision checks (e.g. NarrowPhaseQuery::CastRay) will collide with the rigid body (they cannot collide with CharacterVirtual since it is not added to the broad phase)
+     * - Regular contact callbacks will be called through the ContactListener (next to the ones that will be passed to the CharacterContactListener)
+     * - Fast moving objects of motion quality LinearCast will not be able to pass through the CharacterVirtual in 1 time step
+     */
     var innerBodyShape: Shape?
         get() = JphCharacterVirtualSettings_GetInnerBodyShape(characterVirtualSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(value) = JphCharacterVirtualSettings_SetInnerBodyShape(characterVirtualSettingsHandle, value?.shapeHandle ?: NullPointer)
 
+    /**
+     * For a deterministic simulation, it is important to have a deterministic body ID. When set and when mInnerBodyShape is specified,
+     * the inner body will be created with this specified ID instead of a generated ID.
+     */
     var innerBodyIDOverride: BodyID
         get() = BodyID(JphCharacterVirtualSettings_GetInnerBodyIDOverride(characterVirtualSettingsHandle))
         set(value) = JphCharacterVirtualSettings_SetInnerBodyIDOverride(characterVirtualSettingsHandle, value.value)
 
+    /** Layer that the inner rigid body will be added to */
     var innerBodyLayer: Int
         get() = JphCharacterVirtualSettings_GetInnerBodyLayer(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetInnerBodyLayer(characterVirtualSettingsHandle, value)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EConstraintType`. */
+/**
+ * Enum to identify constraint type
+ *
+ * C++ `JPH::EConstraintType`.
+ */
 enum class EConstraintType(internal val value: Int) {
     Constraint(0),
     TwoBodyConstraint(1);

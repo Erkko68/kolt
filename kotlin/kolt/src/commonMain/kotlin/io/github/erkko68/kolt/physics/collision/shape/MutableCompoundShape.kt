@@ -33,7 +33,19 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::MutableCompoundShape`. */
+/**
+ * A compound shape, sub shapes can be rotated and translated.
+ * This shape is optimized for adding / removing and changing the rotation / translation of sub shapes but is less efficient in querying.
+ * Shifts all child objects so that they're centered around the center of mass (which needs to be kept up to date by calling AdjustCenterOfMass).
+ *
+ * Note: If you're using MutableCompoundShape and are querying data while modifying the shape you'll have a race condition.
+ * In this case it is best to create a new MutableCompoundShape using the Clone function. You replace the shape on a body using BodyInterface::SetShape.
+ * If a query is still working on the old shape, it will have taken a reference and keep the old shape alive until the query finishes.
+ *
+ * When you modify a MutableCompoundShape, beware that the SubShapeIDs of all other shapes can change. So be careful when storing SubShapeIDs.
+ *
+ * C++ `JPH::MutableCompoundShape`.
+ */
 class MutableCompoundShape internal constructor(internal val mutableCompoundShapeHandle: NativePointer, owned: Boolean = false) : CompoundShape(JphMutableCompoundShape_asCompoundShape(mutableCompoundShapeHandle), owned), AutoCloseable {
     constructor() : this(JphMutableCompoundShape_create(), owned = true)
 
@@ -43,21 +55,53 @@ class MutableCompoundShape internal constructor(internal val mutableCompoundShap
     override fun close() =
         closeOnce { JphMutableCompoundShape_release(mutableCompoundShapeHandle) }
 
+    /** Clone this shape. Can be used to avoid race conditions. See the documentation of this class for more information. */
     fun clone(): MutableCompoundShape? =
         JphMutableCompoundShape_Clone(mutableCompoundShapeHandle).takeIf { it != NullPointer }?.let { MutableCompoundShape(it, owned = true) }
 
+    /**
+     * Adding a new shape.
+     * Beware this can create a race condition if you're running collision queries in parallel. See class documentation for more information.
+     * @param position The position of the new shape
+     * @param rotation The orientation of the new shape
+     * @param shape The shape to add
+     * @param userData User data that will be stored with the shape and can be retrieved using GetCompoundUserData
+     * @param index Index where to insert the shape, UINT_MAX to add to the end
+     * @return The index of the newly added shape
+     */
     fun addShape(position: Vec3, rotation: Quat, shape: Shape?, userData: Int, index: Int): Int =
         interopScope { JphMutableCompoundShape_AddShape(mutableCompoundShapeHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer, userData, index) }
 
+    /**
+     * Remove a shape by index.
+     * Beware this can create a race condition if you're running collision queries in parallel. See class documentation for more information.
+     */
     fun removeShape(index: Int) =
         JphMutableCompoundShape_RemoveShape(mutableCompoundShapeHandle, index)
 
+    /**
+     * Modify the position / orientation of a shape.
+     * Beware this can create a race condition if you're running collision queries in parallel. See class documentation for more information.
+     */
     fun modifyShape(index: Int, position: Vec3, rotation: Quat) =
         interopScope { JphMutableCompoundShape_ModifyShape(mutableCompoundShapeHandle, index, toInterop(position.toArray()), toInterop(rotation.toArray())) }
 
+    /**
+     * Modify the position / orientation and shape at the same time.
+     * Beware this can create a race condition if you're running collision queries in parallel. See class documentation for more information.
+     */
     fun modifyShape(index: Int, position: Vec3, rotation: Quat, shape: Shape?) =
         interopScope { JphMutableCompoundShape_ModifyShape_Shape(mutableCompoundShapeHandle, index, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) }
 
+    /**
+     * Batch set positions / orientations, this avoids duplicate work due to bounding box calculation. Beware this can create a race condition if you're running collision queries in parallel. See class documentation for more information.
+     * @param startIndex Index of first shape to update
+     * @param number Number of shapes to update
+     * @param positions A list of positions with arbitrary stride
+     * @param rotations A list of orientations with arbitrary stride
+     * @param positionStride The position stride (the number of bytes between the first and second element)
+     * @param rotationStride The orientation stride (the number of bytes between the first and second element)
+     */
     fun modifyShapes(startIndex: Int, number: Int, positions: List<Vec3>, rotations: List<Quat>, positionStride: Int, rotationStride: Int) =
         interopScope {
             val positionsArray = FloatArray(positions.size * 4).also { a -> positions.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }
@@ -67,6 +111,12 @@ class MutableCompoundShape internal constructor(internal val mutableCompoundShap
             JphMutableCompoundShape_ModifyShapes(mutableCompoundShapeHandle, startIndex, number, positionsPointer, positions.size, rotationsPointer, rotations.size, positionStride, rotationStride)
         }
 
+    /**
+     * Recalculate the center of mass and shift all objects so they're centered around it
+     * (this needs to be done of dynamic bodies and if the center of mass changes significantly due to adding / removing / repositioning sub shapes or else the simulation will look unnatural)
+     * Note that after adjusting the center of mass of an object you need to call BodyInterface::NotifyShapeChanged and Constraint::NotifyShapeChanged on the relevant bodies / constraints.
+     * Beware this can create a race condition if you're running collision queries in parallel. See class documentation for more information.
+     */
     fun adjustCenterOfMass() =
         JphMutableCompoundShape_AdjustCenterOfMass(mutableCompoundShapeHandle)
 }

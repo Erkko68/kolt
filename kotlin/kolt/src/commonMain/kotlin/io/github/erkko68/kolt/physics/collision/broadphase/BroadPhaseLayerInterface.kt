@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BroadPhaseLayerInterface`. */
+/**
+ * Interface that the application should implement to allow mapping object layers to broadphase layers
+ *
+ * C++ `JPH::BroadPhaseLayerInterface`.
+ */
 open class BroadPhaseLayerInterface internal constructor(internal val broadPhaseLayerInterfaceHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphBroadPhaseLayerInterface_createUpcalls(Upcalls.function), owned = true) {
@@ -43,9 +47,11 @@ open class BroadPhaseLayerInterface internal constructor(internal val broadPhase
     override fun close() =
         closeOnce { JphBroadPhaseLayerInterface_destroy(broadPhaseLayerInterfaceHandle) }
 
+    /** Return the number of broadphase layers there are */
     open val numBroadPhaseLayers: Int
         get() = JphBroadPhaseLayerInterface_GetNumBroadPhaseLayers(broadPhaseLayerInterfaceHandle)
 
+    /** Convert an object layer to the corresponding broadphase layer */
     open fun getBroadPhaseLayer(layer: Int): BroadPhaseLayer =
         BroadPhaseLayer(JphBroadPhaseLayerInterface_GetBroadPhaseLayer(broadPhaseLayerInterfaceHandle, layer))
 

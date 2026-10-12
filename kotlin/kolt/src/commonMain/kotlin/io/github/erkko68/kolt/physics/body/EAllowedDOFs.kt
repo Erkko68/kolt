@@ -33,21 +33,34 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EAllowedDOFs`: flags, which [or] combines. */
+/**
+ * Enum used in BodyCreationSettings and MotionProperties to indicate which degrees of freedom a body has
+ *
+ * C++ `JPH::EAllowedDOFs`: flags, which [or] combines.
+ */
 @kotlin.jvm.JvmInline
 value class EAllowedDOFs internal constructor(internal val value: Int) {
     infix fun or(other: EAllowedDOFs) = EAllowedDOFs(value or other.value)
     operator fun contains(flags: EAllowedDOFs) = value and flags.value == flags.value
 
     companion object {
+        /** No degrees of freedom are allowed. Note that this is not valid and will crash. Use a static body instead. */
         val None = EAllowedDOFs(0)
+        /** All degrees of freedom are allowed */
         val All = EAllowedDOFs(63)
+        /** Body can move in world space X axis */
         val TranslationX = EAllowedDOFs(1)
+        /** Body can move in world space Y axis */
         val TranslationY = EAllowedDOFs(2)
+        /** Body can move in world space Z axis */
         val TranslationZ = EAllowedDOFs(4)
+        /** Body can rotate around world space X axis */
         val RotationX = EAllowedDOFs(8)
+        /** Body can rotate around world space Y axis */
         val RotationY = EAllowedDOFs(16)
+        /** Body can rotate around world space Z axis */
         val RotationZ = EAllowedDOFs(32)
+        /** Body can only move in X and Y axis and rotate around Z axis */
         val Plane2D = EAllowedDOFs(35)
 
         internal fun of(value: Int) = EAllowedDOFs(value)

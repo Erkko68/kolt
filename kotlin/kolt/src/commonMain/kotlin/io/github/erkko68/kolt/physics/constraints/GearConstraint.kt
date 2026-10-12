@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::GearConstraint`. */
+/**
+ * A gear constraint constrains the rotation of body1 to the rotation of body 2 using a gear.
+ * Note that this constraint needs to be used in conjunction with a two hinge constraints.
+ *
+ * C++ `JPH::GearConstraint`.
+ */
 class GearConstraint internal constructor(internal val gearConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphGearConstraint_asTwoBodyConstraint(gearConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: GearConstraintSettings) : this(JphGearConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.gearConstraintSettingsHandle), owned = true)
 
@@ -43,9 +48,11 @@ class GearConstraint internal constructor(internal val gearConstraintHandle: Nat
     override fun close() =
         closeOnce { JphGearConstraint_release(gearConstraintHandle) }
 
+    /** The constraints that constrain both gears (2 hinges), optional and used to calculate the rotation error and fix numerical drift. */
     fun setConstraints(gear1: Constraint?, gear2: Constraint?) =
         JphGearConstraint_SetConstraints(gearConstraintHandle, gear1?.constraintHandle ?: NullPointer, gear2?.constraintHandle ?: NullPointer)
 
+    /** Get Lagrange multiplier from last physics update (the angular impulse applied to satisfy the constraint) */
     val totalLambda: Float
         get() = JphGearConstraint_GetTotalLambda(gearConstraintHandle)
 }

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PathConstraintPathHermite`. */
+/**
+ * A path that follows a Hermite spline
+ *
+ * C++ `JPH::PathConstraintPathHermite`.
+ */
 class PathConstraintPathHermite internal constructor(internal val pathConstraintPathHermiteHandle: NativePointer, owned: Boolean = false) : PathConstraintPath(JphPathConstraintPathHermite_asPathConstraintPath(pathConstraintPathHermiteHandle), owned), AutoCloseable {
     constructor() : this(JphPathConstraintPathHermite_create(), owned = true)
 
@@ -43,6 +47,7 @@ class PathConstraintPathHermite internal constructor(internal val pathConstraint
     override fun close() =
         closeOnce { JphPathConstraintPathHermite_release(pathConstraintPathHermiteHandle) }
 
+    /** Adds a point to the path */
     fun addPoint(position: Vec3, tangent: Vec3, normal: Vec3) =
         interopScope { JphPathConstraintPathHermite_AddPoint(pathConstraintPathHermiteHandle, toInterop(position.toArray()), toInterop(tangent.toArray()), toInterop(normal.toArray())) }
 
@@ -53,6 +58,7 @@ class PathConstraintPathHermite internal constructor(internal val pathConstraint
         override fun close() =
             closeOnce { JphPathConstraintPathHermitePoint_destroy(pathConstraintPathHermitePointHandle) }
     
+        /** Position on the path */
         var position: Vec3
             get() = interopScope {
                 val returned = FloatArray(4)
@@ -63,6 +69,7 @@ class PathConstraintPathHermite internal constructor(internal val pathConstraint
             }
             set(value) = interopScope { JphPathConstraintPathHermitePoint_SetPosition(pathConstraintPathHermitePointHandle, toInterop(value.toArray())) }
     
+        /** Tangent of the path, does not need to be normalized (in the direction of the path) */
         var tangent: Vec3
             get() = interopScope {
                 val returned = FloatArray(4)
@@ -73,6 +80,7 @@ class PathConstraintPathHermite internal constructor(internal val pathConstraint
             }
             set(value) = interopScope { JphPathConstraintPathHermitePoint_SetTangent(pathConstraintPathHermitePointHandle, toInterop(value.toArray())) }
     
+        /** Normal of the path (together with the tangent along the curve this forms a basis for the constraint) */
         var normal: Vec3
             get() = interopScope {
                 val returned = FloatArray(4)

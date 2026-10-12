@@ -33,5 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SerializableObject`. */
+/**
+ * Classes must be derived from SerializableObject if you want to be able to save pointers or
+ * reference counting pointers to objects of this or derived classes. The type will automatically
+ * be determined during serialization and upon deserialization it will be restored correctly.
+ *
+ * C++ `JPH::SerializableObject`.
+ */
 open class SerializableObject internal constructor(internal val serializableObjectHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ScaledShape`. */
+/**
+ * A shape that scales a child shape in local space of that shape. The scale can be non-uniform and can even turn it inside out when one or three components of the scale are negative.
+ *
+ * C++ `JPH::ScaledShape`.
+ */
 class ScaledShape internal constructor(internal val scaledShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphScaledShape_asDecoratedShape(scaledShapeHandle), owned), AutoCloseable {
     constructor() : this(JphScaledShape_create(), owned = true)
     constructor(shape: Shape?, scale: Vec3) : this(interopScope { JphScaledShape_create_Shape_Vec3Arg(shape?.shapeHandle ?: NullPointer, toInterop(scale.toArray())) }, owned = true)
@@ -44,6 +48,7 @@ class ScaledShape internal constructor(internal val scaledShapeHandle: NativePoi
     override fun close() =
         closeOnce { JphScaledShape_release(scaledShapeHandle) }
 
+    /** Get the scale */
     val scale: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

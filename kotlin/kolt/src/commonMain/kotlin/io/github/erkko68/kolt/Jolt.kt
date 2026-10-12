@@ -33,6 +33,19 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
+/**
+ * This function estimates the contact impulses and body velocity changes as a result of a collision.
+ * It can be used in the ContactListener::OnContactAdded to determine the strength of the collision to e.g. play a sound or trigger a particle system.
+ * This function is accurate when two bodies collide but will not be accurate when more than 2 bodies collide at the same time as it does not know about these other collisions.
+ * @param body1 Colliding body 1
+ * @param body2 Colliding body 2
+ * @param manifold The collision manifold
+ * @param result A structure that contains the estimated contact and friction impulses and the resulting body velocities
+ * @param combinedFriction The combined friction of body 1 and body 2 (see ContactSettings::mCombinedFriction)
+ * @param combinedRestitution The combined restitution of body 1 and body 2 (see ContactSettings::mCombinedRestitution)
+ * @param minVelocityForRestitution Minimal velocity required for restitution to be applied (see PhysicsSettings::mMinVelocityForRestitution)
+ * @param numIterations Number of iterations to use for the impulse estimation (see PhysicsSettings::mNumVelocitySteps, note you can probably use a lower number for a decent estimate). If you set the number of iterations to 1 then no friction will be calculated.
+ */
 fun estimateCollisionResponse(body1: Body, body2: Body, manifold: ContactManifold, result: CollisionEstimationResult, combinedFriction: Float, combinedRestitution: Float, minVelocityForRestitution: Float, numIterations: Int) =
     Jph_EstimateCollisionResponse(body1.bodyHandle, body2.bodyHandle, manifold.contactManifoldHandle, result.collisionEstimationResultHandle, combinedFriction, combinedRestitution, minVelocityForRestitution, numIterations)
 
@@ -42,11 +55,23 @@ fun isVelocityMotor(motorState: EMotorState): Boolean =
 fun isPositionMotor(motorState: EMotorState): Boolean =
     Jph_IsPositionMotor(motorState.value)
 
+/**
+ * This function can be used to verify the library ABI is compatible with your
+ * application.
+ * Use it in this way: `assert(VerifyJoltVersionID());`.
+ * Returns `false` if the library used is not compatible with your app.
+ */
 fun verifyJoltVersionID(): Boolean =
     Jph_VerifyJoltVersionID()
 
+/**
+ * Register all physics types with the factory and install their collision handlers with the CollisionDispatch class.
+ * If you have your own custom shape types you probably need to register their handlers with the CollisionDispatch before calling this function.
+ * If you implement your own default material (PhysicsMaterial::sDefault) make sure to initialize it before this function or else this function will create one for you.
+ */
 fun registerTypes() =
     Jph_RegisterTypes()
 
+/** Unregisters all types with the factory and cleans up the default material */
 fun unregisterTypes() =
     Jph_UnregisterTypes()

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Skeleton`. */
+/**
+ * Resource that contains the joint hierarchy for a skeleton
+ *
+ * C++ `JPH::Skeleton`.
+ */
 class Skeleton internal constructor(internal val skeletonHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSkeleton_create(), owned = true)
 
@@ -63,19 +67,30 @@ class Skeleton internal constructor(internal val skeletonHandle: NativePointer, 
     fun addJoint(name: String?, parentIndex: Int): Int =
         interopScope { JphSkeleton_AddJoint_int(skeletonHandle, toInterop(name), parentIndex) }
 
+    /** Find joint by name */
     fun getJointIndex(name: String?): Int =
         interopScope { JphSkeleton_GetJointIndex(skeletonHandle, toInterop(name)) }
 
+    /** Fill in parent joint indices based on name */
     fun calculateParentJointIndices() =
         JphSkeleton_CalculateParentJointIndices(skeletonHandle)
 
+    /**
+     * Many of the algorithms that use the Skeleton class require that parent joints are in the mJoints array before their children.
+     * This function returns true if this is the case, false if not.
+     */
     fun areJointsCorrectlyOrdered(): Boolean =
         JphSkeleton_AreJointsCorrectlyOrdered(skeletonHandle)
 
+    /** Saves the state of this object in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphSkeleton_SaveBinaryState(skeletonHandle, stream.streamOutHandle)
 
-    /** C++ `JPH::Skeleton::Joint`. */
+    /**
+     * Declare internal structure for a joint
+     *
+     * C++ `JPH::Skeleton::Joint`.
+     */
     class Joint internal constructor(internal val skeletonJointHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSkeletonJoint_create(), owned = true)
         constructor(name: String?, parentName: String?, parentJointIndex: Int) : this(interopScope { JphSkeletonJoint_create_string_view_string_view_int(toInterop(name), toInterop(parentName), parentJointIndex) }, owned = true)
@@ -83,20 +98,24 @@ class Skeleton internal constructor(internal val skeletonHandle: NativePointer, 
         override fun close() =
             closeOnce { JphSkeletonJoint_destroy(skeletonJointHandle) }
     
+        /** Name of the joint */
         var name: String?
             get() = stringFromInterop(JphSkeletonJoint_GetName(skeletonJointHandle))
             set(value) = interopScope { JphSkeletonJoint_SetName(skeletonJointHandle, toInterop(value)) }
     
+        /** Name of parent joint */
         var parentName: String?
             get() = stringFromInterop(JphSkeletonJoint_GetParentName(skeletonJointHandle))
             set(value) = interopScope { JphSkeletonJoint_SetParentName(skeletonJointHandle, toInterop(value)) }
     
+        /** Index of parent joint (in mJoints) or -1 if it has no parent */
         var parentJointIndex: Int
             get() = JphSkeletonJoint_GetParentJointIndex(skeletonJointHandle)
             set(value) = JphSkeletonJoint_SetParentJointIndex(skeletonJointHandle, value)
     }
     
     companion object {
+        /** Restore the state of this object from inStream. */
         fun restoreFromBinaryState(stream: StreamIn): Skeleton =
             interopScope {
                 val error = ByteArray(256)

@@ -33,38 +33,50 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::WheelWV`. */
+/**
+ * Wheel object specifically for WheeledVehicleController
+ *
+ * C++ `JPH::WheelWV`.
+ */
 class WheelWV internal constructor(internal val wheelWVHandle: NativePointer, owned: Boolean = false) : Wheel(JphWheelWV_asWheel(wheelWVHandle), owned), AutoCloseable {
     constructor(wheel: WheelSettingsWV) : this(JphWheelWV_create(wheel.wheelSettingsWVHandle), owned = true)
 
     override fun close() =
         closeOnce { JphWheelWV_destroy(wheelWVHandle) }
 
+    /** Override GetSettings and cast to the correct class */
     override val settings: WheelSettingsWV?
         get() = JphWheelWV_GetSettings(wheelWVHandle).takeIf { it != NullPointer }?.let { WheelSettingsWV(it) }
 
+    /** Apply a torque (N m) to the wheel for a particular delta time */
     fun applyTorque(torque: Float, deltaTime: Float) =
         JphWheelWV_ApplyTorque(wheelWVHandle, torque, deltaTime)
 
+    /** Update the wheel rotation based on the current angular velocity */
     fun update(wheelIndex: Int, deltaTime: Float, constraint: VehicleConstraint) =
         JphWheelWV_Update(wheelWVHandle, wheelIndex, deltaTime, constraint.vehicleConstraintHandle)
 
+    /** Velocity difference between ground and wheel relative to ground velocity */
     var longitudinalSlip: Float
         get() = JphWheelWV_GetLongitudinalSlip(wheelWVHandle)
         set(value) = JphWheelWV_SetLongitudinalSlip(wheelWVHandle, value)
 
+    /** Angular difference (in radians) between ground and wheel relative to ground velocity */
     var lateralSlip: Float
         get() = JphWheelWV_GetLateralSlip(wheelWVHandle)
         set(value) = JphWheelWV_SetLateralSlip(wheelWVHandle, value)
 
+    /** Combined friction coefficient in longitudinal direction (combines terrain and tires) */
     var combinedLongitudinalFriction: Float
         get() = JphWheelWV_GetCombinedLongitudinalFriction(wheelWVHandle)
         set(value) = JphWheelWV_SetCombinedLongitudinalFriction(wheelWVHandle, value)
 
+    /** Combined friction coefficient in lateral direction (combines terrain and tires) */
     var combinedLateralFriction: Float
         get() = JphWheelWV_GetCombinedLateralFriction(wheelWVHandle)
         set(value) = JphWheelWV_SetCombinedLateralFriction(wheelWVHandle, value)
 
+    /** Amount of impulse that the brakes can apply to the floor (excluding friction) */
     var brakeImpulse: Float
         get() = JphWheelWV_GetBrakeImpulse(wheelWVHandle)
         set(value) = JphWheelWV_SetBrakeImpulse(wheelWVHandle, value)

@@ -33,7 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CollisionGroup`. */
+/**
+ * Two objects collide with each other if:
+ * - Both don't have a group filter
+ * - The first group filter says that the objects can collide
+ * - Or if there's no filter for the first object, the second group filter says the objects can collide
+ *
+ * C++ `JPH::CollisionGroup`.
+ */
 class CollisionGroup internal constructor(internal val collisionGroupHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCollisionGroup_create(), owned = true)
     constructor(filter: GroupFilter?, groupID: Int, subGroupID: Int) : this(JphCollisionGroup_create_GroupFilter_GroupID_SubGroupID(filter?.groupFilterHandle ?: NullPointer, groupID, subGroupID), owned = true)
@@ -41,24 +48,30 @@ class CollisionGroup internal constructor(internal val collisionGroupHandle: Nat
     override fun close() =
         closeOnce { JphCollisionGroup_destroy(collisionGroupHandle) }
 
+    /** Get the collision group filter */
     var groupFilter: GroupFilter?
         get() = JphCollisionGroup_GetGroupFilter(collisionGroupHandle).takeIf { it != NullPointer }?.let { GroupFilter(it) }
         set(filter) = JphCollisionGroup_SetGroupFilter(collisionGroupHandle, filter?.groupFilterHandle ?: NullPointer)
 
+    /** Set the main group id for this object */
     var groupID: Int
         get() = JphCollisionGroup_GetGroupID(collisionGroupHandle)
         set(id) = JphCollisionGroup_SetGroupID(collisionGroupHandle, id)
 
+    /** Add this object to a sub group */
     var subGroupID: Int
         get() = JphCollisionGroup_GetSubGroupID(collisionGroupHandle)
         set(id) = JphCollisionGroup_SetSubGroupID(collisionGroupHandle, id)
 
+    /** Check if this object collides with another object */
     fun canCollide(other: CollisionGroup): Boolean =
         JphCollisionGroup_CanCollide(collisionGroupHandle, other.collisionGroupHandle)
 
+    /** Saves the state of this object in binary form to inStream. Does not save group filter. */
     fun saveBinaryState(stream: StreamOut) =
         JphCollisionGroup_SaveBinaryState(collisionGroupHandle, stream.streamOutHandle)
 
+    /** Restore the state of this object from inStream. Does not save group filter. */
     fun restoreBinaryState(stream: StreamIn) =
         JphCollisionGroup_RestoreBinaryState(collisionGroupHandle, stream.streamInHandle)
 }

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleCollisionTester`. */
+/**
+ * Class that does collision detection between wheels and ground
+ *
+ * C++ `JPH::VehicleCollisionTester`.
+ */
 open class VehicleCollisionTester internal constructor(internal val vehicleCollisionTesterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     open fun addRef() =
         own { JphVehicleCollisionTester_addRef(vehicleCollisionTesterHandle) }
@@ -41,18 +45,22 @@ open class VehicleCollisionTester internal constructor(internal val vehicleColli
     override fun close() =
         closeOnce { JphVehicleCollisionTester_release(vehicleCollisionTesterHandle) }
 
+    /** Object layer to use for collision detection, this is used when the filters are not overridden */
     var objectLayer: Int
         get() = JphVehicleCollisionTester_GetObjectLayer(vehicleCollisionTesterHandle)
         set(objectLayer) = JphVehicleCollisionTester_SetObjectLayer(vehicleCollisionTesterHandle, objectLayer)
 
+    /** Access to the broad phase layer filter, when set this overrides the object layer supplied in the constructor */
     var broadPhaseLayerFilter: BroadPhaseLayerFilter?
         get() = JphVehicleCollisionTester_GetBroadPhaseLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { BroadPhaseLayerFilter(it) }
         set(filter) = JphVehicleCollisionTester_SetBroadPhaseLayerFilter(vehicleCollisionTesterHandle, filter?.broadPhaseLayerFilterHandle ?: NullPointer)
 
+    /** Access to the object layer filter, when set this overrides the object layer supplied in the constructor */
     var objectLayerFilter: ObjectLayerFilter?
         get() = JphVehicleCollisionTester_GetObjectLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { ObjectLayerFilter(it) }
         set(filter) = JphVehicleCollisionTester_SetObjectLayerFilter(vehicleCollisionTesterHandle, filter?.objectLayerFilterHandle ?: NullPointer)
 
+    /** Access to the body filter, when set this overrides the default filter that filters out the vehicle body */
     var bodyFilter: BodyFilter?
         get() = JphVehicleCollisionTester_GetBodyFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { BodyFilter(it) }
         set(filter) = JphVehicleCollisionTester_SetBodyFilter(vehicleCollisionTesterHandle, filter?.bodyFilterHandle ?: NullPointer)

@@ -33,38 +33,56 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::WheeledVehicleController`. */
+/**
+ * Runtime controller class
+ *
+ * C++ `JPH::WheeledVehicleController`.
+ */
 open class WheeledVehicleController internal constructor(internal val wheeledVehicleControllerHandle: NativePointer, owned: Boolean = false) : VehicleController(JphWheeledVehicleController_asVehicleController(wheeledVehicleControllerHandle), owned), AutoCloseable {
     constructor(settings: WheeledVehicleControllerSettings, constraint: VehicleConstraint) : this(JphWheeledVehicleController_create(settings.wheeledVehicleControllerSettingsHandle, constraint.vehicleConstraintHandle), owned = true)
 
     override fun close() =
         closeOnce { JphWheeledVehicleController_destroy(wheeledVehicleControllerHandle) }
 
+    /**
+     * Set input from driver
+     * @param forward Value between -1 and 1 for auto transmission and value between 0 and 1 indicating desired driving direction and amount the gas pedal is pressed
+     * @param right Value between -1 and 1 indicating desired steering angle (1 = right)
+     * @param brake Value between 0 and 1 indicating how strong the brake pedal is pressed
+     * @param handBrake Value between 0 and 1 indicating how strong the hand brake is pulled
+     */
     fun setDriverInput(forward: Float, right: Float, brake: Float, handBrake: Float) =
         JphWheeledVehicleController_SetDriverInput(wheeledVehicleControllerHandle, forward, right, brake, handBrake)
 
+    /** Value between -1 and 1 for auto transmission and value between 0 and 1 indicating desired driving direction and amount the gas pedal is pressed */
     var forwardInput: Float
         get() = JphWheeledVehicleController_GetForwardInput(wheeledVehicleControllerHandle)
         set(forward) = JphWheeledVehicleController_SetForwardInput(wheeledVehicleControllerHandle, forward)
 
+    /** Value between -1 and 1 indicating desired steering angle (1 = right) */
     var rightInput: Float
         get() = JphWheeledVehicleController_GetRightInput(wheeledVehicleControllerHandle)
         set(right) = JphWheeledVehicleController_SetRightInput(wheeledVehicleControllerHandle, right)
 
+    /** Value between 0 and 1 indicating how strong the brake pedal is pressed */
     var brakeInput: Float
         get() = JphWheeledVehicleController_GetBrakeInput(wheeledVehicleControllerHandle)
         set(brake) = JphWheeledVehicleController_SetBrakeInput(wheeledVehicleControllerHandle, brake)
 
+    /** Value between 0 and 1 indicating how strong the hand brake is pulled */
     var handBrakeInput: Float
         get() = JphWheeledVehicleController_GetHandBrakeInput(wheeledVehicleControllerHandle)
         set(handBrake) = JphWheeledVehicleController_SetHandBrakeInput(wheeledVehicleControllerHandle, handBrake)
 
+    /** Get current engine state (writable interface, allows you to make changes to the configuration which will take effect the next time step) */
     val engine: VehicleEngine
         get() = VehicleEngine(JphWheeledVehicleController_GetEngine(wheeledVehicleControllerHandle))
 
+    /** Get current transmission state (writable interface, allows you to make changes to the configuration which will take effect the next time step) */
     val transmission: VehicleTransmission
         get() = VehicleTransmission(JphWheeledVehicleController_GetTransmission(wheeledVehicleControllerHandle))
 
+    /** Get the differentials this vehicle has (writable interface, allows you to make changes to the configuration which will take effect the next time step) */
     val differentials: List<VehicleDifferentialSettings>
         get() = interopScope {
             val count = JphWheeledVehicleController_GetDifferentials(wheeledVehicleControllerHandle, NullPointer, 0)
@@ -73,10 +91,12 @@ open class WheeledVehicleController internal constructor(internal val wheeledVeh
             returned
         }
 
+    /** Ratio max / min average wheel speed of each differential (measured at the clutch). */
     var differentialLimitedSlipRatio: Float
         get() = JphWheeledVehicleController_GetDifferentialLimitedSlipRatio(wheeledVehicleControllerHandle)
         set(v) = JphWheeledVehicleController_SetDifferentialLimitedSlipRatio(wheeledVehicleControllerHandle, v)
 
+    /** Get the average wheel speed of all driven wheels (measured at the clutch) */
     val wheelSpeedAtClutch: Float
         get() = JphWheeledVehicleController_GetWheelSpeedAtClutch(wheeledVehicleControllerHandle)
 

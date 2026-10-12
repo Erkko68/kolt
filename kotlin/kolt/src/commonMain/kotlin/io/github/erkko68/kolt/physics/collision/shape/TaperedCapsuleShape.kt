@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TaperedCapsuleShape`. */
+/**
+ * A capsule with different top and bottom radii
+ *
+ * C++ `JPH::TaperedCapsuleShape`.
+ */
 class TaperedCapsuleShape internal constructor(internal val taperedCapsuleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTaperedCapsuleShape_asConvexShape(taperedCapsuleShapeHandle), owned), AutoCloseable {
     constructor() : this(JphTaperedCapsuleShape_create(), owned = true)
 
@@ -43,12 +47,15 @@ class TaperedCapsuleShape internal constructor(internal val taperedCapsuleShapeH
     override fun close() =
         closeOnce { JphTaperedCapsuleShape_release(taperedCapsuleShapeHandle) }
 
+    /** Get top radius of the tapered capsule */
     val topRadius: Float
         get() = JphTaperedCapsuleShape_GetTopRadius(taperedCapsuleShapeHandle)
 
+    /** Get bottom radius of the tapered capsule */
     val bottomRadius: Float
         get() = JphTaperedCapsuleShape_GetBottomRadius(taperedCapsuleShapeHandle)
 
+    /** Get half height between the top and bottom sphere center */
     val halfHeight: Float
         get() = JphTaperedCapsuleShape_GetHalfHeight(taperedCapsuleShapeHandle)
 }

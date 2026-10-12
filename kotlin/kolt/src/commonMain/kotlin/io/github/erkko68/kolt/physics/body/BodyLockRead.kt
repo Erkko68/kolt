@@ -33,5 +33,28 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyLockRead`. */
+/**
+ * A body lock takes a body ID and locks the underlying body so that other threads cannot access its members
+ *
+ * The common usage pattern is:
+ *
+ *         BodyLockInterface lock_interface = physics_system.GetBodyLockInterface(); // Or non-locking interface if the lock is already taken
+ *         BodyID body_id = ...; // Obtain ID to body
+ *
+ *         // Scoped lock
+ *         {
+ *             BodyLockRead lock(lock_interface, body_id);
+ *             if (lock.Succeeded()) // body_id may no longer be valid
+ *             {
+ *                 const Body
+ * &body
+ * = lock.GetBody();
+ *
+ *                 // Do something with body
+ *                 ...
+ *             }
+ *         }
+ *
+ * C++ `JPH::BodyLockRead`.
+ */
 class BodyLockRead internal constructor(internal val bodyLockReadHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

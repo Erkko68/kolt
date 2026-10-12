@@ -33,43 +33,88 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyInterface`. */
+/**
+ * Class that provides operations on bodies using a body ID. Note that if you need to do multiple operations on a single body, it is more efficient to lock the body once and combine the operations.
+ * All quantities are in world space unless otherwise specified.
+ *
+ * C++ `JPH::BodyInterface`.
+ */
 class BodyInterface internal constructor(internal val bodyInterfaceHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphBodyInterface_create(), owned = true)
 
     override fun close() =
         closeOnce { JphBodyInterface_destroy(bodyInterfaceHandle) }
 
+    /**
+     * Create a rigid body
+     * @return Created body or null when out of bodies
+     */
     fun createBody(settings: BodyCreationSettings): Body? =
         JphBodyInterface_CreateBody(bodyInterfaceHandle, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
+    /**
+     * Create a soft body
+     * @return Created body or null when out of bodies
+     */
     fun createSoftBody(settings: SoftBodyCreationSettings): Body? =
         JphBodyInterface_CreateSoftBody(bodyInterfaceHandle, settings.softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
+    /**
+     * Create a rigid body with specified ID. This function can be used if a simulation is to run in sync between clients or if a simulation needs to be restored exactly.
+     * The ID created on the server can be replicated to the client and used to create a deterministic simulation.
+     * @return Created body or null when the body ID is invalid or a body of the same ID already exists.
+     */
     fun createBodyWithID(bodyID: BodyID, settings: BodyCreationSettings): Body? =
         JphBodyInterface_CreateBodyWithID(bodyInterfaceHandle, bodyID.value, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
+    /** Create a soft body with specified ID. See comments at CreateBodyWithID. */
     fun createSoftBodyWithID(bodyID: BodyID, settings: SoftBodyCreationSettings): Body? =
         JphBodyInterface_CreateSoftBodyWithID(bodyInterfaceHandle, bodyID.value, settings.softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
+    /**
+     * Advanced use only. Creates a rigid body without specifying an ID. This body cannot be added to the physics system until it has been assigned a body ID.
+     * This can be used to decouple allocation from registering the body. A call to CreateBodyWithoutID followed by AssignBodyID is equivalent to calling CreateBodyWithID.
+     * @return Created body
+     */
     fun createBodyWithoutID(settings: BodyCreationSettings): Body? =
         JphBodyInterface_CreateBodyWithoutID(bodyInterfaceHandle, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
+    /** Advanced use only. Creates a body without specifying an ID. See comments at CreateBodyWithoutID. */
     fun createSoftBodyWithoutID(settings: SoftBodyCreationSettings): Body? =
         JphBodyInterface_CreateSoftBodyWithoutID(bodyInterfaceHandle, settings.softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
+    /**
+     * Advanced use only. Destroy a body previously created with CreateBodyWithoutID that hasn't gotten an ID yet through the AssignBodyID function,
+     * or a body that has had its body ID unassigned through UnassignBodyIDs. Bodies that have an ID should be destroyed through DestroyBody.
+     */
     fun destroyBodyWithoutID(body: Body?) =
         JphBodyInterface_DestroyBodyWithoutID(bodyInterfaceHandle, body?.bodyHandle ?: NullPointer)
 
+    /**
+     * Advanced use only. Assigns the next available body ID to a body that was created using CreateBodyWithoutID. After this call, the body can be added to the physics system.
+     * @return false if the body already has an ID or out of body ids.
+     */
     fun assignBodyID(body: Body?): Boolean =
         JphBodyInterface_AssignBodyID(bodyInterfaceHandle, body?.bodyHandle ?: NullPointer)
 
+    /**
+     * Advanced use only. Assigns a body ID to a body that was created using CreateBodyWithoutID. After this call, the body can be added to the physics system.
+     * @return false if the body already has an ID or if the ID is not valid.
+     */
     fun assignBodyID(body: Body?, bodyID: BodyID): Boolean =
         JphBodyInterface_AssignBodyID_BodyID(bodyInterfaceHandle, body?.bodyHandle ?: NullPointer, bodyID.value)
 
+    /** Advanced use only. See UnassignBodyIDs. Unassigns the ID of a single body. */
     fun unassignBodyID(bodyID: BodyID): Body? =
         JphBodyInterface_UnassignBodyID(bodyInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { Body(it) }
 
+    /**
+     * Advanced use only. Removes a number of body IDs from their bodies and returns the body pointers. Before calling this, the body should have been removed from the physics system.
+     * The body can be destroyed through DestroyBodyWithoutID. This can be used to decouple deallocation. A call to UnassignBodyIDs followed by calls to DestroyBodyWithoutID is equivalent to calling DestroyBodies.
+     * @param bodyIDs A list of body IDs
+     * @param number Number of bodies in the list
+     * @param bodies If not null on input, this will contain a list of body pointers corresponding to inBodyIDs that can be destroyed afterwards (caller assumes ownership over these).
+     */
     fun unassignBodyIDs(bodyIDs: List<BodyID>, number: Int, bodies: MutableList<Body?>) =
         interopScope {
             val bodyIDsArray = IntArray(bodyIDs.size) { bodyIDs[it].value }
@@ -79,9 +124,17 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             readPointers(bodiesPointer, bodies.size).forEachIndexed { i, p -> bodies[i] = p.takeIf { it != NullPointer }?.let { Body(it) } }
         }
 
+    /**
+     * Destroy a body.
+     * Make sure that you remove the body from the physics system using BodyInterface::RemoveBody before calling this function.
+     */
     fun destroyBody(bodyID: BodyID) =
         JphBodyInterface_DestroyBody(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Destroy multiple bodies
+     * Make sure that you remove the bodies from the physics system using BodyInterface::RemoveBody before calling this function.
+     */
     fun destroyBodies(bodyIDs: List<BodyID>, number: Int) =
         interopScope {
             val bodyIDsArray = IntArray(bodyIDs.size) { bodyIDs[it].value }
@@ -89,21 +142,42 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             JphBodyInterface_DestroyBodies(bodyInterfaceHandle, bodyIDsPointer, number)
         }
 
+    /**
+     * Add body to the physics system.
+     * Note that if you need to add multiple bodies, use the AddBodiesPrepare/AddBodiesFinalize function.
+     * Adding many bodies, one at a time, results in a really inefficient broadphase until PhysicsSystem::OptimizeBroadPhase is called or when PhysicsSystem::Update rebuilds the tree!
+     * After adding, to get a body by ID use the BodyLockRead or BodyLockWrite interface!
+     */
     fun addBody(bodyID: BodyID, activationMode: EActivation) =
         JphBodyInterface_AddBody(bodyInterfaceHandle, bodyID.value, activationMode.value)
 
+    /** Remove body from the physics system. Note that you need to add a body to the physics system before you can remove it. */
     fun removeBody(bodyID: BodyID) =
         JphBodyInterface_RemoveBody(bodyInterfaceHandle, bodyID.value)
 
+    /** Check if a body has been added to the physics system. */
     fun isAdded(bodyID: BodyID): Boolean =
         JphBodyInterface_IsAdded(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Combines CreateBody and AddBody
+     * @return Created body ID or an invalid ID when out of bodies
+     */
     fun createAndAddBody(settings: BodyCreationSettings, activationMode: EActivation): BodyID =
         BodyID(JphBodyInterface_CreateAndAddBody(bodyInterfaceHandle, settings.bodyCreationSettingsHandle, activationMode.value))
 
+    /**
+     * Combines CreateSoftBody and AddBody
+     * @return Created body ID or an invalid ID when out of bodies
+     */
     fun createAndAddSoftBody(settings: SoftBodyCreationSettings, activationMode: EActivation): BodyID =
         BodyID(JphBodyInterface_CreateAndAddSoftBody(bodyInterfaceHandle, settings.softBodyCreationSettingsHandle, activationMode.value))
 
+    /**
+     * Prepare adding inNumber bodies at ioBodies to the PhysicsSystem, returns a handle that should be used in AddBodiesFinalize/Abort.
+     * This can be done on a background thread without influencing the PhysicsSystem.
+     * ioBodies may be shuffled around by this function and should be kept that way until AddBodiesFinalize/Abort is called.
+     */
     fun addBodiesPrepare(bodies: MutableList<BodyID>, number: Int): NativePointer =
         interopScope {
             val bodiesArray = IntArray(bodies.size) { bodies[it].value }
@@ -114,6 +188,10 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             nativeResult
         }
 
+    /**
+     * Finalize adding bodies to the PhysicsSystem, supply the return value of AddBodiesPrepare in inAddState.
+     * Please ensure that the ioBodies array passed to AddBodiesPrepare is unmodified and passed again to this function.
+     */
     fun addBodiesFinalize(bodies: MutableList<BodyID>, number: Int, addState: NativePointer, activationMode: EActivation) =
         interopScope {
             val bodiesArray = IntArray(bodies.size) { bodies[it].value }
@@ -123,6 +201,11 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             for (i in bodies.indices) bodies[i] = BodyID(bodiesArray[i])
         }
 
+    /**
+     * Abort adding bodies to the PhysicsSystem, supply the return value of AddBodiesPrepare in inAddState.
+     * This can be done on a background thread without influencing the PhysicsSystem.
+     * Please ensure that the ioBodies array passed to AddBodiesPrepare is unmodified and passed again to this function.
+     */
     fun addBodiesAbort(bodies: MutableList<BodyID>, number: Int, addState: NativePointer) =
         interopScope {
             val bodiesArray = IntArray(bodies.size) { bodies[it].value }
@@ -132,6 +215,10 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             for (i in bodies.indices) bodies[i] = BodyID(bodiesArray[i])
         }
 
+    /**
+     * Remove inNumber bodies in ioBodies from the PhysicsSystem. Note that bodies need to be added to the physics system before they can be removed.
+     * ioBodies may be shuffled around by this function.
+     */
     fun removeBodies(bodies: MutableList<BodyID>, number: Int) =
         interopScope {
             val bodiesArray = IntArray(bodies.size) { bodies[it].value }
@@ -141,6 +228,11 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             for (i in bodies.indices) bodies[i] = BodyID(bodiesArray[i])
         }
 
+    /**
+     * Activate / deactivate a body. Note that you need to add a body to the physics system before you can activate it.
+     * {
+     * @
+     */
     fun activateBody(bodyID: BodyID) =
         JphBodyInterface_ActivateBody(bodyInterfaceHandle, bodyID.value)
 
@@ -170,27 +262,57 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
     fun resetSleepTimer(bodyID: BodyID) =
         JphBodyInterface_ResetSleepTimer(bodyInterfaceHandle, bodyID.value)
 
+    /** Create a two body constraint */
     fun createConstraint(settings: TwoBodyConstraintSettings?, bodyID1: BodyID, bodyID2: BodyID): TwoBodyConstraint? =
         JphBodyInterface_CreateConstraint(bodyInterfaceHandle, settings?.twoBodyConstraintSettingsHandle ?: NullPointer, bodyID1.value, bodyID2.value).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
 
+    /**
+     * Activate non-static bodies attached to a constraint.
+     * Note that the bodies involved in the constraint should be added to the physics system before activating a constraint.
+     */
     fun activateConstraint(constraint: TwoBodyConstraint?) =
         JphBodyInterface_ActivateConstraint(bodyInterfaceHandle, constraint?.twoBodyConstraintHandle ?: NullPointer)
 
+    /** Get the current shape */
     fun getShape(bodyID: BodyID): Shape? =
         JphBodyInterface_GetShape(bodyInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { Shape(it, owned = true) }
 
+    /**
+     * Set a new shape on the body
+     * @param bodyID Body ID of body that had its shape changed
+     * @param shape The new shape
+     * @param updateMassProperties When true, the mass and inertia tensor is recalculated
+     * @param activationMode Whether or not to activate the body
+     */
     fun setShape(bodyID: BodyID, shape: Shape?, updateMassProperties: Boolean, activationMode: EActivation) =
         JphBodyInterface_SetShape(bodyInterfaceHandle, bodyID.value, shape?.shapeHandle ?: NullPointer, updateMassProperties, activationMode.value)
 
+    /**
+     * Notify all systems to indicate that a shape has changed (usable for MutableCompoundShapes)
+     * @param bodyID Body ID of body that had its shape changed
+     * @param previousCenterOfMass Center of mass of the shape before the alterations
+     * @param updateMassProperties When true, the mass and inertia tensor is recalculated
+     * @param activationMode Whether or not to activate the body
+     */
     fun notifyShapeChanged(bodyID: BodyID, previousCenterOfMass: Vec3, updateMassProperties: Boolean, activationMode: EActivation) =
         interopScope { JphBodyInterface_NotifyShapeChanged(bodyInterfaceHandle, bodyID.value, toInterop(previousCenterOfMass.toArray()), updateMassProperties, activationMode.value) }
 
+    /**
+     * Object layer of a body
+     * {
+     * @
+     */
     fun setObjectLayer(bodyID: BodyID, layer: Int) =
         JphBodyInterface_SetObjectLayer(bodyInterfaceHandle, bodyID.value, layer)
 
     fun getObjectLayer(bodyID: BodyID): Int =
         JphBodyInterface_GetObjectLayer(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Position and rotation of a body
+     * {
+     * @
+     */
     fun setPositionAndRotation(bodyID: BodyID, position: Vec3, rotation: Quat, activationMode: EActivation) =
         interopScope { JphBodyInterface_SetPositionAndRotation(bodyInterfaceHandle, bodyID.value, toInterop(position.toArray()), toInterop(rotation.toArray()), activationMode.value) }
 
@@ -260,9 +382,18 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             Mat44(returned)
         }
 
+    /** Set velocity of body such that it will be positioned at inTargetPosition/Rotation in inDeltaTime seconds (will activate body if needed) */
     fun moveKinematic(bodyID: BodyID, targetPosition: Vec3, targetRotation: Quat, deltaTime: Float) =
         interopScope { JphBodyInterface_MoveKinematic(bodyInterfaceHandle, bodyID.value, toInterop(targetPosition.toArray()), toInterop(targetRotation.toArray()), deltaTime) }
 
+    /**
+     * Linear or angular velocity (functions will activate body if needed).
+     * Note that the linear velocity is the velocity of the center of mass, which may not coincide with the position of your object, to correct for this:
+     *
+     * ```
+     * VelocityCOM = Velocity - AngularVelocity \times ShapeCOM
+     * ```
+     */
     fun setLinearAndAngularVelocity(bodyID: BodyID, linearVelocity: Vec3, angularVelocity: Vec3) =
         interopScope { JphBodyInterface_SetLinearAndAngularVelocity(bodyInterfaceHandle, bodyID.value, toInterop(linearVelocity.toArray()), toInterop(angularVelocity.toArray())) }
 
@@ -317,9 +448,22 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             Vec3(returned)
         }
 
+    /**
+     * Set the complete motion state of a body.
+     * Note that the linear velocity is the velocity of the center of mass, which may not coincide with the position of your object, to correct for this:
+     *
+     * ```
+     * VelocityCOM = Velocity - AngularVelocity \times ShapeCOM
+     * ```
+     */
     fun setPositionRotationAndVelocity(bodyID: BodyID, position: Vec3, rotation: Quat, linearVelocity: Vec3, angularVelocity: Vec3) =
         interopScope { JphBodyInterface_SetPositionRotationAndVelocity(bodyInterfaceHandle, bodyID.value, toInterop(position.toArray()), toInterop(rotation.toArray()), toInterop(linearVelocity.toArray()), toInterop(angularVelocity.toArray())) }
 
+    /**
+     * Add forces to the body. Note that you should add a body to the physics system before applying forces or torques.
+     * {
+     * @
+     */
     fun addForce(bodyID: BodyID, force: Vec3, activationMode: EActivation) =
         interopScope { JphBodyInterface_AddForce_EActivation(bodyInterfaceHandle, bodyID.value, toInterop(force.toArray()), activationMode.value) }
 
@@ -332,6 +476,11 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
     fun addForceAndTorque(bodyID: BodyID, force: Vec3, torque: Vec3, activationMode: EActivation) =
         interopScope { JphBodyInterface_AddForceAndTorque(bodyInterfaceHandle, bodyID.value, toInterop(force.toArray()), toInterop(torque.toArray()), activationMode.value) }
 
+    /**
+     * Add an impulse to the body. Note that you should add a body to the physics system before applying impulses.
+     * {
+     * @
+     */
     fun addImpulse(bodyID: BodyID, impulse: Vec3) =
         interopScope { JphBodyInterface_AddImpulse(bodyInterfaceHandle, bodyID.value, toInterop(impulse.toArray())) }
 
@@ -344,21 +493,37 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
     fun applyBuoyancyImpulse(bodyID: BodyID, surfacePosition: Vec3, surfaceNormal: Vec3, buoyancy: Float, linearDrag: Float, angularDrag: Float, fluidVelocity: Vec3, gravity: Vec3, deltaTime: Float): Boolean =
         interopScope { JphBodyInterface_ApplyBuoyancyImpulse(bodyInterfaceHandle, bodyID.value, toInterop(surfacePosition.toArray()), toInterop(surfaceNormal.toArray()), buoyancy, linearDrag, angularDrag, toInterop(fluidVelocity.toArray()), toInterop(gravity.toArray()), deltaTime) }
 
+    /**
+     * Body type
+     * {
+     * @
+     */
     fun getBodyType(bodyID: BodyID): EBodyType =
         EBodyType.of(JphBodyInterface_GetBodyType(bodyInterfaceHandle, bodyID.value))
 
+    /**
+     * Body motion type
+     * {
+     * @
+     */
     fun setMotionType(bodyID: BodyID, motionType: EMotionType, activationMode: EActivation) =
         JphBodyInterface_SetMotionType(bodyInterfaceHandle, bodyID.value, motionType.value, activationMode.value)
 
     fun getMotionType(bodyID: BodyID): EMotionType =
         EMotionType.of(JphBodyInterface_GetMotionType(bodyInterfaceHandle, bodyID.value))
 
+    /**
+     * Body motion quality
+     * {
+     * @
+     */
     fun setMotionQuality(bodyID: BodyID, motionQuality: EMotionQuality) =
         JphBodyInterface_SetMotionQuality(bodyInterfaceHandle, bodyID.value, motionQuality.value)
 
     fun getMotionQuality(bodyID: BodyID): EMotionQuality =
         EMotionQuality.of(JphBodyInterface_GetMotionQuality(bodyInterfaceHandle, bodyID.value))
 
+    /** Get inverse inertia tensor in world space */
     fun getInverseInertia(bodyID: BodyID): Mat44 =
         interopScope {
             val returned = FloatArray(16)
@@ -368,48 +533,88 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             Mat44(returned)
         }
 
+    /**
+     * Restitution
+     * {
+     * @
+     */
     fun setRestitution(bodyID: BodyID, restitution: Float) =
         JphBodyInterface_SetRestitution(bodyInterfaceHandle, bodyID.value, restitution)
 
     fun getRestitution(bodyID: BodyID): Float =
         JphBodyInterface_GetRestitution(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Friction
+     * {
+     * @
+     */
     fun setFriction(bodyID: BodyID, friction: Float) =
         JphBodyInterface_SetFriction(bodyInterfaceHandle, bodyID.value, friction)
 
     fun getFriction(bodyID: BodyID): Float =
         JphBodyInterface_GetFriction(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Gravity factor
+     * {
+     * @
+     */
     fun setGravityFactor(bodyID: BodyID, gravityFactor: Float) =
         JphBodyInterface_SetGravityFactor(bodyInterfaceHandle, bodyID.value, gravityFactor)
 
     fun getGravityFactor(bodyID: BodyID): Float =
         JphBodyInterface_GetGravityFactor(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Max linear velocity
+     * {
+     * @
+     */
     fun setMaxLinearVelocity(bodyID: BodyID, linearVelocity: Float) =
         JphBodyInterface_SetMaxLinearVelocity(bodyInterfaceHandle, bodyID.value, linearVelocity)
 
     fun getMaxLinearVelocity(bodyID: BodyID): Float =
         JphBodyInterface_GetMaxLinearVelocity(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Max angular velocity
+     * {
+     * @
+     */
     fun setMaxAngularVelocity(bodyID: BodyID, angularVelocity: Float) =
         JphBodyInterface_SetMaxAngularVelocity(bodyInterfaceHandle, bodyID.value, angularVelocity)
 
     fun getMaxAngularVelocity(bodyID: BodyID): Float =
         JphBodyInterface_GetMaxAngularVelocity(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Manifold reduction
+     * {
+     * @
+     */
     fun setUseManifoldReduction(bodyID: BodyID, useReduction: Boolean) =
         JphBodyInterface_SetUseManifoldReduction(bodyInterfaceHandle, bodyID.value, useReduction)
 
     fun getUseManifoldReduction(bodyID: BodyID): Boolean =
         JphBodyInterface_GetUseManifoldReduction(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Sensor
+     * {
+     * @
+     */
     fun setIsSensor(bodyID: BodyID, isSensor: Boolean) =
         JphBodyInterface_SetIsSensor(bodyInterfaceHandle, bodyID.value, isSensor)
 
     fun isSensor(bodyID: BodyID): Boolean =
         JphBodyInterface_IsSensor(bodyInterfaceHandle, bodyID.value)
 
+    /**
+     * Collision group
+     * {
+     * @
+     */
     fun setCollisionGroup(bodyID: BodyID, collisionGroup: CollisionGroup) =
         JphBodyInterface_SetCollisionGroup(bodyInterfaceHandle, bodyID.value, collisionGroup.collisionGroupHandle)
 
@@ -420,6 +625,7 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             returned
         }
 
+    /** Get transform and shape for this body, used to perform collision detection */
     fun getTransformedShape(bodyID: BodyID): TransformedShape =
         run {
             val returned = TransformedShape(JphTransformedShape_create(), owned = true)
@@ -427,6 +633,7 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
             returned
         }
 
+    /** Get the user data for a body */
     fun getUserData(bodyID: BodyID): Long =
         interopScope {
             val returned = LongArray(1)
@@ -439,9 +646,11 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
     fun setUserData(bodyID: BodyID, userData: Long) =
         JphBodyInterface_SetUserData(bodyInterfaceHandle, bodyID.value, userData)
 
+    /** Get the material for a particular sub shape */
     fun getMaterial(bodyID: BodyID, subShapeID: SubShapeID): PhysicsMaterial? =
         JphBodyInterface_GetMaterial(bodyInterfaceHandle, bodyID.value, subShapeID.value).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
+    /** Set the Body::EFlags::InvalidateContactCache flag for the specified body. This means that the collision cache is invalid for any body pair involving that body until the next physics step. */
     fun invalidateContactCache(bodyID: BodyID) =
         JphBodyInterface_InvalidateContactCache(bodyInterfaceHandle, bodyID.value)
 }

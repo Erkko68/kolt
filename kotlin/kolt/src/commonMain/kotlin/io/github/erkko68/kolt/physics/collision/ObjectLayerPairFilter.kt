@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ObjectLayerPairFilter`. */
+/**
+ * Filter class to test if two objects can collide based on their object layer. Used while finding collision pairs.
+ *
+ * C++ `JPH::ObjectLayerPairFilter`.
+ */
 open class ObjectLayerPairFilter internal constructor(internal val objectLayerPairFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphObjectLayerPairFilter_createUpcalls(Upcalls.function), owned = true) {
@@ -43,6 +47,7 @@ open class ObjectLayerPairFilter internal constructor(internal val objectLayerPa
     override fun close() =
         closeOnce { JphObjectLayerPairFilter_destroy(objectLayerPairFilterHandle) }
 
+    /** Returns true if two layers can collide */
     open fun shouldCollide(layer1: Int, layer2: Int): Boolean =
         JphObjectLayerPairFilter_ShouldCollide(objectLayerPairFilterHandle, layer1, layer2)
 

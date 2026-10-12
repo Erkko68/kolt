@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PulleyConstraint`. */
+/**
+ * A pulley constraint.
+ *
+ * C++ `JPH::PulleyConstraint`.
+ */
 class PulleyConstraint internal constructor(internal val pulleyConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphPulleyConstraint_asTwoBodyConstraint(pulleyConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: PulleyConstraintSettings) : this(JphPulleyConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.pulleyConstraintSettingsHandle), owned = true)
 
@@ -43,6 +47,7 @@ class PulleyConstraint internal constructor(internal val pulleyConstraintHandle:
     override fun close() =
         closeOnce { JphPulleyConstraint_release(pulleyConstraintHandle) }
 
+    /** Update the minimum and maximum length for the constraint */
     fun setLength(minLength: Float, maxLength: Float) =
         JphPulleyConstraint_SetLength(pulleyConstraintHandle, minLength, maxLength)
 
@@ -52,9 +57,11 @@ class PulleyConstraint internal constructor(internal val pulleyConstraintHandle:
     val maxLength: Float
         get() = JphPulleyConstraint_GetMaxLength(pulleyConstraintHandle)
 
+    /** Get the current length of both segments (multiplied by the ratio for segment 2) */
     val currentLength: Float
         get() = JphPulleyConstraint_GetCurrentLength(pulleyConstraintHandle)
 
+    /** Get Lagrange multiplier from last physics update (the linear impulse applied to satisfy the constraint) */
     val totalLambdaPosition: Float
         get() = JphPulleyConstraint_GetTotalLambdaPosition(pulleyConstraintHandle)
 }

@@ -33,5 +33,9 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::NonCopyable`. */
+/**
+ * Class that makes another class non-copyable. Usage: Inherit from NonCopyable.
+ *
+ * C++ `JPH::NonCopyable`.
+ */
 class NonCopyable internal constructor(internal val nonCopyableHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

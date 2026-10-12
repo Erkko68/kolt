@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::StaticCompoundShapeSettings`. */
+/**
+ * Class that constructs a StaticCompoundShape. Note that if you only want a compound of 1 shape, use a RotatedTranslatedShape instead.
+ *
+ * C++ `JPH::StaticCompoundShapeSettings`.
+ */
 class StaticCompoundShapeSettings internal constructor(internal val staticCompoundShapeSettingsHandle: NativePointer, owned: Boolean = false) : CompoundShapeSettings(JphStaticCompoundShapeSettings_asCompoundShapeSettings(staticCompoundShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphStaticCompoundShapeSettings_create(), owned = true)
 
@@ -43,6 +47,7 @@ class StaticCompoundShapeSettings internal constructor(internal val staticCompou
     override fun close() =
         closeOnce { JphStaticCompoundShapeSettings_release(staticCompoundShapeSettingsHandle) }
 
+    /** Specialization of Create() function that allows specifying a temp allocator to avoid temporary memory allocations on the heap */
     fun create(tempAllocator: TempAllocator): Shape =
         interopScope {
             val error = ByteArray(256)

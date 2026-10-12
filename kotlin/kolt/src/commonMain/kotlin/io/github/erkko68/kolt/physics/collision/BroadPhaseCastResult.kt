@@ -33,23 +33,31 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BroadPhaseCastResult`. */
+/**
+ * Structure that holds a ray cast or other object cast hit
+ *
+ * C++ `JPH::BroadPhaseCastResult`.
+ */
 open class BroadPhaseCastResult internal constructor(internal val broadPhaseCastResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphBroadPhaseCastResult_create(), owned = true)
 
     override fun close() =
         closeOnce { JphBroadPhaseCastResult_destroy(broadPhaseCastResultHandle) }
 
+    /** Function required by the CollisionCollector. A smaller fraction is considered to be a 'better hit'. For rays/cast shapes we can just use the collision fraction. */
     val earlyOutFraction: Float
         get() = JphBroadPhaseCastResult_GetEarlyOutFraction(broadPhaseCastResultHandle)
 
+    /** Reset this result so it can be reused for a new cast. */
     fun reset() =
         JphBroadPhaseCastResult_Reset(broadPhaseCastResultHandle)
 
+    /** Body that was hit */
     var bodyID: BodyID
         get() = BodyID(JphBroadPhaseCastResult_GetBodyID(broadPhaseCastResultHandle))
         set(value) = JphBroadPhaseCastResult_SetBodyID(broadPhaseCastResultHandle, value.value)
 
+    /** Hit fraction of the ray/object \[0, 1\], HitPoint = Start + mFraction * (End - Start) */
     var fraction: Float
         get() = JphBroadPhaseCastResult_GetFraction(broadPhaseCastResultHandle)
         set(value) = JphBroadPhaseCastResult_SetFraction(broadPhaseCastResultHandle, value)

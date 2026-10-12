@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::GearConstraintSettings`. */
+/**
+ * Gear constraint settings
+ *
+ * C++ `JPH::GearConstraintSettings`.
+ */
 class GearConstraintSettings internal constructor(internal val gearConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphGearConstraintSettings_asTwoBodyConstraintSettings(gearConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphGearConstraintSettings_create(), owned = true)
 
@@ -43,13 +47,21 @@ class GearConstraintSettings internal constructor(internal val gearConstraintSet
     override fun close() =
         closeOnce { JphGearConstraintSettings_release(gearConstraintSettingsHandle) }
 
+    /**
+     * Defines the ratio between the rotation of both gears
+     * The ratio is defined as: Gear1Rotation(t) = -ratio * Gear2Rotation(t)
+     * @param numTeethGear1 Number of teeth that body 1 has
+     * @param numTeethGear2 Number of teeth that body 2 has
+     */
     fun setRatio(numTeethGear1: Int, numTeethGear2: Int) =
         JphGearConstraintSettings_SetRatio(gearConstraintSettingsHandle, numTeethGear1, numTeethGear2)
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphGearConstraintSettings_GetSpace(gearConstraintSettingsHandle))
         set(value) = JphGearConstraintSettings_SetSpace(gearConstraintSettingsHandle, value.value)
 
+    /** Body 1 constraint reference frame (space determined by mSpace). */
     var hingeAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -60,6 +72,7 @@ class GearConstraintSettings internal constructor(internal val gearConstraintSet
         }
         set(value) = interopScope { JphGearConstraintSettings_SetHingeAxis1(gearConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 constraint reference frame (space determined by mSpace) */
     var hingeAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -70,6 +83,7 @@ class GearConstraintSettings internal constructor(internal val gearConstraintSet
         }
         set(value) = interopScope { JphGearConstraintSettings_SetHingeAxis2(gearConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Ratio between both gears, see SetRatio. */
     val ratio: Float
         get() = JphGearConstraintSettings_GetRatio(gearConstraintSettingsHandle)
 }

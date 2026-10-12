@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyActivationListener`. */
+/**
+ * A listener class that receives events when a body activates or deactivates.
+ * It can be registered with the BodyManager (or PhysicsSystem).
+ *
+ * C++ `JPH::BodyActivationListener`.
+ */
 open class BodyActivationListener internal constructor(internal val bodyActivationListenerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphBodyActivationListener_createUpcalls(Upcalls.function), owned = true) {
@@ -43,9 +48,17 @@ open class BodyActivationListener internal constructor(internal val bodyActivati
     override fun close() =
         closeOnce { JphBodyActivationListener_destroy(bodyActivationListenerHandle) }
 
+    /**
+     * Called whenever a body activates, note this can be called from any thread so make sure your code is thread safe.
+     * At the time of the callback the body inBodyID will be locked and no bodies can be written/activated/deactivated from the callback.
+     */
     open fun onBodyActivated(bodyID: BodyID, bodyUserData: Long) =
         JphBodyActivationListener_OnBodyActivated(bodyActivationListenerHandle, bodyID.value, bodyUserData)
 
+    /**
+     * Called whenever a body deactivates, note this can be called from any thread so make sure your code is thread safe.
+     * At the time of the callback the body inBodyID will be locked and no bodies can be written/activated/deactivated from the callback.
+     */
     open fun onBodyDeactivated(bodyID: BodyID, bodyUserData: Long) =
         JphBodyActivationListener_OnBodyDeactivated(bodyActivationListenerHandle, bodyID.value, bodyUserData)
 

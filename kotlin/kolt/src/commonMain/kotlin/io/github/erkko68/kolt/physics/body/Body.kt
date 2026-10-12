@@ -35,66 +35,85 @@ import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::Body`. */
 class Body internal constructor(internal val bodyHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+    /** Get the id of this body */
     val id: BodyID
         get() = BodyID(JphBody_GetID(bodyHandle))
 
+    /** Get the type of body (rigid or soft) */
     val bodyType: EBodyType
         get() = EBodyType.of(JphBody_GetBodyType(bodyHandle))
 
+    /** Check if this body is a rigid body */
     val isRigidBody: Boolean
         get() = JphBody_IsRigidBody(bodyHandle)
 
+    /** Check if this body is a soft body */
     val isSoftBody: Boolean
         get() = JphBody_IsSoftBody(bodyHandle)
 
+    /** If this body is currently actively simulating (true) or sleeping (false) */
     val isActive: Boolean
         get() = JphBody_IsActive(bodyHandle)
 
+    /** Check if this body is static (not movable) */
     val isStatic: Boolean
         get() = JphBody_IsStatic(bodyHandle)
 
+    /** Check if this body is kinematic (keyframed), which means that it will move according to its current velocity, but forces don't affect it */
     val isKinematic: Boolean
         get() = JphBody_IsKinematic(bodyHandle)
 
+    /** Check if this body is dynamic, which means that it moves and forces can act on it */
     val isDynamic: Boolean
         get() = JphBody_IsDynamic(bodyHandle)
 
+    /** Check if a body could be made kinematic or dynamic (if it was created dynamic or with mAllowDynamicOrKinematic set to true) */
     fun canBeKinematicOrDynamic(): Boolean =
         JphBody_CanBeKinematicOrDynamic(bodyHandle)
 
+    /** Check if this body is a sensor. */
     var isSensor: Boolean
         get() = JphBody_IsSensor(bodyHandle)
         set(isSensor) = JphBody_SetIsSensor(bodyHandle, isSensor)
 
+    /** Check if kinematic objects can generate contact points against other kinematic or static objects. */
     var collideKinematicVsNonDynamic: Boolean
         get() = JphBody_GetCollideKinematicVsNonDynamic(bodyHandle)
         set(collide) = JphBody_SetCollideKinematicVsNonDynamic(bodyHandle, collide)
 
+    /** Check if this body can use manifold reduction. */
     var useManifoldReduction: Boolean
         get() = JphBody_GetUseManifoldReduction(bodyHandle)
         set(useReduction) = JphBody_SetUseManifoldReduction(bodyHandle, useReduction)
 
+    /** Checks if the combination of this body and inBody2 should use manifold reduction */
     fun getUseManifoldReductionWithBody(body2: Body): Boolean =
         JphBody_GetUseManifoldReductionWithBody(bodyHandle, body2.bodyHandle)
 
+    /** Check if the gyroscopic force is being applied for this body */
     var applyGyroscopicForce: Boolean
         get() = JphBody_GetApplyGyroscopicForce(bodyHandle)
         set(apply) = JphBody_SetApplyGyroscopicForce(bodyHandle, apply)
 
+    /** Check if enhanced internal edge removal is turned on */
     var enhancedInternalEdgeRemoval: Boolean
         get() = JphBody_GetEnhancedInternalEdgeRemoval(bodyHandle)
         set(apply) = JphBody_SetEnhancedInternalEdgeRemoval(bodyHandle, apply)
 
+    /** Checks if the combination of this body and inBody2 should use enhanced internal edge removal */
     fun getEnhancedInternalEdgeRemovalWithBody(body2: Body): Boolean =
         JphBody_GetEnhancedInternalEdgeRemovalWithBody(bodyHandle, body2.bodyHandle)
 
+    /** Get the bodies motion type. */
     var motionType: EMotionType
         get() = EMotionType.of(JphBody_GetMotionType(bodyHandle))
         set(motionType) = JphBody_SetMotionType(bodyHandle, motionType.value)
 
+    /** Get broadphase layer, this determines in which broad phase sub-tree the object is placed */
     val broadPhaseLayer: BroadPhaseLayer
         get() = BroadPhaseLayer(JphBody_GetBroadPhaseLayer(bodyHandle))
 
+    /** Get object layer, this determines which other objects it collides with */
     val objectLayer: Int
         get() = JphBody_GetObjectLayer(bodyHandle)
 
@@ -102,21 +121,26 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
         get() = CollisionGroup(JphBody_GetCollisionGroup(bodyHandle))
         set(group) = JphBody_SetCollisionGroup(bodyHandle, group.collisionGroupHandle)
 
+    /** If this body can go to sleep. Note that disabling sleeping on a sleeping object will not wake it up. */
     var allowSleeping: Boolean
         get() = JphBody_GetAllowSleeping(bodyHandle)
         set(allow) = JphBody_SetAllowSleeping(bodyHandle, allow)
 
+    /** Resets the sleep timer. This does not wake up the body if it is sleeping, but allows resetting the system that detects when a body is sleeping. */
     fun resetSleepTimer() =
         JphBody_ResetSleepTimer(bodyHandle)
 
+    /** Friction (dimensionless number, usually between 0 and 1, 0 = no friction, 1 = friction force equals force that presses the two bodies together). Note that bodies can have negative friction but the combined friction (see PhysicsSystem::SetCombineFriction) should never go below zero. */
     var friction: Float
         get() = JphBody_GetFriction(bodyHandle)
         set(friction) = JphBody_SetFriction(bodyHandle, friction)
 
+    /** Restitution (dimensionless number, usually between 0 and 1, 0 = completely inelastic collision response, 1 = completely elastic collision response). Note that bodies can have negative restitution but the combined restitution (see PhysicsSystem::SetCombineRestitution) should never go below zero. */
     var restitution: Float
         get() = JphBody_GetRestitution(bodyHandle)
         set(restitution) = JphBody_SetRestitution(bodyHandle, restitution)
 
+    /** Get world space linear velocity of the center of mass (unit: m/s) */
     var linearVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -127,9 +151,15 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
         }
         set(linearVelocity) = interopScope { JphBody_SetLinearVelocity(bodyHandle, toInterop(linearVelocity.toArray())) }
 
+    /**
+     * Set world space linear velocity of the center of mass, will make sure the value is clamped against the maximum linear velocity.
+     * Note that it is illegal to set a non-zero linear velocity on a sleeping body without waking it up afterwards.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::SetLinearVelocity instead.
+     */
     fun setLinearVelocityClamped(linearVelocity: Vec3) =
         interopScope { JphBody_SetLinearVelocityClamped(bodyHandle, toInterop(linearVelocity.toArray())) }
 
+    /** Get world space angular velocity of the center of mass (unit: rad/s) */
     var angularVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -140,9 +170,15 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
         }
         set(angularVelocity) = interopScope { JphBody_SetAngularVelocity(bodyHandle, toInterop(angularVelocity.toArray())) }
 
+    /**
+     * Set world space angular velocity of the center of mass, will make sure the value is clamped against the maximum angular velocity.
+     * Note that it is illegal to set a non-zero angular velocity on a sleeping body without waking it up afterwards.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::SetAngularVelocity instead.
+     */
     fun setAngularVelocityClamped(angularVelocity: Vec3) =
         interopScope { JphBody_SetAngularVelocityClamped(bodyHandle, toInterop(angularVelocity.toArray())) }
 
+    /** Velocity of point inPoint (in center of mass space, e.g. on the surface of the body) of the body (unit: m/s) */
     fun getPointVelocityCOM(pointRelativeToCOM: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -152,6 +188,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Vec3(returned)
         }
 
+    /** Velocity of point inPoint (in world space, e.g. on the surface of the body) of the body (unit: m/s) */
     fun getPointVelocity(point: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -161,12 +198,24 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Vec3(returned)
         }
 
+    /**
+     * Add force (unit: N) at center of mass for the next time step, will be reset after the next call to PhysicsSystem::Update.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::AddForce instead.
+     */
     fun addForce(force: Vec3) =
         interopScope { JphBody_AddForce(bodyHandle, toInterop(force.toArray())) }
 
+    /**
+     * Add force (unit: N) at world space position inPosition for the next time step, will be reset after the next call to PhysicsSystem::Update.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::AddForce instead.
+     */
     fun addForce(force: Vec3, position: Vec3) =
         interopScope { JphBody_AddForce_RVec3Arg(bodyHandle, toInterop(force.toArray()), toInterop(position.toArray())) }
 
+    /**
+     * Add torque (unit: N m) for the next time step, will be reset after the next call to PhysicsSystem::Update.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::AddTorque instead.
+     */
     fun addTorque(torque: Vec3) =
         interopScope { JphBody_AddTorque(bodyHandle, toInterop(torque.toArray())) }
 
@@ -197,6 +246,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
     fun resetMotion() =
         JphBody_ResetMotion(bodyHandle)
 
+    /** Get inverse inertia tensor in world space */
     val inverseInertia: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -206,18 +256,43 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Mat44(returned)
         }
 
+    /**
+     * Add impulse to center of mass (unit: kg m/s).
+     * If you want the body to wake up when it is sleeping, use BodyInterface::AddImpulse instead.
+     */
     fun addImpulse(impulse: Vec3) =
         interopScope { JphBody_AddImpulse(bodyHandle, toInterop(impulse.toArray())) }
 
+    /**
+     * Add impulse to point in world space (unit: kg m/s).
+     * If you want the body to wake up when it is sleeping, use BodyInterface::AddImpulse instead.
+     */
     fun addImpulse(impulse: Vec3, position: Vec3) =
         interopScope { JphBody_AddImpulse_RVec3Arg(bodyHandle, toInterop(impulse.toArray()), toInterop(position.toArray())) }
 
+    /**
+     * Add angular impulse in world space (unit: N m s).
+     * If you want the body to wake up when it is sleeping, use BodyInterface::AddAngularImpulse instead.
+     */
     fun addAngularImpulse(angularImpulse: Vec3) =
         interopScope { JphBody_AddAngularImpulse(bodyHandle, toInterop(angularImpulse.toArray())) }
 
+    /**
+     * Set velocity of body such that it will be positioned at inTargetPosition/inTargetRotation in inDeltaTime seconds.
+     * Note that it is illegal to provide a new position/orientation on a sleeping body without waking it up afterwards.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::MoveKinematic instead.
+     */
     fun moveKinematic(targetPosition: Vec3, targetRotation: Quat, deltaTime: Float) =
         interopScope { JphBody_MoveKinematic(bodyHandle, toInterop(targetPosition.toArray()), toInterop(targetRotation.toArray()), deltaTime) }
 
+    /**
+     * Gets the properties needed to do buoyancy calculations
+     * @param surfacePosition Position of the fluid surface in world space
+     * @param surfaceNormal Normal of the fluid surface (should point up)
+     * @return On return this contains the total volume of the shape
+     * @return On return this contains the submerged volume of the shape
+     * @return On return this contains the center of mass of the submerged volume relative to the center of mass of the body
+     */
     fun getSubmergedVolume(surfacePosition: Vec3, surfaceNormal: Vec3): Triple<Float, Float, Vec3> =
         interopScope {
             val totalVolumeArray = FloatArray(1)
@@ -233,21 +308,52 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Triple(totalVolumeArray.readF32(0), submergedVolumeArray.readF32(0), Vec3(relativeCenterOfBuoyancyArray))
         }
 
+    /**
+     * Applies an impulse to the body that simulates fluid buoyancy and drag.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::ApplyBuoyancyImpulse instead.
+     * @param surfacePosition Position of the fluid surface in world space
+     * @param surfaceNormal Normal of the fluid surface (should point up)
+     * @param buoyancy The buoyancy factor for the body. 1 = neutral body, < 1 sinks, > 1 floats. Note that we don't use the fluid density since it is harder to configure than a simple number between \[0, 2\]
+     * @param linearDrag Linear drag factor that slows down the body when in the fluid (approx. 0.5)
+     * @param angularDrag Angular drag factor that slows down rotation when the body is in the fluid (approx. 0.01)
+     * @param fluidVelocity The average velocity of the fluid (in m/s) in which the body resides
+     * @param gravity The gravity vector (pointing down)
+     * @param deltaTime Delta time of the next simulation step (in s)
+     * @return true if an impulse was applied, false if the body was not in the fluid
+     */
     fun applyBuoyancyImpulse(surfacePosition: Vec3, surfaceNormal: Vec3, buoyancy: Float, linearDrag: Float, angularDrag: Float, fluidVelocity: Vec3, gravity: Vec3, deltaTime: Float): Boolean =
         interopScope { JphBody_ApplyBuoyancyImpulse_RVec3Arg_Vec3Arg_float_float_float_Vec3Arg_Vec3Arg_float(bodyHandle, toInterop(surfacePosition.toArray()), toInterop(surfaceNormal.toArray()), buoyancy, linearDrag, angularDrag, toInterop(fluidVelocity.toArray()), toInterop(gravity.toArray()), deltaTime) }
 
+    /**
+     * Applies an impulse to the body that simulates fluid buoyancy and drag.
+     * If you want the body to wake up when it is sleeping, use BodyInterface::ApplyBuoyancyImpulse instead.
+     * @param totalVolume Total volume of the shape of this body (m^3)
+     * @param submergedVolume Submerged volume of the shape of this body (m^3)
+     * @param relativeCenterOfBuoyancy The center of mass of the submerged volume relative to the center of mass of the body
+     * @param buoyancy The buoyancy factor for the body. 1 = neutral body, < 1 sinks, > 1 floats. Note that we don't use the fluid density since it is harder to configure than a simple number between \[0, 2\]
+     * @param linearDrag Linear drag factor that slows down the body when in the fluid (approx. 0.5)
+     * @param angularDrag Angular drag factor that slows down rotation when the body is in the fluid (approx. 0.01)
+     * @param fluidVelocity The average velocity of the fluid (in m/s) in which the body resides
+     * @param gravity The gravity vector (pointing down)
+     * @param deltaTime Delta time of the next simulation step (in s)
+     * @return true if an impulse was applied, false if the body was not in the fluid
+     */
     fun applyBuoyancyImpulse(totalVolume: Float, submergedVolume: Float, relativeCenterOfBuoyancy: Vec3, buoyancy: Float, linearDrag: Float, angularDrag: Float, fluidVelocity: Vec3, gravity: Vec3, deltaTime: Float): Boolean =
         interopScope { JphBody_ApplyBuoyancyImpulse_float_float_Vec3Arg_float_float_float_Vec3Arg_Vec3Arg_float(bodyHandle, totalVolume, submergedVolume, toInterop(relativeCenterOfBuoyancy.toArray()), buoyancy, linearDrag, angularDrag, toInterop(fluidVelocity.toArray()), toInterop(gravity.toArray()), deltaTime) }
 
+    /** Check if this body has been added to the physics system */
     val isInBroadPhase: Boolean
         get() = JphBody_IsInBroadPhase(bodyHandle)
 
+    /** Check if this body has been changed in such a way that the collision cache should be considered invalid for any body interacting with this body */
     val isCollisionCacheInvalid: Boolean
         get() = JphBody_IsCollisionCacheInvalid(bodyHandle)
 
+    /** Get the shape of this body */
     val shape: Shape?
         get() = JphBody_GetShape(bodyHandle).takeIf { it != NullPointer }?.let { Shape(it) }
 
+    /** World space position of the body */
     val position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -257,6 +363,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Vec3(returned)
         }
 
+    /** World space rotation of the body */
     val rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -266,6 +373,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Quat(returned)
         }
 
+    /** Calculates the transform of this body */
     val worldTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -275,6 +383,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Mat44(returned)
         }
 
+    /** Gets the world space position of this body's center of mass */
     val centerOfMassPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -284,6 +393,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Vec3(returned)
         }
 
+    /** Calculates the transform for this body's center of mass */
     val centerOfMassTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -293,6 +403,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Mat44(returned)
         }
 
+    /** Calculates the inverse of the transform for this body's center of mass */
     val inverseCenterOfMassTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -302,6 +413,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Mat44(returned)
         }
 
+    /** Get world space bounding box */
     val worldSpaceBounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
@@ -309,9 +421,23 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             returned
         }
 
+    /**
+     * Validate that the cached bounding box of the body matches the actual bounding box of the body.
+     * If this check fails then there are a number of possible causes:
+     * 1. Shape is being modified without notifying the system of the change. E.g. if you modify a MutableCompoundShape
+     * without calling BodyInterface::NotifyShapeChanged then there will be a mismatch between the cached bounding box
+     * in the broad phase and the bounding box of the Shape.
+     * 2. You are calling functions postfixed with 'Internal' which are not meant to be called by the application.
+     * 3. If the actual bounds and cached bounds are very close, it could mean that you have a mismatch in floating
+     * point unit state between threads. E.g. one thread has flush to zero (FTZ) or denormals are zero (DAZ) set and
+     * the other thread does not. Or if the rounding mode differs between threads. This can cause small differences
+     * in floating point calculations. If you are using JobSystemThreadPool you can use JobSystemThreadPool::SetThreadInitFunction
+     * to initialize the floating point unit state.
+     */
     fun validateCachedBounds() =
         JphBody_ValidateCachedBounds(bodyHandle)
 
+    /** Validates that a body that is sleeping has zero velocity. */
     fun validateMotion() =
         JphBody_ValidateMotion(bodyHandle)
 
@@ -321,6 +447,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
     val motionPropertiesUnchecked: MotionProperties?
         get() = JphBody_GetMotionPropertiesUnchecked(bodyHandle).takeIf { it != NullPointer }?.let { MotionProperties(it) }
 
+    /** Access to the user data, can be used for anything by the application */
     var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -331,6 +458,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
         }
         set(userData) = JphBody_SetUserData(bodyHandle, userData)
 
+    /** Get surface normal of a particular sub shape and its world space surface position on this body */
     fun getWorldSpaceSurfaceNormal(subShapeID: SubShapeID, position: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -340,6 +468,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             Vec3(returned)
         }
 
+    /** Get the transformed shape of this body, which can be used to do collision detection outside of a body lock */
     val transformedShape: TransformedShape
         get() = run {
             val returned = TransformedShape(JphTransformedShape_create(), owned = true)
@@ -347,6 +476,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             returned
         }
 
+    /** Function to convert a body back to a body creation settings object to be able to save/recreate the body later. Can e.g. be used to move a body from one PhysicsSystem to another. */
     val bodyCreationSettings: BodyCreationSettings
         get() = run {
             val returned = BodyCreationSettings(JphBodyCreationSettings_create(), owned = true)
@@ -354,9 +484,11 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             returned
         }
 
+    /** Function to overwrite current body state with inBodyCreationSettings. Can only be done when the body is not in the physics system and cannot add MotionProperties if the body was created without one. */
     fun applyBodyCreationSettings(bodyCreationSettings: BodyCreationSettings, bplInterface: BroadPhaseLayerInterface) =
         JphBody_ApplyBodyCreationSettings(bodyHandle, bodyCreationSettings.bodyCreationSettingsHandle, bplInterface.broadPhaseLayerInterfaceHandle)
 
+    /** Function to convert a soft body back to a body creation settings object to be able to save/recreate the body later. Can e.g. be used to move a body from one PhysicsSystem to another. */
     val softBodyCreationSettings: SoftBodyCreationSettings
         get() = run {
             val returned = SoftBodyCreationSettings(JphSoftBodyCreationSettings_create(), owned = true)
@@ -364,28 +496,45 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             returned
         }
 
+    /** Function to overwrite current body state with inSoftBodyCreationSettings. Can only be done when the body is not in the physics system and cannot add MotionProperties if the body was created without one. */
     fun applySoftBodyCreationSettings(softBodyCreationSettings: SoftBodyCreationSettings, bplInterface: BroadPhaseLayerInterface) =
         JphBody_ApplySoftBodyCreationSettings(bodyHandle, softBodyCreationSettings.softBodyCreationSettingsHandle, bplInterface.broadPhaseLayerInterfaceHandle)
 
+    /**
+     * Update position using an Euler step (used during position integrate
+     * &
+     * constraint solving)
+     */
     fun addPositionStep(linearVelocityTimesDeltaTime: Vec3) =
         interopScope { JphBody_AddPositionStep(bodyHandle, toInterop(linearVelocityTimesDeltaTime.toArray())) }
 
     fun subPositionStep(linearVelocityTimesDeltaTime: Vec3) =
         interopScope { JphBody_SubPositionStep(bodyHandle, toInterop(linearVelocityTimesDeltaTime.toArray())) }
 
+    /**
+     * Update rotation using an Euler step (used during position integrate
+     * &
+     * constraint solving)
+     */
     fun addRotationStep(angularVelocityTimesDeltaTime: Vec3) =
         interopScope { JphBody_AddRotationStep(bodyHandle, toInterop(angularVelocityTimesDeltaTime.toArray())) }
 
     fun subRotationStep(angularVelocityTimesDeltaTime: Vec3) =
         interopScope { JphBody_SubRotationStep(bodyHandle, toInterop(angularVelocityTimesDeltaTime.toArray())) }
 
+    /** Saving state for replay */
     fun saveState(stream: StateRecorder) =
         JphBody_SaveState(bodyHandle, stream.stateRecorderHandle)
 
+    /** Restoring state for replay */
     fun restoreState(stream: StateRecorder) =
         JphBody_RestoreState(bodyHandle, stream.stateRecorderHandle)
 
     companion object {
+        /**
+         * Helper function for BroadPhase::FindCollidingPairs that returns true when two bodies can collide
+         * It assumes that body 1 is dynamic and active and guarantees that it body 1 collides with body 2 that body 2 will not collide with body 1 in order to avoid finding duplicate collision pairs
+         */
         fun findCollidingPairsCanCollide(body1: Body, body2: Body): Boolean =
             JphBody_sFindCollidingPairsCanCollide(body1.bodyHandle, body2.bodyHandle)
     }

@@ -33,16 +33,22 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SoftBodyMotionProperties`. */
+/**
+ * This class contains the runtime information of a soft body.
+ *
+ * C++ `JPH::SoftBodyMotionProperties`.
+ */
 class SoftBodyMotionProperties internal constructor(internal val softBodyMotionPropertiesHandle: NativePointer, owned: Boolean = false) : MotionProperties(JphSoftBodyMotionProperties_asMotionProperties(softBodyMotionPropertiesHandle), owned), AutoCloseable {
     constructor() : this(JphSoftBodyMotionProperties_create(), owned = true)
 
     override fun close() =
         closeOnce { JphSoftBodyMotionProperties_destroy(softBodyMotionPropertiesHandle) }
 
+    /** Initialize the soft body motion properties */
     fun initialize(settings: SoftBodyCreationSettings) =
         JphSoftBodyMotionProperties_Initialize(softBodyMotionPropertiesHandle, settings.softBodyCreationSettingsHandle)
 
+    /** Get the shared settings of the soft body */
     val settings: SoftBodySharedSettings?
         get() = JphSoftBodyMotionProperties_GetSettings(softBodyMotionPropertiesHandle).takeIf { it != NullPointer }?.let { SoftBodySharedSettings(it) }
 
@@ -57,6 +63,7 @@ class SoftBodyMotionProperties internal constructor(internal val softBodyMotionP
     fun getVertex(index: Int): SoftBodyVertex =
         SoftBodyVertex(JphSoftBodyMotionProperties_GetVertex(softBodyMotionPropertiesHandle, index))
 
+    /** Access to the state of rods */
     fun getRodRotation(index: Int): Quat =
         interopScope {
             val returned = FloatArray(4)
@@ -75,6 +82,7 @@ class SoftBodyMotionProperties internal constructor(internal val softBodyMotionP
             Vec3(returned)
         }
 
+    /** Get the materials of the soft body */
     val materials: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphSoftBodyMotionProperties_GetMaterials(softBodyMotionPropertiesHandle, NullPointer, 0)
@@ -83,6 +91,7 @@ class SoftBodyMotionProperties internal constructor(internal val softBodyMotionP
             readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
         }
 
+    /** Get the faces of the soft body */
     val faces: List<SoftBodySharedSettings.Face>
         get() = interopScope {
             val count = JphSoftBodyMotionProperties_GetFaces(softBodyMotionPropertiesHandle, NullPointer, 0)
@@ -91,6 +100,7 @@ class SoftBodyMotionProperties internal constructor(internal val softBodyMotionP
             returned
         }
 
+    /** Access to an individual face */
     fun getFace(index: Int): SoftBodySharedSettings.Face =
         run {
             val returned = SoftBodySharedSettings.Face(JphSoftBodySharedSettingsFace_create(), owned = true)
@@ -98,34 +108,42 @@ class SoftBodyMotionProperties internal constructor(internal val softBodyMotionP
             returned
         }
 
+    /** Get the number of solver iterations */
     var numIterations: Int
         get() = JphSoftBodyMotionProperties_GetNumIterations(softBodyMotionPropertiesHandle)
         set(numIterations) = JphSoftBodyMotionProperties_SetNumIterations(softBodyMotionPropertiesHandle, numIterations)
 
+    /** Get the pressure of the soft body */
     var pressure: Float
         get() = JphSoftBodyMotionProperties_GetPressure(softBodyMotionPropertiesHandle)
         set(pressure) = JphSoftBodyMotionProperties_SetPressure(softBodyMotionPropertiesHandle, pressure)
 
+    /** Update the position of the body while simulating (set to false for something that is attached to the static world) */
     var updatePosition: Boolean
         get() = JphSoftBodyMotionProperties_GetUpdatePosition(softBodyMotionPropertiesHandle)
         set(updatePosition) = JphSoftBodyMotionProperties_SetUpdatePosition(softBodyMotionPropertiesHandle, updatePosition)
 
+    /** If the faces in this soft body should be treated as double sided for the purpose of collision detection (ray cast / collide shape / cast shape) */
     var facesDoubleSided: Boolean
         get() = JphSoftBodyMotionProperties_GetFacesDoubleSided(softBodyMotionPropertiesHandle)
         set(doubleSided) = JphSoftBodyMotionProperties_SetFacesDoubleSided(softBodyMotionPropertiesHandle, doubleSided)
 
+    /** Global setting to turn on/off skin constraints */
     var enableSkinConstraints: Boolean
         get() = JphSoftBodyMotionProperties_GetEnableSkinConstraints(softBodyMotionPropertiesHandle)
         set(enableSkinConstraints) = JphSoftBodyMotionProperties_SetEnableSkinConstraints(softBodyMotionPropertiesHandle, enableSkinConstraints)
 
+    /** Multiplier applied to Skinned::mMaxDistance to allow tightening or loosening of the skin constraints. 0 to hard skin all vertices. */
     var skinnedMaxDistanceMultiplier: Float
         get() = JphSoftBodyMotionProperties_GetSkinnedMaxDistanceMultiplier(softBodyMotionPropertiesHandle)
         set(skinnedMaxDistanceMultiplier) = JphSoftBodyMotionProperties_SetSkinnedMaxDistanceMultiplier(softBodyMotionPropertiesHandle, skinnedMaxDistanceMultiplier)
 
+    /** How big the particles are, can be used to push the vertices a little bit away from the surface of other bodies to prevent z-fighting */
     var vertexRadius: Float
         get() = JphSoftBodyMotionProperties_GetVertexRadius(softBodyMotionPropertiesHandle)
         set(vertexRadius) = JphSoftBodyMotionProperties_SetVertexRadius(softBodyMotionPropertiesHandle, vertexRadius)
 
+    /** Get local bounding box */
     val localBounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
@@ -133,18 +151,30 @@ class SoftBodyMotionProperties internal constructor(internal val softBodyMotionP
             returned
         }
 
+    /** Get the volume of the soft body. Note can become negative if the shape is inside out! */
     val volume: Float
         get() = JphSoftBodyMotionProperties_GetVolume(softBodyMotionPropertiesHandle)
 
+    /** Calculate the total mass and inertia of this body based on the current state of the vertices */
     fun calculateMassAndInertia() =
         JphSoftBodyMotionProperties_CalculateMassAndInertia(softBodyMotionPropertiesHandle)
 
+    /** Saving state for replay */
     override fun saveState(stream: StateRecorder) =
         JphSoftBodyMotionProperties_SaveState(softBodyMotionPropertiesHandle, stream.stateRecorderHandle)
 
+    /** Restoring state for replay */
     override fun restoreState(stream: StateRecorder) =
         JphSoftBodyMotionProperties_RestoreState(softBodyMotionPropertiesHandle, stream.stateRecorderHandle)
 
+    /**
+     * Skin vertices to supplied joints, information is used by the skinned constraints.
+     * @param centerOfMassTransform Value of Body::GetCenterOfMassTransform().
+     * @param jointMatrices The joint matrices must be expressed relative to inCenterOfMassTransform.
+     * @param numJoints Indicates how large the inJointMatrices array is (used only for validating out of bounds).
+     * @param hardSkinAll Can be used to position all vertices on the skinned vertices and can be used to hard reset the soft body.
+     * @param tempAllocator Allocator.
+     */
     fun skinVertices(centerOfMassTransform: Mat44, jointMatrices: List<Mat44>, numJoints: Int, hardSkinAll: Boolean, tempAllocator: TempAllocator) =
         interopScope {
             val jointMatricesArray = FloatArray(jointMatrices.size * 16).also { a -> jointMatrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
@@ -152,9 +182,23 @@ class SoftBodyMotionProperties internal constructor(internal val softBodyMotionP
             JphSoftBodyMotionProperties_SkinVertices(softBodyMotionPropertiesHandle, toInterop(centerOfMassTransform.toArray()), jointMatricesPointer, jointMatrices.size, numJoints, hardSkinAll, tempAllocator.tempAllocatorHandle)
         }
 
+    /**
+     * This function allows you to update the soft body immediately without going through the PhysicsSystem.
+     * This is useful if the soft body is teleported and needs to 'settle' or it can be used if a the soft body
+     * is not added to the PhysicsSystem and needs to be updated manually. One reason for not adding it to the
+     * PhysicsSystem is that you might want to update a soft body immediately after updating an animated object
+     * that has the soft body attached to it. If the soft body is added to the PhysicsSystem it will be updated
+     * by it, so calling this function will effectively update it twice. Note that when you use this function,
+     * only the current thread will be used, whereas if you update through the PhysicsSystem, multiple threads may
+     * be used.
+     * Note that this will bypass any sleep checks. Since the dynamic objects that the soft body touches
+     * will not move during this call, there can be simulation artifacts if you call this function multiple times
+     * without running the physics simulation step.
+     */
     fun customUpdate(deltaTime: Float, softBody: Body, system: PhysicsSystem) =
         JphSoftBodyMotionProperties_CustomUpdate(softBodyMotionPropertiesHandle, deltaTime, softBody.bodyHandle, system.physicsSystemHandle)
 
+    /** Set a flag to indicate that the ContactListener::OnSoftBodyContactAdded should be called */
     fun requestContactCallback() =
         JphSoftBodyMotionProperties_RequestContactCallback(softBodyMotionPropertiesHandle)
 }

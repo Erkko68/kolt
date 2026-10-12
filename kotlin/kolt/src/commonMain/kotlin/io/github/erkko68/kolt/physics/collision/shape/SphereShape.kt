@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SphereShape`. */
+/**
+ * A sphere, centered around the origin.
+ * Note that it is implemented as a point with convex radius.
+ *
+ * C++ `JPH::SphereShape`.
+ */
 class SphereShape internal constructor(internal val sphereShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphSphereShape_asConvexShape(sphereShapeHandle), owned), AutoCloseable {
     constructor() : this(JphSphereShape_create(), owned = true)
     constructor(radius: Float, material: PhysicsMaterial?) : this(JphSphereShape_create_float_PhysicsMaterial(radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
@@ -44,6 +49,7 @@ class SphereShape internal constructor(internal val sphereShapeHandle: NativePoi
     override fun close() =
         closeOnce { JphSphereShape_release(sphereShapeHandle) }
 
+    /** Radius of the sphere */
     val radius: Float
         get() = JphSphereShape_GetRadius(sphereShapeHandle)
 }

@@ -33,25 +33,34 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SoftBodyContactSettings`. */
+/**
+ * Contact settings for a soft body contact.
+ * The values are filled in with their defaults by the system so the callback doesn't need to modify anything, but it can if it wants to.
+ *
+ * C++ `JPH::SoftBodyContactSettings`.
+ */
 class SoftBodyContactSettings internal constructor(internal val softBodyContactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSoftBodyContactSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphSoftBodyContactSettings_destroy(softBodyContactSettingsHandle) }
 
+    /** Scale factor for the inverse mass of the soft body (0 = infinite mass, 1 = use original mass, 2 = body has half the mass). For the same contact pair, you should strive to keep the value the same over time. */
     var invMassScale1: Float
         get() = JphSoftBodyContactSettings_GetInvMassScale1(softBodyContactSettingsHandle)
         set(value) = JphSoftBodyContactSettings_SetInvMassScale1(softBodyContactSettingsHandle, value)
 
+    /** Scale factor for the inverse mass of the other body (0 = infinite mass, 1 = use original mass, 2 = body has half the mass). For the same contact pair, you should strive to keep the value the same over time. */
     var invMassScale2: Float
         get() = JphSoftBodyContactSettings_GetInvMassScale2(softBodyContactSettingsHandle)
         set(value) = JphSoftBodyContactSettings_SetInvMassScale2(softBodyContactSettingsHandle, value)
 
+    /** Scale factor for the inverse inertia of the other body (usually same as mInvMassScale2) */
     var invInertiaScale2: Float
         get() = JphSoftBodyContactSettings_GetInvInertiaScale2(softBodyContactSettingsHandle)
         set(value) = JphSoftBodyContactSettings_SetInvInertiaScale2(softBodyContactSettingsHandle, value)
 
+    /** If the contact should be treated as a sensor vs body contact (no collision response) */
     var isSensor: Boolean
         get() = JphSoftBodyContactSettings_GetIsSensor(softBodyContactSettingsHandle)
         set(value) = JphSoftBodyContactSettings_SetIsSensor(softBodyContactSettingsHandle, value)

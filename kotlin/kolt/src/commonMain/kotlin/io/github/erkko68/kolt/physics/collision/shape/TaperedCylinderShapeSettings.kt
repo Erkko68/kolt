@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TaperedCylinderShapeSettings`. */
+/**
+ * Class that constructs a TaperedCylinderShape
+ *
+ * C++ `JPH::TaperedCylinderShapeSettings`.
+ */
 class TaperedCylinderShapeSettings internal constructor(internal val taperedCylinderShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTaperedCylinderShapeSettings_asConvexShapeSettings(taperedCylinderShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphTaperedCylinderShapeSettings_create(), owned = true)
     constructor(halfHeightOfTaperedCylinder: Float, topRadius: Float, bottomRadius: Float, convexRadius: Float, material: PhysicsMaterial?) : this(JphTaperedCylinderShapeSettings_create_float_float_float_float_PhysicsMaterial(halfHeightOfTaperedCylinder, topRadius, bottomRadius, convexRadius, material?.physicsMaterialHandle ?: NullPointer), owned = true)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::DefaultBroadPhaseLayerFilter`. */
+/**
+ * Default filter class that uses the pair filter in combination with a specified layer to filter layers
+ *
+ * C++ `JPH::DefaultBroadPhaseLayerFilter`.
+ */
 class DefaultBroadPhaseLayerFilter internal constructor(internal val defaultBroadPhaseLayerFilterHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerFilter(JphDefaultBroadPhaseLayerFilter_asBroadPhaseLayerFilter(defaultBroadPhaseLayerFilterHandle), owned), AutoCloseable {
     constructor(objectVsBroadPhaseLayerFilter: ObjectVsBroadPhaseLayerFilter, layer: Int) : this(JphDefaultBroadPhaseLayerFilter_create(objectVsBroadPhaseLayerFilter.objectVsBroadPhaseLayerFilterHandle, layer), owned = true)
 

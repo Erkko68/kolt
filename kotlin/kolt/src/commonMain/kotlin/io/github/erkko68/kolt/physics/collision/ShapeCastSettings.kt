@@ -33,32 +33,42 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ShapeCastSettings`. */
+/**
+ * Settings to be passed with a shape cast
+ *
+ * C++ `JPH::ShapeCastSettings`.
+ */
 class ShapeCastSettings internal constructor(internal val shapeCastSettingsHandle: NativePointer, owned: Boolean = false) : CollideSettingsBase(JphShapeCastSettings_asCollideSettingsBase(shapeCastSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphShapeCastSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphShapeCastSettings_destroy(shapeCastSettingsHandle) }
 
+    /** Set the backfacing mode for all shapes */
     fun setBackFaceMode(mode: EBackFaceMode) =
         JphShapeCastSettings_SetBackFaceMode(shapeCastSettingsHandle, mode.value)
 
+    /** When > 0 the query shape is inflated by an extra convex radius, this makes it bigger in every direction by this margin. (unit: meter) */
     var extraConvexRadius: Float
         get() = JphShapeCastSettings_GetExtraConvexRadius(shapeCastSettingsHandle)
         set(value) = JphShapeCastSettings_SetExtraConvexRadius(shapeCastSettingsHandle, value)
 
+    /** How backfacing triangles should be treated (should we report moving from back to front for triangle based shapes, e.g. for MeshShape/HeightFieldShape?) */
     var backFaceModeTriangles: EBackFaceMode
         get() = EBackFaceMode.of(JphShapeCastSettings_GetBackFaceModeTriangles(shapeCastSettingsHandle))
         set(value) = JphShapeCastSettings_SetBackFaceModeTriangles(shapeCastSettingsHandle, value.value)
 
+    /** How backfacing convex objects should be treated (should we report starting inside an object and moving out?) */
     var backFaceModeConvex: EBackFaceMode
         get() = EBackFaceMode.of(JphShapeCastSettings_GetBackFaceModeConvex(shapeCastSettingsHandle))
         set(value) = JphShapeCastSettings_SetBackFaceModeConvex(shapeCastSettingsHandle, value.value)
 
+    /** Indicates if we want to shrink the shape by the convex radius and then expand it again. This speeds up collision detection and gives a more accurate normal at the cost of a more 'rounded' shape. */
     var useShrunkenShapeAndConvexRadius: Boolean
         get() = JphShapeCastSettings_GetUseShrunkenShapeAndConvexRadius(shapeCastSettingsHandle)
         set(value) = JphShapeCastSettings_SetUseShrunkenShapeAndConvexRadius(shapeCastSettingsHandle, value)
 
+    /** When true, and the shape is intersecting at the beginning of the cast (fraction = 0) then this will calculate the deepest penetration point (costing additional CPU time) */
     var returnDeepestPoint: Boolean
         get() = JphShapeCastSettings_GetReturnDeepestPoint(shapeCastSettingsHandle)
         set(value) = JphShapeCastSettings_SetReturnDeepestPoint(shapeCastSettingsHandle, value)

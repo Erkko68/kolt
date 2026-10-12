@@ -33,7 +33,33 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::GroupFilterTable`. */
+/**
+ * Implementation of GroupFilter that stores a bit table with one bit per sub shape ID pair to determine if they collide or not
+ *
+ * The collision rules:
+ * - If one of the objects is in the cInvalidGroup the objects will collide.
+ * - If the objects are in different groups they will collide.
+ * - If they're in the same group but their collision filter is different they will not collide.
+ * - If they're in the same group and their collision filters match, we'll use the SubGroupID and the table below.
+ *
+ * For N = 6 sub groups the table will look like:
+ *
+ *                     sub group 1 --->
+ *         sub group 2 x.....
+ *              |      ox....
+ *              |      oox...
+ *              V      ooox..
+ *                     oooox.
+ *                     ooooox
+ *
+ * * 'x' means sub group 1 == sub group 2 and we define this to never collide.
+ * * 'o' is a bit that we have to store that defines if the sub groups collide or not.
+ * * '.' is a bit we don't need to store because the table is symmetric, we take care that group 2 > group 1 by swapping sub group 1 and sub group 2 if needed.
+ *
+ * The total number of bits we need to store is (N * (N - 1)) / 2
+ *
+ * C++ `JPH::GroupFilterTable`.
+ */
 class GroupFilterTable internal constructor(internal val groupFilterTableHandle: NativePointer, owned: Boolean = false) : GroupFilter(JphGroupFilterTable_asGroupFilter(groupFilterTableHandle), owned), AutoCloseable {
     constructor(numSubGroups: Int) : this(JphGroupFilterTable_create(numSubGroups), owned = true)
 
@@ -43,12 +69,15 @@ class GroupFilterTable internal constructor(internal val groupFilterTableHandle:
     override fun close() =
         closeOnce { JphGroupFilterTable_release(groupFilterTableHandle) }
 
+    /** Disable collision between two sub groups */
     fun disableCollision(subGroup1: Int, subGroup2: Int) =
         JphGroupFilterTable_DisableCollision(groupFilterTableHandle, subGroup1, subGroup2)
 
+    /** Enable collision between two sub groups */
     fun enableCollision(subGroup1: Int, subGroup2: Int) =
         JphGroupFilterTable_EnableCollision(groupFilterTableHandle, subGroup1, subGroup2)
 
+    /** Check if the collision between two subgroups is enabled */
     fun isCollisionEnabled(subGroup1: Int, subGroup2: Int): Boolean =
         JphGroupFilterTable_IsCollisionEnabled(groupFilterTableHandle, subGroup1, subGroup2)
 }

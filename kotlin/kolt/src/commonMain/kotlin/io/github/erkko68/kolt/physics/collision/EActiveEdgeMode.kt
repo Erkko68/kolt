@@ -33,9 +33,16 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EActiveEdgeMode`. */
+/**
+ * How to treat active/inactive edges.
+ * An active edge is an edge that either has no neighbouring edge or if the angle between the two connecting faces is too large, see: ActiveEdges
+ *
+ * C++ `JPH::EActiveEdgeMode`.
+ */
 enum class EActiveEdgeMode(internal val value: Int) {
+    /** Do not collide with inactive edges. For physics simulation, this gives less ghost collisions. */
     CollideOnlyWithActive(0),
+    /** Collide with all edges. Use this when you're interested in all collisions. */
     CollideWithAll(1);
 
     internal companion object {

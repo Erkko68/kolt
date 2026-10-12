@@ -33,7 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::JobSystemThreadPool`. */
+/**
+ * Implementation of a JobSystem using a thread pool
+ *
+ * Note that this is considered an example implementation. It is expected that when you integrate
+ * the physics engine into your own project that you'll provide your own implementation of the
+ * JobSystem built on top of whatever job system your project uses.
+ *
+ * C++ `JPH::JobSystemThreadPool`.
+ */
 class JobSystemThreadPool internal constructor(internal val jobSystemThreadPoolHandle: NativePointer, owned: Boolean = false) : JobSystemWithBarrier(JphJobSystemThreadPool_asJobSystemWithBarrier(jobSystemThreadPoolHandle), owned), AutoCloseable {
     constructor(maxJobs: Int, maxBarriers: Int, numThreads: Int) : this(JphJobSystemThreadPool_create_uint_uint_int(maxJobs, maxBarriers, numThreads), owned = true)
     constructor() : this(JphJobSystemThreadPool_create(), owned = true)
@@ -53,9 +61,16 @@ class JobSystemThreadPool internal constructor(internal val jobSystemThreadPoolH
             JphJobSystemThreadPool_SetThreadExitFunction(jobSystemThreadPoolHandle, Upcalls.function, exitFunctionUser)
         }
 
+    /**
+     * Initialize the thread pool
+     * @param maxJobs Max number of jobs that can be allocated at any time
+     * @param maxBarriers Max number of barriers that can be allocated at any time
+     * @param numThreads Number of threads to start (the number of concurrent jobs is 1 more because the main thread will also run jobs while waiting for a barrier to complete). Use -1 to auto detect the amount of CPU's.
+     */
     fun init(maxJobs: Int, maxBarriers: Int, numThreads: Int) =
         JphJobSystemThreadPool_Init(jobSystemThreadPoolHandle, maxJobs, maxBarriers, numThreads)
 
+    /** Change the max concurrency after initialization */
     fun setNumThreads(numThreads: Int) =
         JphJobSystemThreadPool_SetNumThreads(jobSystemThreadPoolHandle, numThreads)
 }

@@ -33,7 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PlaneShape`. */
+/**
+ * A plane shape. The negative half space is considered solid. Planes cannot be dynamic objects, only static or kinematic.
+ * The plane is considered an infinite shape, but testing collision outside of its bounding box (defined by the half-extent parameter) will not return a collision result.
+ * At the edge of the bounding box collision with the plane will be inconsistent. If you need something of a well defined size, a box shape may be better.
+ *
+ * C++ `JPH::PlaneShape`.
+ */
 class PlaneShape internal constructor(internal val planeShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphPlaneShape_asShape(planeShapeHandle), owned), AutoCloseable {
     constructor() : this(JphPlaneShape_create(), owned = true)
     constructor(plane: Plane, material: PhysicsMaterial?, halfExtent: Float) : this(JphPlaneShape_create_Plane_PhysicsMaterial_float(plane.planeHandle, material?.physicsMaterialHandle ?: NullPointer, halfExtent), owned = true)
@@ -44,6 +50,7 @@ class PlaneShape internal constructor(internal val planeShapeHandle: NativePoint
     override fun close() =
         closeOnce { JphPlaneShape_release(planeShapeHandle) }
 
+    /** Get the plane */
     val plane: Plane
         get() = run {
             val returned = Plane(JphPlane_create(), owned = true)
@@ -51,9 +58,11 @@ class PlaneShape internal constructor(internal val planeShapeHandle: NativePoint
             returned
         }
 
+    /** Get the half-extent of the bounding box of the plane */
     val halfExtent: Float
         get() = JphPlaneShape_GetHalfExtent(planeShapeHandle)
 
+    /** Material of the shape */
     var material: PhysicsMaterial?
         get() = JphPlaneShape_GetMaterial(planeShapeHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(material) = JphPlaneShape_SetMaterial(planeShapeHandle, material?.physicsMaterialHandle ?: NullPointer)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterID`. */
+/**
+ * ID of a character. Used primarily to identify deleted characters and to sort deterministically.
+ *
+ * C++ `JPH::CharacterID`.
+ */
 class CharacterID internal constructor(internal val characterIDHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCharacterID_create(), owned = true)
     constructor(id: Int) : this(JphCharacterID_create_uint32(id), owned = true)
@@ -41,12 +45,15 @@ class CharacterID internal constructor(internal val characterIDHandle: NativePoi
     override fun close() =
         closeOnce { JphCharacterID_destroy(characterIDHandle) }
 
+    /** Get the numeric value of the ID */
     val value: Int
         get() = JphCharacterID_GetValue(characterIDHandle)
 
+    /** Check if the ID is valid */
     val isInvalid: Boolean
         get() = JphCharacterID_IsInvalid(characterIDHandle)
 
+    /** Get the hash for this character ID */
     val hash: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -57,6 +64,7 @@ class CharacterID internal constructor(internal val characterIDHandle: NativePoi
         }
 
     companion object {
+        /** Generate the next available character ID */
         fun nextCharacterID(): CharacterID =
             run {
                 val returned = CharacterID(JphCharacterID_create(), owned = true)
@@ -64,6 +72,7 @@ class CharacterID internal constructor(internal val characterIDHandle: NativePoi
                 returned
             }
 
+        /** Set the next available character ID, can be used after destroying all character to prepare for a second deterministic run */
         fun setNextCharacterID(nextValue: Int) =
             JphCharacterID_sSetNextCharacterID(nextValue)
     }

@@ -40,30 +40,47 @@ class LinearCurve internal constructor(internal val linearCurveHandle: NativePoi
     override fun close() =
         closeOnce { JphLinearCurve_destroy(linearCurveHandle) }
 
+    /** Remove all points */
     fun clear() =
         JphLinearCurve_Clear(linearCurveHandle)
 
+    /** Reserve memory for inNumPoints points */
     fun reserve(numPoints: Int) =
         JphLinearCurve_Reserve(linearCurveHandle, numPoints)
 
+    /**
+     * Add a point to the curve. Points must be inserted in ascending X or Sort() needs to be called when all points have been added.
+     * @param x X value
+     * @param y Y value
+     */
     fun addPoint(x: Float, y: Float) =
         JphLinearCurve_AddPoint(linearCurveHandle, x, y)
 
+    /** Sort the points on X ascending */
     fun sort() =
         JphLinearCurve_Sort(linearCurveHandle)
 
+    /** Get the lowest X value */
     val minX: Float
         get() = JphLinearCurve_GetMinX(linearCurveHandle)
 
+    /** Get the highest X value */
     val maxX: Float
         get() = JphLinearCurve_GetMaxX(linearCurveHandle)
 
+    /**
+     * Sample value on the curve
+     * @param x X value to sample at
+     * @return Interpolated Y value
+     */
     fun getValue(x: Float): Float =
         JphLinearCurve_GetValue(linearCurveHandle, x)
 
+    /** Saves the state of this object in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphLinearCurve_SaveBinaryState(linearCurveHandle, stream.streamOutHandle)
 
+    /** Restore the state of this object from inStream. */
     fun restoreBinaryState(stream: StreamIn) =
         JphLinearCurve_RestoreBinaryState(linearCurveHandle, stream.streamInHandle)
 
@@ -76,7 +93,11 @@ class LinearCurve internal constructor(internal val linearCurveHandle: NativePoi
         }
         set(value) = interopScope { JphLinearCurve_SetPoints(linearCurveHandle, toInterop(value.map { it.linearCurvePointHandle }), value.size) }
 
-    /** C++ `JPH::LinearCurve::Point`. */
+    /**
+     * A point on the curve
+     *
+     * C++ `JPH::LinearCurve::Point`.
+     */
     class Point internal constructor(internal val linearCurvePointHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphLinearCurvePoint_create(), owned = true)
     

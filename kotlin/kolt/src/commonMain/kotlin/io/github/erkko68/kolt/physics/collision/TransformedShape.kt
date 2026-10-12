@@ -33,7 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TransformedShape`. */
+/**
+ * Temporary data structure that contains a shape and a transform.
+ * This structure can be obtained from a body (e.g. after a broad phase query) under lock protection.
+ * The lock can then be released and collision detection operations can be safely performed since
+ * the class takes a reference on the shape and does not use anything from the body anymore.
+ *
+ * C++ `JPH::TransformedShape`.
+ */
 class TransformedShape internal constructor(internal val transformedShapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphTransformedShape_create(), owned = true)
     constructor(positionCOM: Vec3, rotation: Quat, shape: Shape?, bodyID: BodyID, subShapeIDCreator: SubShapeIDCreator) : this(interopScope { JphTransformedShape_create_RVec3Arg_QuatArg_Shape_BodyID_SubShapeIDCreator(toInterop(positionCOM.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer, bodyID.value, subShapeIDCreator.subShapeIDCreatorHandle) }, owned = true)
@@ -41,27 +48,82 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
     override fun close() =
         closeOnce { JphTransformedShape_destroy(transformedShapeHandle) }
 
+    /**
+     * Cast a ray and find the closest hit. Returns true if it finds a hit. Hits further than ioHit.mFraction will not be considered and in this case ioHit will remain unmodified (and the function will return false).
+     * Convex objects will be treated as solid (meaning if the ray starts inside, you'll get a hit fraction of 0) and back face hits are returned.
+     * If you want the surface normal of the hit use GetWorldSpaceSurfaceNormal(ioHit.mSubShapeID2, inRay.GetPointOnRay(ioHit.mFraction)) on this object.
+     */
     fun castRay(ray: RRayCast, hit: RayCastResult): Boolean =
         JphTransformedShape_CastRay_RayCastResult(transformedShapeHandle, ray.rRayCastHandle, hit.rayCastResultHandle)
 
+    /**
+     * Cast a ray, allows collecting multiple hits. Note that this version is more flexible but also slightly slower than the CastRay function that returns only a single hit.
+     * If you want the surface normal of the hit use GetWorldSpaceSurfaceNormal(collected sub shape ID, inRay.GetPointOnRay(collected fraction)) on this object.
+     */
     fun castRay(ray: RRayCast, rayCastSettings: RayCastSettings, collector: CastRayCollector, shapeFilter: ShapeFilter) =
         JphTransformedShape_CastRay_RayCastSettings_CastRayCollector_ShapeFilter(transformedShapeHandle, ray.rRayCastHandle, rayCastSettings.rayCastSettingsHandle, collector.castRayCollectorHandle, shapeFilter.shapeFilterHandle)
 
+    /**
+     * Check if inPoint is inside any shapes. For this tests all shapes are treated as if they were solid.
+     * For a mesh shape, this test will only provide sensible information if the mesh is a closed manifold.
+     * For each shape that collides, ioCollector will receive a hit
+     */
     fun collidePoint(point: Vec3, collector: CollidePointCollector, shapeFilter: ShapeFilter) =
         interopScope { JphTransformedShape_CollidePoint(transformedShapeHandle, toInterop(point.toArray()), collector.collidePointCollectorHandle, shapeFilter.shapeFilterHandle) }
 
+    /**
+     * Collide a shape and report any hits to ioCollector
+     * @param shape Shape to test
+     * @param shapeScale Scale in local space of shape
+     * @param centerOfMassTransform Center of mass transform for the shape
+     * @param collideShapeSettings Settings
+     * @param baseOffset All hit results will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. mShapePositionCOM since floats are most accurate near the origin
+     * @param collector Collector that receives the hits
+     * @param shapeFilter Filter that allows you to reject collisions
+     */
     fun collideShape(shape: Shape?, shapeScale: Vec3, centerOfMassTransform: Mat44, collideShapeSettings: CollideShapeSettings, baseOffset: Vec3, collector: CollideShapeCollector, shapeFilter: ShapeFilter) =
         interopScope { JphTransformedShape_CollideShape(transformedShapeHandle, shape?.shapeHandle ?: NullPointer, toInterop(shapeScale.toArray()), toInterop(centerOfMassTransform.toArray()), collideShapeSettings.collideShapeSettingsHandle, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle, shapeFilter.shapeFilterHandle) }
 
+    /**
+     * Cast a shape and report any hits to ioCollector
+     * @param shapeCast The shape cast and its position and direction
+     * @param shapeCastSettings Settings for the shape cast
+     * @param baseOffset All hit results will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. mShapePositionCOM or inShapeCast.mCenterOfMassStart.GetTranslation() since floats are most accurate near the origin
+     * @param collector Collector that receives the hits
+     * @param shapeFilter Filter that allows you to reject collisions
+     */
     fun castShape(shapeCast: RShapeCast, shapeCastSettings: ShapeCastSettings, baseOffset: Vec3, collector: CastShapeCollector, shapeFilter: ShapeFilter) =
         interopScope { JphTransformedShape_CastShape(transformedShapeHandle, shapeCast.rShapeCastHandle, shapeCastSettings.shapeCastSettingsHandle, toInterop(baseOffset.toArray()), collector.castShapeCollectorHandle, shapeFilter.shapeFilterHandle) }
 
+    /**
+     * Collect the leaf transformed shapes of all leaf shapes of this shape
+     * inBox is the world space axis aligned box which leaf shapes should collide with
+     */
     fun collectTransformedShapes(box: AABox, collector: TransformedShapeCollector, shapeFilter: ShapeFilter) =
         JphTransformedShape_CollectTransformedShapes(transformedShapeHandle, box.aaBoxHandle, collector.transformedShapeCollectorHandle, shapeFilter.shapeFilterHandle)
 
+    /**
+     * To start iterating over triangles, call this function first.
+     * To get the actual triangles call GetTrianglesNext.
+     * @param context A temporary buffer and should remain untouched until the last call to GetTrianglesNext.
+     * @param box The world space bounding in which you want to get the triangles.
+     * @param baseOffset All hit results will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. inBox.GetCenter() since floats are most accurate near the origin
+     */
     fun getTrianglesStart(context: Shape.GetTrianglesContext, box: AABox, baseOffset: Vec3) =
         interopScope { JphTransformedShape_GetTrianglesStart(transformedShapeHandle, context.shapeGetTrianglesContextHandle, box.aaBoxHandle, toInterop(baseOffset.toArray())) }
 
+    /**
+     * Call this repeatedly to get all triangles in the box.
+     * outTriangleVertices should be large enough to hold 3 * inMaxTriangleRequested entries
+     * outMaterials (if it is not null) should contain inMaxTrianglesRequested entries
+     * The function returns the amount of triangles that it found (which will be
+     * <
+     * = inMaxTrianglesRequested), or 0 if there are no more triangles.
+     * Note that the function can return a value
+     * <
+     * inMaxTrianglesRequested and still have more triangles to process (triangles can be returned in blocks)
+     * Note that the function may return triangles outside of the requested box, only coarse culling is performed on the returned triangles
+     */
     fun getTrianglesNext(context: Shape.GetTrianglesContext, maxTrianglesRequested: Int, triangleVertices: MutableList<Float3>, materials: MutableList<PhysicsMaterial?>): Int =
         interopScope {
             val triangleVerticesArray = FloatArray(triangleVertices.size * 3).also { a -> triangleVertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }
@@ -74,6 +136,7 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
             nativeResult
         }
 
+    /** Get/set the scale of the shape as a Vec3 */
     var shapeScale: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -84,6 +147,7 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
         }
         set(scale) = interopScope { JphTransformedShape_SetShapeScale(transformedShapeHandle, toInterop(scale.toArray())) }
 
+    /** Calculates the transform for this shape's center of mass (excluding scale) */
     val centerOfMassTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -93,6 +157,7 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
             Mat44(returned)
         }
 
+    /** Calculates the inverse of the transform for this shape's center of mass (excluding scale) */
     val inverseCenterOfMassTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -102,12 +167,15 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
             Mat44(returned)
         }
 
+    /** Sets the world transform (including scale) of this transformed shape (not from the center of mass but in the space the shape was created) */
     fun setWorldTransform(position: Vec3, rotation: Quat, scale: Vec3) =
         interopScope { JphTransformedShape_SetWorldTransform_RVec3Arg_QuatArg_Vec3Arg(transformedShapeHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), toInterop(scale.toArray())) }
 
+    /** Sets the world transform (including scale) of this transformed shape (not from the center of mass but in the space the shape was created) */
     fun setWorldTransform(transform: Mat44) =
         interopScope { JphTransformedShape_SetWorldTransform_RMat44Arg(transformedShapeHandle, toInterop(transform.toArray())) }
 
+    /** Calculates the world transform including scale of this shape (not from the center of mass but in the space the shape was created) */
     val worldTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -117,6 +185,7 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
             Mat44(returned)
         }
 
+    /** Get the world space bounding box for this transformed shape */
     val worldSpaceBounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
@@ -124,9 +193,14 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
             returned
         }
 
+    /** Make inSubShapeID relative to mShape. When mSubShapeIDCreator is not empty, this is needed in order to get the correct path to the sub shape. */
     fun makeSubShapeIDRelativeToShape(subShapeID: SubShapeID): SubShapeID =
         SubShapeID(JphTransformedShape_MakeSubShapeIDRelativeToShape(transformedShapeHandle, subShapeID.value))
 
+    /**
+     * Get surface normal of a particular sub shape and its world space surface position on this body.
+     * Note: When you have a CollideShapeResult or ShapeCastResult you should use -mPenetrationAxis.Normalized() as contact normal as GetWorldSpaceSurfaceNormal will only return face normals (and not vertex or edge normals).
+     */
     fun getWorldSpaceSurfaceNormal(subShapeID: SubShapeID, position: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -136,6 +210,14 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
             Vec3(returned)
         }
 
+    /**
+     * Get the vertices of the face that faces inDirection the most (includes any convex radius). Note that this function can only return faces of
+     * convex shapes or triangles, which is why a sub shape ID to get to that leaf must be provided.
+     * @param subShapeID Sub shape ID of target shape
+     * @param direction Direction that the face should be facing (in world space)
+     * @param baseOffset The vertices will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. mShapePositionCOM since floats are most accurate near the origin
+     * @return Resulting face. Note the returned face can have a single point if the shape doesn't have polygons to return (e.g. because it's a sphere). The face will be returned in world space.
+     */
     fun getSupportingFace(subShapeID: SubShapeID, direction: Vec3, baseOffset: Vec3): List<Vec3> =
         interopScope {
             val count = JphTransformedShape_GetSupportingFace(transformedShapeHandle, subShapeID.value, toInterop(direction.toArray()), toInterop(baseOffset.toArray()), NullPointer, 0)
@@ -146,9 +228,11 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
             List(count) { Vec3(returned.copyOfRange(it * 4, it * 4 + 4)) }
         }
 
+    /** Get material of a particular sub shape */
     fun getMaterial(subShapeID: SubShapeID): PhysicsMaterial? =
         JphTransformedShape_GetMaterial(transformedShapeHandle, subShapeID.value).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
+    /** Get the user data of a particular sub shape */
     fun getSubShapeUserData(subShapeID: SubShapeID): Long =
         interopScope {
             val returned = LongArray(1)
@@ -158,6 +242,12 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
             returned[0]
         }
 
+    /**
+     * Get the direct child sub shape and its transform for a sub shape ID.
+     * @param subShapeID Sub shape ID that indicates the path to the leaf shape
+     * @return Direct child sub shape and its transform, note that the body ID and sub shape ID will be invalid
+     * @return The remainder of the sub shape ID after removing the sub shape
+     */
     fun getSubShapeTransformedShape(subShapeID: SubShapeID): Pair<TransformedShape, SubShapeID> =
         interopScope {
             val remainderArray = IntArray(1)
@@ -169,6 +259,7 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
             Pair(nativeResult, SubShapeID(remainderArray[0]))
         }
 
+    /** Center of mass world position of the shape */
     var shapePositionCOM: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -179,6 +270,7 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
         }
         set(value) = interopScope { JphTransformedShape_SetShapePositionCOM(transformedShapeHandle, toInterop(value.toArray())) }
 
+    /** Rotation of the shape */
     var shapeRotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -189,14 +281,17 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
         }
         set(value) = interopScope { JphTransformedShape_SetShapeRotation(transformedShapeHandle, toInterop(value.toArray())) }
 
+    /** The shape itself */
     var shape: Shape?
         get() = JphTransformedShape_GetShape(transformedShapeHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(value) = JphTransformedShape_SetShape(transformedShapeHandle, value?.shapeHandle ?: NullPointer)
 
+    /** Optional body ID from which this shape comes */
     var bodyID: BodyID
         get() = BodyID(JphTransformedShape_GetBodyID(transformedShapeHandle))
         set(value) = JphTransformedShape_SetBodyID(transformedShapeHandle, value.value)
 
+    /** Optional sub shape ID creator for the shape (can be used when expanding compound shapes into multiple transformed shapes) */
     var subShapeIDCreator: SubShapeIDCreator
         get() = run {
             val returned = SubShapeIDCreator(JphSubShapeIDCreator_create(), owned = true)
@@ -206,6 +301,7 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
         set(value) = JphTransformedShape_SetSubShapeIDCreator(transformedShapeHandle, value.subShapeIDCreatorHandle)
 
     companion object {
+        /** Helper function to return the body id from a transformed shape. If the transformed shape is null an invalid body ID will be returned. */
         fun getBodyID(ts: TransformedShape?): BodyID =
             BodyID(JphTransformedShape_sGetBodyID(ts?.transformedShapeHandle ?: NullPointer))
     }

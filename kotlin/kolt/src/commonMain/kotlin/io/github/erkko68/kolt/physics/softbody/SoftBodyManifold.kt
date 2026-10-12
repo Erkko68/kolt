@@ -33,8 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SoftBodyManifold`. */
+/**
+ * An interface to query which vertices of a soft body are colliding with other bodies
+ *
+ * C++ `JPH::SoftBodyManifold`.
+ */
 class SoftBodyManifold internal constructor(internal val softBodyManifoldHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+    /** Get the vertices of the soft body for iterating */
     val vertices: List<SoftBodyVertex>
         get() = interopScope {
             val count = JphSoftBodyManifold_GetVertices(softBodyManifoldHandle, NullPointer, 0)
@@ -43,9 +48,11 @@ class SoftBodyManifold internal constructor(internal val softBodyManifoldHandle:
             returned
         }
 
+    /** Check if a vertex has collided with something in this update */
     fun hasContact(vertex: SoftBodyVertex): Boolean =
         JphSoftBodyManifold_HasContact(softBodyManifoldHandle, vertex.softBodyVertexHandle)
 
+    /** Get the local space contact point (multiply by GetCenterOfMassTransform() of the soft body to get world space) */
     fun getLocalContactPoint(vertex: SoftBodyVertex): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -55,6 +62,7 @@ class SoftBodyManifold internal constructor(internal val softBodyManifoldHandle:
             Vec3(returned)
         }
 
+    /** Get the contact normal for the vertex (assumes there is a contact). */
     fun getContactNormal(vertex: SoftBodyVertex): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -64,12 +72,15 @@ class SoftBodyManifold internal constructor(internal val softBodyManifoldHandle:
             Vec3(returned)
         }
 
+    /** Get the body with which the vertex has collided in this update */
     fun getContactBodyID(vertex: SoftBodyVertex): BodyID =
         BodyID(JphSoftBodyManifold_GetContactBodyID(softBodyManifoldHandle, vertex.softBodyVertexHandle))
 
+    /** Get the number of sensors that are in contact with the soft body */
     val numSensorContacts: Int
         get() = JphSoftBodyManifold_GetNumSensorContacts(softBodyManifoldHandle)
 
+    /** Get the i-th sensor that is in contact with the soft body */
     fun getSensorContactBodyID(index: Int): BodyID =
         BodyID(JphSoftBodyManifold_GetSensorContactBodyID(softBodyManifoldHandle, index))
 }

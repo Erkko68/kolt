@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::RotatedTranslatedShapeSettings`. */
+/**
+ * Class that constructs a RotatedTranslatedShape
+ *
+ * C++ `JPH::RotatedTranslatedShapeSettings`.
+ */
 class RotatedTranslatedShapeSettings internal constructor(internal val rotatedTranslatedShapeSettingsHandle: NativePointer, owned: Boolean = false) : DecoratedShapeSettings(JphRotatedTranslatedShapeSettings_asDecoratedShapeSettings(rotatedTranslatedShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphRotatedTranslatedShapeSettings_create(), owned = true)
     constructor(position: Vec3, rotation: Quat, shape: ShapeSettings?) : this(interopScope { JphRotatedTranslatedShapeSettings_create_Vec3Arg_QuatArg_ShapeSettings(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeSettingsHandle ?: NullPointer) }, owned = true)
@@ -45,6 +49,7 @@ class RotatedTranslatedShapeSettings internal constructor(internal val rotatedTr
     override fun close() =
         closeOnce { JphRotatedTranslatedShapeSettings_release(rotatedTranslatedShapeSettingsHandle) }
 
+    /** Position of the sub shape */
     var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -55,6 +60,7 @@ class RotatedTranslatedShapeSettings internal constructor(internal val rotatedTr
         }
         set(value) = interopScope { JphRotatedTranslatedShapeSettings_SetPosition(rotatedTranslatedShapeSettingsHandle, toInterop(value.toArray())) }
 
+    /** Rotation of the sub shape */
     var rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)

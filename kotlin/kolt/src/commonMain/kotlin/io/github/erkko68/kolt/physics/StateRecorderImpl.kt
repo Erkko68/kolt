@@ -33,22 +33,30 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::StateRecorderImpl`. */
+/**
+ * Implementation of the StateRecorder class that uses a stringstream as underlying store and that implements checking if the state doesn't change upon reading
+ *
+ * C++ `JPH::StateRecorderImpl`.
+ */
 class StateRecorderImpl internal constructor(internal val stateRecorderImplHandle: NativePointer, owned: Boolean = false) : StateRecorder(JphStateRecorderImpl_asStateRecorder(stateRecorderImplHandle), owned), AutoCloseable {
     constructor() : this(JphStateRecorderImpl_create(), owned = true)
 
     override fun close() =
         closeOnce { JphStateRecorderImpl_destroy(stateRecorderImplHandle) }
 
+    /** Rewind the stream for reading */
     fun rewind() =
         JphStateRecorderImpl_Rewind(stateRecorderImplHandle)
 
+    /** Clear the stream for reuse */
     fun clear() =
         JphStateRecorderImpl_Clear(stateRecorderImplHandle)
 
+    /** Compare this state with a reference state and ensure they are the same */
     fun isEqual(reference: StateRecorderImpl): Boolean =
         JphStateRecorderImpl_IsEqual(stateRecorderImplHandle, reference.stateRecorderImplHandle)
 
+    /** Get size of the binary data in bytes */
     val dataSize: Int
         get() = JphStateRecorderImpl_GetDataSize(stateRecorderImplHandle)
 }

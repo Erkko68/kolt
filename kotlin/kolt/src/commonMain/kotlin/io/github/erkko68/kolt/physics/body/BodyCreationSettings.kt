@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyCreationSettings`. */
+/**
+ * Settings for constructing a rigid body
+ *
+ * C++ `JPH::BodyCreationSettings`.
+ */
 open class BodyCreationSettings internal constructor(internal val bodyCreationSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphBodyCreationSettings_create(), owned = true)
     constructor(shape: ShapeSettings?, position: Vec3, rotation: Quat, motionType: EMotionType, objectLayer: Int) : this(interopScope { JphBodyCreationSettings_create_ShapeSettings_RVec3Arg_QuatArg_EMotionType_ObjectLayer(shape?.shapeSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), motionType.value, objectLayer) }, owned = true)
@@ -42,10 +46,12 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
     override fun close() =
         closeOnce { JphBodyCreationSettings_destroy(bodyCreationSettingsHandle) }
 
+    /** Access to the shape settings object. This contains serializable (non-runtime optimized) information about the Shape. */
     var shapeSettings: ShapeSettings?
         get() = JphBodyCreationSettings_GetShapeSettings(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
         set(shape) = JphBodyCreationSettings_SetShapeSettings(bodyCreationSettingsHandle, shape?.shapeSettingsHandle ?: NullPointer)
 
+    /** Convert ShapeSettings object into a Shape object. This will free the ShapeSettings object and make the object ready for runtime. Serialization is no longer possible after this. */
     fun convertShapeSettings(): Shape =
         interopScope {
             val error = ByteArray(256)
@@ -56,13 +62,16 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
             Shape(returned, owned = true)
         }
 
+    /** Access to the run-time shape object. Will convert from ShapeSettings object if needed. */
     var shape: Shape?
         get() = JphBodyCreationSettings_GetShape(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(shape) = JphBodyCreationSettings_SetShape(bodyCreationSettingsHandle, shape?.shapeHandle ?: NullPointer)
 
+    /** Check if the mass properties of this body will be calculated (only relevant for kinematic or dynamic objects that need a MotionProperties object) */
     fun hasMassProperties(): Boolean =
         JphBodyCreationSettings_HasMassProperties(bodyCreationSettingsHandle)
 
+    /** Calculate (or return when overridden) the mass and inertia for this body */
     val massProperties: MassProperties
         get() = run {
             val returned = MassProperties(JphMassProperties_create(), owned = true)
@@ -70,12 +79,15 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
             returned
         }
 
+    /** Saves the state of this object in binary form to inStream. Doesn't store the shape nor the group filter. */
     fun saveBinaryState(stream: StreamOut) =
         JphBodyCreationSettings_SaveBinaryState(bodyCreationSettingsHandle, stream.streamOutHandle)
 
+    /** Restore the state of this object from inStream. Doesn't restore the shape nor the group filter. */
     fun restoreBinaryState(stream: StreamIn) =
         JphBodyCreationSettings_RestoreBinaryState(bodyCreationSettingsHandle, stream.streamInHandle)
 
+    /** Position of the body (not of the center of mass) */
     var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -86,6 +98,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = interopScope { JphBodyCreationSettings_SetPosition(bodyCreationSettingsHandle, toInterop(value.toArray())) }
 
+    /** Rotation of the body */
     var rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -96,6 +109,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = interopScope { JphBodyCreationSettings_SetRotation(bodyCreationSettingsHandle, toInterop(value.toArray())) }
 
+    /** World space linear velocity of the center of mass (m/s) */
     var linearVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -106,6 +120,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = interopScope { JphBodyCreationSettings_SetLinearVelocity(bodyCreationSettingsHandle, toInterop(value.toArray())) }
 
+    /** World space angular velocity (rad/s) */
     var angularVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -116,6 +131,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = interopScope { JphBodyCreationSettings_SetAngularVelocity(bodyCreationSettingsHandle, toInterop(value.toArray())) }
 
+    /** User data value (can be used by application) */
     var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -126,10 +142,12 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = JphBodyCreationSettings_SetUserData(bodyCreationSettingsHandle, value)
 
+    /** The collision layer this body belongs to (determines if two objects can collide) */
     var objectLayer: Int
         get() = JphBodyCreationSettings_GetObjectLayer(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetObjectLayer(bodyCreationSettingsHandle, value)
 
+    /** The collision group this body belongs to (determines if two objects can collide) */
     var collisionGroup: CollisionGroup
         get() = run {
             val returned = CollisionGroup(JphCollisionGroup_create(), owned = true)
@@ -138,90 +156,112 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = JphBodyCreationSettings_SetCollisionGroup(bodyCreationSettingsHandle, value.collisionGroupHandle)
 
+    /** Motion type, determines if the object is static, dynamic or kinematic */
     var motionType: EMotionType
         get() = EMotionType.of(JphBodyCreationSettings_GetMotionType(bodyCreationSettingsHandle))
         set(value) = JphBodyCreationSettings_SetMotionType(bodyCreationSettingsHandle, value.value)
 
+    /** Which degrees of freedom this body has (can be used to limit simulation to 2D) */
     var allowedDOFs: EAllowedDOFs
         get() = EAllowedDOFs.of(JphBodyCreationSettings_GetAllowedDOFs(bodyCreationSettingsHandle))
         set(value) = JphBodyCreationSettings_SetAllowedDOFs(bodyCreationSettingsHandle, value.value)
 
+    /** When this body is created as static, this setting tells the system to create a MotionProperties object so that the object can be switched to kinematic or dynamic */
     var allowDynamicOrKinematic: Boolean
         get() = JphBodyCreationSettings_GetAllowDynamicOrKinematic(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetAllowDynamicOrKinematic(bodyCreationSettingsHandle, value)
 
+    /** If this body is a sensor. A sensor will receive collision callbacks, but will not cause any collision responses and can be used as a trigger volume. See description at Body::SetIsSensor. */
     var isSensor: Boolean
         get() = JphBodyCreationSettings_GetIsSensor(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetIsSensor(bodyCreationSettingsHandle, value)
 
+    /** If kinematic objects can generate contact points against other kinematic or static objects. See description at Body::SetCollideKinematicVsNonDynamic. */
     var collideKinematicVsNonDynamic: Boolean
         get() = JphBodyCreationSettings_GetCollideKinematicVsNonDynamic(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetCollideKinematicVsNonDynamic(bodyCreationSettingsHandle, value)
 
+    /** If this body should use manifold reduction (see description at Body::SetUseManifoldReduction) */
     var useManifoldReduction: Boolean
         get() = JphBodyCreationSettings_GetUseManifoldReduction(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetUseManifoldReduction(bodyCreationSettingsHandle, value)
 
+    /** Set to indicate that the gyroscopic force should be applied to this body (aka Dzhanibekov effect, see https://en.wikipedia.org/wiki/Tennis_racket_theorem) */
     var applyGyroscopicForce: Boolean
         get() = JphBodyCreationSettings_GetApplyGyroscopicForce(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetApplyGyroscopicForce(bodyCreationSettingsHandle, value)
 
+    /** Motion quality, or how well it detects collisions when it has a high velocity */
     var motionQuality: EMotionQuality
         get() = EMotionQuality.of(JphBodyCreationSettings_GetMotionQuality(bodyCreationSettingsHandle))
         set(value) = JphBodyCreationSettings_SetMotionQuality(bodyCreationSettingsHandle, value.value)
 
+    /** Set to indicate that extra effort should be made to try to remove ghost contacts (collisions with internal edges of a mesh). This is more expensive but makes bodies move smoother over a mesh with convex edges. */
     var enhancedInternalEdgeRemoval: Boolean
         get() = JphBodyCreationSettings_GetEnhancedInternalEdgeRemoval(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetEnhancedInternalEdgeRemoval(bodyCreationSettingsHandle, value)
 
+    /** If this body can go to sleep or not */
     var allowSleeping: Boolean
         get() = JphBodyCreationSettings_GetAllowSleeping(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetAllowSleeping(bodyCreationSettingsHandle, value)
 
+    /** Friction of the body (dimensionless number, usually between 0 and 1, 0 = no friction, 1 = friction force equals force that presses the two bodies together). Note that bodies can have negative friction but the combined friction (see PhysicsSystem::SetCombineFriction) should never go below zero. */
     var friction: Float
         get() = JphBodyCreationSettings_GetFriction(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetFriction(bodyCreationSettingsHandle, value)
 
+    /** Restitution of body (dimensionless number, usually between 0 and 1, 0 = completely inelastic collision response, 1 = completely elastic collision response). Note that bodies can have negative restitution but the combined restitution (see PhysicsSystem::SetCombineRestitution) should never go below zero. */
     var restitution: Float
         get() = JphBodyCreationSettings_GetRestitution(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetRestitution(bodyCreationSettingsHandle, value)
 
+    /** Linear damping: dv/dt = -c * v. c. Value should be zero or positive and is usually close to 0. */
     var linearDamping: Float
         get() = JphBodyCreationSettings_GetLinearDamping(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetLinearDamping(bodyCreationSettingsHandle, value)
 
+    /** Angular damping: dw/dt = -c * w. c. Value should be zero or positive and is usually close to 0. */
     var angularDamping: Float
         get() = JphBodyCreationSettings_GetAngularDamping(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetAngularDamping(bodyCreationSettingsHandle, value)
 
+    /** Maximum linear velocity that this body can reach (m/s) */
     var maxLinearVelocity: Float
         get() = JphBodyCreationSettings_GetMaxLinearVelocity(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetMaxLinearVelocity(bodyCreationSettingsHandle, value)
 
+    /** Maximum angular velocity that this body can reach (rad/s) */
     var maxAngularVelocity: Float
         get() = JphBodyCreationSettings_GetMaxAngularVelocity(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetMaxAngularVelocity(bodyCreationSettingsHandle, value)
 
+    /** Value to multiply gravity with for this body */
     var gravityFactor: Float
         get() = JphBodyCreationSettings_GetGravityFactor(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetGravityFactor(bodyCreationSettingsHandle, value)
 
+    /** Used only when this body is dynamic and colliding. Override for the number of solver velocity iterations to run, 0 means use the default in PhysicsSettings::mNumVelocitySteps. The number of iterations to use is the max of all contacts and constraints in the island. */
     var numVelocityStepsOverride: Int
         get() = JphBodyCreationSettings_GetNumVelocityStepsOverride(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetNumVelocityStepsOverride(bodyCreationSettingsHandle, value)
 
+    /** Used only when this body is dynamic and colliding. Override for the number of solver position iterations to run, 0 means use the default in PhysicsSettings::mNumPositionSteps. The number of iterations to use is the max of all contacts and constraints in the island. */
     var numPositionStepsOverride: Int
         get() = JphBodyCreationSettings_GetNumPositionStepsOverride(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetNumPositionStepsOverride(bodyCreationSettingsHandle, value)
 
+    /** Determines how mMassPropertiesOverride will be used */
     var overrideMassProperties: EOverrideMassProperties
         get() = EOverrideMassProperties.of(JphBodyCreationSettings_GetOverrideMassProperties(bodyCreationSettingsHandle))
         set(value) = JphBodyCreationSettings_SetOverrideMassProperties(bodyCreationSettingsHandle, value.value)
 
+    /** When calculating the inertia (not when it is provided) the calculated inertia will be multiplied by this value */
     var inertiaMultiplier: Float
         get() = JphBodyCreationSettings_GetInertiaMultiplier(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetInertiaMultiplier(bodyCreationSettingsHandle, value)
 
+    /** Contains replacement mass settings which override the automatically calculated values */
     var massPropertiesOverride: MassProperties
         get() = run {
             val returned = MassProperties(JphMassProperties_create(), owned = true)

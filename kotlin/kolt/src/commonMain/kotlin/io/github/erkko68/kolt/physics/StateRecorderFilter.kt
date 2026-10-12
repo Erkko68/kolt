@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::StateRecorderFilter`. */
+/**
+ * User callbacks that allow determining which parts of the simulation should be saved by a StateRecorder
+ *
+ * C++ `JPH::StateRecorderFilter`.
+ */
 open class StateRecorderFilter internal constructor(internal val stateRecorderFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphStateRecorderFilter_createUpcalls(Upcalls.function), owned = true) {
@@ -43,15 +47,19 @@ open class StateRecorderFilter internal constructor(internal val stateRecorderFi
     override fun close() =
         closeOnce { JphStateRecorderFilter_destroy(stateRecorderFilterHandle) }
 
+    /** If the state of a specific body should be saved */
     open fun shouldSaveBody(body: Body): Boolean =
         JphStateRecorderFilter_ShouldSaveBody(stateRecorderFilterHandle, body.bodyHandle)
 
+    /** If the state of a specific constraint should be saved */
     open fun shouldSaveConstraint(constraint: Constraint): Boolean =
         JphStateRecorderFilter_ShouldSaveConstraint(stateRecorderFilterHandle, constraint.constraintHandle)
 
+    /** If the state of a specific contact should be saved */
     open fun shouldSaveContact(body1: BodyID, body2: BodyID): Boolean =
         JphStateRecorderFilter_ShouldSaveContact(stateRecorderFilterHandle, body1.value, body2.value)
 
+    /** If the state of a specific contact should be restored */
     open fun shouldRestoreContact(body1: BodyID, body2: BodyID): Boolean =
         JphStateRecorderFilter_ShouldRestoreContact(stateRecorderFilterHandle, body1.value, body2.value)
 

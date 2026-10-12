@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterBase`. */
+/**
+ * Base class for character class
+ *
+ * C++ `JPH::CharacterBase`.
+ */
 open class CharacterBase internal constructor(internal val characterBaseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor(settings: CharacterBaseSettings?, system: PhysicsSystem?) : this(JphCharacterBase_create(settings?.characterBaseSettingsHandle ?: NullPointer, system?.physicsSystemHandle ?: NullPointer), owned = true)
 
@@ -43,12 +47,14 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
     override fun close() =
         closeOnce { JphCharacterBase_release(characterBaseHandle) }
 
+    /** Set the maximum angle of slope that character can still walk on (radians) */
     fun setMaxSlopeAngle(maxSlopeAngle: Float) =
         JphCharacterBase_SetMaxSlopeAngle(characterBaseHandle, maxSlopeAngle)
 
     val cosMaxSlopeAngle: Float
         get() = JphCharacterBase_GetCosMaxSlopeAngle(characterBaseHandle)
 
+    /** Set the up vector for the character */
     var up: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -67,18 +73,23 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
         }
         set(plane) = JphCharacterBase_SetSupportingVolume(characterBaseHandle, plane.planeHandle)
 
+    /** Check if the normal of the ground surface is too steep to walk on */
     fun isSlopeTooSteep(normal: Vec3): Boolean =
         interopScope { JphCharacterBase_IsSlopeTooSteep(characterBaseHandle, toInterop(normal.toArray())) }
 
+    /** Get the current shape that the character is using. */
     val shape: Shape?
         get() = JphCharacterBase_GetShape(characterBaseHandle).takeIf { it != NullPointer }?.let { Shape(it) }
 
+    /** Current ground state */
     val groundState: CharacterBase.EGroundState
         get() = CharacterBase.EGroundState.of(JphCharacterBase_GetGroundState(characterBaseHandle))
 
+    /** Returns true if the player is supported by normal or steep ground */
     val isSupported: Boolean
         get() = JphCharacterBase_IsSupported(characterBaseHandle)
 
+    /** Get the contact point with the ground */
     val groundPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -88,6 +99,7 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
             Vec3(returned)
         }
 
+    /** Get the contact normal with the ground */
     val groundNormal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -97,6 +109,7 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
             Vec3(returned)
         }
 
+    /** Velocity in world space of ground */
     val groundVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -106,15 +119,19 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
             Vec3(returned)
         }
 
+    /** Material that the character is standing on */
     val groundMaterial: PhysicsMaterial?
         get() = JphCharacterBase_GetGroundMaterial(characterBaseHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
+    /** BodyID of the object the character is standing on. Note may have been removed! */
     val groundBodyID: BodyID
         get() = BodyID(JphCharacterBase_GetGroundBodyID(characterBaseHandle))
 
+    /** Sub part of the body that we're standing on. */
     val groundSubShapeID: SubShapeID
         get() = SubShapeID(JphCharacterBase_GetGroundSubShapeID(characterBaseHandle))
 
+    /** User data value of the body that we're standing on */
     val groundUserData: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -132,9 +149,13 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
 
     /** C++ `JPH::CharacterBase::EGroundState`. */
     enum class EGroundState(internal val value: Int) {
+        /** Character is on the ground and can move freely. */
         OnGround(0),
+        /** Character is on a slope that is too steep and can't climb up any further. The caller should start applying downward velocity if sliding from the slope is desired. */
         OnSteepGround(1),
+        /** Character is touching an object, but is not supported by it and should fall. The GetGroundXXX functions will return information about the touched object. */
         NotSupported(2),
+        /** Character is in the air and is not touching anything. */
         InAir(3);
     
         internal companion object {
@@ -143,6 +164,7 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
     }
     
     companion object {
+        /** Debug function to convert enum values to string */
         fun toString(state: CharacterBase.EGroundState): String? =
             stringFromInterop(JphCharacterBase_sToString(state.value))
     }

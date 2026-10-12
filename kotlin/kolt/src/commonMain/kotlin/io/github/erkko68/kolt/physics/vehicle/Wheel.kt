@@ -33,37 +33,49 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Wheel`. */
+/**
+ * Base class for runtime data for a wheel, each VehicleController can implement a derived class of this
+ *
+ * C++ `JPH::Wheel`.
+ */
 open class Wheel internal constructor(internal val wheelHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor(settings: WheelSettings) : this(JphWheel_create(settings.wheelSettingsHandle), owned = true)
 
     override fun close() =
         closeOnce { JphWheel_destroy(wheelHandle) }
 
+    /** Get settings for the wheel */
     open val settings: WheelSettings?
         get() = JphWheel_GetSettings(wheelHandle).takeIf { it != NullPointer }?.let { WheelSettings(it) }
 
+    /** Get the angular velocity (rad/s) for this wheel, note that positive means the wheel is rotating such that the car moves forward */
     var angularVelocity: Float
         get() = JphWheel_GetAngularVelocity(wheelHandle)
         set(vel) = JphWheel_SetAngularVelocity(wheelHandle, vel)
 
+    /** Get the current rotation angle of the wheel in radians \[0, 2 pi\] */
     var rotationAngle: Float
         get() = JphWheel_GetRotationAngle(wheelHandle)
         set(angle) = JphWheel_SetRotationAngle(wheelHandle, angle)
 
+    /** Get the current steer angle of the wheel in radians \[-pi, pi\], positive is to the left */
     var steerAngle: Float
         get() = JphWheel_GetSteerAngle(wheelHandle)
         set(angle) = JphWheel_SetSteerAngle(wheelHandle, angle)
 
+    /** Returns true if the wheel is touching an object */
     fun hasContact(): Boolean =
         JphWheel_HasContact(wheelHandle)
 
+    /** Returns the body ID of the body that this wheel is touching */
     val contactBodyID: BodyID
         get() = BodyID(JphWheel_GetContactBodyID(wheelHandle))
 
+    /** Returns the sub shape ID where we're contacting the body */
     val contactSubShapeID: SubShapeID
         get() = SubShapeID(JphWheel_GetContactSubShapeID(wheelHandle))
 
+    /** Returns the current contact position in world space (note by the time you call this the vehicle has moved) */
     val contactPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -73,6 +85,7 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
+    /** Velocity of the contact point (m / s, not relative to the wheel but in world space) */
     val contactPointVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -82,6 +95,7 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
+    /** Returns the current contact normal in world space (note by the time you call this the vehicle has moved) */
     val contactNormal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -91,6 +105,7 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
+    /** Returns longitudinal direction (direction along the wheel relative to floor) in world space (note by the time you call this the vehicle has moved) */
     val contactLongitudinal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -100,6 +115,7 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
+    /** Returns lateral direction (sideways direction) in world space (note by the time you call this the vehicle has moved) */
     val contactLateral: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -109,24 +125,31 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
+    /** Get the length of the suspension for a wheel (m) relative to the suspension attachment point (hard point) */
     val suspensionLength: Float
         get() = JphWheel_GetSuspensionLength(wheelHandle)
 
+    /** Check if the suspension hit its upper limit */
     fun hasHitHardPoint(): Boolean =
         JphWheel_HasHitHardPoint(wheelHandle)
 
+    /** Get the total impulse (N s) that was applied by the suspension */
     val suspensionLambda: Float
         get() = JphWheel_GetSuspensionLambda(wheelHandle)
 
+    /** Get total impulse (N s) applied along the forward direction of the wheel */
     val longitudinalLambda: Float
         get() = JphWheel_GetLongitudinalLambda(wheelHandle)
 
+    /** Get total impulse (N s) applied along the sideways direction of the wheel */
     val lateralLambda: Float
         get() = JphWheel_GetLateralLambda(wheelHandle)
 
+    /** Internal function that should only be called by the controller. Used to apply impulses in the forward direction of the vehicle. */
     fun solveLongitudinalConstraintPart(constraint: VehicleConstraint, minImpulse: Float, maxImpulse: Float): Boolean =
         JphWheel_SolveLongitudinalConstraintPart(wheelHandle, constraint.vehicleConstraintHandle, minImpulse, maxImpulse)
 
+    /** Internal function that should only be called by the controller. Used to apply impulses in the sideways direction of the vehicle. */
     fun solveLateralConstraintPart(constraint: VehicleConstraint, minImpulse: Float, maxImpulse: Float): Boolean =
         JphWheel_SolveLateralConstraintPart(wheelHandle, constraint.vehicleConstraintHandle, minImpulse, maxImpulse)
 }

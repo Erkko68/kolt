@@ -33,7 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::HeightFieldShape`. */
+/**
+ * A height field shape. Cannot be used as a dynamic object.
+ *
+ * Note: If you're using HeightFieldShape and are querying data while modifying the shape you'll have a race condition.
+ * In this case it is best to create a new HeightFieldShape using the Clone function. You replace the shape on a body using BodyInterface::SetShape.
+ * If a query is still working on the old shape, it will have taken a reference and keep the old shape alive until the query finishes.
+ *
+ * C++ `JPH::HeightFieldShape`.
+ */
 class HeightFieldShape internal constructor(internal val heightFieldShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphHeightFieldShape_asShape(heightFieldShapeHandle), owned), AutoCloseable {
     constructor() : this(JphHeightFieldShape_create(), owned = true)
 
@@ -43,18 +51,26 @@ class HeightFieldShape internal constructor(internal val heightFieldShapeHandle:
     override fun close() =
         closeOnce { JphHeightFieldShape_release(heightFieldShapeHandle) }
 
+    /** Clone this shape. Can be used to avoid race conditions. See the documentation of this class for more information. */
     fun clone(): HeightFieldShape? =
         JphHeightFieldShape_Clone(heightFieldShapeHandle).takeIf { it != NullPointer }?.let { HeightFieldShape(it, owned = true) }
 
+    /** Get the size of the height field. Note that this will always be rounded up to the nearest multiple of GetBlockSize(). */
     val sampleCount: Int
         get() = JphHeightFieldShape_GetSampleCount(heightFieldShapeHandle)
 
+    /** Get the size of a block */
     val blockSize: Int
         get() = JphHeightFieldShape_GetBlockSize(heightFieldShapeHandle)
 
+    /** Overload to get the material at a particular location */
     fun getMaterial(x: Int, y: Int): PhysicsMaterial? =
         JphHeightFieldShape_GetMaterial(heightFieldShapeHandle, x, y).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
+    /**
+     * Get height field position at sampled location (inX, inY).
+     * where inX and inY are integers in the range inX e \[0, mSampleCount - 1\] and inY e \[0, mSampleCount - 1\].
+     */
     fun getPosition(x: Int, y: Int): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -64,9 +80,14 @@ class HeightFieldShape internal constructor(internal val heightFieldShapeHandle:
             Vec3(returned)
         }
 
+    /** Check if height field at sampled location (inX, inY) has collision (has a hole or not) */
     fun isNoCollision(x: Int, y: Int): Boolean =
         JphHeightFieldShape_IsNoCollision(heightFieldShapeHandle, x, y)
 
+    /**
+     * Projects inLocalPosition (a point in the space of the shape) along the Y axis onto the surface and returns it in outSurfacePosition.
+     * When there is no surface position (because of a hole or because the point is outside the heightfield) the function will return false.
+     */
     fun projectOntoSurface(localPosition: Vec3): Triple<Boolean, Vec3, SubShapeID> =
         interopScope {
             val surfacePositionArray = FloatArray(4)
@@ -79,6 +100,13 @@ class HeightFieldShape internal constructor(internal val heightFieldShapeHandle:
             Triple(nativeResult, Vec3(surfacePositionArray), SubShapeID(subShapeIDArray[0]))
         }
 
+    /**
+     * Returns the coordinates of the triangle that a sub shape ID represents
+     * @param subShapeID The sub shape ID to decode
+     * @return X coordinate of the triangle (in the range \[0, mSampleCount - 2\])
+     * @return Y coordinate of the triangle (in the range \[0, mSampleCount - 2\])
+     * @return Triangle within the quad (0 = lower triangle or 1 = upper triangle)
+     */
     fun getSubShapeCoordinates(subShapeID: SubShapeID): Triple<Int, Int, Int> =
         interopScope {
             val xArray = IntArray(1)
@@ -94,12 +122,23 @@ class HeightFieldShape internal constructor(internal val heightFieldShapeHandle:
             Triple(xArray[0], yArray[0], triangleIndexArray[0])
         }
 
+    /** Get the range of height values that this height field can encode. Can be used to determine the allowed range when setting the height values with SetHeights. */
     val minHeightValue: Float
         get() = JphHeightFieldShape_GetMinHeightValue(heightFieldShapeHandle)
 
     val maxHeightValue: Float
         get() = JphHeightFieldShape_GetMaxHeightValue(heightFieldShapeHandle)
 
+    /**
+     * Get the height values of a block of data.
+     * Note that the height values are decompressed so will be slightly different from what the shape was originally created with.
+     * @param x Start X position, must be a multiple of mBlockSize and in the range \[0, mSampleCount - 1\]
+     * @param y Start Y position, must be a multiple of mBlockSize and in the range \[0, mSampleCount - 1\]
+     * @param sizeX Number of samples in X direction, must be a multiple of mBlockSize and in the range \[0, mSampleCount - inX\]
+     * @param sizeY Number of samples in Y direction, must be a multiple of mBlockSize and in the range \[0, mSampleCount - inY\]
+     * @param heights Returned height values, must be at least inSizeX * inSizeY floats. Values are returned in x-major order and can be cNoCollisionValue.
+     * @param heightsStride Stride in floats between two consecutive rows of outHeights (can be negative if the data is upside down).
+     */
     fun getHeights(x: Int, y: Int, sizeX: Int, sizeY: Int, heights: FloatArray, heightsStride: Long) =
         interopScope {
             val heightsPointer = toInterop(heights)
@@ -107,9 +146,23 @@ class HeightFieldShape internal constructor(internal val heightFieldShapeHandle:
             heightsPointer.fromInterop(heights)
         }
 
+    /**
+     * Set the height values of a block of data.
+     * Note that this requires decompressing and recompressing a border of size mBlockSize in the negative x/y direction so will cause some precision loss.
+     * Beware this can create a race condition if you're running collision queries in parallel. See class documentation for more information.
+     * @param x Start X position, must be a multiple of mBlockSize and in the range \[0, mSampleCount - 1\]
+     * @param y Start Y position, must be a multiple of mBlockSize and in the range \[0, mSampleCount - 1\]
+     * @param sizeX Number of samples in X direction, must be a multiple of mBlockSize and in the range \[0, mSampleCount - inX\]
+     * @param sizeY Number of samples in Y direction, must be a multiple of mBlockSize and in the range \[0, mSampleCount - inY\]
+     * @param heights The new height values to set, must be an array of inSizeX * inSizeY floats, can be cNoCollisionValue. Values outside of the range \[GetMinHeightValue(), GetMaxHeightValue()\] will be clamped.
+     * @param heightsStride Stride in floats between two consecutive rows of inHeights (can be negative if the data is upside down).
+     * @param allocator Allocator to use for temporary memory
+     * @param activeEdgeCosThresholdAngle Cosine of the threshold angle (if the angle between the two triangles is bigger than this, the edge is active, note that a concave edge is always inactive).
+     */
     fun setHeights(x: Int, y: Int, sizeX: Int, sizeY: Int, heights: FloatArray, heightsStride: Long, allocator: TempAllocator, activeEdgeCosThresholdAngle: Float) =
         interopScope { JphHeightFieldShape_SetHeights(heightFieldShapeHandle, x, y, sizeX, sizeY, toInterop(heights), heightsStride, allocator.tempAllocatorHandle, activeEdgeCosThresholdAngle) }
 
+    /** Get the current list of materials, the indices returned by GetMaterials() will index into this list. */
     val materialList: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphHeightFieldShape_GetMaterialList(heightFieldShapeHandle, NullPointer, 0)
@@ -118,6 +171,15 @@ class HeightFieldShape internal constructor(internal val heightFieldShapeHandle:
             readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
         }
 
+    /**
+     * Get the material indices of a block of data.
+     * @param x Start X position, must in the range \[0, mSampleCount - 1\]
+     * @param y Start Y position, must in the range \[0, mSampleCount - 1\]
+     * @param sizeX Number of samples in X direction
+     * @param sizeY Number of samples in Y direction
+     * @param materials Returned material indices, must be at least inSizeX * inSizeY uint8s. Values are returned in x-major order.
+     * @param materialsStride Stride in uint8s between two consecutive rows of outMaterials (can be negative if the data is upside down).
+     */
     fun getMaterials(x: Int, y: Int, sizeX: Int, sizeY: Int, materials: ByteArray, materialsStride: Long) =
         interopScope {
             val materialsPointer = toInterop(materials)

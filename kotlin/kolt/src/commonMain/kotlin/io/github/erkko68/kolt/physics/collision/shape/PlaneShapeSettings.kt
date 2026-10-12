@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PlaneShapeSettings`. */
+/**
+ * Class that constructs a PlaneShape
+ *
+ * C++ `JPH::PlaneShapeSettings`.
+ */
 class PlaneShapeSettings internal constructor(internal val planeShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphPlaneShapeSettings_asShapeSettings(planeShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphPlaneShapeSettings_create(), owned = true)
     constructor(plane: Plane, material: PhysicsMaterial?, halfExtent: Float) : this(JphPlaneShapeSettings_create_Plane_PhysicsMaterial_float(plane.planeHandle, material?.physicsMaterialHandle ?: NullPointer, halfExtent), owned = true)
@@ -44,6 +48,7 @@ class PlaneShapeSettings internal constructor(internal val planeShapeSettingsHan
     override fun close() =
         closeOnce { JphPlaneShapeSettings_release(planeShapeSettingsHandle) }
 
+    /** Plane that describes the shape. The negative half space is considered solid. */
     var plane: Plane
         get() = run {
             val returned = Plane(JphPlane_create(), owned = true)
@@ -52,10 +57,12 @@ class PlaneShapeSettings internal constructor(internal val planeShapeSettingsHan
         }
         set(value) = JphPlaneShapeSettings_SetPlane(planeShapeSettingsHandle, value.planeHandle)
 
+    /** Surface material of the plane */
     var material: PhysicsMaterial?
         get() = JphPlaneShapeSettings_GetMaterial(planeShapeSettingsHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(value) = JphPlaneShapeSettings_SetMaterial(planeShapeSettingsHandle, value?.physicsMaterialHandle ?: NullPointer)
 
+    /** The bounding box of this plane will run from \[-half_extent, half_extent\]. Keep this as low as possible for better broad phase performance. */
     var halfExtent: Float
         get() = JphPlaneShapeSettings_GetHalfExtent(planeShapeSettingsHandle)
         set(value) = JphPlaneShapeSettings_SetHalfExtent(planeShapeSettingsHandle, value)

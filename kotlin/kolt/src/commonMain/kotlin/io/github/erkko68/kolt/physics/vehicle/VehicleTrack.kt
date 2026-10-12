@@ -33,19 +33,25 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleTrack`. */
+/**
+ * Runtime data for tank tracks
+ *
+ * C++ `JPH::VehicleTrack`.
+ */
 class VehicleTrack internal constructor(internal val vehicleTrackHandle: NativePointer, owned: Boolean = false) : VehicleTrackSettings(JphVehicleTrack_asVehicleTrackSettings(vehicleTrackHandle), owned), AutoCloseable {
     constructor() : this(JphVehicleTrack_create(), owned = true)
 
     override fun close() =
         closeOnce { JphVehicleTrack_destroy(vehicleTrackHandle) }
 
+    /** Saving state for replay */
     fun saveState(stream: StateRecorder) =
         JphVehicleTrack_SaveState(vehicleTrackHandle, stream.stateRecorderHandle)
 
     fun restoreState(stream: StateRecorder) =
         JphVehicleTrack_RestoreState(vehicleTrackHandle, stream.stateRecorderHandle)
 
+    /** Angular velocity of the driven wheel, will determine the speed of the entire track */
     var angularVelocity: Float
         get() = JphVehicleTrack_GetAngularVelocity(vehicleTrackHandle)
         set(value) = JphVehicleTrack_SetAngularVelocity(vehicleTrackHandle, value)

@@ -33,7 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::RackAndPinionConstraintSettings`. */
+/**
+ * Rack and pinion constraint (slider
+ * &
+ * gear) settings
+ *
+ * C++ `JPH::RackAndPinionConstraintSettings`.
+ */
 class RackAndPinionConstraintSettings internal constructor(internal val rackAndPinionConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphRackAndPinionConstraintSettings_asTwoBodyConstraintSettings(rackAndPinionConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphRackAndPinionConstraintSettings_create(), owned = true)
 
@@ -43,13 +49,22 @@ class RackAndPinionConstraintSettings internal constructor(internal val rackAndP
     override fun close() =
         closeOnce { JphRackAndPinionConstraintSettings_release(rackAndPinionConstraintSettingsHandle) }
 
+    /**
+     * Defines the ratio between the rotation of the pinion and the translation of the rack.
+     * The ratio is defined as: PinionRotation(t) = ratio * RackTranslation(t)
+     * @param numTeethRack Number of teeth that the rack has
+     * @param rackLength Length of the rack
+     * @param numTeethPinion Number of teeth the pinion has
+     */
     fun setRatio(numTeethRack: Int, rackLength: Float, numTeethPinion: Int) =
         JphRackAndPinionConstraintSettings_SetRatio(rackAndPinionConstraintSettingsHandle, numTeethRack, rackLength, numTeethPinion)
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphRackAndPinionConstraintSettings_GetSpace(rackAndPinionConstraintSettingsHandle))
         set(value) = JphRackAndPinionConstraintSettings_SetSpace(rackAndPinionConstraintSettingsHandle, value.value)
 
+    /** Body 1 (pinion) constraint reference frame (space determined by mSpace). */
     var hingeAxis: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -60,6 +75,7 @@ class RackAndPinionConstraintSettings internal constructor(internal val rackAndP
         }
         set(value) = interopScope { JphRackAndPinionConstraintSettings_SetHingeAxis(rackAndPinionConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 (rack) constraint reference frame (space determined by mSpace) */
     var sliderAxis: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -70,6 +86,7 @@ class RackAndPinionConstraintSettings internal constructor(internal val rackAndP
         }
         set(value) = interopScope { JphRackAndPinionConstraintSettings_SetSliderAxis(rackAndPinionConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Ratio between the rack and pinion, see SetRatio. */
     val ratio: Float
         get() = JphRackAndPinionConstraintSettings_GetRatio(rackAndPinionConstraintSettingsHandle)
 }

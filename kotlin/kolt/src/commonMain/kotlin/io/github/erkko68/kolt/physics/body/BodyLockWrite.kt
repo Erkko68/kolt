@@ -33,5 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyLockWrite`. */
+/**
+ * Specialization that locks a body for writing to.
+ *
+ * See: BodyLockRead for usage patterns.
+ *
+ * C++ `JPH::BodyLockWrite`.
+ */
 class BodyLockWrite internal constructor(internal val bodyLockWriteHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

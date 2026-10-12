@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TaperedCylinderShape`. */
+/**
+ * A cylinder with different top and bottom radii
+ *
+ * C++ `JPH::TaperedCylinderShape`.
+ */
 class TaperedCylinderShape internal constructor(internal val taperedCylinderShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTaperedCylinderShape_asConvexShape(taperedCylinderShapeHandle), owned), AutoCloseable {
     constructor() : this(JphTaperedCylinderShape_create(), owned = true)
 
@@ -43,15 +47,19 @@ class TaperedCylinderShape internal constructor(internal val taperedCylinderShap
     override fun close() =
         closeOnce { JphTaperedCylinderShape_release(taperedCylinderShapeHandle) }
 
+    /** Get top radius of the tapered cylinder */
     val topRadius: Float
         get() = JphTaperedCylinderShape_GetTopRadius(taperedCylinderShapeHandle)
 
+    /** Get bottom radius of the tapered cylinder */
     val bottomRadius: Float
         get() = JphTaperedCylinderShape_GetBottomRadius(taperedCylinderShapeHandle)
 
+    /** Get convex radius of the tapered cylinder */
     val convexRadius: Float
         get() = JphTaperedCylinderShape_GetConvexRadius(taperedCylinderShapeHandle)
 
+    /** Get half height of the tapered cylinder */
     val halfHeight: Float
         get() = JphTaperedCylinderShape_GetHalfHeight(taperedCylinderShapeHandle)
 }

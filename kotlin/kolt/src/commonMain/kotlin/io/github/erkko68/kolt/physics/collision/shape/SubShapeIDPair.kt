@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SubShapeIDPair`. */
+/**
+ * A pair of bodies and their sub shape ID's. Can be used as a key in a map to find a contact point.
+ *
+ * C++ `JPH::SubShapeIDPair`.
+ */
 class SubShapeIDPair internal constructor(internal val subShapeIDPairHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSubShapeIDPair_create(), owned = true)
     constructor(body1ID: BodyID, subShapeID1: SubShapeID, body2ID: BodyID, subShapeID2: SubShapeID) : this(JphSubShapeIDPair_create_BodyID_SubShapeID_BodyID_SubShapeID(body1ID.value, subShapeID1.value, body2ID.value, subShapeID2.value), owned = true)

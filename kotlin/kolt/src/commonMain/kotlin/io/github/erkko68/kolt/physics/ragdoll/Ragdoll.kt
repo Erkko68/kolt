@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Ragdoll`. */
+/**
+ * Runtime ragdoll information
+ *
+ * C++ `JPH::Ragdoll`.
+ */
 class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor(system: PhysicsSystem?) : this(JphRagdoll_create(system?.physicsSystemHandle ?: NullPointer), owned = true)
 
@@ -43,24 +47,36 @@ class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, ow
     override fun close() =
         closeOnce { JphRagdoll_release(ragdollHandle) }
 
+    /** Add bodies and constraints to the system and optionally activate the bodies */
     fun addToPhysicsSystem(activationMode: EActivation, lockBodies: Boolean) =
         JphRagdoll_AddToPhysicsSystem(ragdollHandle, activationMode.value, lockBodies)
 
+    /** Remove bodies and constraints from the system */
     fun removeFromPhysicsSystem(lockBodies: Boolean) =
         JphRagdoll_RemoveFromPhysicsSystem(ragdollHandle, lockBodies)
 
+    /** Wake up all bodies in the ragdoll */
     fun activate(lockBodies: Boolean) =
         JphRagdoll_Activate(ragdollHandle, lockBodies)
 
+    /**
+     * Check if one or more of the bodies in the ragdoll are active.
+     * Note that this involves locking the bodies (if inLockBodies is true) and looping over them. An alternative and possibly faster
+     * way could be to install a BodyActivationListener and count the number of active bodies of a ragdoll as they're activated / deactivated
+     * (basically check if the body that activates / deactivates is in GetBodyIDs() and increment / decrement a counter).
+     */
     fun isActive(lockBodies: Boolean): Boolean =
         JphRagdoll_IsActive(ragdollHandle, lockBodies)
 
+    /** Set the group ID on all bodies in the ragdoll */
     fun setGroupID(groupID: Int, lockBodies: Boolean) =
         JphRagdoll_SetGroupID(ragdollHandle, groupID, lockBodies)
 
+    /** Set the ragdoll to a pose (calls BodyInterface::SetPositionAndRotation to instantly move the ragdoll) */
     fun setPose(pose: SkeletonPose, lockBodies: Boolean) =
         JphRagdoll_SetPose_SkeletonPose_bool(ragdollHandle, pose.skeletonPoseHandle, lockBodies)
 
+    /** Lower level version of SetPose that directly takes the world space joint matrices */
     fun setPose(rootOffset: Vec3, jointMatrices: List<Mat44>, lockBodies: Boolean) =
         interopScope {
             val jointMatricesArray = FloatArray(jointMatrices.size * 16).also { a -> jointMatrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
@@ -68,9 +84,11 @@ class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, ow
             JphRagdoll_SetPose_RVec3Arg_Mat44_bool(ragdollHandle, toInterop(rootOffset.toArray()), jointMatricesPointer, jointMatrices.size, lockBodies)
         }
 
+    /** Get the ragdoll pose (uses the world transform of the bodies to calculate the pose) */
     fun getPose(pose: SkeletonPose, lockBodies: Boolean) =
         JphRagdoll_GetPose_SkeletonPose_bool(ragdollHandle, pose.skeletonPoseHandle, lockBodies)
 
+    /** Lower level version of GetPose that directly returns the world space joint matrices */
     fun getPose(jointMatrices: MutableList<Mat44>, lockBodies: Boolean): Vec3 =
         interopScope {
             val rootOffsetArray = FloatArray(4)
@@ -84,12 +102,15 @@ class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, ow
             Vec3(rootOffsetArray)
         }
 
+    /** This function calls ResetWarmStart on all constraints. It can be used after calling SetPose to reset previous frames impulses. See: Constraint::ResetWarmStart. */
     fun resetWarmStart() =
         JphRagdoll_ResetWarmStart(ragdollHandle)
 
+    /** Drive the ragdoll to a specific pose by setting velocities on each of the bodies so that it will reach inPose in inDeltaTime */
     fun driveToPoseUsingKinematics(pose: SkeletonPose, deltaTime: Float, lockBodies: Boolean) =
         JphRagdoll_DriveToPoseUsingKinematics_SkeletonPose_float_bool(ragdollHandle, pose.skeletonPoseHandle, deltaTime, lockBodies)
 
+    /** Lower level version of DriveToPoseUsingKinematics that directly takes the world space joint matrices */
     fun driveToPoseUsingKinematics(rootOffset: Vec3, jointMatrices: List<Mat44>, deltaTime: Float, lockBodies: Boolean) =
         interopScope {
             val jointMatricesArray = FloatArray(jointMatrices.size * 16).also { a -> jointMatrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
@@ -97,24 +118,36 @@ class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, ow
             JphRagdoll_DriveToPoseUsingKinematics_RVec3Arg_Mat44_float_bool(ragdollHandle, toInterop(rootOffset.toArray()), jointMatricesPointer, jointMatrices.size, deltaTime, lockBodies)
         }
 
+    /** Drive the ragdoll to a specific pose by activating the motors on each constraint. */
     fun driveToPoseUsingMotors(pose: SkeletonPose) =
         JphRagdoll_DriveToPoseUsingMotors(ragdollHandle, pose.skeletonPoseHandle)
 
+    /**
+     * Drive the ragdoll to a specific pose by activating the motors on each constraint. Drives both to target position and velocity.
+     * @param prevPose The previous pose of the ragdoll, used to calculate the target velocity for each motor
+     * @param pose The target pose of the ragdoll, used to calculate the target position for each motor
+     * @param deltaTime The time between inPrevPose and inPose, used to calculate the target velocity for each motor
+     */
     fun driveToPoseUsingMotors(prevPose: SkeletonPose, pose: SkeletonPose, deltaTime: Float) =
         JphRagdoll_DriveToPoseUsingMotors_SkeletonPose_float(ragdollHandle, prevPose.skeletonPoseHandle, pose.skeletonPoseHandle, deltaTime)
 
+    /** Control the linear and velocity of all bodies in the ragdoll */
     fun setLinearAndAngularVelocity(linearVelocity: Vec3, angularVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphRagdoll_SetLinearAndAngularVelocity(ragdollHandle, toInterop(linearVelocity.toArray()), toInterop(angularVelocity.toArray()), lockBodies) }
 
+    /** Set the world space linear velocity of all bodies in the ragdoll. */
     fun setLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphRagdoll_SetLinearVelocity(ragdollHandle, toInterop(linearVelocity.toArray()), lockBodies) }
 
+    /** Add a world space velocity (in m/s) to all bodies in the ragdoll. */
     fun addLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphRagdoll_AddLinearVelocity(ragdollHandle, toInterop(linearVelocity.toArray()), lockBodies) }
 
+    /** Add impulse to all bodies of the ragdoll (center of mass of each of them) */
     fun addImpulse(impulse: Vec3, lockBodies: Boolean) =
         interopScope { JphRagdoll_AddImpulse(ragdollHandle, toInterop(impulse.toArray()), lockBodies) }
 
+    /** Get the position and orientation of the root of the ragdoll */
     fun getRootTransform(lockBodies: Boolean): Pair<Vec3, Quat> =
         interopScope {
             val positionArray = FloatArray(4)
@@ -127,12 +160,15 @@ class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, ow
             Pair(Vec3(positionArray), Quat(rotationArray))
         }
 
+    /** Get number of bodies in the ragdoll */
     val bodyCount: Int
         get() = JphRagdoll_GetBodyCount(ragdollHandle)
 
+    /** Access a body ID */
     fun getBodyID(bodyIndex: Int): BodyID =
         BodyID(JphRagdoll_GetBodyID(ragdollHandle, bodyIndex))
 
+    /** Access to the array of body IDs */
     val bodyIDs: List<BodyID>
         get() = interopScope {
             val count = JphRagdoll_GetBodyIDs(ragdollHandle, NullPointer, 0)
@@ -143,12 +179,15 @@ class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, ow
             returned.map { BodyID(it) }
         }
 
+    /** Get number of constraints in the ragdoll */
     val constraintCount: Int
         get() = JphRagdoll_GetConstraintCount(ragdollHandle)
 
+    /** Access a constraint by index */
     fun getConstraint(constraintIndex: Int): TwoBodyConstraint? =
         JphRagdoll_GetConstraint(ragdollHandle, constraintIndex).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
 
+    /** Get world space bounding box for all bodies of the ragdoll */
     fun getWorldSpaceBounds(lockBodies: Boolean): AABox =
         run {
             val returned = AABox(JphAABox_create(), owned = true)
@@ -156,6 +195,7 @@ class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, ow
             returned
         }
 
+    /** Get the settings object that created this ragdoll */
     val ragdollSettings: RagdollSettings?
         get() = JphRagdoll_GetRagdollSettings(ragdollHandle).takeIf { it != NullPointer }?.let { RagdollSettings(it) }
 }

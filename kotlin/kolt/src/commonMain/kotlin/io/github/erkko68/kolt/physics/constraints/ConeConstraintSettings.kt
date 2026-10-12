@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ConeConstraintSettings`. */
+/**
+ * Cone constraint settings, used to create a cone constraint
+ *
+ * C++ `JPH::ConeConstraintSettings`.
+ */
 class ConeConstraintSettings internal constructor(internal val coneConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphConeConstraintSettings_asTwoBodyConstraintSettings(coneConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphConeConstraintSettings_create(), owned = true)
 
@@ -43,10 +47,12 @@ class ConeConstraintSettings internal constructor(internal val coneConstraintSet
     override fun close() =
         closeOnce { JphConeConstraintSettings_release(coneConstraintSettingsHandle) }
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphConeConstraintSettings_GetSpace(coneConstraintSettingsHandle))
         set(value) = JphConeConstraintSettings_SetSpace(coneConstraintSettingsHandle, value.value)
 
+    /** Body 1 constraint reference frame (space determined by mSpace) */
     var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -67,6 +73,7 @@ class ConeConstraintSettings internal constructor(internal val coneConstraintSet
         }
         set(value) = interopScope { JphConeConstraintSettings_SetTwistAxis1(coneConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 constraint reference frame (space determined by mSpace) */
     var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -87,6 +94,7 @@ class ConeConstraintSettings internal constructor(internal val coneConstraintSet
         }
         set(value) = interopScope { JphConeConstraintSettings_SetTwistAxis2(coneConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Half of maximum angle between twist axis of body 1 and 2 */
     var halfConeAngle: Float
         get() = JphConeConstraintSettings_GetHalfConeAngle(coneConstraintSettingsHandle)
         set(value) = JphConeConstraintSettings_SetHalfConeAngle(coneConstraintSettingsHandle, value)

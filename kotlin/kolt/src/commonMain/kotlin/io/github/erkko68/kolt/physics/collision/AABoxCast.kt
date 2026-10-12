@@ -33,13 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::AABoxCast`. */
+/**
+ * Structure that holds AABox moving linearly through 3d space
+ *
+ * C++ `JPH::AABoxCast`.
+ */
 class AABoxCast internal constructor(internal val aaBoxCastHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphAABoxCast_create(), owned = true)
 
     override fun close() =
         closeOnce { JphAABoxCast_destroy(aaBoxCastHandle) }
 
+    /** Axis aligned box at starting location */
     var box: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
@@ -48,6 +53,7 @@ class AABoxCast internal constructor(internal val aaBoxCastHandle: NativePointer
         }
         set(value) = JphAABoxCast_SetBox(aaBoxCastHandle, value.aaBoxHandle)
 
+    /** Direction and length of the cast (anything beyond this length will not be reported as a hit) */
     var direction: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

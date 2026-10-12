@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ConvexHullShape`. */
+/**
+ * A convex hull
+ *
+ * C++ `JPH::ConvexHullShape`.
+ */
 class ConvexHullShape internal constructor(internal val convexHullShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphConvexHullShape_asConvexShape(convexHullShapeHandle), owned), AutoCloseable {
     constructor() : this(JphConvexHullShape_create(), owned = true)
 
@@ -43,9 +47,11 @@ class ConvexHullShape internal constructor(internal val convexHullShapeHandle: N
     override fun close() =
         closeOnce { JphConvexHullShape_release(convexHullShapeHandle) }
 
+    /** Get the convex radius of this convex hull */
     val convexRadius: Float
         get() = JphConvexHullShape_GetConvexRadius(convexHullShapeHandle)
 
+    /** Get the planes of this convex hull */
     val planes: List<Plane>
         get() = interopScope {
             val count = JphConvexHullShape_GetPlanes(convexHullShapeHandle, NullPointer, 0)
@@ -54,9 +60,11 @@ class ConvexHullShape internal constructor(internal val convexHullShapeHandle: N
             returned
         }
 
+    /** Get the number of vertices in this convex hull */
     val numPoints: Int
         get() = JphConvexHullShape_GetNumPoints(convexHullShapeHandle)
 
+    /** Get a vertex of this convex hull relative to the center of mass */
     fun getPoint(index: Int): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -66,12 +74,21 @@ class ConvexHullShape internal constructor(internal val convexHullShapeHandle: N
             Vec3(returned)
         }
 
+    /** Get the number of faces in this convex hull */
     val numFaces: Int
         get() = JphConvexHullShape_GetNumFaces(convexHullShapeHandle)
 
+    /** Get the number of vertices in a face */
     fun getNumVerticesInFace(faceIndex: Int): Int =
         JphConvexHullShape_GetNumVerticesInFace(convexHullShapeHandle, faceIndex)
 
+    /**
+     * Get the vertices indices of a face
+     * @param faceIndex Index of the face.
+     * @param maxVertices Maximum number of vertices to return.
+     * @param vertices Array of vertices indices, must be at least inMaxVertices in size, the vertices are returned in counter clockwise order and the positions can be obtained using GetPoint(index).
+     * @return Number of vertices in face, if this is bigger than inMaxVertices, not all vertices were retrieved.
+     */
     fun getFaceVertices(faceIndex: Int, maxVertices: Int, vertices: IntArray): Int =
         interopScope {
             val verticesPointer = toInterop(vertices)

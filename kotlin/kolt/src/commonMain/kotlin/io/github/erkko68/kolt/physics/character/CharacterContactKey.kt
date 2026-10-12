@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterContactKey`. */
+/**
+ * Uniquely identifies a contact between a character and another body or character
+ *
+ * C++ `JPH::CharacterContactKey`.
+ */
 open class CharacterContactKey internal constructor(internal val characterContactKeyHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCharacterContactKey_create(), owned = true)
     constructor(bodyB: BodyID, subShapeID: SubShapeID) : this(JphCharacterContactKey_create_BodyID_SubShapeID(bodyB.value, subShapeID.value), owned = true)
@@ -42,9 +46,11 @@ open class CharacterContactKey internal constructor(internal val characterContac
     override fun close() =
         closeOnce { JphCharacterContactKey_destroy(characterContactKeyHandle) }
 
+    /** Checks if two contacts refer to the same body (or virtual character) */
     fun isSameBody(other: CharacterContactKey): Boolean =
         JphCharacterContactKey_IsSameBody(characterContactKeyHandle, other.characterContactKeyHandle)
 
+    /** Hash of this structure */
     val hash: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -60,10 +66,12 @@ open class CharacterContactKey internal constructor(internal val characterContac
     open fun restoreState(stream: StateRecorder) =
         JphCharacterContactKey_RestoreState(characterContactKeyHandle, stream.stateRecorderHandle)
 
+    /** ID of body we're colliding with (if not invalid) */
     var bodyB: BodyID
         get() = BodyID(JphCharacterContactKey_GetBodyB(characterContactKeyHandle))
         set(value) = JphCharacterContactKey_SetBodyB(characterContactKeyHandle, value.value)
 
+    /** Character we're colliding with (if not invalid) */
     var characterIDB: CharacterID
         get() = run {
             val returned = CharacterID(JphCharacterID_create(), owned = true)
@@ -72,6 +80,7 @@ open class CharacterContactKey internal constructor(internal val characterContac
         }
         set(value) = JphCharacterContactKey_SetCharacterIDB(characterContactKeyHandle, value.characterIDHandle)
 
+    /** Sub shape ID of body or character we're colliding with */
     var subShapeIDB: SubShapeID
         get() = SubShapeID(JphCharacterContactKey_GetSubShapeIDB(characterContactKeyHandle))
         set(value) = JphCharacterContactKey_SetSubShapeIDB(characterContactKeyHandle, value.value)

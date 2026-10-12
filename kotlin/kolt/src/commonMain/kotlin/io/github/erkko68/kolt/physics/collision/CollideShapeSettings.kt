@@ -33,21 +33,31 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CollideShapeSettings`. */
+/**
+ * Settings to be passed with a collision query
+ *
+ * C++ `JPH::CollideShapeSettings`.
+ */
 class CollideShapeSettings internal constructor(internal val collideShapeSettingsHandle: NativePointer, owned: Boolean = false) : CollideSettingsBase(JphCollideShapeSettings_asCollideSettingsBase(collideShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCollideShapeSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphCollideShapeSettings_destroy(collideShapeSettingsHandle) }
 
+    /**
+     * When > 0 contacts in the vicinity of the query shape can be found. All nearest contacts that are not further away than this distance will be found.
+     * Note that in this case CollideShapeResult::mPenetrationDepth can become negative to indicate that objects are not overlapping. (unit: meter)
+     */
     var maxSeparationDistance: Float
         get() = JphCollideShapeSettings_GetMaxSeparationDistance(collideShapeSettingsHandle)
         set(value) = JphCollideShapeSettings_SetMaxSeparationDistance(collideShapeSettingsHandle, value)
 
+    /** How backfacing triangles should be treated */
     var backFaceMode: EBackFaceMode
         get() = EBackFaceMode.of(JphCollideShapeSettings_GetBackFaceMode(collideShapeSettingsHandle))
         set(value) = JphCollideShapeSettings_SetBackFaceMode(collideShapeSettingsHandle, value.value)
 
+    /** Max squared distance to consider a vertex to be the same as another vertex, used by the internal edge removal algorithm to determine if two edges are shared. (unit: meter^2) */
     var internalEdgeRemovalVertexToleranceSq: Float
         get() = JphCollideShapeSettings_GetInternalEdgeRemovalVertexToleranceSq(collideShapeSettingsHandle)
         set(value) = JphCollideShapeSettings_SetInternalEdgeRemovalVertexToleranceSq(collideShapeSettingsHandle, value)

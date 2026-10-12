@@ -33,9 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ECanSleep`. */
+/**
+ * Enum that determines if an object can go to sleep
+ *
+ * C++ `JPH::ECanSleep`.
+ */
 enum class ECanSleep(internal val value: Int) {
+    /** Object cannot go to sleep */
     CannotSleep(0),
+    /** Object can go to sleep */
     CanSleep(1);
 
     internal companion object {

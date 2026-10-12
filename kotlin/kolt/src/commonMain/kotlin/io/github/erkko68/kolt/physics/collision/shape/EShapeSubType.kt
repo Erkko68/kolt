@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EShapeSubType`. */
+/**
+ * This enumerates all shape types, each shape can return its type through Shape::GetSubType
+ *
+ * C++ `JPH::EShapeSubType`.
+ */
 enum class EShapeSubType(internal val value: Int) {
     Sphere(0),
     Box(1),

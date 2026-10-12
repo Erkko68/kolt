@@ -33,13 +33,31 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::MassProperties`. */
+/**
+ * Describes the mass and inertia properties of a body. Used during body construction only.
+ *
+ * C++ `JPH::MassProperties`.
+ */
 class MassProperties internal constructor(internal val massPropertiesHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphMassProperties_create(), owned = true)
 
     override fun close() =
         closeOnce { JphMassProperties_destroy(massPropertiesHandle) }
 
+    /**
+     * Using eigendecomposition, decompose the inertia tensor into a diagonal matrix D and a right-handed rotation matrix R so that the inertia tensor is
+     *
+     * ```
+     * R \: D \: R^{-1}
+     * ```
+     *
+     * .
+     *
+     * See: https://en.wikipedia.org/wiki/Moment_of_inertia section 'Principal axes'
+     * @return True if successful, false if failed
+     * @return The rotation matrix R
+     * @return The diagonal of the diagonal matrix D
+     */
     fun decomposePrincipalMomentsOfInertia(): Triple<Boolean, Mat44, Vec3> =
         interopScope {
             val rotationArray = FloatArray(16)
@@ -52,31 +70,44 @@ class MassProperties internal constructor(internal val massPropertiesHandle: Nat
             Triple(nativeResult, Mat44(rotationArray), Vec3(diagonalArray))
         }
 
+    /** Set the mass and inertia of a box with edge size inBoxSize and density inDensity */
     fun setMassAndInertiaOfSolidBox(boxSize: Vec3, density: Float) =
         interopScope { JphMassProperties_SetMassAndInertiaOfSolidBox(massPropertiesHandle, toInterop(boxSize.toArray()), density) }
 
+    /** Set the mass and scale the inertia tensor to match the mass */
     fun scaleToMass(mass: Float) =
         JphMassProperties_ScaleToMass(massPropertiesHandle, mass)
 
+    /** Rotate the inertia by 3x3 matrix inRotation */
     fun rotate(rotation: Mat44) =
         interopScope { JphMassProperties_Rotate(massPropertiesHandle, toInterop(rotation.toArray())) }
 
+    /** Translate the inertia by a vector inTranslation */
     fun translate(translation: Vec3) =
         interopScope { JphMassProperties_Translate(massPropertiesHandle, toInterop(translation.toArray())) }
 
+    /**
+     * Scale the mass and inertia by inScale, note that elements can be
+     * <
+     * 0 to flip the shape
+     */
     fun scale(scale: Vec3) =
         interopScope { JphMassProperties_Scale(massPropertiesHandle, toInterop(scale.toArray())) }
 
+    /** Saves the state of this object in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphMassProperties_SaveBinaryState(massPropertiesHandle, stream.streamOutHandle)
 
+    /** Restore the state of this object from inStream. */
     fun restoreBinaryState(stream: StreamIn) =
         JphMassProperties_RestoreBinaryState(massPropertiesHandle, stream.streamInHandle)
 
+    /** Mass of the shape (kg) */
     var mass: Float
         get() = JphMassProperties_GetMass(massPropertiesHandle)
         set(value) = JphMassProperties_SetMass(massPropertiesHandle, value)
 
+    /** Inertia tensor of the shape (kg m^2) */
     var inertia: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -88,6 +119,7 @@ class MassProperties internal constructor(internal val massPropertiesHandle: Nat
         set(value) = interopScope { JphMassProperties_SetInertia(massPropertiesHandle, toInterop(value.toArray())) }
 
     companion object {
+        /** Calculates the size of the solid box that has an inertia tensor diagonal inInertiaDiagonal */
         fun getEquivalentSolidBoxSize(mass: Float, inertiaDiagonal: Vec3): Vec3 =
             interopScope {
                 val returned = FloatArray(4)

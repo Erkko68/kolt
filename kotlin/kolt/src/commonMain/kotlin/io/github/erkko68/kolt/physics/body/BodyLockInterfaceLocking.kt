@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyLockInterfaceLocking`. */
+/**
+ * Implementation that uses the body manager to lock the correct mutex for a body
+ *
+ * C++ `JPH::BodyLockInterfaceLocking`.
+ */
 class BodyLockInterfaceLocking internal constructor(internal val bodyLockInterfaceLockingHandle: NativePointer, owned: Boolean = false) : BodyLockInterface(JphBodyLockInterfaceLocking_asBodyLockInterface(bodyLockInterfaceLockingHandle), owned), AutoCloseable {
     override fun close() =
         closeOnce { JphBodyLockInterfaceLocking_destroy(bodyLockInterfaceLockingHandle) }

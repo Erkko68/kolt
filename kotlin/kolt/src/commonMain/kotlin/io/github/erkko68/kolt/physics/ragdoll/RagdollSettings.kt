@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::RagdollSettings`. */
+/**
+ * Contains the structure of a ragdoll
+ *
+ * C++ `JPH::RagdollSettings`.
+ */
 class RagdollSettings internal constructor(internal val ragdollSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphRagdollSettings_create(), owned = true)
 
@@ -43,12 +47,35 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
     override fun close() =
         closeOnce { JphRagdollSettings_release(ragdollSettingsHandle) }
 
+    /**
+     * Stabilize the constraints of the ragdoll
+     * @return True on success, false on failure.
+     */
     fun stabilize(): Boolean =
         JphRagdollSettings_Stabilize(ragdollSettingsHandle)
 
+    /**
+     * Initializes the constraint priorities so that constraints near the leaves of the ragdoll have a lower priority
+     * than constraints near the root of the ragdoll.
+     * @param basePriority The lowest priority that will be used in the ragdoll.
+     */
     fun calculateConstraintPriorities(basePriority: Int) =
         JphRagdollSettings_CalculateConstraintPriorities(ragdollSettingsHandle, basePriority)
 
+    /**
+     * After the ragdoll has been fully configured, call this function to automatically create and add a GroupFilterTable collision filter to all bodies
+     * and configure them so that parent and children don't collide.
+     *
+     * This will:
+     * - Create a GroupFilterTable and assign it to all of the bodies in a ragdoll.
+     * - Each body in your ragdoll will get a SubGroupID that is equal to the joint index in the Skeleton that it is attached to.
+     * - Loop over all joints in the Skeleton and call GroupFilterTable::DisableCollision(joint index, parent joint index).
+     * - When a pose is provided through inJointMatrices the function will detect collisions between joints
+     * (they must be separated by more than inMinSeparationDistance to be treated as not colliding) and automatically disable collisions.
+     *
+     * When you create an instance using Ragdoll::CreateRagdoll pass in a unique GroupID for each ragdoll (e.g. a simple counter), note that this number
+     * should be unique throughout the PhysicsSystem, so if you have different types of ragdolls they should not share the same GroupID.
+     */
     fun disableParentChildCollisions(jointMatrices: List<Mat44>, minSeparationDistance: Float) =
         interopScope {
             val jointMatricesArray = FloatArray(jointMatrices.size * 16).also { a -> jointMatrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
@@ -56,19 +83,35 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
             JphRagdollSettings_DisableParentChildCollisions(ragdollSettingsHandle, jointMatricesPointer, jointMatrices.size, minSeparationDistance)
         }
 
+    /**
+     * Saves the state of this object in binary form to inStream.
+     * @param stream The stream to save the state to
+     * @param saveShapes If the shapes should be saved as well (these could be shared between ragdolls, in which case the calling application may want to write custom code to restore them)
+     * @param saveGroupFilter If the group filter should be saved as well (these could be shared)
+     */
     fun saveBinaryState(stream: StreamOut, saveShapes: Boolean, saveGroupFilter: Boolean) =
         JphRagdollSettings_SaveBinaryState(ragdollSettingsHandle, stream.streamOutHandle, saveShapes, saveGroupFilter)
 
+    /**
+     * Create ragdoll instance from these settings
+     * @return Newly created ragdoll or null when out of bodies
+     */
     fun createRagdoll(collisionGroup: Int, userData: Long, system: PhysicsSystem?): Ragdoll? =
         JphRagdollSettings_CreateRagdoll(ragdollSettingsHandle, collisionGroup, userData, system?.physicsSystemHandle ?: NullPointer).takeIf { it != NullPointer }?.let { Ragdoll(it) }
 
+    /** The skeleton for this ragdoll */
     var skeleton: Skeleton?
         get() = JphRagdollSettings_GetSkeleton(ragdollSettingsHandle).takeIf { it != NullPointer }?.let { Skeleton(it) }
         set(value) = JphRagdollSettings_SetSkeleton(ragdollSettingsHandle, value?.skeletonHandle ?: NullPointer)
 
+    /** Calculate the map needed for GetBodyIndexToConstraintIndex() */
     fun calculateBodyIndexToConstraintIndex() =
         JphRagdollSettings_CalculateBodyIndexToConstraintIndex(ragdollSettingsHandle)
 
+    /**
+     * Get table that maps a body index to the constraint index with which it is connected to its parent. -1 if there is no constraint associated with the body.
+     * Note that this will only tell you which constraint connects the body to its parent, it will not look in the additional constraint list.
+     */
     val bodyIndexToConstraintIndex: IntArray
         get() = interopScope {
             val count = JphRagdollSettings_GetBodyIndexToConstraintIndex(ragdollSettingsHandle, NullPointer, 0)
@@ -79,12 +122,15 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
             returned
         }
 
+    /** Map a single body index to a constraint index */
     fun getConstraintIndexForBodyIndex(bodyIndex: Int): Int =
         JphRagdollSettings_GetConstraintIndexForBodyIndex(ragdollSettingsHandle, bodyIndex)
 
+    /** Calculate the map needed for GetConstraintIndexToBodyIdxPair() */
     fun calculateConstraintIndexToBodyIdxPair() =
         JphRagdollSettings_CalculateConstraintIndexToBodyIdxPair(ragdollSettingsHandle)
 
+    /** For each of the joints, the body and constraint attaching it to its parent body (1-on-1 with mSkeleton.GetJoints()) */
     var parts: List<RagdollSettings.Part>
         get() = interopScope {
             val count = JphRagdollSettings_GetParts(ragdollSettingsHandle, NullPointer, 0)
@@ -94,6 +140,7 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
         }
         set(value) = interopScope { JphRagdollSettings_SetParts(ragdollSettingsHandle, toInterop(value.map { it.ragdollSettingsPartHandle }), value.size) }
 
+    /** A list of constraints that connects two bodies in a ragdoll (for non parent child related constraints) */
     var additionalConstraints: List<RagdollSettings.AdditionalConstraint>
         get() = interopScope {
             val count = JphRagdollSettings_GetAdditionalConstraints(ragdollSettingsHandle, NullPointer, 0)
@@ -103,7 +150,11 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
         }
         set(value) = interopScope { JphRagdollSettings_SetAdditionalConstraints(ragdollSettingsHandle, toInterop(value.map { it.ragdollSettingsAdditionalConstraintHandle }), value.size) }
 
-    /** C++ `JPH::RagdollSettings::Part`. */
+    /**
+     * A single rigid body sub part of the ragdoll
+     *
+     * C++ `JPH::RagdollSettings::Part`.
+     */
     class Part internal constructor(internal val ragdollSettingsPartHandle: NativePointer, owned: Boolean = false) : BodyCreationSettings(JphRagdollSettingsPart_asBodyCreationSettings(ragdollSettingsPartHandle), owned), AutoCloseable {
         constructor() : this(JphRagdollSettingsPart_create(), owned = true)
     
@@ -115,7 +166,11 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
             set(value) = JphRagdollSettingsPart_SetToParent(ragdollSettingsPartHandle, value?.twoBodyConstraintSettingsHandle ?: NullPointer)
     }
     
-    /** C++ `JPH::RagdollSettings::AdditionalConstraint`. */
+    /**
+     * A constraint that connects two bodies in a ragdoll (for non parent child related constraints)
+     *
+     * C++ `JPH::RagdollSettings::AdditionalConstraint`.
+     */
     class AdditionalConstraint internal constructor(internal val ragdollSettingsAdditionalConstraintHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphRagdollSettingsAdditionalConstraint_create(), owned = true)
         constructor(bodyIdx1: Int, bodyIdx2: Int, constraint: TwoBodyConstraintSettings?) : this(JphRagdollSettingsAdditionalConstraint_create_int_int_TwoBodyConstraintSettings(bodyIdx1, bodyIdx2, constraint?.twoBodyConstraintSettingsHandle ?: NullPointer), owned = true)
@@ -123,6 +178,7 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
         override fun close() =
             closeOnce { JphRagdollSettingsAdditionalConstraint_destroy(ragdollSettingsAdditionalConstraintHandle) }
     
+        /** Indices of the bodies that this constraint connects */
         var bodyIdx: IntArray
             get() = interopScope {
                 val count = JphRagdollSettingsAdditionalConstraint_GetBodyIdx(ragdollSettingsAdditionalConstraintHandle, NullPointer, 0)
@@ -134,12 +190,14 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
             }
             set(value) = interopScope { JphRagdollSettingsAdditionalConstraint_SetBodyIdx(ragdollSettingsAdditionalConstraintHandle, toInterop(value), value.size) }
     
+        /** The constraint that connects these bodies */
         var constraint: TwoBodyConstraintSettings?
             get() = JphRagdollSettingsAdditionalConstraint_GetConstraint(ragdollSettingsAdditionalConstraintHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraintSettings(it) }
             set(value) = JphRagdollSettingsAdditionalConstraint_SetConstraint(ragdollSettingsAdditionalConstraintHandle, value?.twoBodyConstraintSettingsHandle ?: NullPointer)
     }
     
     companion object {
+        /** Restore a saved ragdoll from inStream */
         fun restoreFromBinaryState(stream: StreamIn): RagdollSettings =
             interopScope {
                 val error = ByteArray(256)

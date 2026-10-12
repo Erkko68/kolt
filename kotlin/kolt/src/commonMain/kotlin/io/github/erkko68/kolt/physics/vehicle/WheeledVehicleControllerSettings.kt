@@ -33,7 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::WheeledVehicleControllerSettings`. */
+/**
+ * Settings of a vehicle with regular wheels
+ *
+ * The properties in this controller are largely based on "Car Physics for Games" by Marco Monster.
+ * See: https://www.asawicki.info/Mirror/Car%20Physics%20for%20Games/Car%20Physics%20for%20Games.html
+ *
+ * C++ `JPH::WheeledVehicleControllerSettings`.
+ */
 open class WheeledVehicleControllerSettings internal constructor(internal val wheeledVehicleControllerSettingsHandle: NativePointer, owned: Boolean = false) : VehicleControllerSettings(JphWheeledVehicleControllerSettings_asVehicleControllerSettings(wheeledVehicleControllerSettingsHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphWheeledVehicleControllerSettings_createUpcalls(Upcalls.function), owned = true) {
@@ -46,6 +53,7 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
     override fun close() =
         closeOnce { JphWheeledVehicleControllerSettings_release(wheeledVehicleControllerSettingsHandle) }
 
+    /** The properties of the engine */
     var engine: VehicleEngineSettings
         get() = run {
             val returned = VehicleEngineSettings(JphVehicleEngineSettings_create(), owned = true)
@@ -54,6 +62,7 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
         }
         set(value) = JphWheeledVehicleControllerSettings_SetEngine(wheeledVehicleControllerSettingsHandle, value.vehicleEngineSettingsHandle)
 
+    /** The properties of the transmission (aka gear box) */
     var transmission: VehicleTransmissionSettings
         get() = run {
             val returned = VehicleTransmissionSettings(JphVehicleTransmissionSettings_create(), owned = true)
@@ -62,6 +71,7 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
         }
         set(value) = JphWheeledVehicleControllerSettings_SetTransmission(wheeledVehicleControllerSettingsHandle, value.vehicleTransmissionSettingsHandle)
 
+    /** List of differentials and their properties */
     var differentials: List<VehicleDifferentialSettings>
         get() = interopScope {
             val count = JphWheeledVehicleControllerSettings_GetDifferentials(wheeledVehicleControllerSettingsHandle, NullPointer, 0)
@@ -71,6 +81,7 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
         }
         set(value) = interopScope { JphWheeledVehicleControllerSettings_SetDifferentials(wheeledVehicleControllerSettingsHandle, toInterop(value.map { it.vehicleDifferentialSettingsHandle }), value.size) }
 
+    /** Ratio max / min average wheel speed of each differential (measured at the clutch). When the ratio is exceeded all torque gets distributed to the differential with the minimal average velocity. This allows implementing a limited slip differential between differentials. Set to FLT_MAX for an open differential. Value should be > 1. */
     var differentialLimitedSlipRatio: Float
         get() = JphWheeledVehicleControllerSettings_GetDifferentialLimitedSlipRatio(wheeledVehicleControllerSettingsHandle)
         set(value) = JphWheeledVehicleControllerSettings_SetDifferentialLimitedSlipRatio(wheeledVehicleControllerSettingsHandle, value)

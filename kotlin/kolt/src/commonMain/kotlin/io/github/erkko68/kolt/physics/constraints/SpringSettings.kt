@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SpringSettings`. */
+/**
+ * Settings for a linear or angular spring
+ *
+ * C++ `JPH::SpringSettings`.
+ */
 class SpringSettings internal constructor(internal val springSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSpringSettings_create(), owned = true)
     constructor(mode: ESpringMode, frequencyOrStiffness: Float, damping: Float) : this(JphSpringSettings_create_ESpringMode_float_float(mode.value, frequencyOrStiffness, damping), owned = true)
@@ -41,30 +45,73 @@ class SpringSettings internal constructor(internal val springSettingsHandle: Nat
     override fun close() =
         closeOnce { JphSpringSettings_destroy(springSettingsHandle) }
 
+    /** Saves the contents of the spring settings in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphSpringSettings_SaveBinaryState(springSettingsHandle, stream.streamOutHandle)
 
+    /** Restores contents from the binary stream inStream. */
     fun restoreBinaryState(stream: StreamIn) =
         JphSpringSettings_RestoreBinaryState(springSettingsHandle, stream.streamInHandle)
 
+    /** Check if the spring has a valid frequency / stiffness, if not the spring will be hard */
     fun hasStiffness(): Boolean =
         JphSpringSettings_HasStiffness(springSettingsHandle)
 
+    /** Check if this spring has stiffness or damping (making it active), if not the constraint will be hard */
     fun hasStiffnessOrDamping(): Boolean =
         JphSpringSettings_HasStiffnessOrDamping(springSettingsHandle)
 
+    /** Selects the way in which the spring is defined. See the descriptions of the mFrequency, mStiffness and mDamping properties. */
     var mode: ESpringMode
         get() = ESpringMode.of(JphSpringSettings_GetMode(springSettingsHandle))
         set(value) = JphSpringSettings_SetMode(springSettingsHandle, value.value)
 
+    /**
+     * Valid when mMode = ESpringMode::FrequencyAndDamping.
+     * If > 0 the constraint will be soft and this specifies the oscillation frequency in Hz.
+     * If
+     * <
+     * = 0, mDamping is ignored and the constraint will have hard limits (as hard as the time step / the number of velocity / position solver steps allows).
+     */
     var frequency: Float
         get() = JphSpringSettings_GetFrequency(springSettingsHandle)
         set(value) = JphSpringSettings_SetFrequency(springSettingsHandle, value)
 
+    /**
+     * When mMode = ESpringMode::StiffnessAndDamping:
+     * Specifies the stiffness (k) in the spring equation F = -k * x - c * v for a linear or T = -k * theta - c * w for an angular spring.
+     * Units are N / m for a linear spring and N m / rad for an angular spring.
+     *
+     * Note that stiffness values are large numbers. To calculate a ballpark value for the needed stiffness you can use:
+     * force = stiffness * delta_spring_length = mass * gravity
+     * <
+     * => stiffness = mass * gravity / delta_spring_length.
+     * So if your object weighs 1500 kg and the spring compresses by 2 meters, you need a stiffness in the order of 1500 * 9.81 / 2 ~ 7500 N/m.
+     *
+     * When mMode = ESpringMode::MassNormalizedStiffnessAndDamping:
+     * Specifies the stiffness (k) in the spring equation F = m_eff * (-k * x - c * v) for a linear or T = i_eff * (-k * theta - c * w) for an angular spring.
+     * m_eff / i_eff is the effective mass / inertia of the constraint.
+     * Units are 1 / s^2 for a linear spring and 1 / rad s^2 for an angular spring.
+     *
+     * Since the stiffness is multiplied by the effective mass / inertia of the constraint, you can use much smaller stiffness values and they will be mass independent.
+     */
     var stiffness: Float
         get() = JphSpringSettings_GetStiffness(springSettingsHandle)
         set(value) = JphSpringSettings_SetStiffness(springSettingsHandle, value)
 
+    /**
+     * When mMode = ESpringMode::FrequencyAndDamping this is the damping ratio (0 = no damping, 1 = critical damping).
+     *
+     * When mMode = ESpringMode::StiffnessAndDamping this is the damping (c) in the spring equation F = -k * x - c * v for a linear or T = -k * theta - c * w for an angular spring.
+     * Units are N s / m for a linear spring and N s m / rad for an angular spring.
+     *
+     * When mMode = ESpringMode::MassNormalizedStiffnessAndDamping this is the damping (c) in the spring equation F = m_eff * (-k * x - c * v) for a linear or T = i_eff * (-k * theta - c * w) for an angular spring.
+     * m_eff / i_eff is the effective mass / inertia of the constraint.
+     * Units are 1 / s for a linear spring and 1 / rad s for an angular spring.
+     *
+     * Note that if you set this to 0, you will not get an infinite oscillation. Because we integrate physics using an explicit Euler scheme, there is always energy loss.
+     * This is done to keep the simulation from exploding, because with a damping of 0 and even the slightest rounding error, the oscillation could become bigger and bigger until the simulation explodes.
+     */
     var damping: Float
         get() = JphSpringSettings_GetDamping(springSettingsHandle)
         set(value) = JphSpringSettings_SetDamping(springSettingsHandle, value)

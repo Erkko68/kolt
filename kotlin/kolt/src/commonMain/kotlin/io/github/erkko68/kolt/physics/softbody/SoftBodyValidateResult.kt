@@ -33,9 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SoftBodyValidateResult`. */
+/**
+ * Return value for the OnSoftBodyContactValidate callback. Determines if the contact will be processed or not.
+ *
+ * C++ `JPH::SoftBodyValidateResult`.
+ */
 enum class SoftBodyValidateResult(internal val value: Int) {
+    /** Accept this contact */
     AcceptContact(0),
+    /** Reject this contact */
     RejectContact(1);
 
     internal companion object {

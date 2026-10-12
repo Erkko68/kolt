@@ -33,7 +33,37 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ConeConstraint`. */
+/**
+ * A cone constraint constraints 2 bodies to a single point and limits the swing between the twist axis within a cone:
+ *
+ * t1 . t2
+ * <
+ * = cos(theta)
+ *
+ * Where:
+ *
+ * t1 = twist axis of body 1.
+ * t2 = twist axis of body 2.
+ * theta = half cone angle (angle from the principal axis of the cone to the edge).
+ *
+ * Calculating the Jacobian:
+ *
+ * Constraint equation:
+ *
+ * C = t1 . t2 - cos(theta)
+ *
+ * Derivative:
+ *
+ * d/dt C = d/dt (t1 . t2) = (d/dt t1) . t2 + t1 . (d/dt t2) = (w1 x t1) . t2 + t1 . (w2 x t2) = (t1 x t2) . w1 + (t2 x t1) . w2
+ *
+ * d/dt C = J v = \[0, -t2 x t1, 0, t2 x t1\] \[v1, w1, v2, w2\]
+ *
+ * Where J is the Jacobian.
+ *
+ * Note that this is the exact same equation as used in AngleConstraintPart if we use t2 x t1 as the world space axis
+ *
+ * C++ `JPH::ConeConstraint`.
+ */
 class ConeConstraint internal constructor(internal val coneConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphConeConstraint_asTwoBodyConstraint(coneConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: ConeConstraintSettings) : this(JphConeConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.coneConstraintSettingsHandle), owned = true)
 
@@ -43,12 +73,14 @@ class ConeConstraint internal constructor(internal val coneConstraintHandle: Nat
     override fun close() =
         closeOnce { JphConeConstraint_release(coneConstraintHandle) }
 
+    /** Update maximum angle between body 1 and 2 (see ConeConstraintSettings) */
     fun setHalfConeAngle(halfConeAngle: Float) =
         JphConeConstraint_SetHalfConeAngle(coneConstraintHandle, halfConeAngle)
 
     val cosHalfConeAngle: Float
         get() = JphConeConstraint_GetCosHalfConeAngle(coneConstraintHandle)
 
+    /** Get Lagrange multiplier from last physics update (the linear/angular impulse applied to satisfy the constraint) */
     val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

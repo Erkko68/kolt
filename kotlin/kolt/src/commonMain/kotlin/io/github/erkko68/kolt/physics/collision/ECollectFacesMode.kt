@@ -33,9 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ECollectFacesMode`. */
+/**
+ * Whether or not to collect faces, used by CastShape and CollideShape
+ *
+ * C++ `JPH::ECollectFacesMode`.
+ */
 enum class ECollectFacesMode(internal val value: Int) {
+    /** mShape1/2Face is desired */
     CollectFaces(0),
+    /** mShape1/2Face is not desired */
     NoFaces(1);
 
     internal companion object {

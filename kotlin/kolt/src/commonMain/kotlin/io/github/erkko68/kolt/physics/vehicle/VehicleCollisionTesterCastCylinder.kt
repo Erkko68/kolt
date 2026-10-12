@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleCollisionTesterCastCylinder`. */
+/**
+ * Collision tester that tests collision using a cylinder shape
+ *
+ * C++ `JPH::VehicleCollisionTesterCastCylinder`.
+ */
 class VehicleCollisionTesterCastCylinder internal constructor(internal val vehicleCollisionTesterCastCylinderHandle: NativePointer, owned: Boolean = false) : VehicleCollisionTester(JphVehicleCollisionTesterCastCylinder_asVehicleCollisionTester(vehicleCollisionTesterCastCylinderHandle), owned), AutoCloseable {
     constructor(objectLayer: Int, convexRadiusFraction: Float) : this(JphVehicleCollisionTesterCastCylinder_create(objectLayer, convexRadiusFraction), owned = true)
 

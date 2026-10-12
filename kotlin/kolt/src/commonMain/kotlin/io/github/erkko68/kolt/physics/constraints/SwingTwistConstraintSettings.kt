@@ -33,7 +33,16 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SwingTwistConstraintSettings`. */
+/**
+ * Swing twist constraint settings, used to create a swing twist constraint
+ * All values in this structure are copied to the swing twist constraint and the settings object is no longer needed afterwards.
+ *
+ * This image describes the limit settings:
+ *
+ * html Docs/SwingTwistConstraint.png
+ *
+ * C++ `JPH::SwingTwistConstraintSettings`.
+ */
 class SwingTwistConstraintSettings internal constructor(internal val swingTwistConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSwingTwistConstraintSettings_asTwoBodyConstraintSettings(swingTwistConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphSwingTwistConstraintSettings_create(), owned = true)
 
@@ -43,10 +52,12 @@ class SwingTwistConstraintSettings internal constructor(internal val swingTwistC
     override fun close() =
         closeOnce { JphSwingTwistConstraintSettings_release(swingTwistConstraintSettingsHandle) }
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphSwingTwistConstraintSettings_GetSpace(swingTwistConstraintSettingsHandle))
         set(value) = JphSwingTwistConstraintSettings_SetSpace(swingTwistConstraintSettingsHandle, value.value)
 
+    /** Body 1 constraint reference frame (space determined by mSpace) */
     var position1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -77,6 +88,7 @@ class SwingTwistConstraintSettings internal constructor(internal val swingTwistC
         }
         set(value) = interopScope { JphSwingTwistConstraintSettings_SetPlaneAxis1(swingTwistConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 constraint reference frame (space determined by mSpace) */
     var position2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -107,30 +119,53 @@ class SwingTwistConstraintSettings internal constructor(internal val swingTwistC
         }
         set(value) = interopScope { JphSwingTwistConstraintSettings_SetPlaneAxis2(swingTwistConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** The type of swing constraint that we want to use. */
     var swingType: ESwingType
         get() = ESwingType.of(JphSwingTwistConstraintSettings_GetSwingType(swingTwistConstraintSettingsHandle))
         set(value) = JphSwingTwistConstraintSettings_SetSwingType(swingTwistConstraintSettingsHandle, value.value)
 
+    /** See image at Detailed Description. Angle in radians. */
     var normalHalfConeAngle: Float
         get() = JphSwingTwistConstraintSettings_GetNormalHalfConeAngle(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetNormalHalfConeAngle(swingTwistConstraintSettingsHandle, value)
 
+    /** See image at Detailed Description. Angle in radians. */
     var planeHalfConeAngle: Float
         get() = JphSwingTwistConstraintSettings_GetPlaneHalfConeAngle(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetPlaneHalfConeAngle(swingTwistConstraintSettingsHandle, value)
 
+    /**
+     * See image at Detailed Description. Angle in radians. Should be
+     *
+     * ```
+     * \in \[-\pi, \pi\]
+     * ```
+     *
+     * .
+     */
     var twistMinAngle: Float
         get() = JphSwingTwistConstraintSettings_GetTwistMinAngle(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetTwistMinAngle(swingTwistConstraintSettingsHandle, value)
 
+    /**
+     * See image at Detailed Description. Angle in radians. Should be
+     *
+     * ```
+     * \in \[-\pi, \pi\]
+     * ```
+     *
+     * .
+     */
     var twistMaxAngle: Float
         get() = JphSwingTwistConstraintSettings_GetTwistMaxAngle(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetTwistMaxAngle(swingTwistConstraintSettingsHandle, value)
 
+    /** Maximum amount of torque (N m) to apply as friction when the constraint is not powered by a motor */
     var maxFrictionTorque: Float
         get() = JphSwingTwistConstraintSettings_GetMaxFrictionTorque(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetMaxFrictionTorque(swingTwistConstraintSettingsHandle, value)
 
+    /** In case the constraint is powered, this determines the motor settings around the swing and twist axis */
     var swingMotorSettings: MotorSettings
         get() = run {
             val returned = MotorSettings(JphMotorSettings_create(), owned = true)

@@ -33,10 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EMotionType`. */
+/**
+ * Motion type of a physics body
+ *
+ * C++ `JPH::EMotionType`.
+ */
 enum class EMotionType(internal val value: Int) {
+    /** Non movable */
     Static(0),
+    /** Movable using velocities only, does not respond to forces */
     Kinematic(1),
+    /** Responds to forces as a normal physics object */
     Dynamic(2);
 
     internal companion object {

@@ -35,9 +35,13 @@ import io.github.erkko68.kolt.skeleton.capi.*
 
 /** C++ `JPH::EMotorState`. */
 enum class EMotorState(internal val value: Int) {
+    /** Motor is off */
     Off(0),
+    /** Motor will drive to target velocity limited only by max force/torque that the motor can apply */
     Velocity(1),
+    /** Motor will drive to target position using: force = stiffness * (target_position - current_position) - damping * current_velocity */
     Position(2),
+    /** Motor will drive both to target position and velocity using: force = stiffness * (target_position - current_position) + damping * (target_velocity - current_velocity) */
     PositionAndVelocity(3);
 
     internal companion object {

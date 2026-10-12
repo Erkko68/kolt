@@ -40,12 +40,21 @@ class VehicleDifferentialSettings internal constructor(internal val vehicleDiffe
     override fun close() =
         closeOnce { JphVehicleDifferentialSettings_destroy(vehicleDifferentialSettingsHandle) }
 
+    /** Saves the contents in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphVehicleDifferentialSettings_SaveBinaryState(vehicleDifferentialSettingsHandle, stream.streamOutHandle)
 
+    /** Restores the contents in binary form to inStream. */
     fun restoreBinaryState(stream: StreamIn) =
         JphVehicleDifferentialSettings_RestoreBinaryState(vehicleDifferentialSettingsHandle, stream.streamInHandle)
 
+    /**
+     * Calculate the torque ratio between left and right wheel
+     * @param leftAngularVelocity Angular velocity of left wheel (rad / s)
+     * @param rightAngularVelocity Angular velocity of right wheel (rad / s)
+     * @return Fraction of torque that should go to the left wheel
+     * @return Fraction of torque that should go to the right wheel
+     */
     fun calculateTorqueRatio(leftAngularVelocity: Float, rightAngularVelocity: Float): Pair<Float, Float> =
         interopScope {
             val leftTorqueFractionArray = FloatArray(1)
@@ -58,26 +67,32 @@ class VehicleDifferentialSettings internal constructor(internal val vehicleDiffe
             Pair(leftTorqueFractionArray.readF32(0), rightTorqueFractionArray.readF32(0))
         }
 
+    /** Index (in mWheels) that represents the left wheel of this differential (can be -1 to indicate no wheel) */
     var leftWheel: Int
         get() = JphVehicleDifferentialSettings_GetLeftWheel(vehicleDifferentialSettingsHandle)
         set(value) = JphVehicleDifferentialSettings_SetLeftWheel(vehicleDifferentialSettingsHandle, value)
 
+    /** Index (in mWheels) that represents the right wheel of this differential (can be -1 to indicate no wheel) */
     var rightWheel: Int
         get() = JphVehicleDifferentialSettings_GetRightWheel(vehicleDifferentialSettingsHandle)
         set(value) = JphVehicleDifferentialSettings_SetRightWheel(vehicleDifferentialSettingsHandle, value)
 
+    /** Ratio between rotation speed of gear box and wheels */
     var differentialRatio: Float
         get() = JphVehicleDifferentialSettings_GetDifferentialRatio(vehicleDifferentialSettingsHandle)
         set(value) = JphVehicleDifferentialSettings_SetDifferentialRatio(vehicleDifferentialSettingsHandle, value)
 
+    /** Defines how the engine torque is split across the left and right wheel (0 = left, 0.5 = center, 1 = right) */
     var leftRightSplit: Float
         get() = JphVehicleDifferentialSettings_GetLeftRightSplit(vehicleDifferentialSettingsHandle)
         set(value) = JphVehicleDifferentialSettings_SetLeftRightSplit(vehicleDifferentialSettingsHandle, value)
 
+    /** Ratio max / min wheel speed. When this ratio is exceeded, all torque gets distributed to the slowest moving wheel. This allows implementing a limited slip differential. Set to FLT_MAX for an open differential. Value should be > 1. */
     var limitedSlipRatio: Float
         get() = JphVehicleDifferentialSettings_GetLimitedSlipRatio(vehicleDifferentialSettingsHandle)
         set(value) = JphVehicleDifferentialSettings_SetLimitedSlipRatio(vehicleDifferentialSettingsHandle, value)
 
+    /** How much of the engines torque is applied to this differential (0 = none, 1 = full), make sure the sum of all differentials is 1. */
     var engineTorqueRatio: Float
         get() = JphVehicleDifferentialSettings_GetEngineTorqueRatio(vehicleDifferentialSettingsHandle)
         set(value) = JphVehicleDifferentialSettings_SetEngineTorqueRatio(vehicleDifferentialSettingsHandle, value)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TriangleShapeSettings`. */
+/**
+ * Class that constructs a TriangleShape
+ *
+ * C++ `JPH::TriangleShapeSettings`.
+ */
 class TriangleShapeSettings internal constructor(internal val triangleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTriangleShapeSettings_asConvexShapeSettings(triangleShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphTriangleShapeSettings_create(), owned = true)
     constructor(v1: Vec3, v2: Vec3, v3: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphTriangleShapeSettings_create_Vec3Arg_Vec3Arg_Vec3Arg_float_PhysicsMaterial(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)

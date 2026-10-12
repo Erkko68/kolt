@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ConvexHullShapeSettings`. */
+/**
+ * Class that constructs a ConvexHullShape
+ *
+ * C++ `JPH::ConvexHullShapeSettings`.
+ */
 class ConvexHullShapeSettings internal constructor(internal val convexHullShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphConvexHullShapeSettings_asConvexShapeSettings(convexHullShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphConvexHullShapeSettings_create(), owned = true)
     constructor(points: List<Vec3>, numPoints: Int, maxConvexRadius: Float, material: PhysicsMaterial?) : this(interopScope {
@@ -49,6 +53,7 @@ class ConvexHullShapeSettings internal constructor(internal val convexHullShapeS
     override fun close() =
         closeOnce { JphConvexHullShapeSettings_release(convexHullShapeSettingsHandle) }
 
+    /** Points to create the hull from. Note that these points don't need to be the vertices of the convex hull, they can contain interior points or points on faces/edges. */
     var points: List<Vec3>
         get() = interopScope {
             val count = JphConvexHullShapeSettings_GetPoints(convexHullShapeSettingsHandle, NullPointer, 0)
@@ -60,14 +65,17 @@ class ConvexHullShapeSettings internal constructor(internal val convexHullShapeS
         }
         set(value) = interopScope { JphConvexHullShapeSettings_SetPoints(convexHullShapeSettingsHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
 
+    /** Convex radius as supplied by the constructor. Note that during hull creation the convex radius can be made smaller if the value is too big for the hull. */
     var maxConvexRadius: Float
         get() = JphConvexHullShapeSettings_GetMaxConvexRadius(convexHullShapeSettingsHandle)
         set(value) = JphConvexHullShapeSettings_SetMaxConvexRadius(convexHullShapeSettingsHandle, value)
 
+    /** Maximum distance between the shrunk hull + convex radius and the actual hull. */
     var maxErrorConvexRadius: Float
         get() = JphConvexHullShapeSettings_GetMaxErrorConvexRadius(convexHullShapeSettingsHandle)
         set(value) = JphConvexHullShapeSettings_SetMaxErrorConvexRadius(convexHullShapeSettingsHandle, value)
 
+    /** Points are allowed this far outside of the hull (increasing this yields a hull with less vertices). Note that the actual used value can be larger if the points of the hull are far apart. */
     var hullTolerance: Float
         get() = JphConvexHullShapeSettings_GetHullTolerance(convexHullShapeSettingsHandle)
         set(value) = JphConvexHullShapeSettings_SetHullTolerance(convexHullShapeSettingsHandle, value)

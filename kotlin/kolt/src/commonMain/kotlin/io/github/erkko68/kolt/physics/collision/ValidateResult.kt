@@ -33,11 +33,20 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ValidateResult`. */
+/**
+ * Return value for the OnContactValidate callback. Determines if the contact is being processed or not.
+ * Results are ordered so that the strongest accept has the lowest number and the strongest reject the highest number (which allows for easy combining of results)
+ *
+ * C++ `JPH::ValidateResult`.
+ */
 enum class ValidateResult(internal val value: Int) {
+    /** Accept this and any further contact points for this body pair */
     AcceptAllContactsForThisBodyPair(0),
+    /** Accept this contact only (and continue calling this callback for every contact manifold for the same body pair) */
     AcceptContact(1),
+    /** Reject this contact only (but process any other contact manifolds for the same body pair) */
     RejectContact(2),
+    /** Rejects this and any further contact points for this body pair */
     RejectAllContactsForThisBodyPair(3);
 
     internal companion object {

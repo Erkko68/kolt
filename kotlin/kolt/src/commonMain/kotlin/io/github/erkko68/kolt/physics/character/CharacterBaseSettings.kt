@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterBaseSettings`. */
+/**
+ * Base class for configuration of a character
+ *
+ * C++ `JPH::CharacterBaseSettings`.
+ */
 open class CharacterBaseSettings internal constructor(internal val characterBaseSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCharacterBaseSettings_create(), owned = true)
 
@@ -43,6 +47,7 @@ open class CharacterBaseSettings internal constructor(internal val characterBase
     override fun close() =
         closeOnce { JphCharacterBaseSettings_release(characterBaseSettingsHandle) }
 
+    /** Vector indicating the up direction of the character */
     var up: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -53,6 +58,11 @@ open class CharacterBaseSettings internal constructor(internal val characterBase
         }
         set(value) = interopScope { JphCharacterBaseSettings_SetUp(characterBaseSettingsHandle, toInterop(value.toArray())) }
 
+    /**
+     * Plane, defined in local space relative to the character. Every contact behind this plane can support the
+     * character, every contact in front of this plane is treated as only colliding with the player.
+     * Default: Accept any contact.
+     */
     var supportingVolume: Plane
         get() = run {
             val returned = Plane(JphPlane_create(), owned = true)
@@ -61,14 +71,20 @@ open class CharacterBaseSettings internal constructor(internal val characterBase
         }
         set(value) = JphCharacterBaseSettings_SetSupportingVolume(characterBaseSettingsHandle, value.planeHandle)
 
+    /** Maximum angle of slope that character can still walk on (radians). */
     var maxSlopeAngle: Float
         get() = JphCharacterBaseSettings_GetMaxSlopeAngle(characterBaseSettingsHandle)
         set(value) = JphCharacterBaseSettings_SetMaxSlopeAngle(characterBaseSettingsHandle, value)
 
+    /** Set to indicate that extra effort should be made to try to remove ghost contacts (collisions with internal edges of a mesh). This is more expensive but makes bodies move smoother over a mesh with convex edges. */
     var enhancedInternalEdgeRemoval: Boolean
         get() = JphCharacterBaseSettings_GetEnhancedInternalEdgeRemoval(characterBaseSettingsHandle)
         set(value) = JphCharacterBaseSettings_SetEnhancedInternalEdgeRemoval(characterBaseSettingsHandle, value)
 
+    /**
+     * Initial shape that represents the character's volume.
+     * Usually this is a capsule, make sure the shape is made so that the bottom of the shape is at (0, 0, 0).
+     */
     var shape: Shape?
         get() = JphCharacterBaseSettings_GetShape(characterBaseSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(value) = JphCharacterBaseSettings_SetShape(characterBaseSettingsHandle, value?.shapeHandle ?: NullPointer)

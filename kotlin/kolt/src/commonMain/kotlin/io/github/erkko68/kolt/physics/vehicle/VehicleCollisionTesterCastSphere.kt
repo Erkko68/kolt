@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleCollisionTesterCastSphere`. */
+/**
+ * Collision tester that tests collision using a sphere cast
+ *
+ * C++ `JPH::VehicleCollisionTesterCastSphere`.
+ */
 class VehicleCollisionTesterCastSphere internal constructor(internal val vehicleCollisionTesterCastSphereHandle: NativePointer, owned: Boolean = false) : VehicleCollisionTester(JphVehicleCollisionTesterCastSphere_asVehicleCollisionTester(vehicleCollisionTesterCastSphereHandle), owned), AutoCloseable {
     constructor(objectLayer: Int, radius: Float, up: Vec3, maxSlopeAngle: Float) : this(interopScope { JphVehicleCollisionTesterCastSphere_create(objectLayer, radius, toInterop(up.toArray()), maxSlopeAngle) }, owned = true)
 

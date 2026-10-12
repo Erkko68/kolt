@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::HingeConstraintSettings`. */
+/**
+ * Hinge constraint settings, used to create a hinge constraint
+ *
+ * C++ `JPH::HingeConstraintSettings`.
+ */
 class HingeConstraintSettings internal constructor(internal val hingeConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphHingeConstraintSettings_asTwoBodyConstraintSettings(hingeConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphHingeConstraintSettings_create(), owned = true)
 
@@ -43,10 +47,19 @@ class HingeConstraintSettings internal constructor(internal val hingeConstraintS
     override fun close() =
         closeOnce { JphHingeConstraintSettings_release(hingeConstraintSettingsHandle) }
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphHingeConstraintSettings_GetSpace(hingeConstraintSettingsHandle))
         set(value) = JphHingeConstraintSettings_SetSpace(hingeConstraintSettingsHandle, value.value)
 
+    /**
+     * Body 1 constraint reference frame (space determined by mSpace).
+     * Hinge axis is the axis where rotation is allowed.
+     * When the normal axis of both bodies align in world space, the hinge angle is defined to be 0.
+     * mHingeAxis1 and mNormalAxis1 should be perpendicular. mHingeAxis2 and mNormalAxis2 should also be perpendicular.
+     * If you configure the joint in world space and create both bodies with a relative rotation you want to be defined as zero,
+     * you can simply set mHingeAxis1 = mHingeAxis2 and mNormalAxis1 = mNormalAxis2.
+     */
     var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -77,6 +90,7 @@ class HingeConstraintSettings internal constructor(internal val hingeConstraintS
         }
         set(value) = interopScope { JphHingeConstraintSettings_SetNormalAxis1(hingeConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 constraint reference frame (space determined by mSpace) */
     var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -107,6 +121,10 @@ class HingeConstraintSettings internal constructor(internal val hingeConstraintS
         }
         set(value) = interopScope { JphHingeConstraintSettings_SetNormalAxis2(hingeConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /**
+     * Rotation around the hinge axis will be limited between \[mLimitsMin, mLimitsMax\] where mLimitsMin e \[-pi, 0\] and mLimitsMax e \[0, pi\].
+     * Both angles are in radians.
+     */
     var limitsMin: Float
         get() = JphHingeConstraintSettings_GetLimitsMin(hingeConstraintSettingsHandle)
         set(value) = JphHingeConstraintSettings_SetLimitsMin(hingeConstraintSettingsHandle, value)
@@ -115,6 +133,7 @@ class HingeConstraintSettings internal constructor(internal val hingeConstraintS
         get() = JphHingeConstraintSettings_GetLimitsMax(hingeConstraintSettingsHandle)
         set(value) = JphHingeConstraintSettings_SetLimitsMax(hingeConstraintSettingsHandle, value)
 
+    /** When enabled, this makes the limits soft. When the constraint exceeds the limits, a spring force will pull it back. */
     var limitsSpringSettings: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
@@ -123,10 +142,12 @@ class HingeConstraintSettings internal constructor(internal val hingeConstraintS
         }
         set(value) = JphHingeConstraintSettings_SetLimitsSpringSettings(hingeConstraintSettingsHandle, value.springSettingsHandle)
 
+    /** Maximum amount of torque (N m) to apply as friction when the constraint is not powered by a motor */
     var maxFrictionTorque: Float
         get() = JphHingeConstraintSettings_GetMaxFrictionTorque(hingeConstraintSettingsHandle)
         set(value) = JphHingeConstraintSettings_SetMaxFrictionTorque(hingeConstraintSettingsHandle, value)
 
+    /** In case the constraint is powered, this determines the motor settings around the hinge axis */
     var motorSettings: MotorSettings
         get() = run {
             val returned = MotorSettings(JphMotorSettings_create(), owned = true)

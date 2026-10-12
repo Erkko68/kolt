@@ -33,14 +33,20 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleController`. */
+/**
+ * Runtime data for interface that controls acceleration / deceleration of the vehicle
+ *
+ * C++ `JPH::VehicleController`.
+ */
 open class VehicleController internal constructor(internal val vehicleControllerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     override fun close() =
         closeOnce { JphVehicleController_destroy(vehicleControllerHandle) }
 
+    /** Access the vehicle constraint that this controller is part of */
     val constraint: VehicleConstraint
         get() = VehicleConstraint(JphVehicleController_GetConstraint(vehicleControllerHandle))
 
+    /** Recreate the settings for this controller */
     val settings: VehicleControllerSettings?
         get() = JphVehicleController_GetSettings(vehicleControllerHandle).takeIf { it != NullPointer }?.let { VehicleControllerSettings(it, owned = true) }
 }

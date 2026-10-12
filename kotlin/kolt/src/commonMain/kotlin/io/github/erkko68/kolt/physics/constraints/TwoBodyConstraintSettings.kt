@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TwoBodyConstraintSettings`. */
+/**
+ * Base class for settings for all constraints that involve 2 bodies
+ *
+ * C++ `JPH::TwoBodyConstraintSettings`.
+ */
 open class TwoBodyConstraintSettings internal constructor(internal val twoBodyConstraintSettingsHandle: NativePointer, owned: Boolean = false) : ConstraintSettings(JphTwoBodyConstraintSettings_asConstraintSettings(twoBodyConstraintSettingsHandle), owned), AutoCloseable {
     override fun addRef() =
         own { JphTwoBodyConstraintSettings_addRef(twoBodyConstraintSettingsHandle) }
@@ -41,6 +45,10 @@ open class TwoBodyConstraintSettings internal constructor(internal val twoBodyCo
     override fun close() =
         closeOnce { JphTwoBodyConstraintSettings_release(twoBodyConstraintSettingsHandle) }
 
+    /**
+     * Create an instance of this constraint
+     * You can use Body::sFixedToWorld for inBody1 if you want to attach inBody2 to the world
+     */
     fun create(body1: Body, body2: Body): TwoBodyConstraint? =
         JphTwoBodyConstraintSettings_Create(twoBodyConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
 }

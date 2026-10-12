@@ -33,9 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EActivation`. */
+/**
+ * Enum used by AddBody to determine if the body needs to be initially active
+ *
+ * C++ `JPH::EActivation`.
+ */
 enum class EActivation(internal val value: Int) {
+    /** Activate the body, making it part of the simulation */
     Activate(0),
+    /** Leave activation state as it is (will not deactivate an active body) */
     DontActivate(1);
 
     internal companion object {

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::IgnoreMultipleBodiesFilter`. */
+/**
+ * A simple body filter implementation that ignores multiple, specified bodies
+ *
+ * C++ `JPH::IgnoreMultipleBodiesFilter`.
+ */
 open class IgnoreMultipleBodiesFilter internal constructor(internal val ignoreMultipleBodiesFilterHandle: NativePointer, owned: Boolean = false) : BodyFilter(JphIgnoreMultipleBodiesFilter_asBodyFilter(ignoreMultipleBodiesFilterHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphIgnoreMultipleBodiesFilter_createUpcalls(Upcalls.function), owned = true) {
@@ -43,12 +47,15 @@ open class IgnoreMultipleBodiesFilter internal constructor(internal val ignoreMu
     override fun close() =
         closeOnce { JphIgnoreMultipleBodiesFilter_destroy(ignoreMultipleBodiesFilterHandle) }
 
+    /** Remove all bodies from the filter */
     fun clear() =
         JphIgnoreMultipleBodiesFilter_Clear(ignoreMultipleBodiesFilterHandle)
 
+    /** Reserve space for inSize body ID's */
     fun reserve(size: Int) =
         JphIgnoreMultipleBodiesFilter_Reserve(ignoreMultipleBodiesFilterHandle, size)
 
+    /** Add a body to be ignored */
     fun ignoreBody(bodyID: BodyID) =
         JphIgnoreMultipleBodiesFilter_IgnoreBody(ignoreMultipleBodiesFilterHandle, bodyID.value)
 

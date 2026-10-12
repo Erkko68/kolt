@@ -33,31 +33,41 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleEngineSettings`. */
+/**
+ * Generic properties for a vehicle engine
+ *
+ * C++ `JPH::VehicleEngineSettings`.
+ */
 open class VehicleEngineSettings internal constructor(internal val vehicleEngineSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphVehicleEngineSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphVehicleEngineSettings_destroy(vehicleEngineSettingsHandle) }
 
+    /** Saves the contents in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphVehicleEngineSettings_SaveBinaryState(vehicleEngineSettingsHandle, stream.streamOutHandle)
 
+    /** Restores the contents in binary form to inStream. */
     fun restoreBinaryState(stream: StreamIn) =
         JphVehicleEngineSettings_RestoreBinaryState(vehicleEngineSettingsHandle, stream.streamInHandle)
 
+    /** Max amount of torque (Nm) that the engine can deliver */
     var maxTorque: Float
         get() = JphVehicleEngineSettings_GetMaxTorque(vehicleEngineSettingsHandle)
         set(value) = JphVehicleEngineSettings_SetMaxTorque(vehicleEngineSettingsHandle, value)
 
+    /** Min amount of revolutions per minute (rpm) the engine can produce without stalling */
     var minRPM: Float
         get() = JphVehicleEngineSettings_GetMinRPM(vehicleEngineSettingsHandle)
         set(value) = JphVehicleEngineSettings_SetMinRPM(vehicleEngineSettingsHandle, value)
 
+    /** Max amount of revolutions per minute (rpm) the engine can generate */
     var maxRPM: Float
         get() = JphVehicleEngineSettings_GetMaxRPM(vehicleEngineSettingsHandle)
         set(value) = JphVehicleEngineSettings_SetMaxRPM(vehicleEngineSettingsHandle, value)
 
+    /** Y-axis: Curve that describes a ratio of the max torque the engine can produce (0 = 0, 1 = mMaxTorque). X-axis: the fraction of the RPM of the engine (0 = mMinRPM, 1 = mMaxRPM) */
     var normalizedTorque: LinearCurve
         get() = run {
             val returned = LinearCurve(JphLinearCurve_create(), owned = true)
@@ -66,10 +76,12 @@ open class VehicleEngineSettings internal constructor(internal val vehicleEngine
         }
         set(value) = JphVehicleEngineSettings_SetNormalizedTorque(vehicleEngineSettingsHandle, value.linearCurveHandle)
 
+    /** Moment of inertia (kg m^2) of the engine */
     var inertia: Float
         get() = JphVehicleEngineSettings_GetInertia(vehicleEngineSettingsHandle)
         set(value) = JphVehicleEngineSettings_SetInertia(vehicleEngineSettingsHandle, value)
 
+    /** Angular damping factor of the wheel: dw/dt = -c * w. Value should be zero or positive and is usually close to 0. */
     var angularDamping: Float
         get() = JphVehicleEngineSettings_GetAngularDamping(vehicleEngineSettingsHandle)
         set(value) = JphVehicleEngineSettings_SetAngularDamping(vehicleEngineSettingsHandle, value)

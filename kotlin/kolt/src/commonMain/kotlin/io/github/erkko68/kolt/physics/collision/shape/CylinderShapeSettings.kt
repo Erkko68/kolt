@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CylinderShapeSettings`. */
+/**
+ * Class that constructs a CylinderShape
+ *
+ * C++ `JPH::CylinderShapeSettings`.
+ */
 class CylinderShapeSettings internal constructor(internal val cylinderShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphCylinderShapeSettings_asConvexShapeSettings(cylinderShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCylinderShapeSettings_create(), owned = true)
     constructor(halfHeight: Float, radius: Float, convexRadius: Float, material: PhysicsMaterial?) : this(JphCylinderShapeSettings_create_float_float_float_PhysicsMaterial(halfHeight, radius, convexRadius, material?.physicsMaterialHandle ?: NullPointer), owned = true)

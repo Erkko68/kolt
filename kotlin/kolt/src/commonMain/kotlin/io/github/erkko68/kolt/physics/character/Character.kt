@@ -33,7 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Character`. */
+/**
+ * Runtime character object.
+ * This object usually represents the player or a humanoid AI. It uses a single rigid body,
+ * usually with a capsule shape to simulate movement and collision for the character.
+ * The character is a keyframed object, the application controls it by setting the velocity.
+ *
+ * C++ `JPH::Character`.
+ */
 class Character internal constructor(internal val characterHandle: NativePointer, owned: Boolean = false) : CharacterBase(JphCharacter_asCharacterBase(characterHandle), owned), AutoCloseable {
     constructor(settings: CharacterSettings?, position: Vec3, rotation: Quat, userData: Long, system: PhysicsSystem?) : this(interopScope { JphCharacter_create(settings?.characterSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), userData, system?.physicsSystemHandle ?: NullPointer) }, owned = true)
 
@@ -43,21 +50,31 @@ class Character internal constructor(internal val characterHandle: NativePointer
     override fun close() =
         closeOnce { JphCharacter_release(characterHandle) }
 
+    /** Add bodies and constraints to the system and optionally activate the bodies */
     fun addToPhysicsSystem(activationMode: EActivation, lockBodies: Boolean) =
         JphCharacter_AddToPhysicsSystem(characterHandle, activationMode.value, lockBodies)
 
+    /** Remove bodies and constraints from the system */
     fun removeFromPhysicsSystem(lockBodies: Boolean) =
         JphCharacter_RemoveFromPhysicsSystem(characterHandle, lockBodies)
 
+    /** Wake up the character */
     fun activate(lockBodies: Boolean) =
         JphCharacter_Activate(characterHandle, lockBodies)
 
+    /**
+     * Needs to be called after every PhysicsSystem::Update
+     * @param maxSeparationDistance Max distance between the floor and the character to still consider the character standing on the floor
+     * @param lockBodies If the collision query should use the locking body interface (true) or the non locking body interface (false)
+     */
     fun postSimulation(maxSeparationDistance: Float, lockBodies: Boolean) =
         JphCharacter_PostSimulation(characterHandle, maxSeparationDistance, lockBodies)
 
+    /** Control the velocity of the character */
     fun setLinearAndAngularVelocity(linearVelocity: Vec3, angularVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphCharacter_SetLinearAndAngularVelocity(characterHandle, toInterop(linearVelocity.toArray()), toInterop(angularVelocity.toArray()), lockBodies) }
 
+    /** Get the linear velocity of the character (m / s) */
     fun getLinearVelocity(lockBodies: Boolean): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -67,18 +84,23 @@ class Character internal constructor(internal val characterHandle: NativePointer
             Vec3(returned)
         }
 
+    /** Set the linear velocity of the character (m / s) */
     fun setLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphCharacter_SetLinearVelocity(characterHandle, toInterop(linearVelocity.toArray()), lockBodies) }
 
+    /** Add world space linear velocity to current velocity (m / s) */
     fun addLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphCharacter_AddLinearVelocity(characterHandle, toInterop(linearVelocity.toArray()), lockBodies) }
 
+    /** Add impulse to the center of mass of the character */
     fun addImpulse(impulse: Vec3, lockBodies: Boolean) =
         interopScope { JphCharacter_AddImpulse(characterHandle, toInterop(impulse.toArray()), lockBodies) }
 
+    /** Get the body associated with this character */
     val bodyID: BodyID
         get() = BodyID(JphCharacter_GetBodyID(characterHandle))
 
+    /** Get position / rotation of the body */
     fun getPositionAndRotation(lockBodies: Boolean): Pair<Vec3, Quat> =
         interopScope {
             val positionArray = FloatArray(4)
@@ -91,9 +113,11 @@ class Character internal constructor(internal val characterHandle: NativePointer
             Pair(Vec3(positionArray), Quat(rotationArray))
         }
 
+    /** Set the position / rotation of the body, optionally activating it. */
     fun setPositionAndRotation(position: Vec3, rotation: Quat, activationMode: EActivation, lockBodies: Boolean) =
         interopScope { JphCharacter_SetPositionAndRotation(characterHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), activationMode.value, lockBodies) }
 
+    /** Get the position of the character */
     fun getPosition(lockBodies: Boolean): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -103,9 +127,11 @@ class Character internal constructor(internal val characterHandle: NativePointer
             Vec3(returned)
         }
 
+    /** Set the position of the character, optionally activating it. */
     fun setPosition(position: Vec3, activationMode: EActivation, lockBodies: Boolean) =
         interopScope { JphCharacter_SetPosition(characterHandle, toInterop(position.toArray()), activationMode.value, lockBodies) }
 
+    /** Get the rotation of the character */
     fun getRotation(lockBodies: Boolean): Quat =
         interopScope {
             val returned = FloatArray(4)
@@ -115,9 +141,11 @@ class Character internal constructor(internal val characterHandle: NativePointer
             Quat(returned)
         }
 
+    /** Set the rotation of the character, optionally activating it. */
     fun setRotation(rotation: Quat, activationMode: EActivation, lockBodies: Boolean) =
         interopScope { JphCharacter_SetRotation(characterHandle, toInterop(rotation.toArray()), activationMode.value, lockBodies) }
 
+    /** Position of the center of mass of the underlying rigid body */
     fun getCenterOfMassPosition(lockBodies: Boolean): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -127,6 +155,7 @@ class Character internal constructor(internal val characterHandle: NativePointer
             Vec3(returned)
         }
 
+    /** Calculate the world transform of the character */
     fun getWorldTransform(lockBodies: Boolean): Mat44 =
         interopScope {
             val returned = FloatArray(16)
@@ -136,15 +165,22 @@ class Character internal constructor(internal val characterHandle: NativePointer
             Mat44(returned)
         }
 
+    /** Get the layer of the character */
     val layer: Int
         get() = JphCharacter_GetLayer(characterHandle)
 
+    /** Update the layer of the character */
     fun setLayer(layer: Int, lockBodies: Boolean) =
         JphCharacter_SetLayer(characterHandle, layer, lockBodies)
 
+    /**
+     * Switch the shape of the character (e.g. for stance). When inMaxPenetrationDepth is not FLT_MAX, it checks
+     * if the new shape collides before switching shape. Returns true if the switch succeeded.
+     */
     fun setShape(shape: Shape?, maxPenetrationDepth: Float, lockBodies: Boolean): Boolean =
         JphCharacter_SetShape(characterHandle, shape?.shapeHandle ?: NullPointer, maxPenetrationDepth, lockBodies)
 
+    /** Get the transformed shape that represents the volume of the character, can be used for collision checks. */
     fun getTransformedShape(lockBodies: Boolean): TransformedShape =
         run {
             val returned = TransformedShape(JphTransformedShape_create(), owned = true)
@@ -152,9 +188,21 @@ class Character internal constructor(internal val characterHandle: NativePointer
             returned
         }
 
+    /**
+     * Get all contacts for the character at a particular location
+     * @param position Position to test.
+     * @param rotation Rotation at which to test the shape.
+     * @param movementDirection A hint in which direction the character is moving, will be used to calculate a proper normal.
+     * @param maxSeparationDistance How much distance around the character you want to report contacts in (can be 0 to match the character exactly).
+     * @param shape Shape to test collision with.
+     * @param baseOffset All hit results will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. GetPosition() since floats are most accurate near the origin
+     * @param collector Collision collector that receives the collision results.
+     * @param lockBodies If the collision query should use the locking body interface (true) or the non locking body interface (false)
+     */
     fun checkCollision(position: Vec3, rotation: Quat, movementDirection: Vec3, maxSeparationDistance: Float, shape: Shape?, baseOffset: Vec3, collector: CollideShapeCollector, lockBodies: Boolean) =
         interopScope { JphCharacter_CheckCollision(characterHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), toInterop(movementDirection.toArray()), maxSeparationDistance, shape?.shapeHandle ?: NullPointer, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle, lockBodies) }
 
+    /** Get the character settings that can recreate this character */
     fun getCharacterSettings(lockBodies: Boolean): CharacterSettings =
         run {
             val returned = CharacterSettings(JphCharacterSettings_create(), owned = true)

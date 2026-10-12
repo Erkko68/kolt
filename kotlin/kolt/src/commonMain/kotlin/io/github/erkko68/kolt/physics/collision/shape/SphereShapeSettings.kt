@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SphereShapeSettings`. */
+/**
+ * Class that constructs a SphereShape
+ *
+ * C++ `JPH::SphereShapeSettings`.
+ */
 class SphereShapeSettings internal constructor(internal val sphereShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphSphereShapeSettings_asConvexShapeSettings(sphereShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphSphereShapeSettings_create(), owned = true)
     constructor(radius: Float, material: PhysicsMaterial?) : this(JphSphereShapeSettings_create_float_PhysicsMaterial(radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)

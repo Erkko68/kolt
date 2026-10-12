@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ConvexShape`. */
+/**
+ * Base class for all convex shapes. Defines a virtual interface.
+ *
+ * C++ `JPH::ConvexShape`.
+ */
 open class ConvexShape internal constructor(internal val convexShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphConvexShape_asShape(convexShapeHandle), owned), AutoCloseable {
     override fun addRef() =
         own { JphConvexShape_addRef(convexShapeHandle) }
@@ -41,22 +45,38 @@ open class ConvexShape internal constructor(internal val convexShapeHandle: Nati
     override fun close() =
         closeOnce { JphConvexShape_release(convexShapeHandle) }
 
+    /**
+     * Returns an object that provides the GetSupport function for this shape.
+     * inMode determines if this support function includes or excludes the convex radius.
+     * of the values returned by the GetSupport function. This improves numerical accuracy of the results.
+     * inScale scales this shape in local space.
+     */
     fun getSupportFunction(mode: ConvexShape.ESupportMode, buffer: ConvexShape.SupportBuffer, scale: Vec3): ConvexShape.Support? =
         interopScope { JphConvexShape_GetSupportFunction(convexShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let { ConvexShape.Support(it) } }
 
+    /** Material of the shape */
     var material: PhysicsMaterial?
         get() = JphConvexShape_GetMaterial(convexShapeHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(material) = JphConvexShape_SetMaterial(convexShapeHandle, material?.physicsMaterialHandle ?: NullPointer)
 
+    /** Get density of the shape (kg / m^3) */
     var density: Float
         get() = JphConvexShape_GetDensity(convexShapeHandle)
         set(density) = JphConvexShape_SetDensity(convexShapeHandle, density)
 
-    /** C++ `JPH::ConvexShape::Support`. */
+    /**
+     * Function that provides an interface for GJK
+     *
+     * C++ `JPH::ConvexShape::Support`.
+     */
     class Support internal constructor(internal val convexShapeSupportHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         override fun close() =
             closeOnce { JphConvexShapeSupport_destroy(convexShapeSupportHandle) }
     
+        /**
+         * Calculate the support vector for this convex shape (includes / excludes the convex radius depending on how this was obtained).
+         * Support vector is relative to the center of mass of the shape.
+         */
         fun getSupport(direction: Vec3): Vec3 =
             interopScope {
                 val returned = FloatArray(4)
@@ -66,11 +86,19 @@ open class ConvexShape internal constructor(internal val convexShapeHandle: Nati
                 Vec3(returned)
             }
     
+        /**
+         * Convex radius of shape. Collision detection on penetrating shapes is much more expensive,
+         * so you can add a radius around objects to increase the shape. This makes it far less likely that they will actually penetrate.
+         */
         val convexRadius: Float
             get() = JphConvexShapeSupport_GetConvexRadius(convexShapeSupportHandle)
     }
     
-    /** C++ `JPH::ConvexShape::SupportBuffer`. */
+    /**
+     * Buffer to hold a Support object, used to avoid dynamic memory allocations
+     *
+     * C++ `JPH::ConvexShape::SupportBuffer`.
+     */
     class SupportBuffer internal constructor(internal val convexShapeSupportBufferHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphConvexShapeSupportBuffer_create(), owned = true)
     
@@ -89,10 +117,17 @@ open class ConvexShape internal constructor(internal val convexShapeHandle: Nati
             set(value) = interopScope { JphConvexShapeSupportBuffer_SetData(convexShapeSupportBufferHandle, toInterop(value), value.size) }
     }
     
-    /** C++ `JPH::ConvexShape::ESupportMode`. */
+    /**
+     * How the GetSupport function should behave
+     *
+     * C++ `JPH::ConvexShape::ESupportMode`.
+     */
     enum class ESupportMode(internal val value: Int) {
+        /** Return the shape excluding the convex radius, Support::GetConvexRadius will return the convex radius if there is one, but adding this radius may not result in the most accurate/efficient representation of shapes with sharp edges */
         ExcludeConvexRadius(0),
+        /** Return the shape including the convex radius, Support::GetSupport includes the convex radius if there is one, Support::GetConvexRadius will return 0 */
         IncludeConvexRadius(1),
+        /** Use both Support::GetSupport add Support::GetConvexRadius to get a support point that matches the original shape as accurately/efficiently as possible */
         Default(2);
     
         internal companion object {

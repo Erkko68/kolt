@@ -33,7 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BroadPhaseLayerInterfaceTable`. */
+/**
+ * BroadPhaseLayerInterface implementation.
+ * This defines a mapping between object and broadphase layers.
+ * This implementation uses a simple table
+ *
+ * C++ `JPH::BroadPhaseLayerInterfaceTable`.
+ */
 class BroadPhaseLayerInterfaceTable internal constructor(internal val broadPhaseLayerInterfaceTableHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceTableHandle), owned), AutoCloseable {
     constructor(numObjectLayers: Int, numBroadPhaseLayers: Int) : this(JphBroadPhaseLayerInterfaceTable_create(numObjectLayers, numBroadPhaseLayers), owned = true)
 

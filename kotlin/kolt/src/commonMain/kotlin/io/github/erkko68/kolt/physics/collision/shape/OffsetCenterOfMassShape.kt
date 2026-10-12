@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::OffsetCenterOfMassShape`. */
+/**
+ * This shape will shift the center of mass of a child shape, it can e.g. be used to lower the center of mass of an unstable object like a boat to make it stable
+ *
+ * C++ `JPH::OffsetCenterOfMassShape`.
+ */
 class OffsetCenterOfMassShape internal constructor(internal val offsetCenterOfMassShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphOffsetCenterOfMassShape_asDecoratedShape(offsetCenterOfMassShapeHandle), owned), AutoCloseable {
     constructor() : this(JphOffsetCenterOfMassShape_create(), owned = true)
     constructor(shape: Shape?, offset: Vec3) : this(interopScope { JphOffsetCenterOfMassShape_create_Shape_Vec3Arg(shape?.shapeHandle ?: NullPointer, toInterop(offset.toArray())) }, owned = true)
@@ -44,6 +48,7 @@ class OffsetCenterOfMassShape internal constructor(internal val offsetCenterOfMa
     override fun close() =
         closeOnce { JphOffsetCenterOfMassShape_release(offsetCenterOfMassShapeHandle) }
 
+    /** Access the offset that is applied to the center of mass */
     val offset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

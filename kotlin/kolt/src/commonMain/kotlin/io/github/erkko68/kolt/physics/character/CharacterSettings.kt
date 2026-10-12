@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterSettings`. */
+/**
+ * Contains the configuration of a character
+ *
+ * C++ `JPH::CharacterSettings`.
+ */
 class CharacterSettings internal constructor(internal val characterSettingsHandle: NativePointer, owned: Boolean = false) : CharacterBaseSettings(JphCharacterSettings_asCharacterBaseSettings(characterSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCharacterSettings_create(), owned = true)
 
@@ -43,22 +47,27 @@ class CharacterSettings internal constructor(internal val characterSettingsHandl
     override fun close() =
         closeOnce { JphCharacterSettings_release(characterSettingsHandle) }
 
+    /** Layer that this character will be added to */
     var layer: Int
         get() = JphCharacterSettings_GetLayer(characterSettingsHandle)
         set(value) = JphCharacterSettings_SetLayer(characterSettingsHandle, value)
 
+    /** Mass of the character */
     var mass: Float
         get() = JphCharacterSettings_GetMass(characterSettingsHandle)
         set(value) = JphCharacterSettings_SetMass(characterSettingsHandle, value)
 
+    /** Friction for the character */
     var friction: Float
         get() = JphCharacterSettings_GetFriction(characterSettingsHandle)
         set(value) = JphCharacterSettings_SetFriction(characterSettingsHandle, value)
 
+    /** Value to multiply gravity with for this character */
     var gravityFactor: Float
         get() = JphCharacterSettings_GetGravityFactor(characterSettingsHandle)
         set(value) = JphCharacterSettings_SetGravityFactor(characterSettingsHandle, value)
 
+    /** Allowed degrees of freedom for this character */
     var allowedDOFs: EAllowedDOFs
         get() = EAllowedDOFs.of(JphCharacterSettings_GetAllowedDOFs(characterSettingsHandle))
         set(value) = JphCharacterSettings_SetAllowedDOFs(characterSettingsHandle, value.value)

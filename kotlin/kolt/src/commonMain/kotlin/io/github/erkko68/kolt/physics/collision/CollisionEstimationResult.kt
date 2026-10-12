@@ -33,13 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CollisionEstimationResult`. */
+/**
+ * A structure that contains the estimated contact and friction impulses and the resulting body velocities
+ *
+ * C++ `JPH::CollisionEstimationResult`.
+ */
 class CollisionEstimationResult internal constructor(internal val collisionEstimationResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCollisionEstimationResult_create(), owned = true)
 
     override fun close() =
         closeOnce { JphCollisionEstimationResult_destroy(collisionEstimationResultHandle) }
 
+    /** The estimated linear velocity of body 1 after collision */
     var linearVelocity1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -50,6 +55,7 @@ class CollisionEstimationResult internal constructor(internal val collisionEstim
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetLinearVelocity1(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
+    /** The estimated angular velocity of body 1 after collision */
     var angularVelocity1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -60,6 +66,7 @@ class CollisionEstimationResult internal constructor(internal val collisionEstim
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetAngularVelocity1(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
+    /** The estimated linear velocity of body 2 after collision */
     var linearVelocity2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -70,6 +77,7 @@ class CollisionEstimationResult internal constructor(internal val collisionEstim
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetLinearVelocity2(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
+    /** The estimated angular velocity of body 2 after collision */
     var angularVelocity2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -80,6 +88,7 @@ class CollisionEstimationResult internal constructor(internal val collisionEstim
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetAngularVelocity2(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
+    /** Point at which friction was applied (relative to mBaseOffset of the manifold) */
     var frictionPoint: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -90,6 +99,7 @@ class CollisionEstimationResult internal constructor(internal val collisionEstim
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetFrictionPoint(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
+    /** Normalized tangent of contact normal */
     var tangent1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -100,6 +110,7 @@ class CollisionEstimationResult internal constructor(internal val collisionEstim
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetTangent1(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
+    /** Second normalized tangent of contact normal (forms a basis with mTangent1 and mWorldSpaceNormal) */
     var tangent2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -110,18 +121,22 @@ class CollisionEstimationResult internal constructor(internal val collisionEstim
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetTangent2(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
+    /** Estimated friction impulses in the direction of tangent 1 (kg m / s) */
     var frictionImpulse1: Float
         get() = JphCollisionEstimationResult_GetFrictionImpulse1(collisionEstimationResultHandle)
         set(value) = JphCollisionEstimationResult_SetFrictionImpulse1(collisionEstimationResultHandle, value)
 
+    /** Estimated friction impulses in the direction of tangent 2 (kg m / s) */
     var frictionImpulse2: Float
         get() = JphCollisionEstimationResult_GetFrictionImpulse2(collisionEstimationResultHandle)
         set(value) = JphCollisionEstimationResult_SetFrictionImpulse2(collisionEstimationResultHandle, value)
 
+    /** Estimated angular friction impulse around the world space normal (kg m^2 / s) */
     var angularFrictionImpulse: Float
         get() = JphCollisionEstimationResult_GetAngularFrictionImpulse(collisionEstimationResultHandle)
         set(value) = JphCollisionEstimationResult_SetAngularFrictionImpulse(collisionEstimationResultHandle, value)
 
+    /** Estimated contact impulses (kg m / s) */
     var contactImpulse: FloatArray
         get() = interopScope {
             val count = JphCollisionEstimationResult_GetContactImpulse(collisionEstimationResultHandle, NullPointer, 0)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EConstraintSubType`. */
+/**
+ * Enum to identify constraint sub type
+ *
+ * C++ `JPH::EConstraintSubType`.
+ */
 enum class EConstraintSubType(internal val value: Int) {
     Fixed(0),
     Point(1),
@@ -48,9 +52,13 @@ enum class EConstraintSubType(internal val value: Int) {
     RackAndPinion(10),
     Gear(11),
     Pulley(12),
+    /** User defined constraint types start here */
     User1(13),
+    /** User defined constraint types start here */
     User2(14),
+    /** User defined constraint types start here */
     User3(15),
+    /** User defined constraint types start here */
     User4(16);
 
     internal companion object {

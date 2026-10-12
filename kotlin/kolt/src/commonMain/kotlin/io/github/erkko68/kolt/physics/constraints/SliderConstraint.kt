@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SliderConstraint`. */
+/**
+ * A slider constraint allows movement in only 1 axis (and no rotation). Also known as a prismatic constraint.
+ *
+ * C++ `JPH::SliderConstraint`.
+ */
 class SliderConstraint internal constructor(internal val sliderConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSliderConstraint_asTwoBodyConstraint(sliderConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: SliderConstraintSettings) : this(JphSliderConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.sliderConstraintSettingsHandle), owned = true)
 
@@ -43,13 +47,16 @@ class SliderConstraint internal constructor(internal val sliderConstraintHandle:
     override fun close() =
         closeOnce { JphSliderConstraint_release(sliderConstraintHandle) }
 
+    /** Get the current distance from the rest position */
     val currentPosition: Float
         get() = JphSliderConstraint_GetCurrentPosition(sliderConstraintHandle)
 
+    /** Friction control */
     var maxFrictionForce: Float
         get() = JphSliderConstraint_GetMaxFrictionForce(sliderConstraintHandle)
         set(frictionForce) = JphSliderConstraint_SetMaxFrictionForce(sliderConstraintHandle, frictionForce)
 
+    /** Motor settings */
     val motorSettings: MotorSettings
         get() = MotorSettings(JphSliderConstraint_GetMotorSettings(sliderConstraintHandle))
 
@@ -65,6 +72,7 @@ class SliderConstraint internal constructor(internal val sliderConstraintHandle:
         get() = JphSliderConstraint_GetTargetPosition(sliderConstraintHandle)
         set(position) = JphSliderConstraint_SetTargetPosition(sliderConstraintHandle, position)
 
+    /** Update the limits of the slider constraint (see SliderConstraintSettings) */
     fun setLimits(limitsMin: Float, limitsMax: Float) =
         JphSliderConstraint_SetLimits(sliderConstraintHandle, limitsMin, limitsMax)
 

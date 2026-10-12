@@ -33,34 +33,45 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::WheelTV`. */
+/**
+ * Wheel object specifically for TrackedVehicleController
+ *
+ * C++ `JPH::WheelTV`.
+ */
 class WheelTV internal constructor(internal val wheelTVHandle: NativePointer, owned: Boolean = false) : Wheel(JphWheelTV_asWheel(wheelTVHandle), owned), AutoCloseable {
     constructor(wheel: WheelSettingsTV) : this(JphWheelTV_create(wheel.wheelSettingsTVHandle), owned = true)
 
     override fun close() =
         closeOnce { JphWheelTV_destroy(wheelTVHandle) }
 
+    /** Override GetSettings and cast to the correct class */
     override val settings: WheelSettingsTV?
         get() = JphWheelTV_GetSettings(wheelTVHandle).takeIf { it != NullPointer }?.let { WheelSettingsTV(it) }
 
+    /** Update the angular velocity of the wheel based on the angular velocity of the track */
     fun calculateAngularVelocity(constraint: VehicleConstraint) =
         JphWheelTV_CalculateAngularVelocity(wheelTVHandle, constraint.vehicleConstraintHandle)
 
+    /** Update the wheel rotation based on the current angular velocity */
     fun update(wheelIndex: Int, deltaTime: Float, constraint: VehicleConstraint) =
         JphWheelTV_Update(wheelTVHandle, wheelIndex, deltaTime, constraint.vehicleConstraintHandle)
 
+    /** Index in mTracks to which this wheel is attached (calculated on initialization) */
     var trackIndex: Int
         get() = JphWheelTV_GetTrackIndex(wheelTVHandle)
         set(value) = JphWheelTV_SetTrackIndex(wheelTVHandle, value)
 
+    /** Combined friction coefficient in longitudinal direction (combines terrain and track) */
     var combinedLongitudinalFriction: Float
         get() = JphWheelTV_GetCombinedLongitudinalFriction(wheelTVHandle)
         set(value) = JphWheelTV_SetCombinedLongitudinalFriction(wheelTVHandle, value)
 
+    /** Combined friction coefficient in lateral direction (combines terrain and track) */
     var combinedLateralFriction: Float
         get() = JphWheelTV_GetCombinedLateralFriction(wheelTVHandle)
         set(value) = JphWheelTV_SetCombinedLateralFriction(wheelTVHandle, value)
 
+    /** Amount of impulse that the brakes can apply to the floor (excluding friction), spread out from brake impulse applied on track */
     var brakeImpulse: Float
         get() = JphWheelTV_GetBrakeImpulse(wheelTVHandle)
         set(value) = JphWheelTV_SetBrakeImpulse(wheelTVHandle, value)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PathConstraintPath`. */
+/**
+ * The path for a path constraint. It allows attaching two bodies to each other while giving the second body the freedom to move along a path relative to the first.
+ *
+ * C++ `JPH::PathConstraintPath`.
+ */
 open class PathConstraintPath internal constructor(internal val pathConstraintPathHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphPathConstraintPath_asSerializableObject(pathConstraintPathHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphPathConstraintPath_createUpcalls(Upcalls.function), owned = true) {
@@ -46,16 +50,25 @@ open class PathConstraintPath internal constructor(internal val pathConstraintPa
     override fun close() =
         closeOnce { JphPathConstraintPath_release(pathConstraintPathHandle) }
 
+    /** Gets the max fraction along the path. I.e. sort of the length of the path. */
     open val pathMaxFraction: Float
         get() = JphPathConstraintPath_GetPathMaxFraction(pathConstraintPathHandle)
 
+    /**
+     * Get the globally closest point on the curve (Could be slow!)
+     * @param position Position to find closest point for
+     * @param fractionHint Last known fraction along the path (can be used to speed up the search)
+     * @return Fraction of closest point along the path
+     */
     open fun getClosestPoint(position: Vec3, fractionHint: Float): Float =
         interopScope { JphPathConstraintPath_GetClosestPoint(pathConstraintPathHandle, toInterop(position.toArray()), fractionHint) }
 
+    /** If the path is looping or not. If a path is looping, the first and last point are automatically connected to each other. They should not be the same points. */
     var isLooping: Boolean
         get() = JphPathConstraintPath_IsLooping(pathConstraintPathHandle)
         set(isLooping) = JphPathConstraintPath_SetIsLooping(pathConstraintPathHandle, isLooping)
 
+    /** Saves the contents of the path in binary form to inStream. */
     open fun saveBinaryState(stream: StreamOut) =
         JphPathConstraintPath_SaveBinaryState(pathConstraintPathHandle, stream.streamOutHandle)
 
@@ -70,6 +83,7 @@ open class PathConstraintPath internal constructor(internal val pathConstraintPa
     }
 
     companion object {
+        /** Creates a Shape of the correct type and restores its contents from the binary stream inStream. */
         fun restoreFromBinaryState(stream: StreamIn): PathConstraintPath =
             interopScope {
                 val error = ByteArray(256)

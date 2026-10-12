@@ -33,38 +33,56 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TrackedVehicleController`. */
+/**
+ * Runtime controller class for vehicle with tank tracks
+ *
+ * C++ `JPH::TrackedVehicleController`.
+ */
 class TrackedVehicleController internal constructor(internal val trackedVehicleControllerHandle: NativePointer, owned: Boolean = false) : VehicleController(JphTrackedVehicleController_asVehicleController(trackedVehicleControllerHandle), owned), AutoCloseable {
     constructor(settings: TrackedVehicleControllerSettings, constraint: VehicleConstraint) : this(JphTrackedVehicleController_create(settings.trackedVehicleControllerSettingsHandle, constraint.vehicleConstraintHandle), owned = true)
 
     override fun close() =
         closeOnce { JphTrackedVehicleController_destroy(trackedVehicleControllerHandle) }
 
+    /**
+     * Set input from driver
+     * @param forward Value between -1 and 1 for auto transmission and value between 0 and 1 indicating desired driving direction and amount the gas pedal is pressed
+     * @param leftRatio Value between -1 and 1 indicating an extra multiplier to the rotation rate of the left track (used for steering)
+     * @param rightRatio Value between -1 and 1 indicating an extra multiplier to the rotation rate of the right track (used for steering)
+     * @param brake Value between 0 and 1 indicating how strong the brake pedal is pressed
+     */
     fun setDriverInput(forward: Float, leftRatio: Float, rightRatio: Float, brake: Float) =
         JphTrackedVehicleController_SetDriverInput(trackedVehicleControllerHandle, forward, leftRatio, rightRatio, brake)
 
+    /** Value between -1 and 1 for auto transmission and value between 0 and 1 indicating desired driving direction and amount the gas pedal is pressed */
     var forwardInput: Float
         get() = JphTrackedVehicleController_GetForwardInput(trackedVehicleControllerHandle)
         set(forward) = JphTrackedVehicleController_SetForwardInput(trackedVehicleControllerHandle, forward)
 
+    /** Value between -1 and 1 indicating an extra multiplier to the rotation rate of the left track (used for steering) */
     var leftRatio: Float
         get() = JphTrackedVehicleController_GetLeftRatio(trackedVehicleControllerHandle)
         set(leftRatio) = JphTrackedVehicleController_SetLeftRatio(trackedVehicleControllerHandle, leftRatio)
 
+    /** Value between -1 and 1 indicating an extra multiplier to the rotation rate of the right track (used for steering) */
     var rightRatio: Float
         get() = JphTrackedVehicleController_GetRightRatio(trackedVehicleControllerHandle)
         set(rightRatio) = JphTrackedVehicleController_SetRightRatio(trackedVehicleControllerHandle, rightRatio)
 
+    /** Value between 0 and 1 indicating how strong the brake pedal is pressed */
     var brakeInput: Float
         get() = JphTrackedVehicleController_GetBrakeInput(trackedVehicleControllerHandle)
         set(brake) = JphTrackedVehicleController_SetBrakeInput(trackedVehicleControllerHandle, brake)
 
+    /** Get current engine state (writable interface, allows you to make changes to the configuration which will take effect the next time step) */
     val engine: VehicleEngine
         get() = VehicleEngine(JphTrackedVehicleController_GetEngine(trackedVehicleControllerHandle))
 
+    /** Get current transmission state (writable interface, allows you to make changes to the configuration which will take effect the next time step) */
     val transmission: VehicleTransmission
         get() = VehicleTransmission(JphTrackedVehicleController_GetTransmission(trackedVehicleControllerHandle))
 
+    /** Get the tracks this vehicle has (writable interface, allows you to make changes to the configuration which will take effect the next time step) */
     val tracks: List<VehicleTrack>
         get() = interopScope {
             val count = JphTrackedVehicleController_GetTracks(trackedVehicleControllerHandle, NullPointer, 0)

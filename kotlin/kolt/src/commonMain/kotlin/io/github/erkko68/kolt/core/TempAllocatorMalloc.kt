@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TempAllocatorMalloc`. */
+/**
+ * Implementation of the TempAllocator that just falls back to malloc/free
+ * Note: This can be quite slow when running in the debugger as large memory blocks need to be initialized with 0xcd
+ *
+ * C++ `JPH::TempAllocatorMalloc`.
+ */
 class TempAllocatorMalloc internal constructor(internal val tempAllocatorMallocHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorMalloc_asTempAllocator(tempAllocatorMallocHandle), owned), AutoCloseable {
     constructor() : this(JphTempAllocatorMalloc_create(), owned = true)
 

@@ -33,41 +33,54 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ContactSettings`. */
+/**
+ * When a contact point is added or persisted, the callback gets a chance to override certain properties of the contact constraint.
+ * The values are filled in with their defaults by the system so the callback doesn't need to modify anything, but it can if it wants to.
+ *
+ * C++ `JPH::ContactSettings`.
+ */
 class ContactSettings internal constructor(internal val contactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphContactSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphContactSettings_destroy(contactSettingsHandle) }
 
+    /** Combined friction for the body pair (see: PhysicsSystem::SetCombineFriction) */
     var combinedFriction: Float
         get() = JphContactSettings_GetCombinedFriction(contactSettingsHandle)
         set(value) = JphContactSettings_SetCombinedFriction(contactSettingsHandle, value)
 
+    /** Combined restitution for the body pair (see: PhysicsSystem::SetCombineRestitution) */
     var combinedRestitution: Float
         get() = JphContactSettings_GetCombinedRestitution(contactSettingsHandle)
         set(value) = JphContactSettings_SetCombinedRestitution(contactSettingsHandle, value)
 
+    /** Scale factor for the inverse mass of body 1 (0 = infinite mass, 1 = use original mass, 2 = body has half the mass). For the same contact pair, you should strive to keep the value the same over time. */
     var invMassScale1: Float
         get() = JphContactSettings_GetInvMassScale1(contactSettingsHandle)
         set(value) = JphContactSettings_SetInvMassScale1(contactSettingsHandle, value)
 
+    /** Scale factor for the inverse inertia of body 1 (usually same as mInvMassScale1) */
     var invInertiaScale1: Float
         get() = JphContactSettings_GetInvInertiaScale1(contactSettingsHandle)
         set(value) = JphContactSettings_SetInvInertiaScale1(contactSettingsHandle, value)
 
+    /** Scale factor for the inverse mass of body 2 (0 = infinite mass, 1 = use original mass, 2 = body has half the mass). For the same contact pair, you should strive to keep the value the same over time. */
     var invMassScale2: Float
         get() = JphContactSettings_GetInvMassScale2(contactSettingsHandle)
         set(value) = JphContactSettings_SetInvMassScale2(contactSettingsHandle, value)
 
+    /** Scale factor for the inverse inertia of body 2 (usually same as mInvMassScale2) */
     var invInertiaScale2: Float
         get() = JphContactSettings_GetInvInertiaScale2(contactSettingsHandle)
         set(value) = JphContactSettings_SetInvInertiaScale2(contactSettingsHandle, value)
 
+    /** If the contact should be treated as a sensor vs body contact (no collision response) */
     var isSensor: Boolean
         get() = JphContactSettings_GetIsSensor(contactSettingsHandle)
         set(value) = JphContactSettings_SetIsSensor(contactSettingsHandle, value)
 
+    /** Relative linear surface velocity between the bodies (world space surface velocity of body 2 - world space surface velocity of body 1), can be used to create a conveyor belt effect */
     var relativeLinearSurfaceVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -78,6 +91,7 @@ class ContactSettings internal constructor(internal val contactSettingsHandle: N
         }
         set(value) = interopScope { JphContactSettings_SetRelativeLinearSurfaceVelocity(contactSettingsHandle, toInterop(value.toArray())) }
 
+    /** Relative angular surface velocity between the bodies (world space angular surface velocity of body 2 - world space angular surface velocity of body 1). Note that this angular velocity is relative to the center of mass of body 1, so if you want it relative to body 2's center of mass you need to add body 2 angular velocity x (body 1 world space center of mass - body 2 world space center of mass) to mRelativeLinearSurfaceVelocity. */
     var relativeAngularSurfaceVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

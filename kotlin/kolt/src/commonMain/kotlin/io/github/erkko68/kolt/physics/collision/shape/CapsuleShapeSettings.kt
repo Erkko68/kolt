@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CapsuleShapeSettings`. */
+/**
+ * Class that constructs a CapsuleShape
+ *
+ * C++ `JPH::CapsuleShapeSettings`.
+ */
 class CapsuleShapeSettings internal constructor(internal val capsuleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphCapsuleShapeSettings_asConvexShapeSettings(capsuleShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCapsuleShapeSettings_create(), owned = true)
     constructor(halfHeightOfCylinder: Float, radius: Float, material: PhysicsMaterial?) : this(JphCapsuleShapeSettings_create_float_float_PhysicsMaterial(halfHeightOfCylinder, radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
@@ -44,9 +48,11 @@ class CapsuleShapeSettings internal constructor(internal val capsuleShapeSetting
     override fun close() =
         closeOnce { JphCapsuleShapeSettings_release(capsuleShapeSettingsHandle) }
 
+    /** Check if this is a valid capsule shape */
     val isValid: Boolean
         get() = JphCapsuleShapeSettings_IsValid(capsuleShapeSettingsHandle)
 
+    /** Checks if the settings of this capsule make this shape a sphere */
     val isSphere: Boolean
         get() = JphCapsuleShapeSettings_IsSphere(capsuleShapeSettingsHandle)
 

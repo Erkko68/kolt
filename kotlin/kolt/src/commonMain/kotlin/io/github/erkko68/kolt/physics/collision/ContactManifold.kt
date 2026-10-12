@@ -33,13 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ContactManifold`. */
+/**
+ * Manifold class, describes the contact surface between two bodies
+ *
+ * C++ `JPH::ContactManifold`.
+ */
 class ContactManifold internal constructor(internal val contactManifoldHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphContactManifold_create(), owned = true)
 
     override fun close() =
         closeOnce { JphContactManifold_destroy(contactManifoldHandle) }
 
+    /** Swaps shape 1 and 2 */
     fun swapShapes(): ContactManifold =
         run {
             val returned = ContactManifold(JphContactManifold_create(), owned = true)
@@ -47,6 +52,7 @@ class ContactManifold internal constructor(internal val contactManifoldHandle: N
             returned
         }
 
+    /** Access to the world space contact positions */
     fun getWorldSpaceContactPointOn1(index: Int): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -65,6 +71,7 @@ class ContactManifold internal constructor(internal val contactManifoldHandle: N
             Vec3(returned)
         }
 
+    /** Offset to which all the contact points are relative */
     var baseOffset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -75,6 +82,7 @@ class ContactManifold internal constructor(internal val contactManifoldHandle: N
         }
         set(value) = interopScope { JphContactManifold_SetBaseOffset(contactManifoldHandle, toInterop(value.toArray())) }
 
+    /** Normal for this manifold, direction along which to move body 2 out of collision along the shortest path */
     var worldSpaceNormal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -85,10 +93,12 @@ class ContactManifold internal constructor(internal val contactManifoldHandle: N
         }
         set(value) = interopScope { JphContactManifold_SetWorldSpaceNormal(contactManifoldHandle, toInterop(value.toArray())) }
 
+    /** Penetration depth (move shape 2 by this distance to resolve the collision). If this value is negative, this is a speculative contact point and may not actually result in a velocity change as during solving the bodies may not actually collide. */
     var penetrationDepth: Float
         get() = JphContactManifold_GetPenetrationDepth(contactManifoldHandle)
         set(value) = JphContactManifold_SetPenetrationDepth(contactManifoldHandle, value)
 
+    /** Sub shapes that formed this manifold (note that when multiple manifolds are combined because they're coplanar, we lose some information here because we only keep track of one sub shape pair that we encounter, see description at Body::SetUseManifoldReduction) */
     var subShapeID1: SubShapeID
         get() = SubShapeID(JphContactManifold_GetSubShapeID1(contactManifoldHandle))
         set(value) = JphContactManifold_SetSubShapeID1(contactManifoldHandle, value.value)
@@ -97,6 +107,7 @@ class ContactManifold internal constructor(internal val contactManifoldHandle: N
         get() = SubShapeID(JphContactManifold_GetSubShapeID2(contactManifoldHandle))
         set(value) = JphContactManifold_SetSubShapeID2(contactManifoldHandle, value.value)
 
+    /** Contact points on the surface of shape 1 relative to mBaseOffset. */
     var relativeContactPointsOn1: List<Vec3>
         get() = interopScope {
             val count = JphContactManifold_GetRelativeContactPointsOn1(contactManifoldHandle, NullPointer, 0)
@@ -108,6 +119,7 @@ class ContactManifold internal constructor(internal val contactManifoldHandle: N
         }
         set(value) = interopScope { JphContactManifold_SetRelativeContactPointsOn1(contactManifoldHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
 
+    /** Contact points on the surface of shape 2 relative to mBaseOffset. If there's no penetration, this will be the same as mRelativeContactPointsOn1. If there is penetration they will be different. */
     var relativeContactPointsOn2: List<Vec3>
         get() = interopScope {
             val count = JphContactManifold_GetRelativeContactPointsOn2(contactManifoldHandle, NullPointer, 0)

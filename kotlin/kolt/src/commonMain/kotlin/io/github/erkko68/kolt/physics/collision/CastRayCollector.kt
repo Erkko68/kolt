@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CastRayCollector`. */
+/**
+ * Virtual interface that allows collecting multiple collision results
+ *
+ * C++ `JPH::CastRayCollector`.
+ */
 open class CastRayCollector internal constructor(internal val castRayCollectorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphCastRayCollector_createUpcalls(Upcalls.function), owned = true) {
@@ -43,40 +47,59 @@ open class CastRayCollector internal constructor(internal val castRayCollectorHa
     override fun close() =
         closeOnce { JphCastRayCollector_destroy(castRayCollectorHandle) }
 
+    /** If you want to reuse this collector, call Reset() */
     open fun reset() =
         JphCastRayCollector_Reset(castRayCollectorHandle)
 
+    /**
+     * When running a query through the NarrowPhaseQuery class, this will be called for every body that is potentially colliding.
+     * It allows collecting additional information needed by the collision collector implementation from the body under lock protection
+     * before AddHit is called (e.g. the user data pointer or the velocity of the body).
+     */
     open fun onBody(body: Body) =
         JphCastRayCollector_OnBody(castRayCollectorHandle, body.bodyHandle)
 
+    /** When running a query through the NarrowPhaseQuery class, this will be called after all AddHit calls have been made for a particular body. */
     open fun onBodyEnd() =
         JphCastRayCollector_OnBodyEnd(castRayCollectorHandle)
 
+    /**
+     * Set by the collision detection functions to the current TransformedShape that we're colliding against before calling the AddHit function.
+     * Note: Only valid during AddHit! For performance reasons, the pointer is not reset after leaving AddHit so the context may point to freed memory.
+     */
     var context: TransformedShape?
         get() = JphCastRayCollector_GetContext(castRayCollectorHandle).takeIf { it != NullPointer }?.let { TransformedShape(it) }
         set(context) = JphCastRayCollector_SetContext(castRayCollectorHandle, context?.transformedShapeHandle ?: NullPointer)
 
+    /** This function can be used to set some user data on the collision collector */
     open fun setUserData(userData: Long) =
         JphCastRayCollector_SetUserData(castRayCollectorHandle, userData)
 
+    /** This function will be called for every hit found, it's up to the application to decide how to store the hit */
     open fun addHit(result: RayCastResult) =
         JphCastRayCollector_AddHit(castRayCollectorHandle, result.rayCastResultHandle)
 
+    /** Update the early out fraction (should be lower than before) */
     fun updateEarlyOutFraction(fraction: Float) =
         JphCastRayCollector_UpdateEarlyOutFraction(castRayCollectorHandle, fraction)
 
+    /** Reset the early out fraction to a specific value */
     fun resetEarlyOutFraction(fraction: Float) =
         JphCastRayCollector_ResetEarlyOutFraction(castRayCollectorHandle, fraction)
 
+    /** Force the collision detection algorithm to terminate as soon as possible. Call this from the AddHit function when a satisfying hit is found. */
     fun forceEarlyOut() =
         JphCastRayCollector_ForceEarlyOut(castRayCollectorHandle)
 
+    /** When true, the collector will no longer accept any additional hits and the collision detection routine should early out as soon as possible */
     fun shouldEarlyOut(): Boolean =
         JphCastRayCollector_ShouldEarlyOut(castRayCollectorHandle)
 
+    /** Get the current early out value */
     val earlyOutFraction: Float
         get() = JphCastRayCollector_GetEarlyOutFraction(castRayCollectorHandle)
 
+    /** Get the current early out value but make sure it's bigger than zero, this is used for shape casting as negative values are used for penetration */
     val positiveEarlyOutFraction: Float
         get() = JphCastRayCollector_GetPositiveEarlyOutFraction(castRayCollectorHandle)
 

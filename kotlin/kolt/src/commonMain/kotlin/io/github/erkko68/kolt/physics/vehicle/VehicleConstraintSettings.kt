@@ -33,7 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleConstraintSettings`. */
+/**
+ * Configuration for constraint that simulates a wheeled vehicle.
+ *
+ * The properties in this constraint are largely based on "Car Physics for Games" by Marco Monster.
+ * See: https://www.asawicki.info/Mirror/Car%20Physics%20for%20Games/Car%20Physics%20for%20Games.html
+ *
+ * C++ `JPH::VehicleConstraintSettings`.
+ */
 open class VehicleConstraintSettings internal constructor(internal val vehicleConstraintSettingsHandle: NativePointer, owned: Boolean = false) : ConstraintSettings(JphVehicleConstraintSettings_asConstraintSettings(vehicleConstraintSettingsHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphVehicleConstraintSettings_createUpcalls(Upcalls.function), owned = true) {
@@ -46,6 +53,7 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
     override fun close() =
         closeOnce { JphVehicleConstraintSettings_release(vehicleConstraintSettingsHandle) }
 
+    /** Vector indicating the up direction of the vehicle (in local space to the body) */
     var up: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -56,6 +64,7 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
         }
         set(value) = interopScope { JphVehicleConstraintSettings_SetUp(vehicleConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Vector indicating forward direction of the vehicle (in local space to the body) */
     var forward: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -66,10 +75,12 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
         }
         set(value) = interopScope { JphVehicleConstraintSettings_SetForward(vehicleConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Defines the maximum pitch/roll angle (rad), can be used to avoid the car from getting upside down. The vehicle up direction will stay within a cone centered around the up axis with half top angle mMaxPitchRollAngle, set to pi to turn off. */
     var maxPitchRollAngle: Float
         get() = JphVehicleConstraintSettings_GetMaxPitchRollAngle(vehicleConstraintSettingsHandle)
         set(value) = JphVehicleConstraintSettings_SetMaxPitchRollAngle(vehicleConstraintSettingsHandle, value)
 
+    /** List of wheels and their properties */
     var wheels: List<WheelSettings>
         get() = interopScope {
             val count = JphVehicleConstraintSettings_GetWheels(vehicleConstraintSettingsHandle, NullPointer, 0)
@@ -79,6 +90,7 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
         }
         set(value) = interopScope { JphVehicleConstraintSettings_SetWheels(vehicleConstraintSettingsHandle, toInterop(value.map { it.wheelSettingsHandle }), value.size) }
 
+    /** List of anti rollbars and their properties */
     var antiRollBars: List<VehicleAntiRollBar>
         get() = interopScope {
             val count = JphVehicleConstraintSettings_GetAntiRollBars(vehicleConstraintSettingsHandle, NullPointer, 0)
@@ -88,6 +100,7 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
         }
         set(value) = interopScope { JphVehicleConstraintSettings_SetAntiRollBars(vehicleConstraintSettingsHandle, toInterop(value.map { it.vehicleAntiRollBarHandle }), value.size) }
 
+    /** Defines how the vehicle can accelerate / decelerate */
     var controller: VehicleControllerSettings?
         get() = JphVehicleConstraintSettings_GetController(vehicleConstraintSettingsHandle).takeIf { it != NullPointer }?.let { VehicleControllerSettings(it) }
         set(value) = JphVehicleConstraintSettings_SetController(vehicleConstraintSettingsHandle, value?.vehicleControllerSettingsHandle ?: NullPointer)

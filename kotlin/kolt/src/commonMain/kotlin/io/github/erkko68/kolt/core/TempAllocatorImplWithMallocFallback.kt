@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TempAllocatorImplWithMallocFallback`. */
+/**
+ * Implementation of the TempAllocator that tries to allocate from a large preallocated block, but falls back to malloc when it is exhausted
+ *
+ * C++ `JPH::TempAllocatorImplWithMallocFallback`.
+ */
 class TempAllocatorImplWithMallocFallback internal constructor(internal val tempAllocatorImplWithMallocFallbackHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorImplWithMallocFallback_asTempAllocator(tempAllocatorImplWithMallocFallbackHandle), owned), AutoCloseable {
     constructor(size: Int) : this(JphTempAllocatorImplWithMallocFallback_create(size), owned = true)
 

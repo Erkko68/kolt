@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ObjectVsBroadPhaseLayerFilterMask`. */
+/**
+ * Class that determines if an object layer can collide with a broadphase layer.
+ * This implementation works together with BroadPhaseLayerInterfaceMask and ObjectLayerPairFilterMask
+ *
+ * C++ `JPH::ObjectVsBroadPhaseLayerFilterMask`.
+ */
 class ObjectVsBroadPhaseLayerFilterMask internal constructor(internal val objectVsBroadPhaseLayerFilterMaskHandle: NativePointer, owned: Boolean = false) : ObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterMask_asObjectVsBroadPhaseLayerFilter(objectVsBroadPhaseLayerFilterMaskHandle), owned), AutoCloseable {
     constructor(broadPhaseLayerInterface: BroadPhaseLayerInterfaceMask) : this(JphObjectVsBroadPhaseLayerFilterMask_create(broadPhaseLayerInterface.broadPhaseLayerInterfaceMaskHandle), owned = true)
 

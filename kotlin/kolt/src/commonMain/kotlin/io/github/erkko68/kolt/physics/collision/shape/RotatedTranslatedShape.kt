@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::RotatedTranslatedShape`. */
+/**
+ * A rotated translated shape will rotate and translate a child shape.
+ * Shifts the child object so that it is centered around the center of mass.
+ *
+ * C++ `JPH::RotatedTranslatedShape`.
+ */
 class RotatedTranslatedShape internal constructor(internal val rotatedTranslatedShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphRotatedTranslatedShape_asDecoratedShape(rotatedTranslatedShapeHandle), owned), AutoCloseable {
     constructor() : this(JphRotatedTranslatedShape_create(), owned = true)
     constructor(position: Vec3, rotation: Quat, shape: Shape?) : this(interopScope { JphRotatedTranslatedShape_create_Vec3Arg_QuatArg_Shape(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) }, owned = true)
@@ -44,6 +49,7 @@ class RotatedTranslatedShape internal constructor(internal val rotatedTranslated
     override fun close() =
         closeOnce { JphRotatedTranslatedShape_release(rotatedTranslatedShapeHandle) }
 
+    /** Access the rotation that is applied to the inner shape */
     val rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -53,6 +59,7 @@ class RotatedTranslatedShape internal constructor(internal val rotatedTranslated
             Quat(returned)
         }
 
+    /** Access the translation that has been applied to the inner shape */
     val position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -62,6 +69,7 @@ class RotatedTranslatedShape internal constructor(internal val rotatedTranslated
             Vec3(returned)
         }
 
+    /** Transform the scale to the local space of the child shape */
     fun transformScale(scale: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::WheelSettingsTV`. */
+/**
+ * WheelSettings object specifically for TrackedVehicleController
+ *
+ * C++ `JPH::WheelSettingsTV`.
+ */
 open class WheelSettingsTV internal constructor(internal val wheelSettingsTVHandle: NativePointer, owned: Boolean = false) : WheelSettings(JphWheelSettingsTV_asWheelSettings(wheelSettingsTVHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphWheelSettingsTV_createUpcalls(Upcalls.function), owned = true) {
@@ -46,10 +50,12 @@ open class WheelSettingsTV internal constructor(internal val wheelSettingsTVHand
     override fun close() =
         closeOnce { JphWheelSettingsTV_release(wheelSettingsTVHandle) }
 
+    /** Friction in forward direction of tire */
     var longitudinalFriction: Float
         get() = JphWheelSettingsTV_GetLongitudinalFriction(wheelSettingsTVHandle)
         set(value) = JphWheelSettingsTV_SetLongitudinalFriction(wheelSettingsTVHandle, value)
 
+    /** Friction in sideways direction of tire */
     var lateralFriction: Float
         get() = JphWheelSettingsTV_GetLateralFriction(wheelSettingsTVHandle)
         set(value) = JphWheelSettingsTV_SetLateralFriction(wheelSettingsTVHandle, value)

@@ -33,7 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EmptyShape`. */
+/**
+ * An empty shape that has no volume and collides with nothing.
+ *
+ * Possible use cases:
+ * - As a placeholder for a shape that will be created later. E.g. if you first need to create a body and only then know what shape it will have.
+ * - If you need a kinematic body to attach a constraint to, but you don't want the body to collide with anything.
+ *
+ * Note that, if possible, you should also put your body in an ObjectLayer that doesn't collide with anything.
+ * This ensures that collisions will be filtered out at broad phase level instead of at narrow phase level, this is more efficient.
+ *
+ * C++ `JPH::EmptyShape`.
+ */
 class EmptyShape internal constructor(internal val emptyShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphEmptyShape_asShape(emptyShapeHandle), owned), AutoCloseable {
     constructor() : this(JphEmptyShape_create(), owned = true)
     constructor(centerOfMass: Vec3) : this(interopScope { JphEmptyShape_create_Vec3Arg(toInterop(centerOfMass.toArray())) }, owned = true)

@@ -33,6 +33,10 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyID`. */
+/**
+ * ID of a body. This is a way of reasoning about bodies in a multithreaded simulation while avoiding race conditions.
+ *
+ * C++ `JPH::BodyID`.
+ */
 @kotlin.jvm.JvmInline
 value class BodyID(val value: Int)

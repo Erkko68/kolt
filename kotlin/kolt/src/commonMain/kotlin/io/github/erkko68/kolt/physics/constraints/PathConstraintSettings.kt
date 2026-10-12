@@ -33,7 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PathConstraintSettings`. */
+/**
+ * Path constraint settings, used to constrain the degrees of freedom between two bodies to a path
+ *
+ * The requirements of the path are that:
+ * * Tangent, normal and bi-normal form an orthonormal basis with: tangent cross bi-normal = normal
+ * * The path points along the tangent vector
+ * * The path is continuous so doesn't contain any sharp corners
+ *
+ * The reason for all this is that the constraint acts like a slider constraint with the sliding axis being the tangent vector (the assumption here is that delta time will be small enough so that the path is linear for that delta time).
+ *
+ * C++ `JPH::PathConstraintSettings`.
+ */
 class PathConstraintSettings internal constructor(internal val pathConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphPathConstraintSettings_asTwoBodyConstraintSettings(pathConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphPathConstraintSettings_create(), owned = true)
 
@@ -43,10 +54,12 @@ class PathConstraintSettings internal constructor(internal val pathConstraintSet
     override fun close() =
         closeOnce { JphPathConstraintSettings_release(pathConstraintSettingsHandle) }
 
+    /** The path that constrains the two bodies */
     var path: PathConstraintPath?
         get() = JphPathConstraintSettings_GetPath(pathConstraintSettingsHandle).takeIf { it != NullPointer }?.let { PathConstraintPath(it) }
         set(value) = JphPathConstraintSettings_SetPath(pathConstraintSettingsHandle, value?.pathConstraintPathHandle ?: NullPointer)
 
+    /** The position of the path start relative to world transform of body 1 */
     var pathPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -57,6 +70,7 @@ class PathConstraintSettings internal constructor(internal val pathConstraintSet
         }
         set(value) = interopScope { JphPathConstraintSettings_SetPathPosition(pathConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** The rotation of the path start relative to world transform of body 1 */
     var pathRotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -67,14 +81,17 @@ class PathConstraintSettings internal constructor(internal val pathConstraintSet
         }
         set(value) = interopScope { JphPathConstraintSettings_SetPathRotation(pathConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** The fraction along the path that corresponds to the initial position of body 2. Usually this is 0, the beginning of the path. But if you want to start an object halfway the path you can calculate this with mPath->GetClosestPoint(point on path to attach body to). */
     var pathFraction: Float
         get() = JphPathConstraintSettings_GetPathFraction(pathConstraintSettingsHandle)
         set(value) = JphPathConstraintSettings_SetPathFraction(pathConstraintSettingsHandle, value)
 
+    /** Maximum amount of friction force to apply (N) when not driven by a motor. */
     var maxFrictionForce: Float
         get() = JphPathConstraintSettings_GetMaxFrictionForce(pathConstraintSettingsHandle)
         set(value) = JphPathConstraintSettings_SetMaxFrictionForce(pathConstraintSettingsHandle, value)
 
+    /** In case the constraint is powered, this determines the motor settings along the path */
     var positionMotorSettings: MotorSettings
         get() = run {
             val returned = MotorSettings(JphMotorSettings_create(), owned = true)
@@ -83,6 +100,7 @@ class PathConstraintSettings internal constructor(internal val pathConstraintSet
         }
         set(value) = JphPathConstraintSettings_SetPositionMotorSettings(pathConstraintSettingsHandle, value.motorSettingsHandle)
 
+    /** How to constrain the rotation of the body to the path */
     var rotationConstraintType: EPathRotationConstraintType
         get() = EPathRotationConstraintType.of(JphPathConstraintSettings_GetRotationConstraintType(pathConstraintSettingsHandle))
         set(value) = JphPathConstraintSettings_SetRotationConstraintType(pathConstraintSettingsHandle, value.value)

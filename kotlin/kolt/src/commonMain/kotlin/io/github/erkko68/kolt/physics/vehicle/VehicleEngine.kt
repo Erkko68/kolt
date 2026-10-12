@@ -33,35 +33,57 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleEngine`. */
+/**
+ * Runtime data for engine
+ *
+ * C++ `JPH::VehicleEngine`.
+ */
 class VehicleEngine internal constructor(internal val vehicleEngineHandle: NativePointer, owned: Boolean = false) : VehicleEngineSettings(JphVehicleEngine_asVehicleEngineSettings(vehicleEngineHandle), owned), AutoCloseable {
     constructor() : this(JphVehicleEngine_create(), owned = true)
 
     override fun close() =
         closeOnce { JphVehicleEngine_destroy(vehicleEngineHandle) }
 
+    /** Clamp the RPM between min and max RPM */
     fun clampRPM() =
         JphVehicleEngine_ClampRPM(vehicleEngineHandle)
 
+    /** Current rotation speed of engine in rounds per minute */
     var currentRPM: Float
         get() = JphVehicleEngine_GetCurrentRPM(vehicleEngineHandle)
         set(rpm) = JphVehicleEngine_SetCurrentRPM(vehicleEngineHandle, rpm)
 
+    /** Get current angular velocity of the engine in radians / second */
     val angularVelocity: Float
         get() = JphVehicleEngine_GetAngularVelocity(vehicleEngineHandle)
 
+    /**
+     * Get the amount of torque (N m) that the engine can supply
+     * @param acceleration How much the gas pedal is pressed \[0, 1\]
+     */
     fun getTorque(acceleration: Float): Float =
         JphVehicleEngine_GetTorque(vehicleEngineHandle, acceleration)
 
+    /**
+     * Apply a torque to the engine rotation speed
+     * @param torque Torque in N m
+     * @param deltaTime Delta time in seconds
+     */
     fun applyTorque(torque: Float, deltaTime: Float) =
         JphVehicleEngine_ApplyTorque(vehicleEngineHandle, torque, deltaTime)
 
+    /**
+     * Update the engine RPM for damping
+     * @param deltaTime Delta time in seconds
+     */
     fun applyDamping(deltaTime: Float) =
         JphVehicleEngine_ApplyDamping(vehicleEngineHandle, deltaTime)
 
+    /** If the engine is idle we allow the vehicle to sleep */
     fun allowSleep(): Boolean =
         JphVehicleEngine_AllowSleep(vehicleEngineHandle)
 
+    /** Saving state for replay */
     fun saveState(stream: StateRecorder) =
         JphVehicleEngine_SaveState(vehicleEngineHandle, stream.stateRecorderHandle)
 

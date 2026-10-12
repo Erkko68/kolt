@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SixDOFConstraint`. */
+/**
+ * 6 Degree Of Freedom Constraint. Allows control over each of the 6 degrees of freedom.
+ *
+ * C++ `JPH::SixDOFConstraint`.
+ */
 class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSixDOFConstraint_asTwoBodyConstraint(sixDOFConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: SixDOFConstraintSettings) : this(JphSixDOFConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.sixDOFConstraintSettingsHandle), owned = true)
 
@@ -43,12 +47,15 @@ class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle:
     override fun close() =
         closeOnce { JphSixDOFConstraint_release(sixDOFConstraintHandle) }
 
+    /** Update the translation limits for this constraint */
     fun setTranslationLimits(limitMin: Vec3, limitMax: Vec3) =
         interopScope { JphSixDOFConstraint_SetTranslationLimits(sixDOFConstraintHandle, toInterop(limitMin.toArray()), toInterop(limitMax.toArray())) }
 
+    /** Update the rotational limits for this constraint */
     fun setRotationLimits(limitMin: Vec3, limitMax: Vec3) =
         interopScope { JphSixDOFConstraint_SetRotationLimits(sixDOFConstraintHandle, toInterop(limitMin.toArray()), toInterop(limitMax.toArray())) }
 
+    /** Get constraint Limits */
     fun getLimitsMin(axis: SixDOFConstraintSettings.EAxis): Float =
         JphSixDOFConstraint_GetLimitsMin(sixDOFConstraintHandle, axis.value)
 
@@ -91,12 +98,14 @@ class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle:
             Vec3(returned)
         }
 
+    /** Check which axis are fixed/free */
     fun isFixedAxis(axis: SixDOFConstraintSettings.EAxis): Boolean =
         JphSixDOFConstraint_IsFixedAxis(sixDOFConstraintHandle, axis.value)
 
     fun isFreeAxis(axis: SixDOFConstraintSettings.EAxis): Boolean =
         JphSixDOFConstraint_IsFreeAxis(sixDOFConstraintHandle, axis.value)
 
+    /** Update the limits spring settings */
     fun getLimitsSpringSettings(axis: SixDOFConstraintSettings.EAxis): SpringSettings =
         run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
@@ -107,12 +116,14 @@ class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle:
     fun setLimitsSpringSettings(axis: SixDOFConstraintSettings.EAxis, limitsSpringSettings: SpringSettings) =
         JphSixDOFConstraint_SetLimitsSpringSettings(sixDOFConstraintHandle, axis.value, limitsSpringSettings.springSettingsHandle)
 
+    /** Set the max friction for each axis */
     fun setMaxFriction(axis: SixDOFConstraintSettings.EAxis, friction: Float) =
         JphSixDOFConstraint_SetMaxFriction(sixDOFConstraintHandle, axis.value, friction)
 
     fun getMaxFriction(axis: SixDOFConstraintSettings.EAxis): Float =
         JphSixDOFConstraint_GetMaxFriction(sixDOFConstraintHandle, axis.value)
 
+    /** Get rotation of constraint in constraint space */
     val rotationInConstraintSpace: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -122,15 +133,22 @@ class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle:
             Quat(returned)
         }
 
+    /** Motor settings */
     fun getMotorSettings(axis: SixDOFConstraintSettings.EAxis): MotorSettings =
         MotorSettings(JphSixDOFConstraint_GetMotorSettings(sixDOFConstraintHandle, axis.value))
 
+    /**
+     * Motor controls.
+     * Translation motors work in constraint space of body 1.
+     * Rotation motors work in constraint space of body 2 (!).
+     */
     fun setMotorState(axis: SixDOFConstraintSettings.EAxis, state: EMotorState) =
         JphSixDOFConstraint_SetMotorState(sixDOFConstraintHandle, axis.value, state.value)
 
     fun getMotorState(axis: SixDOFConstraintSettings.EAxis): EMotorState =
         EMotorState.of(JphSixDOFConstraint_GetMotorState(sixDOFConstraintHandle, axis.value))
 
+    /** Set the target velocity in body 1 constraint space */
     var targetVelocityCS: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -141,6 +159,7 @@ class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle:
         }
         set(velocity) = interopScope { JphSixDOFConstraint_SetTargetVelocityCS(sixDOFConstraintHandle, toInterop(velocity.toArray())) }
 
+    /** Set the target angular velocity in body 2 constraint space (!) */
     var targetAngularVelocityCS: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -151,6 +170,7 @@ class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle:
         }
         set(angularVelocity) = interopScope { JphSixDOFConstraint_SetTargetAngularVelocityCS(sixDOFConstraintHandle, toInterop(angularVelocity.toArray())) }
 
+    /** Set the target position in body 1 constraint space */
     var targetPositionCS: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -161,6 +181,7 @@ class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle:
         }
         set(position) = interopScope { JphSixDOFConstraint_SetTargetPositionCS(sixDOFConstraintHandle, toInterop(position.toArray())) }
 
+    /** Set the target orientation in body 1 constraint space */
     var targetOrientationCS: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -171,9 +192,14 @@ class SixDOFConstraint internal constructor(internal val sixDOFConstraintHandle:
         }
         set(orientation) = interopScope { JphSixDOFConstraint_SetTargetOrientationCS(sixDOFConstraintHandle, toInterop(orientation.toArray())) }
 
+    /**
+     * Set the target orientation in body space (R2 = R1 * inOrientation, where R1 and R2 are the world space rotations for body 1 and 2).
+     * Solve: R2 * ConstraintToBody2 = R1 * ConstraintToBody1 * q (see SwingTwistConstraint::GetSwingTwist) and R2 = R1 * inOrientation for q.
+     */
     fun setTargetOrientationBS(orientation: Quat) =
         interopScope { JphSixDOFConstraint_SetTargetOrientationBS(sixDOFConstraintHandle, toInterop(orientation.toArray())) }
 
+    /** Get Lagrange multiplier from last physics update (the linear/angular impulse applied to satisfy the constraint) */
     val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

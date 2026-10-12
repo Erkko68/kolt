@@ -33,29 +33,38 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CollideSettingsBase`. */
+/**
+ * Settings to be passed with a collision query
+ *
+ * C++ `JPH::CollideSettingsBase`.
+ */
 open class CollideSettingsBase internal constructor(internal val collideSettingsBaseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCollideSettingsBase_create(), owned = true)
 
     override fun close() =
         closeOnce { JphCollideSettingsBase_destroy(collideSettingsBaseHandle) }
 
+    /** How active edges (edges that a moving object should bump into) are handled */
     var activeEdgeMode: EActiveEdgeMode
         get() = EActiveEdgeMode.of(JphCollideSettingsBase_GetActiveEdgeMode(collideSettingsBaseHandle))
         set(value) = JphCollideSettingsBase_SetActiveEdgeMode(collideSettingsBaseHandle, value.value)
 
+    /** If colliding faces should be collected or only the collision point */
     var collectFacesMode: ECollectFacesMode
         get() = ECollectFacesMode.of(JphCollideSettingsBase_GetCollectFacesMode(collideSettingsBaseHandle))
         set(value) = JphCollideSettingsBase_SetCollectFacesMode(collideSettingsBaseHandle, value.value)
 
+    /** If objects are closer than this distance, they are considered to be colliding (used for GJK) (unit: meter) */
     var collisionTolerance: Float
         get() = JphCollideSettingsBase_GetCollisionTolerance(collideSettingsBaseHandle)
         set(value) = JphCollideSettingsBase_SetCollisionTolerance(collideSettingsBaseHandle, value)
 
+    /** A factor that determines the accuracy of the penetration depth calculation. If the change of the squared distance is less than tolerance * current_penetration_depth^2 the algorithm will terminate. (unit: dimensionless) */
     var penetrationTolerance: Float
         get() = JphCollideSettingsBase_GetPenetrationTolerance(collideSettingsBaseHandle)
         set(value) = JphCollideSettingsBase_SetPenetrationTolerance(collideSettingsBaseHandle, value)
 
+    /** When mActiveEdgeMode is CollideOnlyWithActive a movement direction can be provided. When hitting an inactive edge, the system will select the triangle normal as penetration depth only if it impedes the movement less than with the calculated penetration depth. */
     var activeEdgeMovementDirection: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

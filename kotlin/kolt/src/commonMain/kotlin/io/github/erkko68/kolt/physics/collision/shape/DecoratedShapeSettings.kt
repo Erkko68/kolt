@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::DecoratedShapeSettings`. */
+/**
+ * Class that constructs a DecoratedShape
+ *
+ * C++ `JPH::DecoratedShapeSettings`.
+ */
 open class DecoratedShapeSettings internal constructor(internal val decoratedShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphDecoratedShapeSettings_asShapeSettings(decoratedShapeSettingsHandle), owned), AutoCloseable {
     override fun addRef() =
         own { JphDecoratedShapeSettings_addRef(decoratedShapeSettingsHandle) }
@@ -41,10 +45,12 @@ open class DecoratedShapeSettings internal constructor(internal val decoratedSha
     override fun close() =
         closeOnce { JphDecoratedShapeSettings_release(decoratedShapeSettingsHandle) }
 
+    /** Sub shape (either this or mShapePtr needs to be filled up) */
     var innerShape: ShapeSettings?
         get() = JphDecoratedShapeSettings_GetInnerShape(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
         set(value) = JphDecoratedShapeSettings_SetInnerShape(decoratedShapeSettingsHandle, value?.shapeSettingsHandle ?: NullPointer)
 
+    /** Sub shape (either this or mShape needs to be filled up) */
     var innerShapePtr: Shape?
         get() = JphDecoratedShapeSettings_GetInnerShapePtr(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(value) = JphDecoratedShapeSettings_SetInnerShapePtr(decoratedShapeSettingsHandle, value?.shapeHandle ?: NullPointer)

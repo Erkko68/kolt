@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ReversedShapeFilter`. */
+/**
+ * Helper class to reverse the order of the shapes in the ShouldCollide function
+ *
+ * C++ `JPH::ReversedShapeFilter`.
+ */
 class ReversedShapeFilter internal constructor(internal val reversedShapeFilterHandle: NativePointer, owned: Boolean = false) : ShapeFilter(JphReversedShapeFilter_asShapeFilter(reversedShapeFilterHandle), owned), AutoCloseable {
     constructor(filter: ShapeFilter) : this(JphReversedShapeFilter_create(filter.shapeFilterHandle), owned = true)
 

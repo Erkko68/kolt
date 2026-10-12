@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::StreamOut`. */
+/**
+ * Simple binary output stream
+ *
+ * C++ `JPH::StreamOut`.
+ */
 open class StreamOut internal constructor(internal val streamOutHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphStreamOut_createUpcalls(Upcalls.function), owned = true) {
@@ -43,9 +47,11 @@ open class StreamOut internal constructor(internal val streamOutHandle: NativePo
     override fun close() =
         closeOnce { JphStreamOut_destroy(streamOutHandle) }
 
+    /** Write a string of bytes to the binary stream */
     open fun writeBytes(data: NativePointer, numBytes: Int) =
         JphStreamOut_WriteBytes(streamOutHandle, data, numBytes)
 
+    /** Returns true if there was an IO failure */
     open val isFailed: Boolean
         get() = JphStreamOut_IsFailed(streamOutHandle)
 

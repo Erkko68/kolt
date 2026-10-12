@@ -33,7 +33,19 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BroadPhaseLayerInterfaceMask`. */
+/**
+ * BroadPhaseLayerInterface implementation.
+ * This defines a mapping between object and broadphase layers.
+ * This implementation works together with ObjectLayerPairFilterMask and ObjectVsBroadPhaseLayerFilterMask.
+ * A broadphase layer is suitable for an object if its group
+ * &
+ * inGroupsToInclude is not zero and its group
+ * &
+ * inGroupsToExclude is zero.
+ * The broadphase layers are iterated from lowest to highest value and the first one that matches is taken. If none match then it takes the last layer.
+ *
+ * C++ `JPH::BroadPhaseLayerInterfaceMask`.
+ */
 class BroadPhaseLayerInterfaceMask internal constructor(internal val broadPhaseLayerInterfaceMaskHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceMaskHandle), owned), AutoCloseable {
     constructor(numBroadPhaseLayers: Int) : this(JphBroadPhaseLayerInterfaceMask_create(numBroadPhaseLayers), owned = true)
 
@@ -43,6 +55,7 @@ class BroadPhaseLayerInterfaceMask internal constructor(internal val broadPhaseL
     fun configureLayer(broadPhaseLayer: BroadPhaseLayer, groupsToInclude: Int, groupsToExclude: Int) =
         JphBroadPhaseLayerInterfaceMask_ConfigureLayer(broadPhaseLayerInterfaceMaskHandle, broadPhaseLayer.value, groupsToInclude, groupsToExclude)
 
+    /** Returns true if an object layer should collide with a broadphase layer, this function is being called from ObjectVsBroadPhaseLayerFilterMask */
     fun shouldCollide(layer1: Int, layer2: BroadPhaseLayer): Boolean =
         JphBroadPhaseLayerInterfaceMask_ShouldCollide(broadPhaseLayerInterfaceMaskHandle, layer1, layer2.value)
 }

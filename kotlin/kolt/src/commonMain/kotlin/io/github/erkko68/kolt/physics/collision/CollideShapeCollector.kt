@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CollideShapeCollector`. */
+/**
+ * Virtual interface that allows collecting multiple collision results
+ *
+ * C++ `JPH::CollideShapeCollector`.
+ */
 open class CollideShapeCollector internal constructor(internal val collideShapeCollectorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphCollideShapeCollector_createUpcalls(Upcalls.function), owned = true) {
@@ -43,40 +47,59 @@ open class CollideShapeCollector internal constructor(internal val collideShapeC
     override fun close() =
         closeOnce { JphCollideShapeCollector_destroy(collideShapeCollectorHandle) }
 
+    /** If you want to reuse this collector, call Reset() */
     open fun reset() =
         JphCollideShapeCollector_Reset(collideShapeCollectorHandle)
 
+    /**
+     * When running a query through the NarrowPhaseQuery class, this will be called for every body that is potentially colliding.
+     * It allows collecting additional information needed by the collision collector implementation from the body under lock protection
+     * before AddHit is called (e.g. the user data pointer or the velocity of the body).
+     */
     open fun onBody(body: Body) =
         JphCollideShapeCollector_OnBody(collideShapeCollectorHandle, body.bodyHandle)
 
+    /** When running a query through the NarrowPhaseQuery class, this will be called after all AddHit calls have been made for a particular body. */
     open fun onBodyEnd() =
         JphCollideShapeCollector_OnBodyEnd(collideShapeCollectorHandle)
 
+    /**
+     * Set by the collision detection functions to the current TransformedShape that we're colliding against before calling the AddHit function.
+     * Note: Only valid during AddHit! For performance reasons, the pointer is not reset after leaving AddHit so the context may point to freed memory.
+     */
     var context: TransformedShape?
         get() = JphCollideShapeCollector_GetContext(collideShapeCollectorHandle).takeIf { it != NullPointer }?.let { TransformedShape(it) }
         set(context) = JphCollideShapeCollector_SetContext(collideShapeCollectorHandle, context?.transformedShapeHandle ?: NullPointer)
 
+    /** This function can be used to set some user data on the collision collector */
     open fun setUserData(userData: Long) =
         JphCollideShapeCollector_SetUserData(collideShapeCollectorHandle, userData)
 
+    /** This function will be called for every hit found, it's up to the application to decide how to store the hit */
     open fun addHit(result: CollideShapeResult) =
         JphCollideShapeCollector_AddHit(collideShapeCollectorHandle, result.collideShapeResultHandle)
 
+    /** Update the early out fraction (should be lower than before) */
     fun updateEarlyOutFraction(fraction: Float) =
         JphCollideShapeCollector_UpdateEarlyOutFraction(collideShapeCollectorHandle, fraction)
 
+    /** Reset the early out fraction to a specific value */
     fun resetEarlyOutFraction(fraction: Float) =
         JphCollideShapeCollector_ResetEarlyOutFraction(collideShapeCollectorHandle, fraction)
 
+    /** Force the collision detection algorithm to terminate as soon as possible. Call this from the AddHit function when a satisfying hit is found. */
     fun forceEarlyOut() =
         JphCollideShapeCollector_ForceEarlyOut(collideShapeCollectorHandle)
 
+    /** When true, the collector will no longer accept any additional hits and the collision detection routine should early out as soon as possible */
     fun shouldEarlyOut(): Boolean =
         JphCollideShapeCollector_ShouldEarlyOut(collideShapeCollectorHandle)
 
+    /** Get the current early out value */
     val earlyOutFraction: Float
         get() = JphCollideShapeCollector_GetEarlyOutFraction(collideShapeCollectorHandle)
 
+    /** Get the current early out value but make sure it's bigger than zero, this is used for shape casting as negative values are used for penetration */
     val positiveEarlyOutFraction: Float
         get() = JphCollideShapeCollector_GetPositiveEarlyOutFraction(collideShapeCollectorHandle)
 

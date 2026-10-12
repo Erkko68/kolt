@@ -33,13 +33,23 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::EStateRecorderState`. */
+/**
+ * A bit field that determines which aspects of the simulation to save
+ *
+ * C++ `JPH::EStateRecorderState`.
+ */
 enum class EStateRecorderState(internal val value: Int) {
+    /** Save nothing */
     None(0),
+    /** Save global physics system state (delta time, gravity, etc.) */
     Global(1),
+    /** Save the state of bodies */
     Bodies(2),
+    /** Save the state of contacts */
     Contacts(4),
+    /** Save the state of constraints */
     Constraints(8),
+    /** Save all state */
     All(15);
 
     internal companion object {

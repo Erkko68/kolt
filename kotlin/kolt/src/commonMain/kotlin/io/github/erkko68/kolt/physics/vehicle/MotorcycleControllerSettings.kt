@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::MotorcycleControllerSettings`. */
+/**
+ * Settings of a two wheeled motorcycle (adds a spring to balance the motorcycle)
+ * Note: The motor cycle controller is still in development and may need a lot of tweaks/hacks to work properly!
+ *
+ * C++ `JPH::MotorcycleControllerSettings`.
+ */
 open class MotorcycleControllerSettings internal constructor(internal val motorcycleControllerSettingsHandle: NativePointer, owned: Boolean = false) : WheeledVehicleControllerSettings(JphMotorcycleControllerSettings_asWheeledVehicleControllerSettings(motorcycleControllerSettingsHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphMotorcycleControllerSettings_createUpcalls(Upcalls.function), owned = true) {
@@ -46,26 +51,35 @@ open class MotorcycleControllerSettings internal constructor(internal val motorc
     override fun close() =
         closeOnce { JphMotorcycleControllerSettings_release(motorcycleControllerSettingsHandle) }
 
+    /** How far we're willing to make the bike lean over in turns (in radians) */
     var maxLeanAngle: Float
         get() = JphMotorcycleControllerSettings_GetMaxLeanAngle(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetMaxLeanAngle(motorcycleControllerSettingsHandle, value)
 
+    /** Spring constant for the lean spring */
     var leanSpringConstant: Float
         get() = JphMotorcycleControllerSettings_GetLeanSpringConstant(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSpringConstant(motorcycleControllerSettingsHandle, value)
 
+    /** Spring damping constant for the lean spring */
     var leanSpringDamping: Float
         get() = JphMotorcycleControllerSettings_GetLeanSpringDamping(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSpringDamping(motorcycleControllerSettingsHandle, value)
 
+    /** The lean spring applies an additional force equal to this coefficient * Integral(delta angle, 0, t), this effectively makes the lean spring a PID controller */
     var leanSpringIntegrationCoefficient: Float
         get() = JphMotorcycleControllerSettings_GetLeanSpringIntegrationCoefficient(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSpringIntegrationCoefficient(motorcycleControllerSettingsHandle, value)
 
+    /** How much to decay the angle integral when the wheels are not touching the floor: new_value = e^(-decay * t) * initial_value */
     var leanSpringIntegrationCoefficientDecay: Float
         get() = JphMotorcycleControllerSettings_GetLeanSpringIntegrationCoefficientDecay(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSpringIntegrationCoefficientDecay(motorcycleControllerSettingsHandle, value)
 
+    /**
+     * How much to smooth the lean angle (0 = no smoothing, 1 = lean angle never changes)
+     * Note that this is frame rate dependent because the formula is: smoothing_factor * previous + (1 - smoothing_factor) * current
+     */
     var leanSmoothingFactor: Float
         get() = JphMotorcycleControllerSettings_GetLeanSmoothingFactor(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSmoothingFactor(motorcycleControllerSettingsHandle, value)

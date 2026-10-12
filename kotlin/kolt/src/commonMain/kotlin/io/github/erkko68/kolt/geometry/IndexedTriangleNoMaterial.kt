@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::IndexedTriangleNoMaterial`. */
+/**
+ * Triangle with 32-bit indices
+ *
+ * C++ `JPH::IndexedTriangleNoMaterial`.
+ */
 open class IndexedTriangleNoMaterial internal constructor(internal val indexedTriangleNoMaterialHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphIndexedTriangleNoMaterial_create(), owned = true)
     constructor(i1: Int, i2: Int, i3: Int) : this(JphIndexedTriangleNoMaterial_create_uint32_uint32_uint32(i1, i2, i3), owned = true)
@@ -41,18 +45,23 @@ open class IndexedTriangleNoMaterial internal constructor(internal val indexedTr
     override fun close() =
         closeOnce { JphIndexedTriangleNoMaterial_destroy(indexedTriangleNoMaterialHandle) }
 
+    /** Check if two triangles are equivalent (using the same vertices) */
     fun isEquivalent(rhs: IndexedTriangleNoMaterial): Boolean =
         JphIndexedTriangleNoMaterial_IsEquivalent(indexedTriangleNoMaterialHandle, rhs.indexedTriangleNoMaterialHandle)
 
+    /** Check if two triangles are opposite (using the same vertices but in opposing order) */
     fun isOpposite(rhs: IndexedTriangleNoMaterial): Boolean =
         JphIndexedTriangleNoMaterial_IsOpposite(indexedTriangleNoMaterialHandle, rhs.indexedTriangleNoMaterialHandle)
 
+    /** Check if triangle is degenerate */
     fun isDegenerate(vertices: List<Float3>): Boolean =
         interopScope { JphIndexedTriangleNoMaterial_IsDegenerate(indexedTriangleNoMaterialHandle, toInterop(FloatArray(vertices.size * 3).also { a -> vertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), vertices.size) }
 
+    /** Rotate the vertices so that the second vertex becomes first etc. This does not change the represented triangle. */
     fun rotate() =
         JphIndexedTriangleNoMaterial_Rotate(indexedTriangleNoMaterialHandle)
 
+    /** Get center of triangle */
     fun getCentroid(vertices: List<Float3>): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -62,6 +71,7 @@ open class IndexedTriangleNoMaterial internal constructor(internal val indexedTr
             Vec3(returned)
         }
 
+    /** Get the hash value of this structure */
     open val hash: Long
         get() = interopScope {
             val returned = LongArray(1)

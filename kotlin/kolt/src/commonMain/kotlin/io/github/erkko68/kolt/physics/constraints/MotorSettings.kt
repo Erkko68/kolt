@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::MotorSettings`. */
+/**
+ * Class that contains the settings for a constraint motor.
+ * See the main page of the API documentation for more information on how to configure a motor.
+ *
+ * C++ `JPH::MotorSettings`.
+ */
 class MotorSettings internal constructor(internal val motorSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphMotorSettings_create(), owned = true)
     constructor(mode: ESpringMode, frequency: Float, damping: Float) : this(JphMotorSettings_create_ESpringMode_float_float(mode.value, frequency, damping), owned = true)
@@ -44,27 +49,35 @@ class MotorSettings internal constructor(internal val motorSettingsHandle: Nativ
     override fun close() =
         closeOnce { JphMotorSettings_destroy(motorSettingsHandle) }
 
+    /** Set asymmetric force limits */
     fun setForceLimits(min: Float, max: Float) =
         JphMotorSettings_SetForceLimits(motorSettingsHandle, min, max)
 
+    /** Set asymmetric torque limits */
     fun setTorqueLimits(min: Float, max: Float) =
         JphMotorSettings_SetTorqueLimits(motorSettingsHandle, min, max)
 
+    /** Set symmetric force limits */
     fun setForceLimit(limit: Float) =
         JphMotorSettings_SetForceLimit(motorSettingsHandle, limit)
 
+    /** Set symmetric torque limits */
     fun setTorqueLimit(limit: Float) =
         JphMotorSettings_SetTorqueLimit(motorSettingsHandle, limit)
 
+    /** Check if settings are valid */
     val isValid: Boolean
         get() = JphMotorSettings_IsValid(motorSettingsHandle)
 
+    /** Saves the contents of the motor settings in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphMotorSettings_SaveBinaryState(motorSettingsHandle, stream.streamOutHandle)
 
+    /** Restores contents from the binary stream inStream. */
     fun restoreBinaryState(stream: StreamIn) =
         JphMotorSettings_RestoreBinaryState(motorSettingsHandle, stream.streamInHandle)
 
+    /** Settings for the spring that is used to drive to the position target (not used when motor is a velocity motor). */
     var springSettings: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
@@ -73,18 +86,22 @@ class MotorSettings internal constructor(internal val motorSettingsHandle: Nativ
         }
         set(value) = JphMotorSettings_SetSpringSettings(motorSettingsHandle, value.springSettingsHandle)
 
+    /** Minimum force to apply in case of a linear constraint (N). Usually this is -mMaxForceLimit unless you want a motor that can e.g. push but not pull. Not used when motor is an angular motor. */
     var minForceLimit: Float
         get() = JphMotorSettings_GetMinForceLimit(motorSettingsHandle)
         set(value) = JphMotorSettings_SetMinForceLimit(motorSettingsHandle, value)
 
+    /** Maximum force to apply in case of a linear constraint (N). Not used when motor is an angular motor. */
     var maxForceLimit: Float
         get() = JphMotorSettings_GetMaxForceLimit(motorSettingsHandle)
         set(value) = JphMotorSettings_SetMaxForceLimit(motorSettingsHandle, value)
 
+    /** Minimum torque to apply in case of a angular constraint (N m). Usually this is -mMaxTorqueLimit unless you want a motor that can e.g. push but not pull. Not used when motor is a linear motor. */
     var minTorqueLimit: Float
         get() = JphMotorSettings_GetMinTorqueLimit(motorSettingsHandle)
         set(value) = JphMotorSettings_SetMinTorqueLimit(motorSettingsHandle, value)
 
+    /** Maximum torque to apply in case of a angular constraint (N m). Not used when motor is a linear motor. */
     var maxTorqueLimit: Float
         get() = JphMotorSettings_GetMaxTorqueLimit(motorSettingsHandle)
         set(value) = JphMotorSettings_SetMaxTorqueLimit(motorSettingsHandle, value)

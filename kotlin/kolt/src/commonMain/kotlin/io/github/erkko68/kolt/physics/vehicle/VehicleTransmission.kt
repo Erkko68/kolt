@@ -33,34 +33,56 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleTransmission`. */
+/**
+ * Runtime data for transmission
+ *
+ * C++ `JPH::VehicleTransmission`.
+ */
 class VehicleTransmission internal constructor(internal val vehicleTransmissionHandle: NativePointer, owned: Boolean = false) : VehicleTransmissionSettings(JphVehicleTransmission_asVehicleTransmissionSettings(vehicleTransmissionHandle), owned), AutoCloseable {
     constructor() : this(JphVehicleTransmission_create(), owned = true)
 
     override fun close() =
         closeOnce { JphVehicleTransmission_destroy(vehicleTransmissionHandle) }
 
+    /**
+     * Set input from driver regarding the transmission (only relevant when transmission is set to manual mode)
+     * @param currentGear Current gear, -1 = reverse, 0 = neutral, 1 = 1st gear etc.
+     * @param clutchFriction Value between 0 and 1 indicating how much friction the clutch gives (0 = no friction, 1 = full friction)
+     */
     fun set(currentGear: Int, clutchFriction: Float) =
         JphVehicleTransmission_Set(vehicleTransmissionHandle, currentGear, clutchFriction)
 
+    /**
+     * Update the current gear and clutch friction if the transmission is in auto mode
+     * @param deltaTime Time step delta time in s
+     * @param currentRPM Current RPM for engine
+     * @param forwardInput Hint if the user wants to drive forward (> 0) or backwards ( < 0)
+     * @param canShiftUp Indicates if we want to allow the transmission to shift up (e.g. pass false if wheels are slipping)
+     */
     fun update(deltaTime: Float, currentRPM: Float, forwardInput: Float, canShiftUp: Boolean) =
         JphVehicleTransmission_Update(vehicleTransmissionHandle, deltaTime, currentRPM, forwardInput, canShiftUp)
 
+    /** Current gear, -1 = reverse, 0 = neutral, 1 = 1st gear etc. */
     val currentGear: Int
         get() = JphVehicleTransmission_GetCurrentGear(vehicleTransmissionHandle)
 
+    /** Value between 0 and 1 indicating how much friction the clutch gives (0 = no friction, 1 = full friction) */
     val clutchFriction: Float
         get() = JphVehicleTransmission_GetClutchFriction(vehicleTransmissionHandle)
 
+    /** If the auto box is currently switching gears */
     val isSwitchingGear: Boolean
         get() = JphVehicleTransmission_IsSwitchingGear(vehicleTransmissionHandle)
 
+    /** Return the transmission ratio based on the current gear (ratio between engine and differential) */
     val currentRatio: Float
         get() = JphVehicleTransmission_GetCurrentRatio(vehicleTransmissionHandle)
 
+    /** Only allow sleeping when the transmission is idle */
     fun allowSleep(): Boolean =
         JphVehicleTransmission_AllowSleep(vehicleTransmissionHandle)
 
+    /** Saving state for replay */
     fun saveState(stream: StateRecorder) =
         JphVehicleTransmission_SaveState(vehicleTransmissionHandle, stream.stateRecorderHandle)
 

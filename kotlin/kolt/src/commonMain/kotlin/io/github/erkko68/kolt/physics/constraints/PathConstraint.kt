@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PathConstraint`. */
+/**
+ * Path constraint, used to constrain the degrees of freedom between two bodies to a path
+ *
+ * C++ `JPH::PathConstraint`.
+ */
 class PathConstraint internal constructor(internal val pathConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphPathConstraint_asTwoBodyConstraint(pathConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: PathConstraintSettings) : this(JphPathConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.pathConstraintSettingsHandle), owned = true)
 
@@ -43,19 +47,24 @@ class PathConstraint internal constructor(internal val pathConstraintHandle: Nat
     override fun close() =
         closeOnce { JphPathConstraint_release(pathConstraintHandle) }
 
+    /** Update the path for this constraint */
     fun setPath(path: PathConstraintPath?, pathFraction: Float) =
         JphPathConstraint_SetPath(pathConstraintHandle, path?.pathConstraintPathHandle ?: NullPointer, pathFraction)
 
+    /** Access to the current path */
     val path: PathConstraintPath?
         get() = JphPathConstraint_GetPath(pathConstraintHandle).takeIf { it != NullPointer }?.let { PathConstraintPath(it) }
 
+    /** Access to the current fraction along the path e \[0, GetPath()->GetMaxPathFraction()\] */
     val pathFraction: Float
         get() = JphPathConstraint_GetPathFraction(pathConstraintHandle)
 
+    /** Friction control */
     var maxFrictionForce: Float
         get() = JphPathConstraint_GetMaxFrictionForce(pathConstraintHandle)
         set(frictionForce) = JphPathConstraint_SetMaxFrictionForce(pathConstraintHandle, frictionForce)
 
+    /** Position motor settings */
     val positionMotorSettings: MotorSettings
         get() = MotorSettings(JphPathConstraint_GetPositionMotorSettings(pathConstraintHandle))
 

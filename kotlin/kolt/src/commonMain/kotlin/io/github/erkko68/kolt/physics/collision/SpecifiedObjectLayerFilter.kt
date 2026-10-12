@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SpecifiedObjectLayerFilter`. */
+/**
+ * Allows objects from a specific layer only
+ *
+ * C++ `JPH::SpecifiedObjectLayerFilter`.
+ */
 class SpecifiedObjectLayerFilter internal constructor(internal val specifiedObjectLayerFilterHandle: NativePointer, owned: Boolean = false) : ObjectLayerFilter(JphSpecifiedObjectLayerFilter_asObjectLayerFilter(specifiedObjectLayerFilterHandle), owned), AutoCloseable {
     constructor(layer: Int) : this(JphSpecifiedObjectLayerFilter_create(layer), owned = true)
 

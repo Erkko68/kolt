@@ -33,17 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SkeletonPose`. */
+/**
+ * Instance of a skeleton, contains the pose the current skeleton is in
+ *
+ * C++ `JPH::SkeletonPose`.
+ */
 class SkeletonPose internal constructor(internal val skeletonPoseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSkeletonPose_create(), owned = true)
 
     override fun close() =
         closeOnce { JphSkeletonPose_destroy(skeletonPoseHandle) }
 
+    /**
+     * Skeleton
+     * {
+     * @
+     */
     var skeleton: Skeleton?
         get() = JphSkeletonPose_GetSkeleton(skeletonPoseHandle).takeIf { it != NullPointer }?.let { Skeleton(it) }
         set(skeleton) = JphSkeletonPose_SetSkeleton(skeletonPoseHandle, skeleton?.skeletonHandle ?: NullPointer)
 
+    /** Extra offset applied to the root (and therefore also to all of its children) */
     var rootOffset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -54,6 +64,11 @@ class SkeletonPose internal constructor(internal val skeletonPoseHandle: NativeP
         }
         set(offset) = interopScope { JphSkeletonPose_SetRootOffset(skeletonPoseHandle, toInterop(offset.toArray())) }
 
+    /**
+     * Properties of the joints
+     * {
+     * @
+     */
     val jointCount: Int
         get() = JphSkeletonPose_GetJointCount(skeletonPoseHandle)
 
@@ -70,12 +85,15 @@ class SkeletonPose internal constructor(internal val skeletonPoseHandle: NativeP
             List(count) { Mat44(returned.copyOfRange(it * 16, it * 16 + 16)) }
         }
 
+    /** Convert the joint states to joint matrices */
     fun calculateJointMatrices() =
         JphSkeletonPose_CalculateJointMatrices(skeletonPoseHandle)
 
+    /** Convert joint matrices to joint states */
     fun calculateJointStates() =
         JphSkeletonPose_CalculateJointStates(skeletonPoseHandle)
 
+    /** Outputs the joint matrices in local space (ensure that outMatrices has GetJointCount() elements, assumes that values in GetJoints() is up to date) */
     fun calculateLocalSpaceJointMatrices(matrices: MutableList<Mat44>) =
         interopScope {
             val matricesArray = FloatArray(matrices.size * 16).also { a -> matrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }

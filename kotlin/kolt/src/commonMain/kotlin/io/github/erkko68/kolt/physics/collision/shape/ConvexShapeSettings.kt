@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ConvexShapeSettings`. */
+/**
+ * Class that constructs a ConvexShape (abstract)
+ *
+ * C++ `JPH::ConvexShapeSettings`.
+ */
 open class ConvexShapeSettings internal constructor(internal val convexShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphConvexShapeSettings_asShapeSettings(convexShapeSettingsHandle), owned), AutoCloseable {
     override fun addRef() =
         own { JphConvexShapeSettings_addRef(convexShapeSettingsHandle) }
@@ -41,10 +45,12 @@ open class ConvexShapeSettings internal constructor(internal val convexShapeSett
     override fun close() =
         closeOnce { JphConvexShapeSettings_release(convexShapeSettingsHandle) }
 
+    /** Material assigned to this shape */
     var material: PhysicsMaterial?
         get() = JphConvexShapeSettings_GetMaterial(convexShapeSettingsHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(value) = JphConvexShapeSettings_SetMaterial(convexShapeSettingsHandle, value?.physicsMaterialHandle ?: NullPointer)
 
+    /** Uniform density of the interior of the convex object (kg / m^3) */
     var density: Float
         get() = JphConvexShapeSettings_GetDensity(convexShapeSettingsHandle)
         set(density) = JphConvexShapeSettings_SetDensity(convexShapeSettingsHandle, density)

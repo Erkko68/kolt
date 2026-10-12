@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ObjectLayerFilter`. */
+/**
+ * Filter class for object layers
+ *
+ * C++ `JPH::ObjectLayerFilter`.
+ */
 open class ObjectLayerFilter internal constructor(internal val objectLayerFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphObjectLayerFilter_createUpcalls(Upcalls.function), owned = true) {
@@ -43,6 +47,7 @@ open class ObjectLayerFilter internal constructor(internal val objectLayerFilter
     override fun close() =
         closeOnce { JphObjectLayerFilter_destroy(objectLayerFilterHandle) }
 
+    /** Function to filter out object layers when doing collision query test (return true to allow testing against objects with this layer) */
     open fun shouldCollide(layer: Int): Boolean =
         JphObjectLayerFilter_ShouldCollide(objectLayerFilterHandle, layer)
 

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::OffsetCenterOfMassShapeSettings`. */
+/**
+ * Class that constructs an OffsetCenterOfMassShape
+ *
+ * C++ `JPH::OffsetCenterOfMassShapeSettings`.
+ */
 class OffsetCenterOfMassShapeSettings internal constructor(internal val offsetCenterOfMassShapeSettingsHandle: NativePointer, owned: Boolean = false) : DecoratedShapeSettings(JphOffsetCenterOfMassShapeSettings_asDecoratedShapeSettings(offsetCenterOfMassShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphOffsetCenterOfMassShapeSettings_create(), owned = true)
     constructor(offset: Vec3, shape: ShapeSettings?) : this(interopScope { JphOffsetCenterOfMassShapeSettings_create_Vec3Arg_ShapeSettings(toInterop(offset.toArray()), shape?.shapeSettingsHandle ?: NullPointer) }, owned = true)
@@ -45,6 +49,7 @@ class OffsetCenterOfMassShapeSettings internal constructor(internal val offsetCe
     override fun close() =
         closeOnce { JphOffsetCenterOfMassShapeSettings_release(offsetCenterOfMassShapeSettingsHandle) }
 
+    /** Offset to be applied to the center of mass of the child shape */
     var offset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

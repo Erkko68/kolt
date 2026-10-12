@@ -33,23 +33,31 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleTrackSettings`. */
+/**
+ * Generic properties for tank tracks
+ *
+ * C++ `JPH::VehicleTrackSettings`.
+ */
 open class VehicleTrackSettings internal constructor(internal val vehicleTrackSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphVehicleTrackSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphVehicleTrackSettings_destroy(vehicleTrackSettingsHandle) }
 
+    /** Saves the contents in binary form to inStream. */
     fun saveBinaryState(stream: StreamOut) =
         JphVehicleTrackSettings_SaveBinaryState(vehicleTrackSettingsHandle, stream.streamOutHandle)
 
+    /** Restores the contents in binary form to inStream. */
     fun restoreBinaryState(stream: StreamIn) =
         JphVehicleTrackSettings_RestoreBinaryState(vehicleTrackSettingsHandle, stream.streamInHandle)
 
+    /** Which wheel on the track is connected to the engine */
     var drivenWheel: Int
         get() = JphVehicleTrackSettings_GetDrivenWheel(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetDrivenWheel(vehicleTrackSettingsHandle, value)
 
+    /** Indices of wheels that are inside this track, should include the driven wheel too */
     var wheels: IntArray
         get() = interopScope {
             val count = JphVehicleTrackSettings_GetWheels(vehicleTrackSettingsHandle, NullPointer, 0)
@@ -61,18 +69,22 @@ open class VehicleTrackSettings internal constructor(internal val vehicleTrackSe
         }
         set(value) = interopScope { JphVehicleTrackSettings_SetWheels(vehicleTrackSettingsHandle, toInterop(value), value.size) }
 
+    /** Moment of inertia (kg m^2) of the track and its wheels as seen on the driven wheel */
     var inertia: Float
         get() = JphVehicleTrackSettings_GetInertia(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetInertia(vehicleTrackSettingsHandle, value)
 
+    /** Damping factor of track and its wheels: dw/dt = -c * w as seen on the driven wheel */
     var angularDamping: Float
         get() = JphVehicleTrackSettings_GetAngularDamping(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetAngularDamping(vehicleTrackSettingsHandle, value)
 
+    /** How much torque (Nm) the brakes can apply on the driven wheel */
     var maxBrakeTorque: Float
         get() = JphVehicleTrackSettings_GetMaxBrakeTorque(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetMaxBrakeTorque(vehicleTrackSettingsHandle, value)
 
+    /** Ratio between rotation speed of gear box and driven wheel of track */
     var differentialRatio: Float
         get() = JphVehicleTrackSettings_GetDifferentialRatio(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetDifferentialRatio(vehicleTrackSettingsHandle, value)

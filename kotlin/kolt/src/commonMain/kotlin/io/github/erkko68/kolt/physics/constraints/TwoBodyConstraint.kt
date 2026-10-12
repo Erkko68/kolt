@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TwoBodyConstraint`. */
+/**
+ * Base class for all constraints that involve 2 bodies. Body1 is usually considered the parent, Body2 the child.
+ *
+ * C++ `JPH::TwoBodyConstraint`.
+ */
 open class TwoBodyConstraint internal constructor(internal val twoBodyConstraintHandle: NativePointer, owned: Boolean = false) : Constraint(JphTwoBodyConstraint_asConstraint(twoBodyConstraintHandle), owned), AutoCloseable {
     override fun addRef() =
         own { JphTwoBodyConstraint_addRef(twoBodyConstraintHandle) }
@@ -41,12 +45,14 @@ open class TwoBodyConstraint internal constructor(internal val twoBodyConstraint
     override fun close() =
         closeOnce { JphTwoBodyConstraint_release(twoBodyConstraintHandle) }
 
+    /** Access to the connected bodies */
     val body1: Body?
         get() = JphTwoBodyConstraint_GetBody1(twoBodyConstraintHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
     val body2: Body?
         get() = JphTwoBodyConstraint_GetBody2(twoBodyConstraintHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
+    /** Calculates the transform that transforms from constraint space to body 1 space. The first column of the matrix is the primary constraint axis (e.g. the hinge axis / slider direction), second column the secondary etc. */
     val constraintToBody1Matrix: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -56,6 +62,7 @@ open class TwoBodyConstraint internal constructor(internal val twoBodyConstraint
             Mat44(returned)
         }
 
+    /** Calculates the transform that transforms from constraint space to body 2 space. The first column of the matrix is the primary constraint axis (e.g. the hinge axis / slider direction), second column the secondary etc. */
     val constraintToBody2Matrix: Mat44
         get() = interopScope {
             val returned = FloatArray(16)

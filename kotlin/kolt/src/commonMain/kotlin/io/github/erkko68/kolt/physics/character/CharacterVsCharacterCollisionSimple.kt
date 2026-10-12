@@ -33,7 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterVsCharacterCollisionSimple`. */
+/**
+ * Simple collision checker that loops over all registered characters.
+ * This is a brute force checking algorithm. If you have a lot of characters you may want to store your characters
+ * in a hierarchical structure to make this more efficient.
+ * Note that this is not thread safe, so make sure that only one CharacterVirtual is checking collision at a time.
+ *
+ * C++ `JPH::CharacterVsCharacterCollisionSimple`.
+ */
 open class CharacterVsCharacterCollisionSimple internal constructor(internal val characterVsCharacterCollisionSimpleHandle: NativePointer, owned: Boolean = false) : CharacterVsCharacterCollision(JphCharacterVsCharacterCollisionSimple_asCharacterVsCharacterCollision(characterVsCharacterCollisionSimpleHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphCharacterVsCharacterCollisionSimple_createUpcalls(Upcalls.function), owned = true) {
@@ -43,12 +50,15 @@ open class CharacterVsCharacterCollisionSimple internal constructor(internal val
     override fun close() =
         closeOnce { JphCharacterVsCharacterCollisionSimple_destroy(characterVsCharacterCollisionSimpleHandle) }
 
+    /** Add a character to the list of characters to check collision against. */
     fun add(character: CharacterVirtual?) =
         JphCharacterVsCharacterCollisionSimple_Add(characterVsCharacterCollisionSimpleHandle, character?.characterVirtualHandle ?: NullPointer)
 
+    /** Remove a character from the list of characters to check collision against. */
     fun remove(character: CharacterVirtual?) =
         JphCharacterVsCharacterCollisionSimple_Remove(characterVsCharacterCollisionSimpleHandle, character?.characterVirtualHandle ?: NullPointer)
 
+    /** The list of characters to check collision against */
     var characters: List<CharacterVirtual>
         get() = interopScope {
             val count = JphCharacterVsCharacterCollisionSimple_GetCharacters(characterVsCharacterCollisionSimpleHandle, NullPointer, 0)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Triangle`. */
+/**
+ * A simple triangle and its material
+ *
+ * C++ `JPH::Triangle`.
+ */
 class Triangle internal constructor(internal val triangleHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphTriangle_create(), owned = true)
     constructor(v1: Float3, v2: Float3, v3: Float3, materialIndex: Int, userData: Int) : this(interopScope { JphTriangle_create_Float3_Float3_Float3_uint32_uint32(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), materialIndex, userData) }, owned = true)
@@ -42,6 +46,7 @@ class Triangle internal constructor(internal val triangleHandle: NativePointer, 
     override fun close() =
         closeOnce { JphTriangle_destroy(triangleHandle) }
 
+    /** Get center of triangle */
     val centroid: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -51,6 +56,7 @@ class Triangle internal constructor(internal val triangleHandle: NativePointer, 
             Vec3(returned)
         }
 
+    /** Vertices */
     var v: List<Float3>
         get() = interopScope {
             val count = JphTriangle_GetV(triangleHandle, NullPointer, 0)
@@ -62,10 +68,12 @@ class Triangle internal constructor(internal val triangleHandle: NativePointer, 
         }
         set(value) = interopScope { JphTriangle_SetV(triangleHandle, toInterop(FloatArray(value.size * 3).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), value.size) }
 
+    /** Follows mV\[3\] so that we can read mV as 4 vectors */
     var materialIndex: Int
         get() = JphTriangle_GetMaterialIndex(triangleHandle)
         set(value) = JphTriangle_SetMaterialIndex(triangleHandle, value)
 
+    /** User data that can be used for anything by the application, e.g. for tracking the original index of the triangle */
     var userData: Int
         get() = JphTriangle_GetUserData(triangleHandle)
         set(value) = JphTriangle_SetUserData(triangleHandle, value)

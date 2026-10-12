@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ShapeCastResult`. */
+/**
+ * Result of a shape cast test
+ *
+ * C++ `JPH::ShapeCastResult`.
+ */
 class ShapeCastResult internal constructor(internal val shapeCastResultHandle: NativePointer, owned: Boolean = false) : CollideShapeResult(JphShapeCastResult_asCollideShapeResult(shapeCastResultHandle), owned), AutoCloseable {
     constructor() : this(JphShapeCastResult_create(), owned = true)
     constructor(fraction: Float, contactPoint1: Vec3, contactPoint2: Vec3, contactNormalOrPenetrationDepth: Vec3, backFaceHit: Boolean, subShapeID1: SubShapeID, subShapeID2: SubShapeID, bodyID2: BodyID) : this(interopScope { JphShapeCastResult_create_float_Vec3Arg_Vec3Arg_Vec3Arg_bool_SubShapeID_SubShapeID_BodyID(fraction, toInterop(contactPoint1.toArray()), toInterop(contactPoint2.toArray()), toInterop(contactNormalOrPenetrationDepth.toArray()), backFaceHit, subShapeID1.value, subShapeID2.value, bodyID2.value) }, owned = true)
@@ -41,9 +45,14 @@ class ShapeCastResult internal constructor(internal val shapeCastResultHandle: N
     override fun close() =
         closeOnce { JphShapeCastResult_destroy(shapeCastResultHandle) }
 
+    /** Function required by the CollisionCollector. A smaller fraction is considered to be a 'better hit'. For rays/cast shapes we can just use the collision fraction. The fraction and penetration depth are combined in such a way that deeper hits at fraction 0 go first. */
     override val earlyOutFraction: Float
         get() = JphShapeCastResult_GetEarlyOutFraction(shapeCastResultHandle)
 
+    /**
+     * Reverses the hit result, swapping contact point 1 with contact point 2 etc.
+     * @param worldSpaceCastDirection Direction of the shape cast in world space
+     */
     fun reversed(worldSpaceCastDirection: Vec3): ShapeCastResult =
         interopScope {
             val returned = ShapeCastResult(JphShapeCastResult_create(), owned = true)
@@ -51,10 +60,12 @@ class ShapeCastResult internal constructor(internal val shapeCastResultHandle: N
             returned
         }
 
+    /** This is the fraction where the shape hit the other shape: CenterOfMassOnHit = Start + value * (End - Start) */
     var fraction: Float
         get() = JphShapeCastResult_GetFraction(shapeCastResultHandle)
         set(value) = JphShapeCastResult_SetFraction(shapeCastResultHandle, value)
 
+    /** True if the shape was hit from the back side */
     var isBackFaceHit: Boolean
         get() = JphShapeCastResult_GetIsBackFaceHit(shapeCastResultHandle)
         set(value) = JphShapeCastResult_SetIsBackFaceHit(shapeCastResultHandle, value)

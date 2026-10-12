@@ -40,110 +40,157 @@ class PhysicsSettings internal constructor(internal val physicsSettingsHandle: N
     override fun close() =
         closeOnce { JphPhysicsSettings_destroy(physicsSettingsHandle) }
 
+    /**
+     * Size of body pairs array, corresponds to the maximum amount of potential body pairs that can be in flight at any time.
+     * Setting this to a low value will use less memory but slow down simulation as threads may run out of narrow phase work.
+     */
     var maxInFlightBodyPairs: Int
         get() = JphPhysicsSettings_GetMaxInFlightBodyPairs(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetMaxInFlightBodyPairs(physicsSettingsHandle, value)
 
+    /** How many PhysicsStepListeners to notify in 1 batch */
     var stepListenersBatchSize: Int
         get() = JphPhysicsSettings_GetStepListenersBatchSize(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetStepListenersBatchSize(physicsSettingsHandle, value)
 
+    /** How many step listener batches are needed before spawning another job (set to INT_MAX if no parallelism is desired) */
     var stepListenerBatchesPerJob: Int
         get() = JphPhysicsSettings_GetStepListenerBatchesPerJob(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetStepListenerBatchesPerJob(physicsSettingsHandle, value)
 
+    /** Baumgarte stabilization factor (how much of the position error to 'fix' in 1 update) (unit: dimensionless, 0 = nothing, 1 = 100%) */
     var baumgarte: Float
         get() = JphPhysicsSettings_GetBaumgarte(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetBaumgarte(physicsSettingsHandle, value)
 
+    /**
+     * Radius around objects inside which speculative contact points will be detected. Note that if this is too big
+     * you will get ghost collisions as speculative contacts are based on the closest points during the collision detection
+     * step which may not be the actual closest points by the time the two objects hit (unit: meters)
+     */
     var speculativeContactDistance: Float
         get() = JphPhysicsSettings_GetSpeculativeContactDistance(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetSpeculativeContactDistance(physicsSettingsHandle, value)
 
+    /** How much bodies are allowed to sink into each other (unit: meters) */
     var penetrationSlop: Float
         get() = JphPhysicsSettings_GetPenetrationSlop(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetPenetrationSlop(physicsSettingsHandle, value)
 
+    /** Fraction of its inner radius a body must move per step to enable casting for the LinearCast motion quality */
     var linearCastThreshold: Float
         get() = JphPhysicsSettings_GetLinearCastThreshold(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetLinearCastThreshold(physicsSettingsHandle, value)
 
+    /** Fraction of its inner radius a body may penetrate another body for the LinearCast motion quality */
     var linearCastMaxPenetration: Float
         get() = JphPhysicsSettings_GetLinearCastMaxPenetration(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetLinearCastMaxPenetration(physicsSettingsHandle, value)
 
+    /** Max distance to use to determine if two points are on the same plane for determining the contact manifold between two shape faces (unit: meter) */
     var manifoldTolerance: Float
         get() = JphPhysicsSettings_GetManifoldTolerance(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetManifoldTolerance(physicsSettingsHandle, value)
 
+    /** Maximum distance to correct in a single iteration when solving position constraints (unit: meters) */
     var maxPenetrationDistance: Float
         get() = JphPhysicsSettings_GetMaxPenetrationDistance(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetMaxPenetrationDistance(physicsSettingsHandle, value)
 
+    /** 1 mm */
     var bodyPairCacheMaxDeltaPositionSq: Float
         get() = JphPhysicsSettings_GetBodyPairCacheMaxDeltaPositionSq(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetBodyPairCacheMaxDeltaPositionSq(physicsSettingsHandle, value)
 
+    /** cos(2 degrees / 2) */
     var bodyPairCacheCosMaxDeltaRotationDiv2: Float
         get() = JphPhysicsSettings_GetBodyPairCacheCosMaxDeltaRotationDiv2(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetBodyPairCacheCosMaxDeltaRotationDiv2(physicsSettingsHandle, value)
 
+    /** cos(5 degree) */
     var contactNormalCosMaxDeltaRotation: Float
         get() = JphPhysicsSettings_GetContactNormalCosMaxDeltaRotation(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetContactNormalCosMaxDeltaRotation(physicsSettingsHandle, value)
 
+    /** 1 cm */
     var contactPointPreserveLambdaMaxDistSq: Float
         get() = JphPhysicsSettings_GetContactPointPreserveLambdaMaxDistSq(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetContactPointPreserveLambdaMaxDistSq(physicsSettingsHandle, value)
 
+    /** Max squared distance to consider a vertex to be the same as another vertex, used by the internal edge removal algorithm to determine if two edges are shared. (unit: meter^2) */
     var internalEdgeRemovalVertexToleranceSq: Float
         get() = JphPhysicsSettings_GetInternalEdgeRemovalVertexToleranceSq(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetInternalEdgeRemovalVertexToleranceSq(physicsSettingsHandle, value)
 
+    /**
+     * Number of solver velocity iterations to run
+     * Note that this needs to be >= 2 in order for friction to work (friction is applied using the non-penetration impulse from the previous iteration)
+     */
     var numVelocitySteps: Int
         get() = JphPhysicsSettings_GetNumVelocitySteps(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetNumVelocitySteps(physicsSettingsHandle, value)
 
+    /** Number of solver position iterations to run */
     var numPositionSteps: Int
         get() = JphPhysicsSettings_GetNumPositionSteps(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetNumPositionSteps(physicsSettingsHandle, value)
 
+    /**
+     * Minimal velocity needed before a collision can be elastic. If the relative velocity between colliding objects
+     * in the direction of the contact normal is lower than this, the restitution will be zero regardless of the configured
+     * value. This lets an object settle sooner. Must be a positive number. (unit: m)
+     */
     var minVelocityForRestitution: Float
         get() = JphPhysicsSettings_GetMinVelocityForRestitution(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetMinVelocityForRestitution(physicsSettingsHandle, value)
 
+    /** Time before object is allowed to go to sleep (unit: seconds) */
     var timeBeforeSleep: Float
         get() = JphPhysicsSettings_GetTimeBeforeSleep(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetTimeBeforeSleep(physicsSettingsHandle, value)
 
+    /**
+     * To detect if an object is sleeping, we use 3 points:
+     * - The center of mass.
+     * - The centers of the faces of the bounding box that are furthest away from the center.
+     * The movement of these points is tracked and if the velocity of all 3 points is lower than this value,
+     * the object is allowed to go to sleep. Must be a positive number. (unit: m/s)
+     */
     var pointVelocitySleepThreshold: Float
         get() = JphPhysicsSettings_GetPointVelocitySleepThreshold(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetPointVelocitySleepThreshold(physicsSettingsHandle, value)
 
+    /** By default the simulation is deterministic, it is possible to turn this off by setting this setting to false. This will make the simulation run faster but it will no longer be deterministic. */
     var deterministicSimulation: Boolean
         get() = JphPhysicsSettings_GetDeterministicSimulation(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetDeterministicSimulation(physicsSettingsHandle, value)
 
+    /** Whether or not to use warm starting for constraints (initially applying previous frames impulses) */
     var constraintWarmStart: Boolean
         get() = JphPhysicsSettings_GetConstraintWarmStart(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetConstraintWarmStart(physicsSettingsHandle, value)
 
+    /** Whether or not to use the body pair cache, which removes the need for narrow phase collision detection when orientation between two bodies didn't change */
     var useBodyPairContactCache: Boolean
         get() = JphPhysicsSettings_GetUseBodyPairContactCache(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetUseBodyPairContactCache(physicsSettingsHandle, value)
 
+    /** Whether or not to reduce manifolds with similar contact normals into one contact manifold (see description at Body::SetUseManifoldReduction) */
     var useManifoldReduction: Boolean
         get() = JphPhysicsSettings_GetUseManifoldReduction(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetUseManifoldReduction(physicsSettingsHandle, value)
 
+    /** If we split up large islands into smaller parallel batches of work (to improve performance) */
     var useLargeIslandSplitter: Boolean
         get() = JphPhysicsSettings_GetUseLargeIslandSplitter(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetUseLargeIslandSplitter(physicsSettingsHandle, value)
 
+    /** If objects can go to sleep or not */
     var allowSleeping: Boolean
         get() = JphPhysicsSettings_GetAllowSleeping(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetAllowSleeping(physicsSettingsHandle, value)
 
+    /** When false, we prevent collision against non-active (shared) edges. Mainly for debugging the algorithm. */
     var checkActiveEdges: Boolean
         get() = JphPhysicsSettings_GetCheckActiveEdges(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetCheckActiveEdges(physicsSettingsHandle, value)

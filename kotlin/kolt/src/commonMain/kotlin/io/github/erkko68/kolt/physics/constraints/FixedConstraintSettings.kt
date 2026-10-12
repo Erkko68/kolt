@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::FixedConstraintSettings`. */
+/**
+ * Fixed constraint settings, used to create a fixed constraint
+ *
+ * C++ `JPH::FixedConstraintSettings`.
+ */
 class FixedConstraintSettings internal constructor(internal val fixedConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphFixedConstraintSettings_asTwoBodyConstraintSettings(fixedConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphFixedConstraintSettings_create(), owned = true)
 
@@ -43,14 +47,17 @@ class FixedConstraintSettings internal constructor(internal val fixedConstraintS
     override fun close() =
         closeOnce { JphFixedConstraintSettings_release(fixedConstraintSettingsHandle) }
 
+    /** This determines in which space the constraint is setup, all properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphFixedConstraintSettings_GetSpace(fixedConstraintSettingsHandle))
         set(value) = JphFixedConstraintSettings_SetSpace(fixedConstraintSettingsHandle, value.value)
 
+    /** When mSpace is WorldSpace mPoint1 and mPoint2 can be automatically calculated based on the positions of the bodies when the constraint is created (they will be fixated in their current relative position/orientation). Set this to false if you want to supply the attachment points yourself. */
     var autoDetectPoint: Boolean
         get() = JphFixedConstraintSettings_GetAutoDetectPoint(fixedConstraintSettingsHandle)
         set(value) = JphFixedConstraintSettings_SetAutoDetectPoint(fixedConstraintSettingsHandle, value)
 
+    /** Body 1 constraint reference frame (space determined by mSpace) */
     var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -81,6 +88,7 @@ class FixedConstraintSettings internal constructor(internal val fixedConstraintS
         }
         set(value) = interopScope { JphFixedConstraintSettings_SetAxisY1(fixedConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 constraint reference frame (space determined by mSpace) */
     var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)

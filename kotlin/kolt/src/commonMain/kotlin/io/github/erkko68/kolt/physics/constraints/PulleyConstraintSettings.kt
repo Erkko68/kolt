@@ -33,7 +33,20 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PulleyConstraintSettings`. */
+/**
+ * Pulley constraint settings, used to create a pulley constraint.
+ * A pulley connects two bodies via two fixed world points to each other similar to a distance constraint.
+ * We define Length1 = |BodyPoint1 - FixedPoint1| where Body1 is a point on body 1 in world space and FixedPoint1 a fixed point in world space
+ * Length2 = |BodyPoint2 - FixedPoint2|
+ * The constraint keeps the two line segments constrained so that
+ * MinDistance
+ * <
+ * = Length1 + Ratio * Length2
+ * <
+ * = MaxDistance
+ *
+ * C++ `JPH::PulleyConstraintSettings`.
+ */
 class PulleyConstraintSettings internal constructor(internal val pulleyConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphPulleyConstraintSettings_asTwoBodyConstraintSettings(pulleyConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphPulleyConstraintSettings_create(), owned = true)
 
@@ -43,10 +56,12 @@ class PulleyConstraintSettings internal constructor(internal val pulleyConstrain
     override fun close() =
         closeOnce { JphPulleyConstraintSettings_release(pulleyConstraintSettingsHandle) }
 
+    /** This determines in which space the constraint is setup, specified properties below should be in the specified space */
     var space: EConstraintSpace
         get() = EConstraintSpace.of(JphPulleyConstraintSettings_GetSpace(pulleyConstraintSettingsHandle))
         set(value) = JphPulleyConstraintSettings_SetSpace(pulleyConstraintSettingsHandle, value.value)
 
+    /** Body 1 constraint attachment point (space determined by mSpace). */
     var bodyPoint1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -57,6 +72,7 @@ class PulleyConstraintSettings internal constructor(internal val pulleyConstrain
         }
         set(value) = interopScope { JphPulleyConstraintSettings_SetBodyPoint1(pulleyConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Fixed world point to which body 1 is connected (always world space) */
     var fixedPoint1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -67,6 +83,7 @@ class PulleyConstraintSettings internal constructor(internal val pulleyConstrain
         }
         set(value) = interopScope { JphPulleyConstraintSettings_SetFixedPoint1(pulleyConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Body 2 constraint attachment point (space determined by mSpace) */
     var bodyPoint2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -77,6 +94,7 @@ class PulleyConstraintSettings internal constructor(internal val pulleyConstrain
         }
         set(value) = interopScope { JphPulleyConstraintSettings_SetBodyPoint2(pulleyConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Fixed world point to which body 2 is connected (always world space) */
     var fixedPoint2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -87,14 +105,17 @@ class PulleyConstraintSettings internal constructor(internal val pulleyConstrain
         }
         set(value) = interopScope { JphPulleyConstraintSettings_SetFixedPoint2(pulleyConstraintSettingsHandle, toInterop(value.toArray())) }
 
+    /** Ratio between the two line segments (see formula above), can be used to create a block and tackle */
     var ratio: Float
         get() = JphPulleyConstraintSettings_GetRatio(pulleyConstraintSettingsHandle)
         set(value) = JphPulleyConstraintSettings_SetRatio(pulleyConstraintSettingsHandle, value)
 
+    /** The minimum length of the line segments (see formula above), use -1 to calculate the length based on the positions of the objects when the constraint is created. */
     var minLength: Float
         get() = JphPulleyConstraintSettings_GetMinLength(pulleyConstraintSettingsHandle)
         set(value) = JphPulleyConstraintSettings_SetMinLength(pulleyConstraintSettingsHandle, value)
 
+    /** The maximum length of the line segments (see formula above), use -1 to calculate the length based on the positions of the objects when the constraint is created. */
     var maxLength: Float
         get() = JphPulleyConstraintSettings_GetMaxLength(pulleyConstraintSettingsHandle)
         set(value) = JphPulleyConstraintSettings_SetMaxLength(pulleyConstraintSettingsHandle, value)

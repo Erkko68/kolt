@@ -33,7 +33,16 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterVirtual`. */
+/**
+ * Runtime character object.
+ * This object usually represents the player. Contrary to the Character class it doesn't use a rigid body but moves doing collision checks only (hence the name virtual).
+ * The advantage of this is that you can determine when the character moves in the frame (usually this has to happen at a very particular point in the frame)
+ * but the downside is that other objects don't see this virtual character. To make a CharacterVirtual visible to the simulation, you can optionally create an inner
+ * rigid body through CharacterVirtualSettings::mInnerBodyShape. A CharacterVirtual is not tracked by the PhysicsSystem so you need to update it yourself. This also means
+ * that a call to PhysicsSystem::SaveState will not save its state, you need to call CharacterVirtual::SaveState yourself.
+ *
+ * C++ `JPH::CharacterVirtual`.
+ */
 class CharacterVirtual internal constructor(internal val characterVirtualHandle: NativePointer, owned: Boolean = false) : CharacterBase(JphCharacterVirtual_asCharacterBase(characterVirtualHandle), owned), AutoCloseable {
     constructor(settings: CharacterVirtualSettings?, position: Vec3, rotation: Quat, userData: Long, system: PhysicsSystem?) : this(interopScope { JphCharacterVirtual_create_uint64_PhysicsSystem(settings?.characterVirtualSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), userData, system?.physicsSystemHandle ?: NullPointer) }, owned = true)
     constructor(settings: CharacterVirtualSettings?, position: Vec3, rotation: Quat, system: PhysicsSystem?) : this(interopScope { JphCharacterVirtual_create_PhysicsSystem(settings?.characterVirtualSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), system?.physicsSystemHandle ?: NullPointer) }, owned = true)
@@ -44,6 +53,7 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
     override fun close() =
         closeOnce { JphCharacterVirtual_release(characterVirtualHandle) }
 
+    /** The ID of this character */
     val id: CharacterID
         get() = run {
             val returned = CharacterID(JphCharacterID_create(), owned = true)
@@ -51,13 +61,16 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             returned
         }
 
+    /** Get the current contact listener */
     var listener: CharacterContactListener?
         get() = JphCharacterVirtual_GetListener(characterVirtualHandle).takeIf { it != NullPointer }?.let { CharacterContactListener(it) }
         set(listener) = JphCharacterVirtual_SetListener(characterVirtualHandle, listener?.characterContactListenerHandle ?: NullPointer)
 
+    /** Set the character vs character collision interface */
     fun setCharacterVsCharacterCollision(characterVsCharacterCollision: CharacterVsCharacterCollision?) =
         JphCharacterVirtual_SetCharacterVsCharacterCollision(characterVirtualHandle, characterVsCharacterCollision?.characterVsCharacterCollisionHandle ?: NullPointer)
 
+    /** Get the linear velocity of the character (m / s) */
     var linearVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -68,6 +81,7 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
         }
         set(linearVelocity) = interopScope { JphCharacterVirtual_SetLinearVelocity(characterVirtualHandle, toInterop(linearVelocity.toArray())) }
 
+    /** Get the position of the character */
     var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -78,6 +92,7 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
         }
         set(position) = interopScope { JphCharacterVirtual_SetPosition(characterVirtualHandle, toInterop(position.toArray())) }
 
+    /** Get the rotation of the character */
     var rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
@@ -97,6 +112,7 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             Vec3(returned)
         }
 
+    /** Calculate the world transform of the character */
     val worldTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -106,6 +122,7 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             Mat44(returned)
         }
 
+    /** Calculates the transform for this character's center of mass */
     val centerOfMassTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
@@ -115,36 +132,50 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             Mat44(returned)
         }
 
+    /** Character mass (kg) */
     var mass: Float
         get() = JphCharacterVirtual_GetMass(characterVirtualHandle)
         set(mass) = JphCharacterVirtual_SetMass(characterVirtualHandle, mass)
 
+    /** Maximum force with which the character can push other bodies (N) */
     var maxStrength: Float
         get() = JphCharacterVirtual_GetMaxStrength(characterVirtualHandle)
         set(maxStrength) = JphCharacterVirtual_SetMaxStrength(characterVirtualHandle, maxStrength)
 
+    /** This value governs how fast a penetration will be resolved, 0 = nothing is resolved, 1 = everything in one update */
     var penetrationRecoverySpeed: Float
         get() = JphCharacterVirtual_GetPenetrationRecoverySpeed(characterVirtualHandle)
         set(speed) = JphCharacterVirtual_SetPenetrationRecoverySpeed(characterVirtualHandle, speed)
 
+    /** Set to indicate that extra effort should be made to try to remove ghost contacts (collisions with internal edges of a mesh). This is more expensive but makes bodies move smoother over a mesh with convex edges. */
     var enhancedInternalEdgeRemoval: Boolean
         get() = JphCharacterVirtual_GetEnhancedInternalEdgeRemoval(characterVirtualHandle)
         set(apply) = JphCharacterVirtual_SetEnhancedInternalEdgeRemoval(characterVirtualHandle, apply)
 
+    /** Character padding */
     val characterPadding: Float
         get() = JphCharacterVirtual_GetCharacterPadding(characterVirtualHandle)
 
+    /** Max num hits to collect in order to avoid excess of contact points collection */
     var maxNumHits: Int
         get() = JphCharacterVirtual_GetMaxNumHits(characterVirtualHandle)
         set(maxHits) = JphCharacterVirtual_SetMaxNumHits(characterVirtualHandle, maxHits)
 
+    /** Cos(angle) where angle is the maximum angle between two hits contact normals that are allowed to be merged during hit reduction. Default is around 2.5 degrees. Set to -1 to turn off. */
     var hitReductionCosMaxAngle: Float
         get() = JphCharacterVirtual_GetHitReductionCosMaxAngle(characterVirtualHandle)
         set(cosMaxAngle) = JphCharacterVirtual_SetHitReductionCosMaxAngle(characterVirtualHandle, cosMaxAngle)
 
+    /**
+     * Returns if we exceeded the maximum number of hits during the last collision check and had to discard hits based on distance.
+     * This can be used to find areas that have too complex geometry for the character to navigate properly.
+     * To solve you can either increase the max number of hits or simplify the geometry. Note that the character simulation will
+     * try to do its best to select the most relevant contacts to avoid the character from getting stuck.
+     */
     val maxHitsExceeded: Boolean
         get() = JphCharacterVirtual_GetMaxHitsExceeded(characterVirtualHandle)
 
+    /** An extra offset applied to the shape in local space. This allows applying an extra offset to the shape in local space. Note that setting it on the fly can cause the shape to teleport into collision. */
     var shapeOffset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -155,6 +186,7 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
         }
         set(shapeOffset) = interopScope { JphCharacterVirtual_SetShapeOffset(characterVirtualHandle, toInterop(shapeOffset.toArray())) }
 
+    /** Access to the user data, can be used for anything by the application */
     var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -165,9 +197,16 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
         }
         set(userData) = JphCharacterVirtual_SetUserData(characterVirtualHandle, userData)
 
+    /** Optional inner rigid body that proxies the character in the world. Can be used to update body properties. */
     val innerBodyID: BodyID
         get() = BodyID(JphCharacterVirtual_GetInnerBodyID(characterVirtualHandle))
 
+    /**
+     * This function can be called prior to calling Update() to convert a desired velocity into a velocity that won't make the character move further onto steep slopes.
+     * This velocity can then be set on the character using SetLinearVelocity()
+     * @param desiredVelocity Velocity to clamp against steep walls
+     * @return A new velocity vector that won't make the character move up steep slopes
+     */
     fun cancelVelocityTowardsSteepSlopes(desiredVelocity: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -177,39 +216,121 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             Vec3(returned)
         }
 
+    /**
+     * This function is internally called by Update, WalkStairs, StickToFloor and ExtendedUpdate and is responsible for tracking if contacts are added, persisted or removed.
+     * If you want to do multiple operations on a character (e.g. first Update then WalkStairs), you can surround the code with a StartTrackingContactChanges and FinishTrackingContactChanges pair
+     * to only receive a single callback per contact on the CharacterContactListener. If you don't do this then you could for example receive a contact added callback during the Update and a
+     * contact persisted callback during WalkStairs.
+     */
     fun startTrackingContactChanges() =
         JphCharacterVirtual_StartTrackingContactChanges(characterVirtualHandle)
 
+    /** This call triggers contact removal callbacks and is used in conjunction with StartTrackingContactChanges. */
     fun finishTrackingContactChanges() =
         JphCharacterVirtual_FinishTrackingContactChanges(characterVirtualHandle)
 
+    /**
+     * This is the main update function. It moves the character according to its current velocity (the character is similar to a kinematic body in the sense
+     * that you set the velocity and the character will follow unless collision is blocking the way). Note it's your own responsibility to apply gravity to the character velocity!
+     * Different surface materials (like ice) can be emulated by getting the ground material and adjusting the velocity and/or the max slope angle accordingly every frame.
+     * @param deltaTime Time step to simulate.
+     * @param gravity Gravity vector (m/s^2). This gravity vector is only used when the character is standing on top of another object to apply downward force.
+     * @param broadPhaseLayerFilter Filter that is used to check if the character collides with something in the broadphase.
+     * @param objectLayerFilter Filter that is used to check if a character collides with a layer.
+     * @param bodyFilter Filter that is used to check if a character collides with a body.
+     * @param shapeFilter Filter that is used to check if a character collides with a subshape.
+     * @param allocator An allocator for temporary allocations. All memory will be freed by the time this function returns.
+     */
     fun update(deltaTime: Float, gravity: Vec3, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator) =
         interopScope { JphCharacterVirtual_Update(characterVirtualHandle, deltaTime, toInterop(gravity.toArray()), broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle, allocator.tempAllocatorHandle) }
 
+    /**
+     * This function will return true if the character has moved into a slope that is too steep (e.g. a vertical wall).
+     * You would call WalkStairs to attempt to step up stairs.
+     * @param linearVelocity The linear velocity that the player desired. This is used to determine if we're pushing into a step.
+     */
     fun canWalkStairs(linearVelocity: Vec3): Boolean =
         interopScope { JphCharacterVirtual_CanWalkStairs(characterVirtualHandle, toInterop(linearVelocity.toArray())) }
 
+    /**
+     * When stair walking is needed, you can call the WalkStairs function to cast up, forward and down again to try to find a valid position
+     * @param deltaTime Time step to simulate.
+     * @param stepUp The direction and distance to step up (this corresponds to the max step height)
+     * @param stepForward The direction and distance to step forward after the step up
+     * @param stepForwardTest When running at a high frequency, inStepForward can be very small and it's likely that you hit the side of the stairs on the way down. This could produce a normal that violates the max slope angle. If this happens, we test again using this distance from the up position to see if we find a valid slope.
+     * @param stepDownExtra An additional translation that is added when stepping down at the end. Allows you to step further down than up. Set to zero if you don't want this. Should be in the opposite direction of up.
+     * @param broadPhaseLayerFilter Filter that is used to check if the character collides with something in the broadphase.
+     * @param objectLayerFilter Filter that is used to check if a character collides with a layer.
+     * @param bodyFilter Filter that is used to check if a character collides with a body.
+     * @param shapeFilter Filter that is used to check if a character collides with a subshape.
+     * @param allocator An allocator for temporary allocations. All memory will be freed by the time this function returns.
+     * @return true if the stair walk was successful
+     */
     fun walkStairs(deltaTime: Float, stepUp: Vec3, stepForward: Vec3, stepForwardTest: Vec3, stepDownExtra: Vec3, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator): Boolean =
         interopScope { JphCharacterVirtual_WalkStairs(characterVirtualHandle, deltaTime, toInterop(stepUp.toArray()), toInterop(stepForward.toArray()), toInterop(stepForwardTest.toArray()), toInterop(stepDownExtra.toArray()), broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle, allocator.tempAllocatorHandle) }
 
+    /**
+     * This function can be used to artificially keep the character to the floor. Normally when a character is on a small step and starts moving horizontally, the character will
+     * lose contact with the floor because the initial vertical velocity is zero while the horizontal velocity is quite high. To prevent the character from losing contact with the floor,
+     * we do an additional collision check downwards and if we find the floor within a certain distance, we project the character onto the floor.
+     * @param stepDown Max amount to project the character downwards (if no floor is found within this distance, the function will return false)
+     * @param broadPhaseLayerFilter Filter that is used to check if the character collides with something in the broadphase.
+     * @param objectLayerFilter Filter that is used to check if a character collides with a layer.
+     * @param bodyFilter Filter that is used to check if a character collides with a body.
+     * @param shapeFilter Filter that is used to check if a character collides with a subshape.
+     * @param allocator An allocator for temporary allocations. All memory will be freed by the time this function returns.
+     * @return True if the character was successfully projected onto the floor.
+     */
     fun stickToFloor(stepDown: Vec3, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator): Boolean =
         interopScope { JphCharacterVirtual_StickToFloor(characterVirtualHandle, toInterop(stepDown.toArray()), broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle, allocator.tempAllocatorHandle) }
 
+    /**
+     * This function combines Update, StickToFloor and WalkStairs. This function serves as an example of how these functions could be combined.
+     * Before calling, call SetLinearVelocity to update the horizontal/vertical speed of the character, typically this is:
+     * - When on OnGround and not moving away from ground: velocity = GetGroundVelocity() + horizontal speed as input by player + optional vertical jump velocity + delta time * gravity
+     * - Else: velocity = current vertical velocity + horizontal speed as input by player + delta time * gravity
+     * @param deltaTime Time step to simulate.
+     * @param gravity Gravity vector (m/s^2). This gravity vector is only used when the character is standing on top of another object to apply downward force.
+     * @param settings A structure containing settings for the algorithm.
+     * @param broadPhaseLayerFilter Filter that is used to check if the character collides with something in the broadphase.
+     * @param objectLayerFilter Filter that is used to check if a character collides with a layer.
+     * @param bodyFilter Filter that is used to check if a character collides with a body.
+     * @param shapeFilter Filter that is used to check if a character collides with a subshape.
+     * @param allocator An allocator for temporary allocations. All memory will be freed by the time this function returns.
+     */
     fun extendedUpdate(deltaTime: Float, gravity: Vec3, settings: CharacterVirtual.ExtendedUpdateSettings, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator) =
         interopScope { JphCharacterVirtual_ExtendedUpdate(characterVirtualHandle, deltaTime, toInterop(gravity.toArray()), settings.characterVirtualExtendedUpdateSettingsHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle, allocator.tempAllocatorHandle) }
 
+    /** This function can be used after a character has teleported to determine the new contacts with the world. */
     fun refreshContacts(broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator) =
         JphCharacterVirtual_RefreshContacts(characterVirtualHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle, allocator.tempAllocatorHandle)
 
+    /**
+     * Use the ground body ID to get an updated estimate of the ground velocity. This function can be used if the ground body has moved / changed velocity and you want a new estimate of the ground velocity.
+     * It will not perform collision detection, so is less accurate than RefreshContacts but a lot faster.
+     */
     fun updateGroundVelocity() =
         JphCharacterVirtual_UpdateGroundVelocity(characterVirtualHandle)
 
+    /**
+     * Switch the shape of the character (e.g. for stance).
+     * @param shape The shape to switch to.
+     * @param maxPenetrationDepth When inMaxPenetrationDepth is not FLT_MAX, it checks if the new shape collides before switching shape. This is the max penetration we're willing to accept after the switch.
+     * @param broadPhaseLayerFilter Filter that is used to check if the character collides with something in the broadphase.
+     * @param objectLayerFilter Filter that is used to check if a character collides with a layer.
+     * @param bodyFilter Filter that is used to check if a character collides with a body.
+     * @param shapeFilter Filter that is used to check if a character collides with a subshape.
+     * @param allocator An allocator for temporary allocations. All memory will be freed by the time this function returns.
+     * @return Returns true if the switch succeeded.
+     */
     fun setShape(shape: Shape?, maxPenetrationDepth: Float, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator): Boolean =
         JphCharacterVirtual_SetShape(characterVirtualHandle, shape?.shapeHandle ?: NullPointer, maxPenetrationDepth, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle, allocator.tempAllocatorHandle)
 
+    /** Updates the shape of the inner rigid body. Should be called after a successful call to SetShape. */
     fun setInnerBodyShape(shape: Shape?) =
         JphCharacterVirtual_SetInnerBodyShape(characterVirtualHandle, shape?.shapeHandle ?: NullPointer)
 
+    /** Get the transformed shape that represents the volume of the character, can be used for collision checks. */
     val transformedShape: TransformedShape
         get() = run {
             val returned = TransformedShape(JphTransformedShape_create(), owned = true)
@@ -217,9 +338,24 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             returned
         }
 
+    /**
+     * Get all contacts for the character at a particular location. When colliding with another character virtual, this pointer will be provided through CollideShapeCollector::SetUserContext before adding a hit.
+     * @param position Position to test, note that this position will be corrected for the character padding.
+     * @param rotation Rotation at which to test the shape.
+     * @param movementDirection A hint in which direction the character is moving, will be used to calculate a proper normal.
+     * @param maxSeparationDistance How much distance around the character you want to report contacts in (can be 0 to match the character exactly).
+     * @param shape Shape to test collision with.
+     * @param baseOffset All hit results will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. GetPosition() since floats are most accurate near the origin
+     * @param collector Collision collector that receives the collision results.
+     * @param broadPhaseLayerFilter Filter that is used to check if the character collides with something in the broadphase.
+     * @param objectLayerFilter Filter that is used to check if a character collides with a layer.
+     * @param bodyFilter Filter that is used to check if a character collides with a body.
+     * @param shapeFilter Filter that is used to check if a character collides with a subshape.
+     */
     fun checkCollision(position: Vec3, rotation: Quat, movementDirection: Vec3, maxSeparationDistance: Float, shape: Shape?, baseOffset: Vec3, collector: CollideShapeCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter) =
         interopScope { JphCharacterVirtual_CheckCollision(characterVirtualHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), toInterop(movementDirection.toArray()), maxSeparationDistance, shape?.shapeHandle ?: NullPointer, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle) }
 
+    /** Get the character settings that can recreate this character */
     val characterVirtualSettings: CharacterVirtualSettings
         get() = run {
             val returned = CharacterVirtualSettings(JphCharacterVirtualSettings_create(), owned = true)
@@ -227,6 +363,10 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             returned
         }
 
+    /**
+     * Access to the internal list of contacts that the character has found.
+     * Note that only contacts that have their mHadCollision flag set are actual contacts.
+     */
     val activeContacts: List<CharacterContact>
         get() = interopScope {
             val count = JphCharacterVirtual_GetActiveContacts(characterVirtualHandle, NullPointer, 0)
@@ -235,22 +375,30 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             returned
         }
 
+    /** Check if the character is currently in contact with or has collided with another body in the last operation (e.g. Update or WalkStairs) */
     fun hasCollidedWith(body: BodyID): Boolean =
         JphCharacterVirtual_HasCollidedWith_BodyID(characterVirtualHandle, body.value)
 
+    /** Check if the character is currently in contact with or has collided with another character in the last time step (e.g. Update or WalkStairs) */
     fun hasCollidedWith(characterID: CharacterID): Boolean =
         JphCharacterVirtual_HasCollidedWith_CharacterID(characterVirtualHandle, characterID.characterIDHandle)
 
+    /** Check if the character is currently in contact with or has collided with another character in the last time step (e.g. Update or WalkStairs) */
     fun hasCollidedWith(character: CharacterVirtual?): Boolean =
         JphCharacterVirtual_HasCollidedWith_CharacterVirtual(characterVirtualHandle, character?.characterVirtualHandle ?: NullPointer)
 
-    /** C++ `JPH::CharacterVirtual::ExtendedUpdateSettings`. */
+    /**
+     * Settings struct with settings for ExtendedUpdate
+     *
+     * C++ `JPH::CharacterVirtual::ExtendedUpdateSettings`.
+     */
     class ExtendedUpdateSettings internal constructor(internal val characterVirtualExtendedUpdateSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphCharacterVirtualExtendedUpdateSettings_create(), owned = true)
     
         override fun close() =
             closeOnce { JphCharacterVirtualExtendedUpdateSettings_destroy(characterVirtualExtendedUpdateSettingsHandle) }
     
+        /** See StickToFloor inStepDown parameter. Can be zero to turn off. */
         var stickToFloorStepDown: Vec3
             get() = interopScope {
                 val returned = FloatArray(4)
@@ -261,6 +409,7 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             }
             set(value) = interopScope { JphCharacterVirtualExtendedUpdateSettings_SetStickToFloorStepDown(characterVirtualExtendedUpdateSettingsHandle, toInterop(value.toArray())) }
     
+        /** See WalkStairs inStepUp parameter. Can be zero to turn off. */
         var walkStairsStepUp: Vec3
             get() = interopScope {
                 val returned = FloatArray(4)
@@ -271,18 +420,22 @@ class CharacterVirtual internal constructor(internal val characterVirtualHandle:
             }
             set(value) = interopScope { JphCharacterVirtualExtendedUpdateSettings_SetWalkStairsStepUp(characterVirtualExtendedUpdateSettingsHandle, toInterop(value.toArray())) }
     
+        /** See WalkStairs inStepForward parameter. Note that the parameter only indicates a magnitude, direction is taken from current velocity. */
         var walkStairsMinStepForward: Float
             get() = JphCharacterVirtualExtendedUpdateSettings_GetWalkStairsMinStepForward(characterVirtualExtendedUpdateSettingsHandle)
             set(value) = JphCharacterVirtualExtendedUpdateSettings_SetWalkStairsMinStepForward(characterVirtualExtendedUpdateSettingsHandle, value)
     
+        /** See WalkStairs inStepForwardTest parameter. Note that the parameter only indicates a magnitude, direction is taken from current velocity. */
         var walkStairsStepForwardTest: Float
             get() = JphCharacterVirtualExtendedUpdateSettings_GetWalkStairsStepForwardTest(characterVirtualExtendedUpdateSettingsHandle)
             set(value) = JphCharacterVirtualExtendedUpdateSettings_SetWalkStairsStepForwardTest(characterVirtualExtendedUpdateSettingsHandle, value)
     
+        /** Cos(angle) where angle is the maximum angle between the ground normal in the horizontal plane and the character forward vector where we're willing to adjust the step forward test towards the contact normal. */
         var walkStairsCosAngleForwardContact: Float
             get() = JphCharacterVirtualExtendedUpdateSettings_GetWalkStairsCosAngleForwardContact(characterVirtualExtendedUpdateSettingsHandle)
             set(value) = JphCharacterVirtualExtendedUpdateSettings_SetWalkStairsCosAngleForwardContact(characterVirtualExtendedUpdateSettingsHandle, value)
     
+        /** See WalkStairs inStepDownExtra */
         var walkStairsStepDownExtra: Vec3
             get() = interopScope {
                 val returned = FloatArray(4)

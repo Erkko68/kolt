@@ -33,25 +33,33 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PhysicsStepListenerContext`. */
+/**
+ * Context information for the step listener
+ *
+ * C++ `JPH::PhysicsStepListenerContext`.
+ */
 class PhysicsStepListenerContext internal constructor(internal val physicsStepListenerContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphPhysicsStepListenerContext_create(), owned = true)
 
     override fun close() =
         closeOnce { JphPhysicsStepListenerContext_destroy(physicsStepListenerContextHandle) }
 
+    /** Delta time of the current step */
     var deltaTime: Float
         get() = JphPhysicsStepListenerContext_GetDeltaTime(physicsStepListenerContextHandle)
         set(value) = JphPhysicsStepListenerContext_SetDeltaTime(physicsStepListenerContextHandle, value)
 
+    /** True if this is the first step */
     var isFirstStep: Boolean
         get() = JphPhysicsStepListenerContext_GetIsFirstStep(physicsStepListenerContextHandle)
         set(value) = JphPhysicsStepListenerContext_SetIsFirstStep(physicsStepListenerContextHandle, value)
 
+    /** True if this is the last step */
     var isLastStep: Boolean
         get() = JphPhysicsStepListenerContext_GetIsLastStep(physicsStepListenerContextHandle)
         set(value) = JphPhysicsStepListenerContext_SetIsLastStep(physicsStepListenerContextHandle, value)
 
+    /** The physics system that is being stepped */
     var physicsSystem: PhysicsSystem?
         get() = JphPhysicsStepListenerContext_GetPhysicsSystem(physicsStepListenerContextHandle).takeIf { it != NullPointer }?.let { PhysicsSystem(it) }
         set(value) = JphPhysicsStepListenerContext_SetPhysicsSystem(physicsStepListenerContextHandle, value?.physicsSystemHandle ?: NullPointer)

@@ -33,7 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::PhysicsMaterial`. */
+/**
+ * This structure describes the surface of (part of) a shape. You should inherit from it to define additional
+ * information that is interesting for the simulation. The 2 materials involved in a contact could be used
+ * to decide which sound or particle effects to play.
+ *
+ * If you inherit from this material, don't forget to create a suitable default material in sDefault
+ *
+ * C++ `JPH::PhysicsMaterial`.
+ */
 open class PhysicsMaterial internal constructor(internal val physicsMaterialHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphPhysicsMaterial_asSerializableObject(physicsMaterialHandle), owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphPhysicsMaterial_createUpcalls(Upcalls.function), owned = true) {
@@ -56,6 +64,7 @@ open class PhysicsMaterial internal constructor(internal val physicsMaterialHand
             returned
         }
 
+    /** Saves the contents of the material in binary form to inStream. */
     open fun saveBinaryState(stream: StreamOut) =
         JphPhysicsMaterial_SaveBinaryState(physicsMaterialHandle, stream.streamOutHandle)
 
@@ -68,6 +77,7 @@ open class PhysicsMaterial internal constructor(internal val physicsMaterialHand
     }
 
     companion object {
+        /** Creates a PhysicsMaterial of the correct type and restores its contents from the binary stream inStream. */
         fun restoreFromBinaryState(stream: StreamIn): PhysicsMaterial =
             interopScope {
                 val error = ByteArray(256)

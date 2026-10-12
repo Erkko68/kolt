@@ -33,24 +33,32 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::RayCastSettings`. */
+/**
+ * Settings to be passed with a ray cast
+ *
+ * C++ `JPH::RayCastSettings`.
+ */
 class RayCastSettings internal constructor(internal val rayCastSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphRayCastSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphRayCastSettings_destroy(rayCastSettingsHandle) }
 
+    /** Set the backfacing mode for all shapes */
     fun setBackFaceMode(mode: EBackFaceMode) =
         JphRayCastSettings_SetBackFaceMode(rayCastSettingsHandle, mode.value)
 
+    /** How backfacing triangles should be treated (should we report back facing hits for triangle based shapes, e.g. MeshShape/HeightFieldShape?) */
     var backFaceModeTriangles: EBackFaceMode
         get() = EBackFaceMode.of(JphRayCastSettings_GetBackFaceModeTriangles(rayCastSettingsHandle))
         set(value) = JphRayCastSettings_SetBackFaceModeTriangles(rayCastSettingsHandle, value.value)
 
+    /** How backfacing convex objects should be treated (should we report back facing hits for convex shapes?) */
     var backFaceModeConvex: EBackFaceMode
         get() = EBackFaceMode.of(JphRayCastSettings_GetBackFaceModeConvex(rayCastSettingsHandle))
         set(value) = JphRayCastSettings_SetBackFaceModeConvex(rayCastSettingsHandle, value.value)
 
+    /** If convex shapes should be treated as solid. When true, a ray starting inside a convex shape will generate a hit at fraction 0. */
     var treatConvexAsSolid: Boolean
         get() = JphRayCastSettings_GetTreatConvexAsSolid(rayCastSettingsHandle)
         set(value) = JphRayCastSettings_SetTreatConvexAsSolid(rayCastSettingsHandle, value)

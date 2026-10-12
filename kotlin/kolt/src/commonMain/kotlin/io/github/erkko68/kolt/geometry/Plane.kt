@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Plane`. */
+/**
+ * An infinite plane described by the formula X . Normal + Constant = 0.
+ *
+ * C++ `JPH::Plane`.
+ */
 class Plane internal constructor(internal val planeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphPlane_create(), owned = true)
     constructor(normalAndConstant: Vec4) : this(interopScope { JphPlane_create_Vec4Arg(toInterop(normalAndConstant.toArray())) }, owned = true)
@@ -56,6 +60,7 @@ class Plane internal constructor(internal val planeHandle: NativePointer, owned:
         get() = JphPlane_GetConstant(planeHandle)
         set(constant) = JphPlane_SetConstant(planeHandle, constant)
 
+    /** Store as 4 floats */
     fun storeFloat4(v: MutableList<Float4>) =
         interopScope {
             val vArray = FloatArray(v.size * 4).also { a -> v.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }
@@ -65,6 +70,7 @@ class Plane internal constructor(internal val planeHandle: NativePointer, owned:
             for (i in v.indices) v[i] = Float4(vArray.copyOfRange(i * 4, i * 4 + 4))
         }
 
+    /** Offset the plane (positive value means move it in the direction of the plane normal) */
     fun offset(distance: Float): Plane =
         run {
             val returned = Plane(JphPlane_create(), owned = true)
@@ -72,6 +78,7 @@ class Plane internal constructor(internal val planeHandle: NativePointer, owned:
             returned
         }
 
+    /** Transform the plane by a matrix */
     fun getTransformed(transform: Mat44): Plane =
         interopScope {
             val returned = Plane(JphPlane_create(), owned = true)
@@ -79,6 +86,7 @@ class Plane internal constructor(internal val planeHandle: NativePointer, owned:
             returned
         }
 
+    /** Scale the plane, can handle non-uniform and negative scaling */
     fun scaled(scale: Vec3): Plane =
         interopScope {
             val returned = Plane(JphPlane_create(), owned = true)
@@ -86,9 +94,11 @@ class Plane internal constructor(internal val planeHandle: NativePointer, owned:
             returned
         }
 
+    /** Distance point to plane */
     fun signedDistance(point: Vec3): Float =
         interopScope { JphPlane_SignedDistance(planeHandle, toInterop(point.toArray())) }
 
+    /** Project inPoint onto the plane */
     fun projectPointOnPlane(point: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
@@ -99,6 +109,7 @@ class Plane internal constructor(internal val planeHandle: NativePointer, owned:
         }
 
     companion object {
+        /** Create from point and normal */
         fun fromPointAndNormal(point: Vec3, normal: Vec3): Plane =
             interopScope {
                 val returned = Plane(JphPlane_create(), owned = true)
@@ -106,6 +117,7 @@ class Plane internal constructor(internal val planeHandle: NativePointer, owned:
                 returned
             }
 
+        /** Create from point and normal, double precision version that more accurately calculates the plane constant */
         fun fromPointAndNormal(point: DVec3, normal: Vec3): Plane =
             interopScope {
                 val returned = Plane(JphPlane_create(), owned = true)
@@ -113,6 +125,7 @@ class Plane internal constructor(internal val planeHandle: NativePointer, owned:
                 returned
             }
 
+        /** Create from 3 counter clockwise points */
         fun fromPointsCCW(v1: Vec3, v2: Vec3, v3: Vec3): Plane =
             interopScope {
                 val returned = Plane(JphPlane_create(), owned = true)
@@ -120,6 +133,7 @@ class Plane internal constructor(internal val planeHandle: NativePointer, owned:
                 returned
             }
 
+        /** Returns intersection point between 3 planes */
         fun intersectPlanes(p1: Plane, p2: Plane, p3: Plane): Pair<Boolean, Vec3> =
             interopScope {
                 val pointArray = FloatArray(4)

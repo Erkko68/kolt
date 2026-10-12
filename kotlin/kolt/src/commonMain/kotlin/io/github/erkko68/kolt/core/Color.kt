@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::Color`. */
+/**
+ * Class that holds an RGBA color with 8-bits per component
+ *
+ * C++ `JPH::Color`.
+ */
 class Color internal constructor(internal val colorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphColor_create(), owned = true)
     constructor(color: Int) : this(JphColor_create_uint32(color), owned = true)
@@ -43,9 +47,11 @@ class Color internal constructor(internal val colorHandle: NativePointer, owned:
     override fun close() =
         closeOnce { JphColor_destroy(colorHandle) }
 
+    /** Convert to uint32 */
     val uInt32: Int
         get() = JphColor_GetUInt32(colorHandle)
 
+    /** Convert to Vec4 with range \[0, 1\] */
     fun toVec4(): Vec4 =
         interopScope {
             val returned = FloatArray(4)
@@ -55,30 +61,37 @@ class Color internal constructor(internal val colorHandle: NativePointer, owned:
             Vec4(returned)
         }
 
+    /** Get grayscale intensity of color */
     val intensity: Int
         get() = JphColor_GetIntensity(colorHandle)
 
+    /** Combined value for red, green, blue and alpha */
     var u32: Int
         get() = JphColor_GetU32(colorHandle)
         set(value) = JphColor_SetU32(colorHandle, value)
 
+    /** Red channel */
     var r: Int
         get() = JphColor_GetR(colorHandle)
         set(value) = JphColor_SetR(colorHandle, value)
 
+    /** Green channel */
     var g: Int
         get() = JphColor_GetG(colorHandle)
         set(value) = JphColor_SetG(colorHandle, value)
 
+    /** Blue channel */
     var b: Int
         get() = JphColor_GetB(colorHandle)
         set(value) = JphColor_SetB(colorHandle, value)
 
+    /** Alpha channel */
     var a: Int
         get() = JphColor_GetA(colorHandle)
         set(value) = JphColor_SetA(colorHandle, value)
 
     companion object {
+        /** Get a visually distinct color */
         fun getDistinctColor(index: Int): Color =
             run {
                 val returned = Color(JphColor_create(), owned = true)
@@ -86,6 +99,10 @@ class Color internal constructor(internal val colorHandle: NativePointer, owned:
                 returned
             }
 
+        /**
+         * Get a color value on the gradient from green through yellow to red
+         * @param value Value in the range \[0, 1\], 0 = green, 0.5 = yellow, 1 = red
+         */
         fun greenRedGradient(value: Float): Color =
             run {
                 val returned = Color(JphColor_create(), owned = true)

@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::ScaledShapeSettings`. */
+/**
+ * Class that constructs a ScaledShape
+ *
+ * C++ `JPH::ScaledShapeSettings`.
+ */
 class ScaledShapeSettings internal constructor(internal val scaledShapeSettingsHandle: NativePointer, owned: Boolean = false) : DecoratedShapeSettings(JphScaledShapeSettings_asDecoratedShapeSettings(scaledShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphScaledShapeSettings_create(), owned = true)
     constructor(shape: ShapeSettings?, scale: Vec3) : this(interopScope { JphScaledShapeSettings_create_ShapeSettings_Vec3Arg(shape?.shapeSettingsHandle ?: NullPointer, toInterop(scale.toArray())) }, owned = true)

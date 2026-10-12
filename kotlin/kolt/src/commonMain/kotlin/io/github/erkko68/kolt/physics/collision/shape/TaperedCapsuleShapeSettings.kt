@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TaperedCapsuleShapeSettings`. */
+/**
+ * Class that constructs a TaperedCapsuleShape
+ *
+ * C++ `JPH::TaperedCapsuleShapeSettings`.
+ */
 class TaperedCapsuleShapeSettings internal constructor(internal val taperedCapsuleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTaperedCapsuleShapeSettings_asConvexShapeSettings(taperedCapsuleShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphTaperedCapsuleShapeSettings_create(), owned = true)
     constructor(halfHeightOfTaperedCylinder: Float, topRadius: Float, bottomRadius: Float, material: PhysicsMaterial?) : this(JphTaperedCapsuleShapeSettings_create_float_float_float_PhysicsMaterial(halfHeightOfTaperedCylinder, topRadius, bottomRadius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
@@ -44,9 +48,11 @@ class TaperedCapsuleShapeSettings internal constructor(internal val taperedCapsu
     override fun close() =
         closeOnce { JphTaperedCapsuleShapeSettings_release(taperedCapsuleShapeSettingsHandle) }
 
+    /** Check if the settings are valid */
     val isValid: Boolean
         get() = JphTaperedCapsuleShapeSettings_IsValid(taperedCapsuleShapeSettingsHandle)
 
+    /** Checks if the settings of this tapered capsule make this shape a sphere */
     val isSphere: Boolean
         get() = JphTaperedCapsuleShapeSettings_IsSphere(taperedCapsuleShapeSettingsHandle)
 

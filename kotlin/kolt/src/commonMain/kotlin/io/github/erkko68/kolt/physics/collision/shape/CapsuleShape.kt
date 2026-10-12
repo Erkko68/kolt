@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CapsuleShape`. */
+/**
+ * A capsule, implemented as a line segment with convex radius
+ *
+ * C++ `JPH::CapsuleShape`.
+ */
 class CapsuleShape internal constructor(internal val capsuleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphCapsuleShape_asConvexShape(capsuleShapeHandle), owned), AutoCloseable {
     constructor() : this(JphCapsuleShape_create(), owned = true)
     constructor(halfHeightOfCylinder: Float, radius: Float, material: PhysicsMaterial?) : this(JphCapsuleShape_create_float_float_PhysicsMaterial(halfHeightOfCylinder, radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
@@ -44,9 +48,11 @@ class CapsuleShape internal constructor(internal val capsuleShapeHandle: NativeP
     override fun close() =
         closeOnce { JphCapsuleShape_release(capsuleShapeHandle) }
 
+    /** Radius of the cylinder */
     val radius: Float
         get() = JphCapsuleShape_GetRadius(capsuleShapeHandle)
 
+    /** Get half of the height of the cylinder */
     val halfHeightOfCylinder: Float
         get() = JphCapsuleShape_GetHalfHeightOfCylinder(capsuleShapeHandle)
 }

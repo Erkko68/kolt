@@ -33,5 +33,35 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::BodyLockMultiRead`. */
+/**
+ * A multi body lock takes a number of body IDs and locks the underlying bodies so that other threads cannot access its members
+ *
+ * The common usage pattern is:
+ *
+ *         BodyLockInterface lock_interface = physics_system.GetBodyLockInterface(); // Or non-locking interface if the lock is already taken
+ *         const BodyID *body_id = ...; // Obtain IDs to bodies
+ *         int num_body_ids = ...;
+ *
+ *         // Scoped lock
+ *         {
+ *             BodyLockMultiRead lock(lock_interface, body_ids, num_body_ids);
+ *             for (int i = 0; i
+ * <
+ * num_body_ids; ++i)
+ *             {
+ *                 const Body *body = lock.GetBody(i);
+ *                 if (body != nullptr)
+ *                 {
+ *                     const Body
+ * &body
+ * = lock.Body();
+ *
+ *                     // Do something with body
+ *                     ...
+ *                 }
+ *             }
+ *         }
+ *
+ * C++ `JPH::BodyLockMultiRead`.
+ */
 class BodyLockMultiRead internal constructor(internal val bodyLockMultiReadHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

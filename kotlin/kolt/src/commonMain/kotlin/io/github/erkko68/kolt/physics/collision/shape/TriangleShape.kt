@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::TriangleShape`. */
+/**
+ * A single triangle, not the most efficient way of creating a world filled with triangles but can be used as a query shape for example.
+ *
+ * C++ `JPH::TriangleShape`.
+ */
 class TriangleShape internal constructor(internal val triangleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTriangleShape_asConvexShape(triangleShapeHandle), owned), AutoCloseable {
     constructor() : this(JphTriangleShape_create(), owned = true)
     constructor(v1: Vec3, v2: Vec3, v3: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphTriangleShape_create_Vec3Arg_Vec3Arg_Vec3Arg_float_PhysicsMaterial(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
@@ -44,6 +48,7 @@ class TriangleShape internal constructor(internal val triangleShapeHandle: Nativ
     override fun close() =
         closeOnce { JphTriangleShape_release(triangleShapeHandle) }
 
+    /** Get the vertices of the triangle */
     val vertex1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -71,6 +76,7 @@ class TriangleShape internal constructor(internal val triangleShapeHandle: Nativ
             Vec3(returned)
         }
 
+    /** Convex radius */
     val convexRadius: Float
         get() = JphTriangleShape_GetConvexRadius(triangleShapeHandle)
 }

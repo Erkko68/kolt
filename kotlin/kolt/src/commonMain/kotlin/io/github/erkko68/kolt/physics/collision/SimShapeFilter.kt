@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::SimShapeFilter`. */
+/**
+ * Filter class used during the simulation (PhysicsSystem::Update) to filter out collisions at shape level
+ *
+ * C++ `JPH::SimShapeFilter`.
+ */
 open class SimShapeFilter internal constructor(internal val simShapeFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphSimShapeFilter_createUpcalls(Upcalls.function), owned = true) {
@@ -43,6 +47,19 @@ open class SimShapeFilter internal constructor(internal val simShapeFilterHandle
     override fun close() =
         closeOnce { JphSimShapeFilter_destroy(simShapeFilterHandle) }
 
+    /**
+     * Filter function to determine if two shapes should collide. Returns true if the filter passes.
+     * This overload is called during the simulation (PhysicsSystem::Update) and must be registered with PhysicsSystem::SetSimShapeFilter.
+     * It is called at each level of the shape hierarchy, so if you have a compound shape with a box, this function will be called twice.
+     * It will not be called on triangles that are part of another shape, i.e a mesh shape will not trigger a callback per triangle.
+     * Note that this function is called from multiple threads and must be thread safe. All properties are read only.
+     * @param body1 1st body that is colliding
+     * @param shape1 1st shape that is colliding
+     * @param subShapeIDOfShape1 The sub shape ID that will lead from inBody1.GetShape() to inShape1
+     * @param body2 2nd body that is colliding
+     * @param shape2 2nd shape that is colliding
+     * @param subShapeIDOfShape2 The sub shape ID that will lead from inBody2.GetShape() to inShape2
+     */
     open fun shouldCollide(body1: Body, shape1: Shape?, subShapeIDOfShape1: SubShapeID, body2: Body, shape2: Shape?, subShapeIDOfShape2: SubShapeID): Boolean =
         JphSimShapeFilter_ShouldCollide(simShapeFilterHandle, body1.bodyHandle, shape1?.shapeHandle ?: NullPointer, subShapeIDOfShape1.value, body2.bodyHandle, shape2?.shapeHandle ?: NullPointer, subShapeIDOfShape2.value)
 

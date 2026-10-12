@@ -33,7 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterVsCharacterCollision`. */
+/**
+ * Interface class that allows a CharacterVirtual to check collision with other CharacterVirtual instances.
+ * Since CharacterVirtual instances are not registered anywhere, it is up to the application to test collision against relevant characters.
+ * The characters could be stored in a tree structure to make this more efficient.
+ *
+ * C++ `JPH::CharacterVsCharacterCollision`.
+ */
 open class CharacterVsCharacterCollision internal constructor(internal val characterVsCharacterCollisionHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphCharacterVsCharacterCollision_createUpcalls(Upcalls.function), owned = true) {
@@ -43,9 +49,26 @@ open class CharacterVsCharacterCollision internal constructor(internal val chara
     override fun close() =
         closeOnce { JphCharacterVsCharacterCollision_destroy(characterVsCharacterCollisionHandle) }
 
+    /**
+     * Collide a character against other CharacterVirtuals.
+     * @param character The character to collide.
+     * @param centerOfMassTransform Center of mass transform for this character.
+     * @param collideShapeSettings Settings for the collision check.
+     * @param baseOffset All hit results will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. GetPosition() since floats are most accurate near the origin
+     * @param collector Collision collector that receives the collision results.
+     */
     open fun collideCharacter(character: CharacterVirtual?, centerOfMassTransform: Mat44, collideShapeSettings: CollideShapeSettings, baseOffset: Vec3, collector: CollideShapeCollector) =
         interopScope { JphCharacterVsCharacterCollision_CollideCharacter(characterVsCharacterCollisionHandle, character?.characterVirtualHandle ?: NullPointer, toInterop(centerOfMassTransform.toArray()), collideShapeSettings.collideShapeSettingsHandle, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle) }
 
+    /**
+     * Cast a character against other CharacterVirtuals.
+     * @param character The character to cast.
+     * @param centerOfMassTransform Center of mass transform for this character.
+     * @param direction Direction and length to cast in.
+     * @param shapeCastSettings Settings for the shape cast.
+     * @param baseOffset All hit results will be returned relative to this offset, can be zero to get results in world position, but when you're testing far from the origin you get better precision by picking a position that's closer e.g. GetPosition() since floats are most accurate near the origin
+     * @param collector Collision collector that receives the collision results.
+     */
     open fun castCharacter(character: CharacterVirtual?, centerOfMassTransform: Mat44, direction: Vec3, shapeCastSettings: ShapeCastSettings, baseOffset: Vec3, collector: CastShapeCollector) =
         interopScope { JphCharacterVsCharacterCollision_CastCharacter(characterVsCharacterCollisionHandle, character?.characterVirtualHandle ?: NullPointer, toInterop(centerOfMassTransform.toArray()), toInterop(direction.toArray()), shapeCastSettings.shapeCastSettingsHandle, toInterop(baseOffset.toArray()), collector.castShapeCollectorHandle) }
 

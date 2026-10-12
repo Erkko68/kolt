@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::IndexedTriangle`. */
+/**
+ * Triangle with 32-bit indices and material index
+ *
+ * C++ `JPH::IndexedTriangle`.
+ */
 class IndexedTriangle internal constructor(internal val indexedTriangleHandle: NativePointer, owned: Boolean = false) : IndexedTriangleNoMaterial(JphIndexedTriangle_asIndexedTriangleNoMaterial(indexedTriangleHandle), owned), AutoCloseable {
     constructor(i1: Int, i2: Int, i3: Int, materialIndex: Int, userData: Int) : this(JphIndexedTriangle_create_uint32_uint32_uint32_uint32_uint(i1, i2, i3, materialIndex, userData), owned = true)
     constructor() : this(JphIndexedTriangle_create(), owned = true)
@@ -41,6 +45,7 @@ class IndexedTriangle internal constructor(internal val indexedTriangleHandle: N
     override fun close() =
         closeOnce { JphIndexedTriangle_destroy(indexedTriangleHandle) }
 
+    /** Rotate the vertices so that the lowest vertex becomes the first. This does not change the represented triangle. */
     val lowestIndexFirst: IndexedTriangle
         get() = run {
             val returned = IndexedTriangle(JphIndexedTriangle_create(), owned = true)
@@ -48,6 +53,7 @@ class IndexedTriangle internal constructor(internal val indexedTriangleHandle: N
             returned
         }
 
+    /** Get the hash value of this structure */
     override val hash: Long
         get() = interopScope {
             val returned = LongArray(1)
@@ -61,6 +67,7 @@ class IndexedTriangle internal constructor(internal val indexedTriangleHandle: N
         get() = JphIndexedTriangle_GetMaterialIndex(indexedTriangleHandle)
         set(value) = JphIndexedTriangle_SetMaterialIndex(indexedTriangleHandle, value)
 
+    /** User data that can be used for anything by the application, e.g. for tracking the original index of the triangle */
     var userData: Int
         get() = JphIndexedTriangle_GetUserData(indexedTriangleHandle)
         set(value) = JphIndexedTriangle_SetUserData(indexedTriangleHandle, value)

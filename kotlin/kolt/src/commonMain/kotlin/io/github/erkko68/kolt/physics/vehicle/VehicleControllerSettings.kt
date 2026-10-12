@@ -33,7 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::VehicleControllerSettings`. */
+/**
+ * Basic settings object for interface that controls acceleration / deceleration of the vehicle
+ *
+ * C++ `JPH::VehicleControllerSettings`.
+ */
 open class VehicleControllerSettings internal constructor(internal val vehicleControllerSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphVehicleControllerSettings_asSerializableObject(vehicleControllerSettingsHandle), owned), AutoCloseable {
     open fun addRef() =
         own { JphVehicleControllerSettings_addRef(vehicleControllerSettingsHandle) }
@@ -41,12 +45,15 @@ open class VehicleControllerSettings internal constructor(internal val vehicleCo
     override fun close() =
         closeOnce { JphVehicleControllerSettings_release(vehicleControllerSettingsHandle) }
 
+    /** Saves the contents of the controller settings in binary form to inStream. */
     open fun saveBinaryState(stream: StreamOut) =
         JphVehicleControllerSettings_SaveBinaryState(vehicleControllerSettingsHandle, stream.streamOutHandle)
 
+    /** Restore the contents of the controller settings in binary form from inStream. */
     open fun restoreBinaryState(stream: StreamIn) =
         JphVehicleControllerSettings_RestoreBinaryState(vehicleControllerSettingsHandle, stream.streamInHandle)
 
+    /** Create an instance of the vehicle controller class */
     fun constructController(constraint: VehicleConstraint): VehicleController? =
         JphVehicleControllerSettings_ConstructController(vehicleControllerSettingsHandle, constraint.vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleController(it) }
 }

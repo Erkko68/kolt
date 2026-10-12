@@ -33,7 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::MeshShape`. */
+/**
+ * A mesh shape, consisting of triangles. Mesh shapes are mostly used for static geometry.
+ * They can be used by dynamic or kinematic objects but only if they don't collide with other mesh or heightfield shapes as those collisions are currently not supported.
+ * Note that if you make a mesh shape a dynamic or kinematic object, you need to provide a mass yourself as mesh shapes don't need to form a closed hull so don't have a well defined volume from which the mass can be calculated.
+ *
+ * C++ `JPH::MeshShape`.
+ */
 class MeshShape internal constructor(internal val meshShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphMeshShape_asShape(meshShapeHandle), owned), AutoCloseable {
     constructor() : this(JphMeshShape_create(), owned = true)
 
@@ -43,6 +49,7 @@ class MeshShape internal constructor(internal val meshShapeHandle: NativePointer
     override fun close() =
         closeOnce { JphMeshShape_release(meshShapeHandle) }
 
+    /** Get the list of all materials */
     val materialList: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphMeshShape_GetMaterialList(meshShapeHandle, NullPointer, 0)
@@ -51,6 +58,10 @@ class MeshShape internal constructor(internal val meshShapeHandle: NativePointer
             readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
         }
 
+    /**
+     * Determine which material index a particular sub shape uses (note that if there are no materials this function will return 0 so check the array size)
+     * Note: This could for example be used to create a decorator shape around a mesh shape that overrides the GetMaterial call to replace a material with another material.
+     */
     fun getMaterialIndex(subShapeID: SubShapeID): Int =
         JphMeshShape_GetMaterialIndex(meshShapeHandle, subShapeID.value)
 

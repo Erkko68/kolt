@@ -33,7 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::CharacterContactListener`. */
+/**
+ * This class receives callbacks when a virtual character hits something.
+ * Once created, register it on a CharacterVirtual by using the character's SetListener method.
+ *
+ * C++ `JPH::CharacterContactListener`.
+ */
 open class CharacterContactListener internal constructor(internal val characterContactListenerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     /** Creates one whose functions a subclass overrides. */
     constructor() : this(JphCharacterContactListener_createUpcalls(Upcalls.function), owned = true) {
@@ -43,6 +48,10 @@ open class CharacterContactListener internal constructor(internal val characterC
     override fun close() =
         closeOnce { JphCharacterContactListener_destroy(characterContactListenerHandle) }
 
+    /**
+     * Callback to adjust the velocity of a body as seen by the character. Can be adjusted to e.g. implement a conveyor belt or an inertial dampener system of a sci-fi space ship.
+     * Note that inBody2 is locked during the callback so you can read its properties freely.
+     */
     open fun onAdjustBodyVelocity(character: CharacterVirtual?, body2: Body, linearVelocity: Vec3, angularVelocity: Vec3): Pair<Vec3, Vec3> =
         interopScope {
             val linearVelocityArray = linearVelocity.toArray()
@@ -55,30 +64,69 @@ open class CharacterContactListener internal constructor(internal val characterC
             Pair(Vec3(linearVelocityArray), Vec3(angularVelocityArray))
         }
 
+    /** Checks if a character can collide with specified body. Return true if the contact is valid. */
     open fun onContactValidate(character: CharacterVirtual?, contact: CharacterContact): Boolean =
         JphCharacterContactListener_OnContactValidate(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, contact.characterContactHandle)
 
+    /**
+     * Called whenever the character collides with a body for the first time.
+     * @param character Character that is being solved
+     * @param contact Contact that we're colliding against
+     * @param settings Settings returned by the contact callback to indicate how the character should behave
+     */
     open fun onContactAdded(character: CharacterVirtual?, contact: CharacterContact, settings: CharacterContactSettings) =
         JphCharacterContactListener_OnContactAdded(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, contact.characterContactHandle, settings.characterContactSettingsHandle)
 
+    /**
+     * Called whenever the character persists colliding with a body.
+     * @param character Character that is being solved
+     * @param contact Contact that we're colliding against
+     * @param settings Settings returned by the contact callback to indicate how the character should behave
+     */
     open fun onContactPersisted(character: CharacterVirtual?, contact: CharacterContact, settings: CharacterContactSettings) =
         JphCharacterContactListener_OnContactPersisted(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, contact.characterContactHandle, settings.characterContactSettingsHandle)
 
+    /**
+     * Called whenever the character loses contact with a body.
+     * Note that there is no guarantee that the body or its sub shape still exists at this point. The body may have been deleted since the last update.
+     * @param character Character that is being solved
+     * @param bodyID2 Body ID of body that is being hit
+     * @param subShapeID2 Sub shape ID of shape that is being hit
+     */
     open fun onContactRemoved(character: CharacterVirtual?, bodyID2: BodyID, subShapeID2: SubShapeID) =
         JphCharacterContactListener_OnContactRemoved(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, bodyID2.value, subShapeID2.value)
 
+    /** Same as OnContactValidate but when colliding with a CharacterVirtual */
     open fun onCharacterContactValidate(character: CharacterVirtual?, contact: CharacterContact): Boolean =
         JphCharacterContactListener_OnCharacterContactValidate(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, contact.characterContactHandle)
 
+    /** Same as OnContactAdded but when colliding with a CharacterVirtual */
     open fun onCharacterContactAdded(character: CharacterVirtual?, contact: CharacterContact, settings: CharacterContactSettings) =
         JphCharacterContactListener_OnCharacterContactAdded(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, contact.characterContactHandle, settings.characterContactSettingsHandle)
 
+    /** Same as OnContactPersisted but when colliding with a CharacterVirtual */
     open fun onCharacterContactPersisted(character: CharacterVirtual?, contact: CharacterContact, settings: CharacterContactSettings) =
         JphCharacterContactListener_OnCharacterContactPersisted(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, contact.characterContactHandle, settings.characterContactSettingsHandle)
 
+    /**
+     * Same as OnContactRemoved but when colliding with a CharacterVirtual
+     * Note that inOtherCharacterID can be the ID of a character that has been deleted. This happens if the character was in contact with this character during the last update, but has been deleted since.
+     */
     open fun onCharacterContactRemoved(character: CharacterVirtual?, otherCharacterID: CharacterID, subShapeID2: SubShapeID) =
         JphCharacterContactListener_OnCharacterContactRemoved(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, otherCharacterID.characterIDHandle, subShapeID2.value)
 
+    /**
+     * Called whenever a contact is being used by the solver. Allows the listener to override the resulting character velocity (e.g. by preventing sliding along certain surfaces).
+     * @param character Character that is being solved
+     * @param bodyID2 Body ID of body that is being hit
+     * @param subShapeID2 Sub shape ID of shape that is being hit
+     * @param contactPosition World space contact position
+     * @param contactNormal World space contact normal
+     * @param contactVelocity World space velocity of contact point (e.g. for a moving platform)
+     * @param contactMaterial Material of contact point
+     * @param characterVelocity World space velocity of the character prior to hitting this contact
+     * @param newCharacterVelocity Contains the calculated world space velocity of the character after hitting this contact, this velocity slides along the surface of the contact. Can be modified by the listener to provide an alternative velocity.
+     */
     open fun onContactSolve(character: CharacterVirtual?, bodyID2: BodyID, subShapeID2: SubShapeID, contactPosition: Vec3, contactNormal: Vec3, contactVelocity: Vec3, contactMaterial: PhysicsMaterial?, characterVelocity: Vec3, newCharacterVelocity: Vec3): Vec3 =
         interopScope {
             val newCharacterVelocityArray = newCharacterVelocity.toArray()
@@ -88,6 +136,7 @@ open class CharacterContactListener internal constructor(internal val characterC
             Vec3(newCharacterVelocityArray)
         }
 
+    /** Same as OnContactSolve but when colliding with a CharacterVirtual */
     open fun onCharacterContactSolve(character: CharacterVirtual?, otherCharacter: CharacterVirtual?, subShapeID2: SubShapeID, contactPosition: Vec3, contactNormal: Vec3, contactVelocity: Vec3, contactMaterial: PhysicsMaterial?, characterVelocity: Vec3, newCharacterVelocity: Vec3): Vec3 =
         interopScope {
             val newCharacterVelocityArray = newCharacterVelocity.toArray()

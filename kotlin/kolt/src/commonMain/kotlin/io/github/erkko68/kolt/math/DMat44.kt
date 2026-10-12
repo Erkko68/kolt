@@ -33,5 +33,9 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 import io.github.erkko68.kolt.skeleton.capi.*
 
-/** C++ `JPH::DMat44`. */
+/**
+ * Holds a 4x4 matrix of floats with the last column consisting of doubles
+ *
+ * C++ `JPH::DMat44`.
+ */
 class DMat44 internal constructor(internal val dMat44Handle: NativePointer, owned: Boolean = false) : NativeObject(owned)
