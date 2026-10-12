@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::WheelWV`. */
-open class WheelWV internal constructor(internal val wheelWVHandle: NativePointer, owned: Boolean = false) : Wheel(JphWheelWV_asWheel(wheelWVHandle), owned), AutoCloseable {
+class WheelWV internal constructor(internal val wheelWVHandle: NativePointer, owned: Boolean = false) : Wheel(JphWheelWV_asWheel(wheelWVHandle), owned), AutoCloseable {
     constructor(wheel: WheelSettingsWV) : this(JphWheelWV_create(wheel.wheelSettingsWVHandle), owned = true)
 
     override fun close() =
@@ -42,29 +42,29 @@ open class WheelWV internal constructor(internal val wheelWVHandle: NativePointe
     override val settings: WheelSettingsWV?
         get() = JphWheelWV_GetSettings(wheelWVHandle).takeIf { it != NullPointer }?.let { WheelSettingsWV(it) }
 
-    open fun applyTorque(torque: Float, deltaTime: Float) =
+    fun applyTorque(torque: Float, deltaTime: Float) =
         JphWheelWV_ApplyTorque(wheelWVHandle, torque, deltaTime)
 
-    open fun update(wheelIndex: Int, deltaTime: Float, constraint: VehicleConstraint) =
+    fun update(wheelIndex: Int, deltaTime: Float, constraint: VehicleConstraint) =
         JphWheelWV_Update(wheelWVHandle, wheelIndex, deltaTime, constraint.vehicleConstraintHandle)
 
-    open var longitudinalSlip: Float
+    var longitudinalSlip: Float
         get() = JphWheelWV_GetLongitudinalSlip(wheelWVHandle)
         set(value) = JphWheelWV_SetLongitudinalSlip(wheelWVHandle, value)
 
-    open var lateralSlip: Float
+    var lateralSlip: Float
         get() = JphWheelWV_GetLateralSlip(wheelWVHandle)
         set(value) = JphWheelWV_SetLateralSlip(wheelWVHandle, value)
 
-    open var combinedLongitudinalFriction: Float
+    var combinedLongitudinalFriction: Float
         get() = JphWheelWV_GetCombinedLongitudinalFriction(wheelWVHandle)
         set(value) = JphWheelWV_SetCombinedLongitudinalFriction(wheelWVHandle, value)
 
-    open var combinedLateralFriction: Float
+    var combinedLateralFriction: Float
         get() = JphWheelWV_GetCombinedLateralFriction(wheelWVHandle)
         set(value) = JphWheelWV_SetCombinedLateralFriction(wheelWVHandle, value)
 
-    open var brakeImpulse: Float
+    var brakeImpulse: Float
         get() = JphWheelWV_GetBrakeImpulse(wheelWVHandle)
         set(value) = JphWheelWV_SetBrakeImpulse(wheelWVHandle, value)
 }

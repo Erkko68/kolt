@@ -39,16 +39,16 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
     override fun close() =
         closeOnce { JphMotionProperties_destroy(motionPropertiesHandle) }
 
-    open val motionQuality: EMotionQuality
+    val motionQuality: EMotionQuality
         get() = EMotionQuality.of(JphMotionProperties_GetMotionQuality(motionPropertiesHandle))
 
-    open val allowedDOFs: EAllowedDOFs
+    val allowedDOFs: EAllowedDOFs
         get() = EAllowedDOFs.of(JphMotionProperties_GetAllowedDOFs(motionPropertiesHandle))
 
-    open val allowSleeping: Boolean
+    val allowSleeping: Boolean
         get() = JphMotionProperties_GetAllowSleeping(motionPropertiesHandle)
 
-    open var linearVelocity: Vec3
+    var linearVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -58,10 +58,10 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
         }
         set(linearVelocity) = interopScope { JphMotionProperties_SetLinearVelocity(motionPropertiesHandle, toInterop(linearVelocity.toArray())) }
 
-    open fun setLinearVelocityClamped(linearVelocity: Vec3) =
+    fun setLinearVelocityClamped(linearVelocity: Vec3) =
         interopScope { JphMotionProperties_SetLinearVelocityClamped(motionPropertiesHandle, toInterop(linearVelocity.toArray())) }
 
-    open var angularVelocity: Vec3
+    var angularVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -71,49 +71,49 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
         }
         set(angularVelocity) = interopScope { JphMotionProperties_SetAngularVelocity(motionPropertiesHandle, toInterop(angularVelocity.toArray())) }
 
-    open fun setAngularVelocityClamped(angularVelocity: Vec3) =
+    fun setAngularVelocityClamped(angularVelocity: Vec3) =
         interopScope { JphMotionProperties_SetAngularVelocityClamped(motionPropertiesHandle, toInterop(angularVelocity.toArray())) }
 
-    open fun moveKinematic(deltaPosition: Vec3, deltaRotation: Quat, deltaTime: Float) =
+    fun moveKinematic(deltaPosition: Vec3, deltaRotation: Quat, deltaTime: Float) =
         interopScope { JphMotionProperties_MoveKinematic(motionPropertiesHandle, toInterop(deltaPosition.toArray()), toInterop(deltaRotation.toArray()), deltaTime) }
 
-    open var maxLinearVelocity: Float
+    var maxLinearVelocity: Float
         get() = JphMotionProperties_GetMaxLinearVelocity(motionPropertiesHandle)
         set(linearVelocity) = JphMotionProperties_SetMaxLinearVelocity(motionPropertiesHandle, linearVelocity)
 
-    open var maxAngularVelocity: Float
+    var maxAngularVelocity: Float
         get() = JphMotionProperties_GetMaxAngularVelocity(motionPropertiesHandle)
         set(angularVelocity) = JphMotionProperties_SetMaxAngularVelocity(motionPropertiesHandle, angularVelocity)
 
-    open fun clampLinearVelocity() =
+    fun clampLinearVelocity() =
         JphMotionProperties_ClampLinearVelocity(motionPropertiesHandle)
 
-    open fun clampAngularVelocity() =
+    fun clampAngularVelocity() =
         JphMotionProperties_ClampAngularVelocity(motionPropertiesHandle)
 
-    open var linearDamping: Float
+    var linearDamping: Float
         get() = JphMotionProperties_GetLinearDamping(motionPropertiesHandle)
         set(linearDamping) = JphMotionProperties_SetLinearDamping(motionPropertiesHandle, linearDamping)
 
-    open var angularDamping: Float
+    var angularDamping: Float
         get() = JphMotionProperties_GetAngularDamping(motionPropertiesHandle)
         set(angularDamping) = JphMotionProperties_SetAngularDamping(motionPropertiesHandle, angularDamping)
 
-    open var gravityFactor: Float
+    var gravityFactor: Float
         get() = JphMotionProperties_GetGravityFactor(motionPropertiesHandle)
         set(gravityFactor) = JphMotionProperties_SetGravityFactor(motionPropertiesHandle, gravityFactor)
 
-    open fun setMassProperties(allowedDOFs: EAllowedDOFs, massProperties: MassProperties) =
+    fun setMassProperties(allowedDOFs: EAllowedDOFs, massProperties: MassProperties) =
         JphMotionProperties_SetMassProperties(motionPropertiesHandle, allowedDOFs.value, massProperties.massPropertiesHandle)
 
-    open var inverseMass: Float
+    var inverseMass: Float
         get() = JphMotionProperties_GetInverseMass(motionPropertiesHandle)
         set(inverseMass) = JphMotionProperties_SetInverseMass(motionPropertiesHandle, inverseMass)
 
-    open val inverseMassUnchecked: Float
+    val inverseMassUnchecked: Float
         get() = JphMotionProperties_GetInverseMassUnchecked(motionPropertiesHandle)
 
-    open val inverseInertiaDiagonal: Vec3
+    val inverseInertiaDiagonal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -122,7 +122,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
-    open val inertiaRotation: Quat
+    val inertiaRotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -131,13 +131,13 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Quat(returned)
         }
 
-    open fun setInverseInertia(diagonal: Vec3, rot: Quat) =
+    fun setInverseInertia(diagonal: Vec3, rot: Quat) =
         interopScope { JphMotionProperties_SetInverseInertia(motionPropertiesHandle, toInterop(diagonal.toArray()), toInterop(rot.toArray())) }
 
-    open fun scaleToMass(mass: Float) =
+    fun scaleToMass(mass: Float) =
         JphMotionProperties_ScaleToMass(motionPropertiesHandle, mass)
 
-    open val localSpaceInverseInertia: Mat44
+    val localSpaceInverseInertia: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -146,7 +146,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Mat44(returned)
         }
 
-    open val localSpaceInverseInertiaUnchecked: Mat44
+    val localSpaceInverseInertiaUnchecked: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -155,7 +155,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Mat44(returned)
         }
 
-    open fun getInverseInertiaForRotation(rotation: Mat44): Mat44 =
+    fun getInverseInertiaForRotation(rotation: Mat44): Mat44 =
         interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -164,7 +164,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Mat44(returned)
         }
 
-    open fun multiplyWorldSpaceInverseInertiaByVector(bodyRotation: Quat, v: Vec3): Vec3 =
+    fun multiplyWorldSpaceInverseInertiaByVector(bodyRotation: Quat, v: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -173,7 +173,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
-    open fun getPointVelocityCOM(pointRelativeToCOM: Vec3): Vec3 =
+    fun getPointVelocityCOM(pointRelativeToCOM: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -182,7 +182,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
-    open val accumulatedForce: Vec3
+    val accumulatedForce: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -191,7 +191,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
-    open val accumulatedTorque: Vec3
+    val accumulatedTorque: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -200,16 +200,16 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
-    open fun resetForce() =
+    fun resetForce() =
         JphMotionProperties_ResetForce(motionPropertiesHandle)
 
-    open fun resetTorque() =
+    fun resetTorque() =
         JphMotionProperties_ResetTorque(motionPropertiesHandle)
 
-    open fun resetMotion() =
+    fun resetMotion() =
         JphMotionProperties_ResetMotion(motionPropertiesHandle)
 
-    open val linearDOFsMask: UVec4
+    val linearDOFsMask: UVec4
         get() = interopScope {
             val returned = IntArray(4)
             val returnedPointer = toInterop(returned)
@@ -218,7 +218,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             UVec4(returned)
         }
 
-    open fun lockTranslation(v: Vec3): Vec3 =
+    fun lockTranslation(v: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -227,7 +227,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
-    open val angularDOFsMask: UVec4
+    val angularDOFsMask: UVec4
         get() = interopScope {
             val returned = IntArray(4)
             val returnedPointer = toInterop(returned)
@@ -236,7 +236,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             UVec4(returned)
         }
 
-    open fun lockAngular(v: Vec3): Vec3 =
+    fun lockAngular(v: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -245,49 +245,49 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
             Vec3(returned)
         }
 
-    open var numVelocityStepsOverride: Int
+    var numVelocityStepsOverride: Int
         get() = JphMotionProperties_GetNumVelocityStepsOverride(motionPropertiesHandle)
         set(n) = JphMotionProperties_SetNumVelocityStepsOverride(motionPropertiesHandle, n)
 
-    open var numPositionStepsOverride: Int
+    var numPositionStepsOverride: Int
         get() = JphMotionProperties_GetNumPositionStepsOverride(motionPropertiesHandle)
         set(n) = JphMotionProperties_SetNumPositionStepsOverride(motionPropertiesHandle, n)
 
-    open fun applyLinearVelocityStep(linearVelocity: Vec3) =
+    fun applyLinearVelocityStep(linearVelocity: Vec3) =
         interopScope { JphMotionProperties_ApplyLinearVelocityStep(motionPropertiesHandle, toInterop(linearVelocity.toArray())) }
 
-    open fun addLinearVelocityStep(linearVelocityChange: Vec3) =
+    fun addLinearVelocityStep(linearVelocityChange: Vec3) =
         interopScope { JphMotionProperties_AddLinearVelocityStep(motionPropertiesHandle, toInterop(linearVelocityChange.toArray())) }
 
-    open fun subLinearVelocityStep(linearVelocityChange: Vec3) =
+    fun subLinearVelocityStep(linearVelocityChange: Vec3) =
         interopScope { JphMotionProperties_SubLinearVelocityStep(motionPropertiesHandle, toInterop(linearVelocityChange.toArray())) }
 
-    open fun applyAngularVelocityStep(angularVelocity: Vec3) =
+    fun applyAngularVelocityStep(angularVelocity: Vec3) =
         interopScope { JphMotionProperties_ApplyAngularVelocityStep(motionPropertiesHandle, toInterop(angularVelocity.toArray())) }
 
-    open fun addAngularVelocityStep(angularVelocityChange: Vec3) =
+    fun addAngularVelocityStep(angularVelocityChange: Vec3) =
         interopScope { JphMotionProperties_AddAngularVelocityStep(motionPropertiesHandle, toInterop(angularVelocityChange.toArray())) }
 
-    open fun subAngularVelocityStep(angularVelocityChange: Vec3) =
+    fun subAngularVelocityStep(angularVelocityChange: Vec3) =
         interopScope { JphMotionProperties_SubAngularVelocityStep(motionPropertiesHandle, toInterop(angularVelocityChange.toArray())) }
 
-    open fun applyGyroscopicForceInternal(bodyRotation: Quat, deltaTime: Float) =
+    fun applyGyroscopicForceInternal(bodyRotation: Quat, deltaTime: Float) =
         interopScope { JphMotionProperties_ApplyGyroscopicForceInternal(motionPropertiesHandle, toInterop(bodyRotation.toArray()), deltaTime) }
 
-    open fun applyForceTorqueAndDragInternal(bodyRotation: Quat, gravity: Vec3, deltaTime: Float) =
+    fun applyForceTorqueAndDragInternal(bodyRotation: Quat, gravity: Vec3, deltaTime: Float) =
         interopScope { JphMotionProperties_ApplyForceTorqueAndDragInternal(motionPropertiesHandle, toInterop(bodyRotation.toArray()), toInterop(gravity.toArray()), deltaTime) }
 
-    open var islandIndexInternal: Int
+    var islandIndexInternal: Int
         get() = JphMotionProperties_GetIslandIndexInternal(motionPropertiesHandle)
         set(index) = JphMotionProperties_SetIslandIndexInternal(motionPropertiesHandle, index)
 
-    open val indexInActiveBodiesInternal: Int
+    val indexInActiveBodiesInternal: Int
         get() = JphMotionProperties_GetIndexInActiveBodiesInternal(motionPropertiesHandle)
 
-    open fun resetSleepTestTimer() =
+    fun resetSleepTestTimer() =
         JphMotionProperties_ResetSleepTestTimer(motionPropertiesHandle)
 
-    open fun accumulateSleepTime(deltaTime: Float, timeBeforeSleep: Float): ECanSleep =
+    fun accumulateSleepTime(deltaTime: Float, timeBeforeSleep: Float): ECanSleep =
         ECanSleep.of(JphMotionProperties_AccumulateSleepTime(motionPropertiesHandle, deltaTime, timeBeforeSleep))
 
     open fun saveState(stream: StateRecorder) =

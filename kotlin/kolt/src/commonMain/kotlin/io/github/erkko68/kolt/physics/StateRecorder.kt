@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::StateRecorder`. */
-open class StateRecorder internal constructor(internal val stateRecorderHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class StateRecorder internal constructor(internal val stateRecorderHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

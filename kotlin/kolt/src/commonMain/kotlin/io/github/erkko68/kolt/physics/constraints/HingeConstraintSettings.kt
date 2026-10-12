@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::HingeConstraintSettings`. */
-open class HingeConstraintSettings internal constructor(internal val hingeConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphHingeConstraintSettings_asTwoBodyConstraintSettings(hingeConstraintSettingsHandle), owned), AutoCloseable {
+class HingeConstraintSettings internal constructor(internal val hingeConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphHingeConstraintSettings_asTwoBodyConstraintSettings(hingeConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphHingeConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,11 +42,11 @@ open class HingeConstraintSettings internal constructor(internal val hingeConstr
     override fun close() =
         closeOnce { JphHingeConstraintSettings_release(hingeConstraintSettingsHandle) }
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphHingeConstraintSettings_GetSpace(hingeConstraintSettingsHandle))
         set(value) = JphHingeConstraintSettings_SetSpace(hingeConstraintSettingsHandle, value.value)
 
-    open var point1: Vec3
+    var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -56,7 +56,7 @@ open class HingeConstraintSettings internal constructor(internal val hingeConstr
         }
         set(value) = interopScope { JphHingeConstraintSettings_SetPoint1(hingeConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var hingeAxis1: Vec3
+    var hingeAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -66,7 +66,7 @@ open class HingeConstraintSettings internal constructor(internal val hingeConstr
         }
         set(value) = interopScope { JphHingeConstraintSettings_SetHingeAxis1(hingeConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var normalAxis1: Vec3
+    var normalAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -76,7 +76,7 @@ open class HingeConstraintSettings internal constructor(internal val hingeConstr
         }
         set(value) = interopScope { JphHingeConstraintSettings_SetNormalAxis1(hingeConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var point2: Vec3
+    var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -86,7 +86,7 @@ open class HingeConstraintSettings internal constructor(internal val hingeConstr
         }
         set(value) = interopScope { JphHingeConstraintSettings_SetPoint2(hingeConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var hingeAxis2: Vec3
+    var hingeAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -96,7 +96,7 @@ open class HingeConstraintSettings internal constructor(internal val hingeConstr
         }
         set(value) = interopScope { JphHingeConstraintSettings_SetHingeAxis2(hingeConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var normalAxis2: Vec3
+    var normalAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -106,15 +106,15 @@ open class HingeConstraintSettings internal constructor(internal val hingeConstr
         }
         set(value) = interopScope { JphHingeConstraintSettings_SetNormalAxis2(hingeConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var limitsMin: Float
+    var limitsMin: Float
         get() = JphHingeConstraintSettings_GetLimitsMin(hingeConstraintSettingsHandle)
         set(value) = JphHingeConstraintSettings_SetLimitsMin(hingeConstraintSettingsHandle, value)
 
-    open var limitsMax: Float
+    var limitsMax: Float
         get() = JphHingeConstraintSettings_GetLimitsMax(hingeConstraintSettingsHandle)
         set(value) = JphHingeConstraintSettings_SetLimitsMax(hingeConstraintSettingsHandle, value)
 
-    open var limitsSpringSettings: SpringSettings
+    var limitsSpringSettings: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
             JphHingeConstraintSettings_GetLimitsSpringSettings(hingeConstraintSettingsHandle, returned.springSettingsHandle)
@@ -122,11 +122,11 @@ open class HingeConstraintSettings internal constructor(internal val hingeConstr
         }
         set(value) = JphHingeConstraintSettings_SetLimitsSpringSettings(hingeConstraintSettingsHandle, value.springSettingsHandle)
 
-    open var maxFrictionTorque: Float
+    var maxFrictionTorque: Float
         get() = JphHingeConstraintSettings_GetMaxFrictionTorque(hingeConstraintSettingsHandle)
         set(value) = JphHingeConstraintSettings_SetMaxFrictionTorque(hingeConstraintSettingsHandle, value)
 
-    open var motorSettings: MotorSettings
+    var motorSettings: MotorSettings
         get() = run {
             val returned = MotorSettings(JphMotorSettings_create(), owned = true)
             JphHingeConstraintSettings_GetMotorSettings(hingeConstraintSettingsHandle, returned.motorSettingsHandle)

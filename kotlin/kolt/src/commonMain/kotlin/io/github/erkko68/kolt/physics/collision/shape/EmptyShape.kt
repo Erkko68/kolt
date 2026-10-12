@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::EmptyShape`. */
-open class EmptyShape internal constructor(internal val emptyShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphEmptyShape_asShape(emptyShapeHandle), owned), AutoCloseable {
+class EmptyShape internal constructor(internal val emptyShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphEmptyShape_asShape(emptyShapeHandle), owned), AutoCloseable {
     constructor() : this(JphEmptyShape_create(), owned = true)
     constructor(centerOfMass: Vec3) : this(interopScope { JphEmptyShape_create_Vec3Arg(toInterop(centerOfMass.toArray())) }, owned = true)
 

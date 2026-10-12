@@ -42,7 +42,7 @@ open class CharacterBaseSettings internal constructor(internal val characterBase
     override fun close() =
         closeOnce { JphCharacterBaseSettings_release(characterBaseSettingsHandle) }
 
-    open var up: Vec3
+    var up: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -52,7 +52,7 @@ open class CharacterBaseSettings internal constructor(internal val characterBase
         }
         set(value) = interopScope { JphCharacterBaseSettings_SetUp(characterBaseSettingsHandle, toInterop(value.toArray())) }
 
-    open var supportingVolume: Plane
+    var supportingVolume: Plane
         get() = run {
             val returned = Plane(JphPlane_create(), owned = true)
             JphCharacterBaseSettings_GetSupportingVolume(characterBaseSettingsHandle, returned.planeHandle)
@@ -60,15 +60,15 @@ open class CharacterBaseSettings internal constructor(internal val characterBase
         }
         set(value) = JphCharacterBaseSettings_SetSupportingVolume(characterBaseSettingsHandle, value.planeHandle)
 
-    open var maxSlopeAngle: Float
+    var maxSlopeAngle: Float
         get() = JphCharacterBaseSettings_GetMaxSlopeAngle(characterBaseSettingsHandle)
         set(value) = JphCharacterBaseSettings_SetMaxSlopeAngle(characterBaseSettingsHandle, value)
 
-    open var enhancedInternalEdgeRemoval: Boolean
+    var enhancedInternalEdgeRemoval: Boolean
         get() = JphCharacterBaseSettings_GetEnhancedInternalEdgeRemoval(characterBaseSettingsHandle)
         set(value) = JphCharacterBaseSettings_SetEnhancedInternalEdgeRemoval(characterBaseSettingsHandle, value)
 
-    open var shape: Shape?
+    var shape: Shape?
         get() = JphCharacterBaseSettings_GetShape(characterBaseSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(value) = JphCharacterBaseSettings_SetShape(characterBaseSettingsHandle, value?.shapeHandle ?: NullPointer)
 }

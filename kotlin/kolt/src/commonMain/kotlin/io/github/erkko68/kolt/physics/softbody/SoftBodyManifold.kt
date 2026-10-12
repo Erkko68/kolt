@@ -33,8 +33,8 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodyManifold`. */
-open class SoftBodyManifold internal constructor(internal val softBodyManifoldHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
-    open val vertices: List<SoftBodyVertex>
+class SoftBodyManifold internal constructor(internal val softBodyManifoldHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+    val vertices: List<SoftBodyVertex>
         get() = interopScope {
             val count = JphSoftBodyManifold_GetVertices(softBodyManifoldHandle, NullPointer, 0)
             val returned = List(count) { SoftBodyVertex(JphSoftBodyVertex_create(), owned = true) }
@@ -42,10 +42,10 @@ open class SoftBodyManifold internal constructor(internal val softBodyManifoldHa
             returned
         }
 
-    open fun hasContact(vertex: SoftBodyVertex): Boolean =
+    fun hasContact(vertex: SoftBodyVertex): Boolean =
         JphSoftBodyManifold_HasContact(softBodyManifoldHandle, vertex.softBodyVertexHandle)
 
-    open fun getLocalContactPoint(vertex: SoftBodyVertex): Vec3 =
+    fun getLocalContactPoint(vertex: SoftBodyVertex): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -54,7 +54,7 @@ open class SoftBodyManifold internal constructor(internal val softBodyManifoldHa
             Vec3(returned)
         }
 
-    open fun getContactNormal(vertex: SoftBodyVertex): Vec3 =
+    fun getContactNormal(vertex: SoftBodyVertex): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -63,12 +63,12 @@ open class SoftBodyManifold internal constructor(internal val softBodyManifoldHa
             Vec3(returned)
         }
 
-    open fun getContactBodyID(vertex: SoftBodyVertex): BodyID =
+    fun getContactBodyID(vertex: SoftBodyVertex): BodyID =
         BodyID(JphSoftBodyManifold_GetContactBodyID(softBodyManifoldHandle, vertex.softBodyVertexHandle))
 
-    open val numSensorContacts: Int
+    val numSensorContacts: Int
         get() = JphSoftBodyManifold_GetNumSensorContacts(softBodyManifoldHandle)
 
-    open fun getSensorContactBodyID(index: Int): BodyID =
+    fun getSensorContactBodyID(index: Int): BodyID =
         BodyID(JphSoftBodyManifold_GetSensorContactBodyID(softBodyManifoldHandle, index))
 }

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConvexHullShape`. */
-open class ConvexHullShape internal constructor(internal val convexHullShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphConvexHullShape_asConvexShape(convexHullShapeHandle), owned), AutoCloseable {
+class ConvexHullShape internal constructor(internal val convexHullShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphConvexHullShape_asConvexShape(convexHullShapeHandle), owned), AutoCloseable {
     constructor() : this(JphConvexHullShape_create(), owned = true)
 
     override fun addRef() =
@@ -42,10 +42,10 @@ open class ConvexHullShape internal constructor(internal val convexHullShapeHand
     override fun close() =
         closeOnce { JphConvexHullShape_release(convexHullShapeHandle) }
 
-    open val convexRadius: Float
+    val convexRadius: Float
         get() = JphConvexHullShape_GetConvexRadius(convexHullShapeHandle)
 
-    open val planes: List<Plane>
+    val planes: List<Plane>
         get() = interopScope {
             val count = JphConvexHullShape_GetPlanes(convexHullShapeHandle, NullPointer, 0)
             val returned = List(count) { Plane(JphPlane_create(), owned = true) }
@@ -53,10 +53,10 @@ open class ConvexHullShape internal constructor(internal val convexHullShapeHand
             returned
         }
 
-    open val numPoints: Int
+    val numPoints: Int
         get() = JphConvexHullShape_GetNumPoints(convexHullShapeHandle)
 
-    open fun getPoint(index: Int): Vec3 =
+    fun getPoint(index: Int): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -65,13 +65,13 @@ open class ConvexHullShape internal constructor(internal val convexHullShapeHand
             Vec3(returned)
         }
 
-    open val numFaces: Int
+    val numFaces: Int
         get() = JphConvexHullShape_GetNumFaces(convexHullShapeHandle)
 
-    open fun getNumVerticesInFace(faceIndex: Int): Int =
+    fun getNumVerticesInFace(faceIndex: Int): Int =
         JphConvexHullShape_GetNumVerticesInFace(convexHullShapeHandle, faceIndex)
 
-    open fun getFaceVertices(faceIndex: Int, maxVertices: Int, vertices: IntArray): Int =
+    fun getFaceVertices(faceIndex: Int, maxVertices: Int, vertices: IntArray): Int =
         interopScope {
             val verticesPointer = toInterop(vertices)
             val nativeResult = JphConvexHullShape_GetFaceVertices(convexHullShapeHandle, faceIndex, maxVertices, verticesPointer)

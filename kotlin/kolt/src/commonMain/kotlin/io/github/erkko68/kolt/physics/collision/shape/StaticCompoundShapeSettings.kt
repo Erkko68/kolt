@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::StaticCompoundShapeSettings`. */
-open class StaticCompoundShapeSettings internal constructor(internal val staticCompoundShapeSettingsHandle: NativePointer, owned: Boolean = false) : CompoundShapeSettings(JphStaticCompoundShapeSettings_asCompoundShapeSettings(staticCompoundShapeSettingsHandle), owned), AutoCloseable {
+class StaticCompoundShapeSettings internal constructor(internal val staticCompoundShapeSettingsHandle: NativePointer, owned: Boolean = false) : CompoundShapeSettings(JphStaticCompoundShapeSettings_asCompoundShapeSettings(staticCompoundShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphStaticCompoundShapeSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,7 +42,7 @@ open class StaticCompoundShapeSettings internal constructor(internal val staticC
     override fun close() =
         closeOnce { JphStaticCompoundShapeSettings_release(staticCompoundShapeSettingsHandle) }
 
-    open fun create(tempAllocator: TempAllocator): Shape =
+    fun create(tempAllocator: TempAllocator): Shape =
         interopScope {
             val error = ByteArray(256)
             val errorPointer = toInterop(error)

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TriangleShape`. */
-open class TriangleShape internal constructor(internal val triangleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTriangleShape_asConvexShape(triangleShapeHandle), owned), AutoCloseable {
+class TriangleShape internal constructor(internal val triangleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTriangleShape_asConvexShape(triangleShapeHandle), owned), AutoCloseable {
     constructor() : this(JphTriangleShape_create(), owned = true)
     constructor(v1: Vec3, v2: Vec3, v3: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphTriangleShape_create_Vec3Arg_Vec3Arg_Vec3Arg_float_PhysicsMaterial(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
 
@@ -43,7 +43,7 @@ open class TriangleShape internal constructor(internal val triangleShapeHandle: 
     override fun close() =
         closeOnce { JphTriangleShape_release(triangleShapeHandle) }
 
-    open val vertex1: Vec3
+    val vertex1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -52,7 +52,7 @@ open class TriangleShape internal constructor(internal val triangleShapeHandle: 
             Vec3(returned)
         }
 
-    open val vertex2: Vec3
+    val vertex2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -61,7 +61,7 @@ open class TriangleShape internal constructor(internal val triangleShapeHandle: 
             Vec3(returned)
         }
 
-    open val vertex3: Vec3
+    val vertex3: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -70,7 +70,7 @@ open class TriangleShape internal constructor(internal val triangleShapeHandle: 
             Vec3(returned)
         }
 
-    open val convexRadius: Float
+    val convexRadius: Float
         get() = JphTriangleShape_GetConvexRadius(triangleShapeHandle)
 
     companion object {

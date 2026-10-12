@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SliderConstraintSettings`. */
-open class SliderConstraintSettings internal constructor(internal val sliderConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSliderConstraintSettings_asTwoBodyConstraintSettings(sliderConstraintSettingsHandle), owned), AutoCloseable {
+class SliderConstraintSettings internal constructor(internal val sliderConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSliderConstraintSettings_asTwoBodyConstraintSettings(sliderConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphSliderConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,18 +42,18 @@ open class SliderConstraintSettings internal constructor(internal val sliderCons
     override fun close() =
         closeOnce { JphSliderConstraintSettings_release(sliderConstraintSettingsHandle) }
 
-    open fun setSliderAxis(sliderAxis: Vec3) =
+    fun setSliderAxis(sliderAxis: Vec3) =
         interopScope { JphSliderConstraintSettings_SetSliderAxis(sliderConstraintSettingsHandle, toInterop(sliderAxis.toArray())) }
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphSliderConstraintSettings_GetSpace(sliderConstraintSettingsHandle))
         set(value) = JphSliderConstraintSettings_SetSpace(sliderConstraintSettingsHandle, value.value)
 
-    open var autoDetectPoint: Boolean
+    var autoDetectPoint: Boolean
         get() = JphSliderConstraintSettings_GetAutoDetectPoint(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetAutoDetectPoint(sliderConstraintSettingsHandle, value)
 
-    open var point1: Vec3
+    var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -63,7 +63,7 @@ open class SliderConstraintSettings internal constructor(internal val sliderCons
         }
         set(value) = interopScope { JphSliderConstraintSettings_SetPoint1(sliderConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var sliderAxis1: Vec3
+    var sliderAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -73,7 +73,7 @@ open class SliderConstraintSettings internal constructor(internal val sliderCons
         }
         set(value) = interopScope { JphSliderConstraintSettings_SetSliderAxis1(sliderConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var normalAxis1: Vec3
+    var normalAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -83,7 +83,7 @@ open class SliderConstraintSettings internal constructor(internal val sliderCons
         }
         set(value) = interopScope { JphSliderConstraintSettings_SetNormalAxis1(sliderConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var point2: Vec3
+    var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -93,7 +93,7 @@ open class SliderConstraintSettings internal constructor(internal val sliderCons
         }
         set(value) = interopScope { JphSliderConstraintSettings_SetPoint2(sliderConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var sliderAxis2: Vec3
+    var sliderAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -103,7 +103,7 @@ open class SliderConstraintSettings internal constructor(internal val sliderCons
         }
         set(value) = interopScope { JphSliderConstraintSettings_SetSliderAxis2(sliderConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var normalAxis2: Vec3
+    var normalAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -113,15 +113,15 @@ open class SliderConstraintSettings internal constructor(internal val sliderCons
         }
         set(value) = interopScope { JphSliderConstraintSettings_SetNormalAxis2(sliderConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var limitsMin: Float
+    var limitsMin: Float
         get() = JphSliderConstraintSettings_GetLimitsMin(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetLimitsMin(sliderConstraintSettingsHandle, value)
 
-    open var limitsMax: Float
+    var limitsMax: Float
         get() = JphSliderConstraintSettings_GetLimitsMax(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetLimitsMax(sliderConstraintSettingsHandle, value)
 
-    open var limitsSpringSettings: SpringSettings
+    var limitsSpringSettings: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
             JphSliderConstraintSettings_GetLimitsSpringSettings(sliderConstraintSettingsHandle, returned.springSettingsHandle)
@@ -129,11 +129,11 @@ open class SliderConstraintSettings internal constructor(internal val sliderCons
         }
         set(value) = JphSliderConstraintSettings_SetLimitsSpringSettings(sliderConstraintSettingsHandle, value.springSettingsHandle)
 
-    open var maxFrictionForce: Float
+    var maxFrictionForce: Float
         get() = JphSliderConstraintSettings_GetMaxFrictionForce(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetMaxFrictionForce(sliderConstraintSettingsHandle, value)
 
-    open var motorSettings: MotorSettings
+    var motorSettings: MotorSettings
         get() = run {
             val returned = MotorSettings(JphMotorSettings_create(), owned = true)
             JphSliderConstraintSettings_GetMotorSettings(sliderConstraintSettingsHandle, returned.motorSettingsHandle)

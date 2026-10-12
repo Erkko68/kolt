@@ -33,25 +33,25 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodyContactSettings`. */
-open class SoftBodyContactSettings internal constructor(internal val softBodyContactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class SoftBodyContactSettings internal constructor(internal val softBodyContactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSoftBodyContactSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphSoftBodyContactSettings_destroy(softBodyContactSettingsHandle) }
 
-    open var invMassScale1: Float
+    var invMassScale1: Float
         get() = JphSoftBodyContactSettings_GetInvMassScale1(softBodyContactSettingsHandle)
         set(value) = JphSoftBodyContactSettings_SetInvMassScale1(softBodyContactSettingsHandle, value)
 
-    open var invMassScale2: Float
+    var invMassScale2: Float
         get() = JphSoftBodyContactSettings_GetInvMassScale2(softBodyContactSettingsHandle)
         set(value) = JphSoftBodyContactSettings_SetInvMassScale2(softBodyContactSettingsHandle, value)
 
-    open var invInertiaScale2: Float
+    var invInertiaScale2: Float
         get() = JphSoftBodyContactSettings_GetInvInertiaScale2(softBodyContactSettingsHandle)
         set(value) = JphSoftBodyContactSettings_SetInvInertiaScale2(softBodyContactSettingsHandle, value)
 
-    open var isSensor: Boolean
+    var isSensor: Boolean
         get() = JphSoftBodyContactSettings_GetIsSensor(softBodyContactSettingsHandle)
         set(value) = JphSoftBodyContactSettings_SetIsSensor(softBodyContactSettingsHandle, value)
 }

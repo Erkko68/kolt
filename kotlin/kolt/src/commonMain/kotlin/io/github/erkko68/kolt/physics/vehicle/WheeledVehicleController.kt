@@ -39,32 +39,32 @@ open class WheeledVehicleController internal constructor(internal val wheeledVeh
     override fun close() =
         closeOnce { JphWheeledVehicleController_destroy(wheeledVehicleControllerHandle) }
 
-    open fun setDriverInput(forward: Float, right: Float, brake: Float, handBrake: Float) =
+    fun setDriverInput(forward: Float, right: Float, brake: Float, handBrake: Float) =
         JphWheeledVehicleController_SetDriverInput(wheeledVehicleControllerHandle, forward, right, brake, handBrake)
 
-    open var forwardInput: Float
+    var forwardInput: Float
         get() = JphWheeledVehicleController_GetForwardInput(wheeledVehicleControllerHandle)
         set(forward) = JphWheeledVehicleController_SetForwardInput(wheeledVehicleControllerHandle, forward)
 
-    open var rightInput: Float
+    var rightInput: Float
         get() = JphWheeledVehicleController_GetRightInput(wheeledVehicleControllerHandle)
         set(right) = JphWheeledVehicleController_SetRightInput(wheeledVehicleControllerHandle, right)
 
-    open var brakeInput: Float
+    var brakeInput: Float
         get() = JphWheeledVehicleController_GetBrakeInput(wheeledVehicleControllerHandle)
         set(brake) = JphWheeledVehicleController_SetBrakeInput(wheeledVehicleControllerHandle, brake)
 
-    open var handBrakeInput: Float
+    var handBrakeInput: Float
         get() = JphWheeledVehicleController_GetHandBrakeInput(wheeledVehicleControllerHandle)
         set(handBrake) = JphWheeledVehicleController_SetHandBrakeInput(wheeledVehicleControllerHandle, handBrake)
 
-    open val engine: VehicleEngine
+    val engine: VehicleEngine
         get() = VehicleEngine(JphWheeledVehicleController_GetEngine(wheeledVehicleControllerHandle))
 
-    open val transmission: VehicleTransmission
+    val transmission: VehicleTransmission
         get() = VehicleTransmission(JphWheeledVehicleController_GetTransmission(wheeledVehicleControllerHandle))
 
-    open val differentials: List<VehicleDifferentialSettings>
+    val differentials: List<VehicleDifferentialSettings>
         get() = interopScope {
             val count = JphWheeledVehicleController_GetDifferentials(wheeledVehicleControllerHandle, NullPointer, 0)
             val returned = List(count) { VehicleDifferentialSettings(JphVehicleDifferentialSettings_create(), owned = true) }
@@ -72,10 +72,10 @@ open class WheeledVehicleController internal constructor(internal val wheeledVeh
             returned
         }
 
-    open var differentialLimitedSlipRatio: Float
+    var differentialLimitedSlipRatio: Float
         get() = JphWheeledVehicleController_GetDifferentialLimitedSlipRatio(wheeledVehicleControllerHandle)
         set(v) = JphWheeledVehicleController_SetDifferentialLimitedSlipRatio(wheeledVehicleControllerHandle, v)
 
-    open val wheelSpeedAtClutch: Float
+    val wheelSpeedAtClutch: Float
         get() = JphWheeledVehicleController_GetWheelSpeedAtClutch(wheeledVehicleControllerHandle)
 }

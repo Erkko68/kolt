@@ -33,19 +33,19 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleTrack`. */
-open class VehicleTrack internal constructor(internal val vehicleTrackHandle: NativePointer, owned: Boolean = false) : VehicleTrackSettings(JphVehicleTrack_asVehicleTrackSettings(vehicleTrackHandle), owned), AutoCloseable {
+class VehicleTrack internal constructor(internal val vehicleTrackHandle: NativePointer, owned: Boolean = false) : VehicleTrackSettings(JphVehicleTrack_asVehicleTrackSettings(vehicleTrackHandle), owned), AutoCloseable {
     constructor() : this(JphVehicleTrack_create(), owned = true)
 
     override fun close() =
         closeOnce { JphVehicleTrack_destroy(vehicleTrackHandle) }
 
-    open fun saveState(stream: StateRecorder) =
+    fun saveState(stream: StateRecorder) =
         JphVehicleTrack_SaveState(vehicleTrackHandle, stream.stateRecorderHandle)
 
-    open fun restoreState(stream: StateRecorder) =
+    fun restoreState(stream: StateRecorder) =
         JphVehicleTrack_RestoreState(vehicleTrackHandle, stream.stateRecorderHandle)
 
-    open var angularVelocity: Float
+    var angularVelocity: Float
         get() = JphVehicleTrack_GetAngularVelocity(vehicleTrackHandle)
         set(value) = JphVehicleTrack_SetAngularVelocity(vehicleTrackHandle, value)
 }

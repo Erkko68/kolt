@@ -40,10 +40,10 @@ open class VehicleControllerSettings internal constructor(internal val vehicleCo
     override fun close() =
         closeOnce { JphVehicleControllerSettings_release(vehicleControllerSettingsHandle) }
 
-    open val rtti: RTTI?
+    val rtti: RTTI?
         get() = JphVehicleControllerSettings_GetRTTI(vehicleControllerSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
-    open fun castTo(rtti: RTTI?): NativePointer =
+    fun castTo(rtti: RTTI?): NativePointer =
         JphVehicleControllerSettings_CastTo(vehicleControllerSettingsHandle, rtti?.rttiHandle ?: NullPointer)
 
     open fun saveBinaryState(stream: StreamOut) =
@@ -52,7 +52,7 @@ open class VehicleControllerSettings internal constructor(internal val vehicleCo
     open fun restoreBinaryState(stream: StreamIn) =
         JphVehicleControllerSettings_RestoreBinaryState(vehicleControllerSettingsHandle, stream.streamInHandle)
 
-    open fun constructController(constraint: VehicleConstraint): VehicleController? =
+    fun constructController(constraint: VehicleConstraint): VehicleController? =
         JphVehicleControllerSettings_ConstructController(vehicleControllerSettingsHandle, constraint.vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleController(it) }
 
     companion object {

@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::StreamIn`. */
-open class StreamIn internal constructor(internal val streamInHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class StreamIn internal constructor(internal val streamInHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

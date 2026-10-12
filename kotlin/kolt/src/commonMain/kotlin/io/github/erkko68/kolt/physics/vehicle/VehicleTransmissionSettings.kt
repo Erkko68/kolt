@@ -39,17 +39,17 @@ open class VehicleTransmissionSettings internal constructor(internal val vehicle
     override fun close() =
         closeOnce { JphVehicleTransmissionSettings_destroy(vehicleTransmissionSettingsHandle) }
 
-    open fun saveBinaryState(stream: StreamOut) =
+    fun saveBinaryState(stream: StreamOut) =
         JphVehicleTransmissionSettings_SaveBinaryState(vehicleTransmissionSettingsHandle, stream.streamOutHandle)
 
-    open fun restoreBinaryState(stream: StreamIn) =
+    fun restoreBinaryState(stream: StreamIn) =
         JphVehicleTransmissionSettings_RestoreBinaryState(vehicleTransmissionSettingsHandle, stream.streamInHandle)
 
-    open var mode: ETransmissionMode
+    var mode: ETransmissionMode
         get() = ETransmissionMode.of(JphVehicleTransmissionSettings_GetMode(vehicleTransmissionSettingsHandle))
         set(value) = JphVehicleTransmissionSettings_SetMode(vehicleTransmissionSettingsHandle, value.value)
 
-    open var gearRatios: FloatArray
+    var gearRatios: FloatArray
         get() = interopScope {
             val count = JphVehicleTransmissionSettings_GetGearRatios(vehicleTransmissionSettingsHandle, NullPointer, 0)
             val returned = FloatArray(count)
@@ -60,7 +60,7 @@ open class VehicleTransmissionSettings internal constructor(internal val vehicle
         }
         set(value) = interopScope { JphVehicleTransmissionSettings_SetGearRatios(vehicleTransmissionSettingsHandle, toInterop(value), value.size) }
 
-    open var reverseGearRatios: FloatArray
+    var reverseGearRatios: FloatArray
         get() = interopScope {
             val count = JphVehicleTransmissionSettings_GetReverseGearRatios(vehicleTransmissionSettingsHandle, NullPointer, 0)
             val returned = FloatArray(count)
@@ -71,27 +71,27 @@ open class VehicleTransmissionSettings internal constructor(internal val vehicle
         }
         set(value) = interopScope { JphVehicleTransmissionSettings_SetReverseGearRatios(vehicleTransmissionSettingsHandle, toInterop(value), value.size) }
 
-    open var switchTime: Float
+    var switchTime: Float
         get() = JphVehicleTransmissionSettings_GetSwitchTime(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetSwitchTime(vehicleTransmissionSettingsHandle, value)
 
-    open var clutchReleaseTime: Float
+    var clutchReleaseTime: Float
         get() = JphVehicleTransmissionSettings_GetClutchReleaseTime(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetClutchReleaseTime(vehicleTransmissionSettingsHandle, value)
 
-    open var switchLatency: Float
+    var switchLatency: Float
         get() = JphVehicleTransmissionSettings_GetSwitchLatency(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetSwitchLatency(vehicleTransmissionSettingsHandle, value)
 
-    open var shiftUpRPM: Float
+    var shiftUpRPM: Float
         get() = JphVehicleTransmissionSettings_GetShiftUpRPM(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetShiftUpRPM(vehicleTransmissionSettingsHandle, value)
 
-    open var shiftDownRPM: Float
+    var shiftDownRPM: Float
         get() = JphVehicleTransmissionSettings_GetShiftDownRPM(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetShiftDownRPM(vehicleTransmissionSettingsHandle, value)
 
-    open var clutchStrength: Float
+    var clutchStrength: Float
         get() = JphVehicleTransmissionSettings_GetClutchStrength(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetClutchStrength(vehicleTransmissionSettingsHandle, value)
 

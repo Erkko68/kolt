@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodyUpdateContext`. */
-open class SoftBodyUpdateContext internal constructor(internal val softBodyUpdateContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class SoftBodyUpdateContext internal constructor(internal val softBodyUpdateContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

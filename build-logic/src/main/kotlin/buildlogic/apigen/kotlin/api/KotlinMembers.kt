@@ -18,6 +18,9 @@ internal class Member(
     /** The C++ parameters, by index, whose values it returns after its own result; and of those, the ones it doesn't take. */
     val outs: List<Int> = emptyList(), val untaken: Set<Int> = emptySet(),
 ) {
+    /** A subclass overrides it: a derived class's wrapper, or a Kotlin class whose override C++ calls. */
+    var open = false
+
     /** What Kotlin tells members apart by. */
     val key get() = Triple(isStatic, name.takeIf { role != Role.CREATE }, if (isProperty) listOf("val") else params.map { it.second })
     val closes get() = role == Role.DESTROY || role == Role.RELEASE
@@ -40,6 +43,16 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
     private val members = HashMap<String, List<Member>>()
     private val staticPrefix = Regex(config.staticPrefix.ifEmpty { "$^" })
     private val outParameter = Regex(config.outParameter.ifEmpty { "$^" })
+    /** The records a class extends. */
+    val extended = parents.values.mapNotNullTo(HashSet()) { it?.first }
+
+    init {
+        // Every class's members first: a derived class's mark the base's they override open.
+        values.records.keys.forEach { cName ->
+            of(cName)
+            upcalls(cName)?.second?.forEach { wrapping(cName, it.signature)?.first?.open = true }
+        }
+    }
 
     /** The C function creating [cName]'s overridable object, and the virtual functions that passes on, if C has one. */
     fun upcalls(cName: String) = byOwner[cName].orEmpty().firstOrNull { it.bound!!.role == Role.UPCALLS }?.let { it.c to it.bound!!.upcalls }
@@ -75,6 +88,7 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
             // A `var` takes its type back in, so only the same type overrides one; and a `val` can't.
             m.overrides = !m.isStatic && m.role != Role.CREATE &&
                 if (base.setter != null) m.setter != null && m.returns == base.returns else overrides(m.returns, base.returns)
+            if (m.overrides) base.open = true
             m.overrides || m.isStatic || m.role == Role.CREATE
         }
     }

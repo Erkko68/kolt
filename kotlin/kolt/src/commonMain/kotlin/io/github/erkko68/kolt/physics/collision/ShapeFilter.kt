@@ -48,7 +48,7 @@ open class ShapeFilter internal constructor(internal val shapeFilterHandle: Nati
     open fun shouldCollide(shape1: Shape?, subShapeIDOfShape1: SubShapeID, shape2: Shape?, subShapeIDOfShape2: SubShapeID): Boolean =
         JphShapeFilter_ShouldCollide_Shape_SubShapeID(shapeFilterHandle, shape1?.shapeHandle ?: NullPointer, subShapeIDOfShape1.value, shape2?.shapeHandle ?: NullPointer, subShapeIDOfShape2.value)
 
-    open var bodyID2: BodyID
+    var bodyID2: BodyID
         get() = BodyID(JphShapeFilter_GetBodyID2(shapeFilterHandle))
         set(value) = JphShapeFilter_SetBodyID2(shapeFilterHandle, value.value)
 

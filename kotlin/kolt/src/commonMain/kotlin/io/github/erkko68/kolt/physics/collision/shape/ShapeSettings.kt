@@ -40,13 +40,13 @@ open class ShapeSettings internal constructor(internal val shapeSettingsHandle: 
     override fun close() =
         closeOnce { JphShapeSettings_release(shapeSettingsHandle) }
 
-    open val rtti: RTTI?
+    val rtti: RTTI?
         get() = JphShapeSettings_GetRTTI(shapeSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
-    open fun castTo(rtti: RTTI?): NativePointer =
+    fun castTo(rtti: RTTI?): NativePointer =
         JphShapeSettings_CastTo(shapeSettingsHandle, rtti?.rttiHandle ?: NullPointer)
 
-    open fun create(): Shape =
+    fun create(): Shape =
         interopScope {
             val error = ByteArray(256)
             val errorPointer = toInterop(error)
@@ -56,10 +56,10 @@ open class ShapeSettings internal constructor(internal val shapeSettingsHandle: 
             Shape(returned, owned = true)
         }
 
-    open fun clearCachedResult() =
+    fun clearCachedResult() =
         JphShapeSettings_ClearCachedResult(shapeSettingsHandle)
 
-    open var userData: Long
+    var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)

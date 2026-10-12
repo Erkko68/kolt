@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ContactConstraintManager`. */
-open class ContactConstraintManager internal constructor(internal val contactConstraintManagerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+class ContactConstraintManager internal constructor(internal val contactConstraintManagerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
     /** C++ `JPH::ContactConstraintManager::ContactAllocator`. */
-    open class ContactAllocator internal constructor(internal val contactConstraintManagerContactAllocatorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    class ContactAllocator internal constructor(internal val contactConstraintManagerContactAllocatorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
     }

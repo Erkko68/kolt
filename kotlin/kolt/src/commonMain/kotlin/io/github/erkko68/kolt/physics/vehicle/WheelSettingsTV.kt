@@ -45,11 +45,11 @@ open class WheelSettingsTV internal constructor(internal val wheelSettingsTVHand
     override fun close() =
         closeOnce { JphWheelSettingsTV_release(wheelSettingsTVHandle) }
 
-    open var longitudinalFriction: Float
+    var longitudinalFriction: Float
         get() = JphWheelSettingsTV_GetLongitudinalFriction(wheelSettingsTVHandle)
         set(value) = JphWheelSettingsTV_SetLongitudinalFriction(wheelSettingsTVHandle, value)
 
-    open var lateralFriction: Float
+    var lateralFriction: Float
         get() = JphWheelSettingsTV_GetLateralFriction(wheelSettingsTVHandle)
         set(value) = JphWheelSettingsTV_SetLateralFriction(wheelSettingsTVHandle, value)
 

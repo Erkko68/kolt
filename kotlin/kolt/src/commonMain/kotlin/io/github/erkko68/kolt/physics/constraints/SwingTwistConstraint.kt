@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SwingTwistConstraint`. */
-open class SwingTwistConstraint internal constructor(internal val swingTwistConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSwingTwistConstraint_asTwoBodyConstraint(swingTwistConstraintHandle), owned), AutoCloseable {
+class SwingTwistConstraint internal constructor(internal val swingTwistConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSwingTwistConstraint_asTwoBodyConstraint(swingTwistConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: SwingTwistConstraintSettings) : this(JphSwingTwistConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.swingTwistConstraintSettingsHandle), owned = true)
 
     override fun addRef() =
@@ -42,7 +42,7 @@ open class SwingTwistConstraint internal constructor(internal val swingTwistCons
     override fun close() =
         closeOnce { JphSwingTwistConstraint_release(swingTwistConstraintHandle) }
 
-    open val localSpacePosition1: Vec3
+    val localSpacePosition1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -51,7 +51,7 @@ open class SwingTwistConstraint internal constructor(internal val swingTwistCons
             Vec3(returned)
         }
 
-    open val localSpacePosition2: Vec3
+    val localSpacePosition2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -60,7 +60,7 @@ open class SwingTwistConstraint internal constructor(internal val swingTwistCons
             Vec3(returned)
         }
 
-    open val constraintToBody1: Quat
+    val constraintToBody1: Quat
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -69,7 +69,7 @@ open class SwingTwistConstraint internal constructor(internal val swingTwistCons
             Quat(returned)
         }
 
-    open val constraintToBody2: Quat
+    val constraintToBody2: Quat
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -78,41 +78,41 @@ open class SwingTwistConstraint internal constructor(internal val swingTwistCons
             Quat(returned)
         }
 
-    open var normalHalfConeAngle: Float
+    var normalHalfConeAngle: Float
         get() = JphSwingTwistConstraint_GetNormalHalfConeAngle(swingTwistConstraintHandle)
         set(angle) = JphSwingTwistConstraint_SetNormalHalfConeAngle(swingTwistConstraintHandle, angle)
 
-    open var planeHalfConeAngle: Float
+    var planeHalfConeAngle: Float
         get() = JphSwingTwistConstraint_GetPlaneHalfConeAngle(swingTwistConstraintHandle)
         set(angle) = JphSwingTwistConstraint_SetPlaneHalfConeAngle(swingTwistConstraintHandle, angle)
 
-    open var twistMinAngle: Float
+    var twistMinAngle: Float
         get() = JphSwingTwistConstraint_GetTwistMinAngle(swingTwistConstraintHandle)
         set(angle) = JphSwingTwistConstraint_SetTwistMinAngle(swingTwistConstraintHandle, angle)
 
-    open var twistMaxAngle: Float
+    var twistMaxAngle: Float
         get() = JphSwingTwistConstraint_GetTwistMaxAngle(swingTwistConstraintHandle)
         set(angle) = JphSwingTwistConstraint_SetTwistMaxAngle(swingTwistConstraintHandle, angle)
 
-    open val swingMotorSettings: MotorSettings
+    val swingMotorSettings: MotorSettings
         get() = MotorSettings(JphSwingTwistConstraint_GetSwingMotorSettings(swingTwistConstraintHandle))
 
-    open val twistMotorSettings: MotorSettings
+    val twistMotorSettings: MotorSettings
         get() = MotorSettings(JphSwingTwistConstraint_GetTwistMotorSettings(swingTwistConstraintHandle))
 
-    open var maxFrictionTorque: Float
+    var maxFrictionTorque: Float
         get() = JphSwingTwistConstraint_GetMaxFrictionTorque(swingTwistConstraintHandle)
         set(frictionTorque) = JphSwingTwistConstraint_SetMaxFrictionTorque(swingTwistConstraintHandle, frictionTorque)
 
-    open var swingMotorState: EMotorState
+    var swingMotorState: EMotorState
         get() = EMotorState.of(JphSwingTwistConstraint_GetSwingMotorState(swingTwistConstraintHandle))
         set(state) = JphSwingTwistConstraint_SetSwingMotorState(swingTwistConstraintHandle, state.value)
 
-    open var twistMotorState: EMotorState
+    var twistMotorState: EMotorState
         get() = EMotorState.of(JphSwingTwistConstraint_GetTwistMotorState(swingTwistConstraintHandle))
         set(state) = JphSwingTwistConstraint_SetTwistMotorState(swingTwistConstraintHandle, state.value)
 
-    open var targetAngularVelocityCS: Vec3
+    var targetAngularVelocityCS: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -122,10 +122,10 @@ open class SwingTwistConstraint internal constructor(internal val swingTwistCons
         }
         set(angularVelocity) = interopScope { JphSwingTwistConstraint_SetTargetAngularVelocityCS(swingTwistConstraintHandle, toInterop(angularVelocity.toArray())) }
 
-    open fun setTargetAngularVelocityBS(angularVelocity: Vec3) =
+    fun setTargetAngularVelocityBS(angularVelocity: Vec3) =
         interopScope { JphSwingTwistConstraint_SetTargetAngularVelocityBS(swingTwistConstraintHandle, toInterop(angularVelocity.toArray())) }
 
-    open var targetOrientationCS: Quat
+    var targetOrientationCS: Quat
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -135,10 +135,10 @@ open class SwingTwistConstraint internal constructor(internal val swingTwistCons
         }
         set(orientation) = interopScope { JphSwingTwistConstraint_SetTargetOrientationCS(swingTwistConstraintHandle, toInterop(orientation.toArray())) }
 
-    open fun setTargetOrientationBS(orientation: Quat) =
+    fun setTargetOrientationBS(orientation: Quat) =
         interopScope { JphSwingTwistConstraint_SetTargetOrientationBS(swingTwistConstraintHandle, toInterop(orientation.toArray())) }
 
-    open val rotationInConstraintSpace: Quat
+    val rotationInConstraintSpace: Quat
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -147,7 +147,7 @@ open class SwingTwistConstraint internal constructor(internal val swingTwistCons
             Quat(returned)
         }
 
-    open val totalLambdaPosition: Vec3
+    val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -156,16 +156,16 @@ open class SwingTwistConstraint internal constructor(internal val swingTwistCons
             Vec3(returned)
         }
 
-    open val totalLambdaTwist: Float
+    val totalLambdaTwist: Float
         get() = JphSwingTwistConstraint_GetTotalLambdaTwist(swingTwistConstraintHandle)
 
-    open val totalLambdaSwingY: Float
+    val totalLambdaSwingY: Float
         get() = JphSwingTwistConstraint_GetTotalLambdaSwingY(swingTwistConstraintHandle)
 
-    open val totalLambdaSwingZ: Float
+    val totalLambdaSwingZ: Float
         get() = JphSwingTwistConstraint_GetTotalLambdaSwingZ(swingTwistConstraintHandle)
 
-    open val totalLambdaMotor: Vec3
+    val totalLambdaMotor: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

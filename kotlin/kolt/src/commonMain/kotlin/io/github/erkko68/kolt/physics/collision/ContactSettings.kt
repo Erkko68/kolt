@@ -33,41 +33,41 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ContactSettings`. */
-open class ContactSettings internal constructor(internal val contactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class ContactSettings internal constructor(internal val contactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphContactSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphContactSettings_destroy(contactSettingsHandle) }
 
-    open var combinedFriction: Float
+    var combinedFriction: Float
         get() = JphContactSettings_GetCombinedFriction(contactSettingsHandle)
         set(value) = JphContactSettings_SetCombinedFriction(contactSettingsHandle, value)
 
-    open var combinedRestitution: Float
+    var combinedRestitution: Float
         get() = JphContactSettings_GetCombinedRestitution(contactSettingsHandle)
         set(value) = JphContactSettings_SetCombinedRestitution(contactSettingsHandle, value)
 
-    open var invMassScale1: Float
+    var invMassScale1: Float
         get() = JphContactSettings_GetInvMassScale1(contactSettingsHandle)
         set(value) = JphContactSettings_SetInvMassScale1(contactSettingsHandle, value)
 
-    open var invInertiaScale1: Float
+    var invInertiaScale1: Float
         get() = JphContactSettings_GetInvInertiaScale1(contactSettingsHandle)
         set(value) = JphContactSettings_SetInvInertiaScale1(contactSettingsHandle, value)
 
-    open var invMassScale2: Float
+    var invMassScale2: Float
         get() = JphContactSettings_GetInvMassScale2(contactSettingsHandle)
         set(value) = JphContactSettings_SetInvMassScale2(contactSettingsHandle, value)
 
-    open var invInertiaScale2: Float
+    var invInertiaScale2: Float
         get() = JphContactSettings_GetInvInertiaScale2(contactSettingsHandle)
         set(value) = JphContactSettings_SetInvInertiaScale2(contactSettingsHandle, value)
 
-    open var isSensor: Boolean
+    var isSensor: Boolean
         get() = JphContactSettings_GetIsSensor(contactSettingsHandle)
         set(value) = JphContactSettings_SetIsSensor(contactSettingsHandle, value)
 
-    open var relativeLinearSurfaceVelocity: Vec3
+    var relativeLinearSurfaceVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -77,7 +77,7 @@ open class ContactSettings internal constructor(internal val contactSettingsHand
         }
         set(value) = interopScope { JphContactSettings_SetRelativeLinearSurfaceVelocity(contactSettingsHandle, toInterop(value.toArray())) }
 
-    open var relativeAngularSurfaceVelocity: Vec3
+    var relativeAngularSurfaceVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

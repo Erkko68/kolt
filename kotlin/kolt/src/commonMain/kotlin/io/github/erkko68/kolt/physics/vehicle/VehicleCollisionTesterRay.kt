@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleCollisionTesterRay`. */
-open class VehicleCollisionTesterRay internal constructor(internal val vehicleCollisionTesterRayHandle: NativePointer, owned: Boolean = false) : VehicleCollisionTester(JphVehicleCollisionTesterRay_asVehicleCollisionTester(vehicleCollisionTesterRayHandle), owned), AutoCloseable {
+class VehicleCollisionTesterRay internal constructor(internal val vehicleCollisionTesterRayHandle: NativePointer, owned: Boolean = false) : VehicleCollisionTester(JphVehicleCollisionTesterRay_asVehicleCollisionTester(vehicleCollisionTesterRayHandle), owned), AutoCloseable {
     constructor(objectLayer: Int, up: Vec3, maxSlopeAngle: Float) : this(interopScope { JphVehicleCollisionTesterRay_create(objectLayer, toInterop(up.toArray()), maxSlopeAngle) }, owned = true)
 
     override fun addRef() =

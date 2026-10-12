@@ -33,24 +33,24 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodyCreationSettings`. */
-open class SoftBodyCreationSettings internal constructor(internal val softBodyCreationSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class SoftBodyCreationSettings internal constructor(internal val softBodyCreationSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSoftBodyCreationSettings_create(), owned = true)
     constructor(settings: SoftBodySharedSettings?, position: Vec3, rotation: Quat, objectLayer: Int) : this(interopScope { JphSoftBodyCreationSettings_create_SoftBodySharedSettings_RVec3Arg_QuatArg_ObjectLayer(settings?.softBodySharedSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), objectLayer) }, owned = true)
 
     override fun close() =
         closeOnce { JphSoftBodyCreationSettings_destroy(softBodyCreationSettingsHandle) }
 
-    open fun saveBinaryState(stream: StreamOut) =
+    fun saveBinaryState(stream: StreamOut) =
         JphSoftBodyCreationSettings_SaveBinaryState(softBodyCreationSettingsHandle, stream.streamOutHandle)
 
-    open fun restoreBinaryState(stream: StreamIn) =
+    fun restoreBinaryState(stream: StreamIn) =
         JphSoftBodyCreationSettings_RestoreBinaryState(softBodyCreationSettingsHandle, stream.streamInHandle)
 
-    open var settings: SoftBodySharedSettings?
+    var settings: SoftBodySharedSettings?
         get() = JphSoftBodyCreationSettings_GetSettings(softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { SoftBodySharedSettings(it) }
         set(value) = JphSoftBodyCreationSettings_SetSettings(softBodyCreationSettingsHandle, value?.softBodySharedSettingsHandle ?: NullPointer)
 
-    open var position: Vec3
+    var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -60,7 +60,7 @@ open class SoftBodyCreationSettings internal constructor(internal val softBodyCr
         }
         set(value) = interopScope { JphSoftBodyCreationSettings_SetPosition(softBodyCreationSettingsHandle, toInterop(value.toArray())) }
 
-    open var rotation: Quat
+    var rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -70,7 +70,7 @@ open class SoftBodyCreationSettings internal constructor(internal val softBodyCr
         }
         set(value) = interopScope { JphSoftBodyCreationSettings_SetRotation(softBodyCreationSettingsHandle, toInterop(value.toArray())) }
 
-    open var userData: Long
+    var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)
@@ -80,11 +80,11 @@ open class SoftBodyCreationSettings internal constructor(internal val softBodyCr
         }
         set(value) = JphSoftBodyCreationSettings_SetUserData(softBodyCreationSettingsHandle, value)
 
-    open var objectLayer: Int
+    var objectLayer: Int
         get() = JphSoftBodyCreationSettings_GetObjectLayer(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetObjectLayer(softBodyCreationSettingsHandle, value)
 
-    open var collisionGroup: CollisionGroup
+    var collisionGroup: CollisionGroup
         get() = run {
             val returned = CollisionGroup(JphCollisionGroup_create(), owned = true)
             JphSoftBodyCreationSettings_GetCollisionGroup(softBodyCreationSettingsHandle, returned.collisionGroupHandle)
@@ -92,51 +92,51 @@ open class SoftBodyCreationSettings internal constructor(internal val softBodyCr
         }
         set(value) = JphSoftBodyCreationSettings_SetCollisionGroup(softBodyCreationSettingsHandle, value.collisionGroupHandle)
 
-    open var numIterations: Int
+    var numIterations: Int
         get() = JphSoftBodyCreationSettings_GetNumIterations(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetNumIterations(softBodyCreationSettingsHandle, value)
 
-    open var linearDamping: Float
+    var linearDamping: Float
         get() = JphSoftBodyCreationSettings_GetLinearDamping(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetLinearDamping(softBodyCreationSettingsHandle, value)
 
-    open var maxLinearVelocity: Float
+    var maxLinearVelocity: Float
         get() = JphSoftBodyCreationSettings_GetMaxLinearVelocity(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetMaxLinearVelocity(softBodyCreationSettingsHandle, value)
 
-    open var restitution: Float
+    var restitution: Float
         get() = JphSoftBodyCreationSettings_GetRestitution(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetRestitution(softBodyCreationSettingsHandle, value)
 
-    open var friction: Float
+    var friction: Float
         get() = JphSoftBodyCreationSettings_GetFriction(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetFriction(softBodyCreationSettingsHandle, value)
 
-    open var pressure: Float
+    var pressure: Float
         get() = JphSoftBodyCreationSettings_GetPressure(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetPressure(softBodyCreationSettingsHandle, value)
 
-    open var gravityFactor: Float
+    var gravityFactor: Float
         get() = JphSoftBodyCreationSettings_GetGravityFactor(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetGravityFactor(softBodyCreationSettingsHandle, value)
 
-    open var vertexRadius: Float
+    var vertexRadius: Float
         get() = JphSoftBodyCreationSettings_GetVertexRadius(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetVertexRadius(softBodyCreationSettingsHandle, value)
 
-    open var updatePosition: Boolean
+    var updatePosition: Boolean
         get() = JphSoftBodyCreationSettings_GetUpdatePosition(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetUpdatePosition(softBodyCreationSettingsHandle, value)
 
-    open var makeRotationIdentity: Boolean
+    var makeRotationIdentity: Boolean
         get() = JphSoftBodyCreationSettings_GetMakeRotationIdentity(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetMakeRotationIdentity(softBodyCreationSettingsHandle, value)
 
-    open var allowSleeping: Boolean
+    var allowSleeping: Boolean
         get() = JphSoftBodyCreationSettings_GetAllowSleeping(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetAllowSleeping(softBodyCreationSettingsHandle, value)
 
-    open var facesDoubleSided: Boolean
+    var facesDoubleSided: Boolean
         get() = JphSoftBodyCreationSettings_GetFacesDoubleSided(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetFacesDoubleSided(softBodyCreationSettingsHandle, value)
 

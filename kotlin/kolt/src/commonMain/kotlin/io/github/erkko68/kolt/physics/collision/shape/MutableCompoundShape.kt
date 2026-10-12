@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MutableCompoundShape`. */
-open class MutableCompoundShape internal constructor(internal val mutableCompoundShapeHandle: NativePointer, owned: Boolean = false) : CompoundShape(JphMutableCompoundShape_asCompoundShape(mutableCompoundShapeHandle), owned), AutoCloseable {
+class MutableCompoundShape internal constructor(internal val mutableCompoundShapeHandle: NativePointer, owned: Boolean = false) : CompoundShape(JphMutableCompoundShape_asCompoundShape(mutableCompoundShapeHandle), owned), AutoCloseable {
     constructor() : this(JphMutableCompoundShape_create(), owned = true)
 
     override fun addRef() =
@@ -42,22 +42,22 @@ open class MutableCompoundShape internal constructor(internal val mutableCompoun
     override fun close() =
         closeOnce { JphMutableCompoundShape_release(mutableCompoundShapeHandle) }
 
-    open fun clone(): MutableCompoundShape? =
+    fun clone(): MutableCompoundShape? =
         JphMutableCompoundShape_Clone(mutableCompoundShapeHandle).takeIf { it != NullPointer }?.let { MutableCompoundShape(it, owned = true) }
 
-    open fun addShape(position: Vec3, rotation: Quat, shape: Shape?, userData: Int, index: Int): Int =
+    fun addShape(position: Vec3, rotation: Quat, shape: Shape?, userData: Int, index: Int): Int =
         interopScope { JphMutableCompoundShape_AddShape(mutableCompoundShapeHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer, userData, index) }
 
-    open fun removeShape(index: Int) =
+    fun removeShape(index: Int) =
         JphMutableCompoundShape_RemoveShape(mutableCompoundShapeHandle, index)
 
-    open fun modifyShape(index: Int, position: Vec3, rotation: Quat) =
+    fun modifyShape(index: Int, position: Vec3, rotation: Quat) =
         interopScope { JphMutableCompoundShape_ModifyShape(mutableCompoundShapeHandle, index, toInterop(position.toArray()), toInterop(rotation.toArray())) }
 
-    open fun modifyShape(index: Int, position: Vec3, rotation: Quat, shape: Shape?) =
+    fun modifyShape(index: Int, position: Vec3, rotation: Quat, shape: Shape?) =
         interopScope { JphMutableCompoundShape_ModifyShape_Shape(mutableCompoundShapeHandle, index, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) }
 
-    open fun adjustCenterOfMass() =
+    fun adjustCenterOfMass() =
         JphMutableCompoundShape_AdjustCenterOfMass(mutableCompoundShapeHandle)
 
     companion object {

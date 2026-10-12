@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TriangleShapeSettings`. */
-open class TriangleShapeSettings internal constructor(internal val triangleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTriangleShapeSettings_asConvexShapeSettings(triangleShapeSettingsHandle), owned), AutoCloseable {
+class TriangleShapeSettings internal constructor(internal val triangleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTriangleShapeSettings_asConvexShapeSettings(triangleShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphTriangleShapeSettings_create(), owned = true)
     constructor(v1: Vec3, v2: Vec3, v3: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphTriangleShapeSettings_create_Vec3Arg_Vec3Arg_Vec3Arg_float_PhysicsMaterial(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
 
@@ -43,7 +43,7 @@ open class TriangleShapeSettings internal constructor(internal val triangleShape
     override fun close() =
         closeOnce { JphTriangleShapeSettings_release(triangleShapeSettingsHandle) }
 
-    open var v1: Vec3
+    var v1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -53,7 +53,7 @@ open class TriangleShapeSettings internal constructor(internal val triangleShape
         }
         set(value) = interopScope { JphTriangleShapeSettings_SetV1(triangleShapeSettingsHandle, toInterop(value.toArray())) }
 
-    open var v2: Vec3
+    var v2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -63,7 +63,7 @@ open class TriangleShapeSettings internal constructor(internal val triangleShape
         }
         set(value) = interopScope { JphTriangleShapeSettings_SetV2(triangleShapeSettingsHandle, toInterop(value.toArray())) }
 
-    open var v3: Vec3
+    var v3: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -73,7 +73,7 @@ open class TriangleShapeSettings internal constructor(internal val triangleShape
         }
         set(value) = interopScope { JphTriangleShapeSettings_SetV3(triangleShapeSettingsHandle, toInterop(value.toArray())) }
 
-    open var convexRadius: Float
+    var convexRadius: Float
         get() = JphTriangleShapeSettings_GetConvexRadius(triangleShapeSettingsHandle)
         set(value) = JphTriangleShapeSettings_SetConvexRadius(triangleShapeSettingsHandle, value)
 

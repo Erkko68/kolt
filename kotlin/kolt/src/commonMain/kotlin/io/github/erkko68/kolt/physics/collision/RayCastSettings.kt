@@ -33,24 +33,24 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RayCastSettings`. */
-open class RayCastSettings internal constructor(internal val rayCastSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class RayCastSettings internal constructor(internal val rayCastSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphRayCastSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphRayCastSettings_destroy(rayCastSettingsHandle) }
 
-    open fun setBackFaceMode(mode: EBackFaceMode) =
+    fun setBackFaceMode(mode: EBackFaceMode) =
         JphRayCastSettings_SetBackFaceMode(rayCastSettingsHandle, mode.value)
 
-    open var backFaceModeTriangles: EBackFaceMode
+    var backFaceModeTriangles: EBackFaceMode
         get() = EBackFaceMode.of(JphRayCastSettings_GetBackFaceModeTriangles(rayCastSettingsHandle))
         set(value) = JphRayCastSettings_SetBackFaceModeTriangles(rayCastSettingsHandle, value.value)
 
-    open var backFaceModeConvex: EBackFaceMode
+    var backFaceModeConvex: EBackFaceMode
         get() = EBackFaceMode.of(JphRayCastSettings_GetBackFaceModeConvex(rayCastSettingsHandle))
         set(value) = JphRayCastSettings_SetBackFaceModeConvex(rayCastSettingsHandle, value.value)
 
-    open var treatConvexAsSolid: Boolean
+    var treatConvexAsSolid: Boolean
         get() = JphRayCastSettings_GetTreatConvexAsSolid(rayCastSettingsHandle)
         set(value) = JphRayCastSettings_SetTreatConvexAsSolid(rayCastSettingsHandle, value)
 }

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::WheelTV`. */
-open class WheelTV internal constructor(internal val wheelTVHandle: NativePointer, owned: Boolean = false) : Wheel(JphWheelTV_asWheel(wheelTVHandle), owned), AutoCloseable {
+class WheelTV internal constructor(internal val wheelTVHandle: NativePointer, owned: Boolean = false) : Wheel(JphWheelTV_asWheel(wheelTVHandle), owned), AutoCloseable {
     constructor(wheel: WheelSettingsTV) : this(JphWheelTV_create(wheel.wheelSettingsTVHandle), owned = true)
 
     override fun close() =
@@ -42,25 +42,25 @@ open class WheelTV internal constructor(internal val wheelTVHandle: NativePointe
     override val settings: WheelSettingsTV?
         get() = JphWheelTV_GetSettings(wheelTVHandle).takeIf { it != NullPointer }?.let { WheelSettingsTV(it) }
 
-    open fun calculateAngularVelocity(constraint: VehicleConstraint) =
+    fun calculateAngularVelocity(constraint: VehicleConstraint) =
         JphWheelTV_CalculateAngularVelocity(wheelTVHandle, constraint.vehicleConstraintHandle)
 
-    open fun update(wheelIndex: Int, deltaTime: Float, constraint: VehicleConstraint) =
+    fun update(wheelIndex: Int, deltaTime: Float, constraint: VehicleConstraint) =
         JphWheelTV_Update(wheelTVHandle, wheelIndex, deltaTime, constraint.vehicleConstraintHandle)
 
-    open var trackIndex: Int
+    var trackIndex: Int
         get() = JphWheelTV_GetTrackIndex(wheelTVHandle)
         set(value) = JphWheelTV_SetTrackIndex(wheelTVHandle, value)
 
-    open var combinedLongitudinalFriction: Float
+    var combinedLongitudinalFriction: Float
         get() = JphWheelTV_GetCombinedLongitudinalFriction(wheelTVHandle)
         set(value) = JphWheelTV_SetCombinedLongitudinalFriction(wheelTVHandle, value)
 
-    open var combinedLateralFriction: Float
+    var combinedLateralFriction: Float
         get() = JphWheelTV_GetCombinedLateralFriction(wheelTVHandle)
         set(value) = JphWheelTV_SetCombinedLateralFriction(wheelTVHandle, value)
 
-    open var brakeImpulse: Float
+    var brakeImpulse: Float
         get() = JphWheelTV_GetBrakeImpulse(wheelTVHandle)
         set(value) = JphWheelTV_SetBrakeImpulse(wheelTVHandle, value)
 }

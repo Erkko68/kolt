@@ -33,32 +33,32 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ShapeCastSettings`. */
-open class ShapeCastSettings internal constructor(internal val shapeCastSettingsHandle: NativePointer, owned: Boolean = false) : CollideSettingsBase(JphShapeCastSettings_asCollideSettingsBase(shapeCastSettingsHandle), owned), AutoCloseable {
+class ShapeCastSettings internal constructor(internal val shapeCastSettingsHandle: NativePointer, owned: Boolean = false) : CollideSettingsBase(JphShapeCastSettings_asCollideSettingsBase(shapeCastSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphShapeCastSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphShapeCastSettings_destroy(shapeCastSettingsHandle) }
 
-    open fun setBackFaceMode(mode: EBackFaceMode) =
+    fun setBackFaceMode(mode: EBackFaceMode) =
         JphShapeCastSettings_SetBackFaceMode(shapeCastSettingsHandle, mode.value)
 
-    open var extraConvexRadius: Float
+    var extraConvexRadius: Float
         get() = JphShapeCastSettings_GetExtraConvexRadius(shapeCastSettingsHandle)
         set(value) = JphShapeCastSettings_SetExtraConvexRadius(shapeCastSettingsHandle, value)
 
-    open var backFaceModeTriangles: EBackFaceMode
+    var backFaceModeTriangles: EBackFaceMode
         get() = EBackFaceMode.of(JphShapeCastSettings_GetBackFaceModeTriangles(shapeCastSettingsHandle))
         set(value) = JphShapeCastSettings_SetBackFaceModeTriangles(shapeCastSettingsHandle, value.value)
 
-    open var backFaceModeConvex: EBackFaceMode
+    var backFaceModeConvex: EBackFaceMode
         get() = EBackFaceMode.of(JphShapeCastSettings_GetBackFaceModeConvex(shapeCastSettingsHandle))
         set(value) = JphShapeCastSettings_SetBackFaceModeConvex(shapeCastSettingsHandle, value.value)
 
-    open var useShrunkenShapeAndConvexRadius: Boolean
+    var useShrunkenShapeAndConvexRadius: Boolean
         get() = JphShapeCastSettings_GetUseShrunkenShapeAndConvexRadius(shapeCastSettingsHandle)
         set(value) = JphShapeCastSettings_SetUseShrunkenShapeAndConvexRadius(shapeCastSettingsHandle, value)
 
-    open var returnDeepestPoint: Boolean
+    var returnDeepestPoint: Boolean
         get() = JphShapeCastSettings_GetReturnDeepestPoint(shapeCastSettingsHandle)
         set(value) = JphShapeCastSettings_SetReturnDeepestPoint(shapeCastSettingsHandle, value)
 }

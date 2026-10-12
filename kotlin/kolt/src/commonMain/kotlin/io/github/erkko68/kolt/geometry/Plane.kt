@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Plane`. */
-open class Plane internal constructor(internal val planeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class Plane internal constructor(internal val planeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphPlane_create(), owned = true)
     constructor(normalAndConstant: Vec4) : this(interopScope { JphPlane_create_Vec4Arg(toInterop(normalAndConstant.toArray())) }, owned = true)
     constructor(normal: Vec3, constant: Float) : this(interopScope { JphPlane_create_Vec3Arg_float(toInterop(normal.toArray()), constant) }, owned = true)
@@ -41,7 +41,7 @@ open class Plane internal constructor(internal val planeHandle: NativePointer, o
     override fun close() =
         closeOnce { JphPlane_destroy(planeHandle) }
 
-    open var normal: Vec3
+    var normal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -51,11 +51,11 @@ open class Plane internal constructor(internal val planeHandle: NativePointer, o
         }
         set(normal) = interopScope { JphPlane_SetNormal(planeHandle, toInterop(normal.toArray())) }
 
-    open var constant: Float
+    var constant: Float
         get() = JphPlane_GetConstant(planeHandle)
         set(constant) = JphPlane_SetConstant(planeHandle, constant)
 
-    open fun storeFloat4(v: MutableList<Float4>) =
+    fun storeFloat4(v: MutableList<Float4>) =
         interopScope {
             val vArray = FloatArray(v.size * 4).also { a -> v.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }
             val vPointer = toInterop(vArray)
@@ -64,31 +64,31 @@ open class Plane internal constructor(internal val planeHandle: NativePointer, o
             for (i in v.indices) v[i] = Float4(vArray.copyOfRange(i * 4, i * 4 + 4))
         }
 
-    open fun offset(distance: Float): Plane =
+    fun offset(distance: Float): Plane =
         run {
             val returned = Plane(JphPlane_create(), owned = true)
             JphPlane_Offset(planeHandle, distance, returned.planeHandle)
             returned
         }
 
-    open fun getTransformed(transform: Mat44): Plane =
+    fun getTransformed(transform: Mat44): Plane =
         interopScope {
             val returned = Plane(JphPlane_create(), owned = true)
             JphPlane_GetTransformed(planeHandle, toInterop(transform.toArray()), returned.planeHandle)
             returned
         }
 
-    open fun scaled(scale: Vec3): Plane =
+    fun scaled(scale: Vec3): Plane =
         interopScope {
             val returned = Plane(JphPlane_create(), owned = true)
             JphPlane_Scaled(planeHandle, toInterop(scale.toArray()), returned.planeHandle)
             returned
         }
 
-    open fun signedDistance(point: Vec3): Float =
+    fun signedDistance(point: Vec3): Float =
         interopScope { JphPlane_SignedDistance(planeHandle, toInterop(point.toArray())) }
 
-    open fun projectPointOnPlane(point: Vec3): Vec3 =
+    fun projectPointOnPlane(point: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::HeightFieldShapeSettings`. */
-open class HeightFieldShapeSettings internal constructor(internal val heightFieldShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphHeightFieldShapeSettings_asShapeSettings(heightFieldShapeSettingsHandle), owned), AutoCloseable {
+class HeightFieldShapeSettings internal constructor(internal val heightFieldShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphHeightFieldShapeSettings_asShapeSettings(heightFieldShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphHeightFieldShapeSettings_create(), owned = true)
     constructor(samples: FloatArray, offset: Vec3, scale: Vec3, sampleCount: Int, materialIndices: ByteArray, materialList: List<PhysicsMaterial>) : this(interopScope { JphHeightFieldShapeSettings_create_float_Vec3Arg_Vec3Arg_uint32_uint8_PhysicsMaterialList(toInterop(samples), toInterop(offset.toArray()), toInterop(scale.toArray()), sampleCount, toInterop(materialIndices), toInterop(materialList.map { it.physicsMaterialHandle }), materialList.size) }, owned = true)
 
@@ -43,7 +43,7 @@ open class HeightFieldShapeSettings internal constructor(internal val heightFiel
     override fun close() =
         closeOnce { JphHeightFieldShapeSettings_release(heightFieldShapeSettingsHandle) }
 
-    open fun determineMinAndMaxSample(): Triple<Float, Float, Float> =
+    fun determineMinAndMaxSample(): Triple<Float, Float, Float> =
         interopScope {
             val minValueArray = FloatArray(1)
             val minValuePointer = toInterop(minValueArray)
@@ -58,10 +58,10 @@ open class HeightFieldShapeSettings internal constructor(internal val heightFiel
             Triple(minValueArray[0], maxValueArray[0], quantizationScaleArray[0])
         }
 
-    open fun calculateBitsPerSampleForError(maxError: Float): Int =
+    fun calculateBitsPerSampleForError(maxError: Float): Int =
         JphHeightFieldShapeSettings_CalculateBitsPerSampleForError(heightFieldShapeSettingsHandle, maxError)
 
-    open var offset: Vec3
+    var offset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -71,7 +71,7 @@ open class HeightFieldShapeSettings internal constructor(internal val heightFiel
         }
         set(value) = interopScope { JphHeightFieldShapeSettings_SetOffset(heightFieldShapeSettingsHandle, toInterop(value.toArray())) }
 
-    open var scale: Vec3
+    var scale: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -81,31 +81,31 @@ open class HeightFieldShapeSettings internal constructor(internal val heightFiel
         }
         set(value) = interopScope { JphHeightFieldShapeSettings_SetScale(heightFieldShapeSettingsHandle, toInterop(value.toArray())) }
 
-    open var sampleCount: Int
+    var sampleCount: Int
         get() = JphHeightFieldShapeSettings_GetSampleCount(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetSampleCount(heightFieldShapeSettingsHandle, value)
 
-    open var minHeightValue: Float
+    var minHeightValue: Float
         get() = JphHeightFieldShapeSettings_GetMinHeightValue(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetMinHeightValue(heightFieldShapeSettingsHandle, value)
 
-    open var maxHeightValue: Float
+    var maxHeightValue: Float
         get() = JphHeightFieldShapeSettings_GetMaxHeightValue(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetMaxHeightValue(heightFieldShapeSettingsHandle, value)
 
-    open var materialsCapacity: Int
+    var materialsCapacity: Int
         get() = JphHeightFieldShapeSettings_GetMaterialsCapacity(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetMaterialsCapacity(heightFieldShapeSettingsHandle, value)
 
-    open var blockSize: Int
+    var blockSize: Int
         get() = JphHeightFieldShapeSettings_GetBlockSize(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetBlockSize(heightFieldShapeSettingsHandle, value)
 
-    open var bitsPerSample: Int
+    var bitsPerSample: Int
         get() = JphHeightFieldShapeSettings_GetBitsPerSample(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetBitsPerSample(heightFieldShapeSettingsHandle, value)
 
-    open var heightSamples: FloatArray
+    var heightSamples: FloatArray
         get() = interopScope {
             val count = JphHeightFieldShapeSettings_GetHeightSamples(heightFieldShapeSettingsHandle, NullPointer, 0)
             val returned = FloatArray(count)
@@ -116,7 +116,7 @@ open class HeightFieldShapeSettings internal constructor(internal val heightFiel
         }
         set(value) = interopScope { JphHeightFieldShapeSettings_SetHeightSamples(heightFieldShapeSettingsHandle, toInterop(value), value.size) }
 
-    open var materialIndices: IntArray
+    var materialIndices: IntArray
         get() = interopScope {
             val count = JphHeightFieldShapeSettings_GetMaterialIndices(heightFieldShapeSettingsHandle, NullPointer, 0)
             val returned = IntArray(count)
@@ -127,7 +127,7 @@ open class HeightFieldShapeSettings internal constructor(internal val heightFiel
         }
         set(value) = interopScope { JphHeightFieldShapeSettings_SetMaterialIndices(heightFieldShapeSettingsHandle, toInterop(value), value.size) }
 
-    open var materials: List<PhysicsMaterial>
+    var materials: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphHeightFieldShapeSettings_GetMaterials(heightFieldShapeSettingsHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
@@ -136,7 +136,7 @@ open class HeightFieldShapeSettings internal constructor(internal val heightFiel
         }
         set(value) = interopScope { JphHeightFieldShapeSettings_SetMaterials(heightFieldShapeSettingsHandle, toInterop(value.map { it.physicsMaterialHandle }), value.size) }
 
-    open var activeEdgeCosThresholdAngle: Float
+    var activeEdgeCosThresholdAngle: Float
         get() = JphHeightFieldShapeSettings_GetActiveEdgeCosThresholdAngle(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetActiveEdgeCosThresholdAngle(heightFieldShapeSettingsHandle, value)
 

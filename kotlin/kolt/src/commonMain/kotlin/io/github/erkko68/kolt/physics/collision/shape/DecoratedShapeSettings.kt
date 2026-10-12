@@ -40,11 +40,11 @@ open class DecoratedShapeSettings internal constructor(internal val decoratedSha
     override fun close() =
         closeOnce { JphDecoratedShapeSettings_release(decoratedShapeSettingsHandle) }
 
-    open var innerShape: ShapeSettings?
+    var innerShape: ShapeSettings?
         get() = JphDecoratedShapeSettings_GetInnerShape(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
         set(value) = JphDecoratedShapeSettings_SetInnerShape(decoratedShapeSettingsHandle, value?.shapeSettingsHandle ?: NullPointer)
 
-    open var innerShapePtr: Shape?
+    var innerShapePtr: Shape?
         get() = JphDecoratedShapeSettings_GetInnerShapePtr(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(value) = JphDecoratedShapeSettings_SetInnerShapePtr(decoratedShapeSettingsHandle, value?.shapeHandle ?: NullPointer)
 

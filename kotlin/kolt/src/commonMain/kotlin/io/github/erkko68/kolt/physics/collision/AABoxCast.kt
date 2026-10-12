@@ -33,13 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::AABoxCast`. */
-open class AABoxCast internal constructor(internal val aaBoxCastHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class AABoxCast internal constructor(internal val aaBoxCastHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphAABoxCast_create(), owned = true)
 
     override fun close() =
         closeOnce { JphAABoxCast_destroy(aaBoxCastHandle) }
 
-    open var box: AABox
+    var box: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
             JphAABoxCast_GetBox(aaBoxCastHandle, returned.aaBoxHandle)
@@ -47,7 +47,7 @@ open class AABoxCast internal constructor(internal val aaBoxCastHandle: NativePo
         }
         set(value) = JphAABoxCast_SetBox(aaBoxCastHandle, value.aaBoxHandle)
 
-    open var direction: Vec3
+    var direction: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

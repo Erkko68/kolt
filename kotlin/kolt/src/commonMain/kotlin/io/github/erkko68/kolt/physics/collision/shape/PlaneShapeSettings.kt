@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PlaneShapeSettings`. */
-open class PlaneShapeSettings internal constructor(internal val planeShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphPlaneShapeSettings_asShapeSettings(planeShapeSettingsHandle), owned), AutoCloseable {
+class PlaneShapeSettings internal constructor(internal val planeShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphPlaneShapeSettings_asShapeSettings(planeShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphPlaneShapeSettings_create(), owned = true)
     constructor(plane: Plane, material: PhysicsMaterial?, halfExtent: Float) : this(JphPlaneShapeSettings_create_Plane_PhysicsMaterial_float(plane.planeHandle, material?.physicsMaterialHandle ?: NullPointer, halfExtent), owned = true)
 
@@ -43,7 +43,7 @@ open class PlaneShapeSettings internal constructor(internal val planeShapeSettin
     override fun close() =
         closeOnce { JphPlaneShapeSettings_release(planeShapeSettingsHandle) }
 
-    open var plane: Plane
+    var plane: Plane
         get() = run {
             val returned = Plane(JphPlane_create(), owned = true)
             JphPlaneShapeSettings_GetPlane(planeShapeSettingsHandle, returned.planeHandle)
@@ -51,11 +51,11 @@ open class PlaneShapeSettings internal constructor(internal val planeShapeSettin
         }
         set(value) = JphPlaneShapeSettings_SetPlane(planeShapeSettingsHandle, value.planeHandle)
 
-    open var material: PhysicsMaterial?
+    var material: PhysicsMaterial?
         get() = JphPlaneShapeSettings_GetMaterial(planeShapeSettingsHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(value) = JphPlaneShapeSettings_SetMaterial(planeShapeSettingsHandle, value?.physicsMaterialHandle ?: NullPointer)
 
-    open var halfExtent: Float
+    var halfExtent: Float
         get() = JphPlaneShapeSettings_GetHalfExtent(planeShapeSettingsHandle)
         set(value) = JphPlaneShapeSettings_SetHalfExtent(planeShapeSettingsHandle, value)
 

@@ -33,18 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ObjectLayerPairFilterTable`. */
-open class ObjectLayerPairFilterTable internal constructor(internal val objectLayerPairFilterTableHandle: NativePointer, owned: Boolean = false) : ObjectLayerPairFilter(JphObjectLayerPairFilterTable_asObjectLayerPairFilter(objectLayerPairFilterTableHandle), owned), AutoCloseable {
+class ObjectLayerPairFilterTable internal constructor(internal val objectLayerPairFilterTableHandle: NativePointer, owned: Boolean = false) : ObjectLayerPairFilter(JphObjectLayerPairFilterTable_asObjectLayerPairFilter(objectLayerPairFilterTableHandle), owned), AutoCloseable {
     constructor(numObjectLayers: Int) : this(JphObjectLayerPairFilterTable_create(numObjectLayers), owned = true)
 
     override fun close() =
         closeOnce { JphObjectLayerPairFilterTable_destroy(objectLayerPairFilterTableHandle) }
 
-    open val numObjectLayers: Int
+    val numObjectLayers: Int
         get() = JphObjectLayerPairFilterTable_GetNumObjectLayers(objectLayerPairFilterTableHandle)
 
-    open fun disableCollision(layer1: Int, layer2: Int) =
+    fun disableCollision(layer1: Int, layer2: Int) =
         JphObjectLayerPairFilterTable_DisableCollision(objectLayerPairFilterTableHandle, layer1, layer2)
 
-    open fun enableCollision(layer1: Int, layer2: Int) =
+    fun enableCollision(layer1: Int, layer2: Int) =
         JphObjectLayerPairFilterTable_EnableCollision(objectLayerPairFilterTableHandle, layer1, layer2)
 }

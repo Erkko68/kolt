@@ -37,9 +37,9 @@ open class VehicleController internal constructor(internal val vehicleController
     override fun close() =
         closeOnce { JphVehicleController_destroy(vehicleControllerHandle) }
 
-    open val constraint: VehicleConstraint
+    val constraint: VehicleConstraint
         get() = VehicleConstraint(JphVehicleController_GetConstraint(vehicleControllerHandle))
 
-    open val settings: VehicleControllerSettings?
+    val settings: VehicleControllerSettings?
         get() = JphVehicleController_GetSettings(vehicleControllerHandle).takeIf { it != NullPointer }?.let { VehicleControllerSettings(it, owned = true) }
 }

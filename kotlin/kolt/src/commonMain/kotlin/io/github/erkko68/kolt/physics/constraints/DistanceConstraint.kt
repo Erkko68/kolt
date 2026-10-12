@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DistanceConstraint`. */
-open class DistanceConstraint internal constructor(internal val distanceConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphDistanceConstraint_asTwoBodyConstraint(distanceConstraintHandle), owned), AutoCloseable {
+class DistanceConstraint internal constructor(internal val distanceConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphDistanceConstraint_asTwoBodyConstraint(distanceConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: DistanceConstraintSettings) : this(JphDistanceConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.distanceConstraintSettingsHandle), owned = true)
 
     override fun addRef() =
@@ -42,19 +42,19 @@ open class DistanceConstraint internal constructor(internal val distanceConstrai
     override fun close() =
         closeOnce { JphDistanceConstraint_release(distanceConstraintHandle) }
 
-    open fun setDistance(minDistance: Float, maxDistance: Float) =
+    fun setDistance(minDistance: Float, maxDistance: Float) =
         JphDistanceConstraint_SetDistance(distanceConstraintHandle, minDistance, maxDistance)
 
-    open val minDistance: Float
+    val minDistance: Float
         get() = JphDistanceConstraint_GetMinDistance(distanceConstraintHandle)
 
-    open val maxDistance: Float
+    val maxDistance: Float
         get() = JphDistanceConstraint_GetMaxDistance(distanceConstraintHandle)
 
-    open var limitsSpringSettings: SpringSettings
+    var limitsSpringSettings: SpringSettings
         get() = SpringSettings(JphDistanceConstraint_GetLimitsSpringSettings(distanceConstraintHandle))
         set(limitsSpringSettings) = JphDistanceConstraint_SetLimitsSpringSettings(distanceConstraintHandle, limitsSpringSettings.springSettingsHandle)
 
-    open val totalLambdaPosition: Float
+    val totalLambdaPosition: Float
         get() = JphDistanceConstraint_GetTotalLambdaPosition(distanceConstraintHandle)
 }

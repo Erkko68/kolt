@@ -39,17 +39,17 @@ open class BroadPhaseCastResult internal constructor(internal val broadPhaseCast
     override fun close() =
         closeOnce { JphBroadPhaseCastResult_destroy(broadPhaseCastResultHandle) }
 
-    open val earlyOutFraction: Float
+    val earlyOutFraction: Float
         get() = JphBroadPhaseCastResult_GetEarlyOutFraction(broadPhaseCastResultHandle)
 
-    open fun reset() =
+    fun reset() =
         JphBroadPhaseCastResult_Reset(broadPhaseCastResultHandle)
 
-    open var bodyID: BodyID
+    var bodyID: BodyID
         get() = BodyID(JphBroadPhaseCastResult_GetBodyID(broadPhaseCastResultHandle))
         set(value) = JphBroadPhaseCastResult_SetBodyID(broadPhaseCastResultHandle, value.value)
 
-    open var fraction: Float
+    var fraction: Float
         get() = JphBroadPhaseCastResult_GetFraction(broadPhaseCastResultHandle)
         set(value) = JphBroadPhaseCastResult_SetFraction(broadPhaseCastResultHandle, value)
 }

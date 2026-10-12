@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CapsuleShape`. */
-open class CapsuleShape internal constructor(internal val capsuleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphCapsuleShape_asConvexShape(capsuleShapeHandle), owned), AutoCloseable {
+class CapsuleShape internal constructor(internal val capsuleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphCapsuleShape_asConvexShape(capsuleShapeHandle), owned), AutoCloseable {
     constructor() : this(JphCapsuleShape_create(), owned = true)
     constructor(halfHeightOfCylinder: Float, radius: Float, material: PhysicsMaterial?) : this(JphCapsuleShape_create_float_float_PhysicsMaterial(halfHeightOfCylinder, radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
@@ -43,10 +43,10 @@ open class CapsuleShape internal constructor(internal val capsuleShapeHandle: Na
     override fun close() =
         closeOnce { JphCapsuleShape_release(capsuleShapeHandle) }
 
-    open val radius: Float
+    val radius: Float
         get() = JphCapsuleShape_GetRadius(capsuleShapeHandle)
 
-    open val halfHeightOfCylinder: Float
+    val halfHeightOfCylinder: Float
         get() = JphCapsuleShape_GetHalfHeightOfCylinder(capsuleShapeHandle)
 
     companion object {

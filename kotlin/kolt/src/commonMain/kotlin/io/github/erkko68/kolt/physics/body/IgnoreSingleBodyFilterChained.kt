@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::IgnoreSingleBodyFilterChained`. */
-open class IgnoreSingleBodyFilterChained internal constructor(internal val ignoreSingleBodyFilterChainedHandle: NativePointer, owned: Boolean = false) : BodyFilter(JphIgnoreSingleBodyFilterChained_asBodyFilter(ignoreSingleBodyFilterChainedHandle), owned), AutoCloseable {
+class IgnoreSingleBodyFilterChained internal constructor(internal val ignoreSingleBodyFilterChainedHandle: NativePointer, owned: Boolean = false) : BodyFilter(JphIgnoreSingleBodyFilterChained_asBodyFilter(ignoreSingleBodyFilterChainedHandle), owned), AutoCloseable {
     constructor(bodyID: BodyID, filter: BodyFilter) : this(JphIgnoreSingleBodyFilterChained_create(bodyID.value, filter.bodyFilterHandle), owned = true)
 
     override fun close() =

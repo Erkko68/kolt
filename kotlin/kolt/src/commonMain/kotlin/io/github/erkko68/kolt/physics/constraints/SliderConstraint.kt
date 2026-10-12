@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SliderConstraint`. */
-open class SliderConstraint internal constructor(internal val sliderConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSliderConstraint_asTwoBodyConstraint(sliderConstraintHandle), owned), AutoCloseable {
+class SliderConstraint internal constructor(internal val sliderConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSliderConstraint_asTwoBodyConstraint(sliderConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: SliderConstraintSettings) : this(JphSliderConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.sliderConstraintSettingsHandle), owned = true)
 
     override fun addRef() =
@@ -42,48 +42,48 @@ open class SliderConstraint internal constructor(internal val sliderConstraintHa
     override fun close() =
         closeOnce { JphSliderConstraint_release(sliderConstraintHandle) }
 
-    open val currentPosition: Float
+    val currentPosition: Float
         get() = JphSliderConstraint_GetCurrentPosition(sliderConstraintHandle)
 
-    open var maxFrictionForce: Float
+    var maxFrictionForce: Float
         get() = JphSliderConstraint_GetMaxFrictionForce(sliderConstraintHandle)
         set(frictionForce) = JphSliderConstraint_SetMaxFrictionForce(sliderConstraintHandle, frictionForce)
 
-    open val motorSettings: MotorSettings
+    val motorSettings: MotorSettings
         get() = MotorSettings(JphSliderConstraint_GetMotorSettings(sliderConstraintHandle))
 
-    open var motorState: EMotorState
+    var motorState: EMotorState
         get() = EMotorState.of(JphSliderConstraint_GetMotorState(sliderConstraintHandle))
         set(state) = JphSliderConstraint_SetMotorState(sliderConstraintHandle, state.value)
 
-    open var targetVelocity: Float
+    var targetVelocity: Float
         get() = JphSliderConstraint_GetTargetVelocity(sliderConstraintHandle)
         set(velocity) = JphSliderConstraint_SetTargetVelocity(sliderConstraintHandle, velocity)
 
-    open var targetPosition: Float
+    var targetPosition: Float
         get() = JphSliderConstraint_GetTargetPosition(sliderConstraintHandle)
         set(position) = JphSliderConstraint_SetTargetPosition(sliderConstraintHandle, position)
 
-    open fun setLimits(limitsMin: Float, limitsMax: Float) =
+    fun setLimits(limitsMin: Float, limitsMax: Float) =
         JphSliderConstraint_SetLimits(sliderConstraintHandle, limitsMin, limitsMax)
 
-    open val limitsMin: Float
+    val limitsMin: Float
         get() = JphSliderConstraint_GetLimitsMin(sliderConstraintHandle)
 
-    open val limitsMax: Float
+    val limitsMax: Float
         get() = JphSliderConstraint_GetLimitsMax(sliderConstraintHandle)
 
-    open fun hasLimits(): Boolean =
+    fun hasLimits(): Boolean =
         JphSliderConstraint_HasLimits(sliderConstraintHandle)
 
-    open var limitsSpringSettings: SpringSettings
+    var limitsSpringSettings: SpringSettings
         get() = SpringSettings(JphSliderConstraint_GetLimitsSpringSettings(sliderConstraintHandle))
         set(limitsSpringSettings) = JphSliderConstraint_SetLimitsSpringSettings(sliderConstraintHandle, limitsSpringSettings.springSettingsHandle)
 
-    open val totalLambdaPositionLimits: Float
+    val totalLambdaPositionLimits: Float
         get() = JphSliderConstraint_GetTotalLambdaPositionLimits(sliderConstraintHandle)
 
-    open val totalLambdaRotation: Vec3
+    val totalLambdaRotation: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -92,6 +92,6 @@ open class SliderConstraint internal constructor(internal val sliderConstraintHa
             Vec3(returned)
         }
 
-    open val totalLambdaMotor: Float
+    val totalLambdaMotor: Float
         get() = JphSliderConstraint_GetTotalLambdaMotor(sliderConstraintHandle)
 }

@@ -40,11 +40,11 @@ open class ConvexShapeSettings internal constructor(internal val convexShapeSett
     override fun close() =
         closeOnce { JphConvexShapeSettings_release(convexShapeSettingsHandle) }
 
-    open var material: PhysicsMaterial?
+    var material: PhysicsMaterial?
         get() = JphConvexShapeSettings_GetMaterial(convexShapeSettingsHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(value) = JphConvexShapeSettings_SetMaterial(convexShapeSettingsHandle, value?.physicsMaterialHandle ?: NullPointer)
 
-    open var density: Float
+    var density: Float
         get() = JphConvexShapeSettings_GetDensity(convexShapeSettingsHandle)
         set(density) = JphConvexShapeSettings_SetDensity(convexShapeSettingsHandle, density)
 

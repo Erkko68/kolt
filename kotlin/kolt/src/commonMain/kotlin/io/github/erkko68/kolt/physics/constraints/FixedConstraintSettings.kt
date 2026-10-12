@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::FixedConstraintSettings`. */
-open class FixedConstraintSettings internal constructor(internal val fixedConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphFixedConstraintSettings_asTwoBodyConstraintSettings(fixedConstraintSettingsHandle), owned), AutoCloseable {
+class FixedConstraintSettings internal constructor(internal val fixedConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphFixedConstraintSettings_asTwoBodyConstraintSettings(fixedConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphFixedConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,15 +42,15 @@ open class FixedConstraintSettings internal constructor(internal val fixedConstr
     override fun close() =
         closeOnce { JphFixedConstraintSettings_release(fixedConstraintSettingsHandle) }
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphFixedConstraintSettings_GetSpace(fixedConstraintSettingsHandle))
         set(value) = JphFixedConstraintSettings_SetSpace(fixedConstraintSettingsHandle, value.value)
 
-    open var autoDetectPoint: Boolean
+    var autoDetectPoint: Boolean
         get() = JphFixedConstraintSettings_GetAutoDetectPoint(fixedConstraintSettingsHandle)
         set(value) = JphFixedConstraintSettings_SetAutoDetectPoint(fixedConstraintSettingsHandle, value)
 
-    open var point1: Vec3
+    var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -60,7 +60,7 @@ open class FixedConstraintSettings internal constructor(internal val fixedConstr
         }
         set(value) = interopScope { JphFixedConstraintSettings_SetPoint1(fixedConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var axisX1: Vec3
+    var axisX1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -70,7 +70,7 @@ open class FixedConstraintSettings internal constructor(internal val fixedConstr
         }
         set(value) = interopScope { JphFixedConstraintSettings_SetAxisX1(fixedConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var axisY1: Vec3
+    var axisY1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -80,7 +80,7 @@ open class FixedConstraintSettings internal constructor(internal val fixedConstr
         }
         set(value) = interopScope { JphFixedConstraintSettings_SetAxisY1(fixedConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var point2: Vec3
+    var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -90,7 +90,7 @@ open class FixedConstraintSettings internal constructor(internal val fixedConstr
         }
         set(value) = interopScope { JphFixedConstraintSettings_SetPoint2(fixedConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var axisX2: Vec3
+    var axisX2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -100,7 +100,7 @@ open class FixedConstraintSettings internal constructor(internal val fixedConstr
         }
         set(value) = interopScope { JphFixedConstraintSettings_SetAxisX2(fixedConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var axisY2: Vec3
+    var axisY2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

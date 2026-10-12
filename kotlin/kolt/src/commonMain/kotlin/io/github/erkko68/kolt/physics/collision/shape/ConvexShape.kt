@@ -40,23 +40,23 @@ open class ConvexShape internal constructor(internal val convexShapeHandle: Nati
     override fun close() =
         closeOnce { JphConvexShape_release(convexShapeHandle) }
 
-    open fun getSupportFunction(mode: ConvexShape.ESupportMode, buffer: ConvexShape.SupportBuffer, scale: Vec3): ConvexShape.Support? =
+    fun getSupportFunction(mode: ConvexShape.ESupportMode, buffer: ConvexShape.SupportBuffer, scale: Vec3): ConvexShape.Support? =
         interopScope { JphConvexShape_GetSupportFunction(convexShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let { ConvexShape.Support(it) } }
 
-    open var material: PhysicsMaterial?
+    var material: PhysicsMaterial?
         get() = JphConvexShape_GetMaterial(convexShapeHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(material) = JphConvexShape_SetMaterial(convexShapeHandle, material?.physicsMaterialHandle ?: NullPointer)
 
-    open var density: Float
+    var density: Float
         get() = JphConvexShape_GetDensity(convexShapeHandle)
         set(density) = JphConvexShape_SetDensity(convexShapeHandle, density)
 
     /** C++ `JPH::ConvexShape::Support`. */
-    open class Support internal constructor(internal val convexShapeSupportHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class Support internal constructor(internal val convexShapeSupportHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         override fun close() =
             closeOnce { JphConvexShapeSupport_destroy(convexShapeSupportHandle) }
     
-        open fun getSupport(direction: Vec3): Vec3 =
+        fun getSupport(direction: Vec3): Vec3 =
             interopScope {
                 val returned = FloatArray(4)
                 val returnedPointer = toInterop(returned)
@@ -65,18 +65,18 @@ open class ConvexShape internal constructor(internal val convexShapeHandle: Nati
                 Vec3(returned)
             }
     
-        open val convexRadius: Float
+        val convexRadius: Float
             get() = JphConvexShapeSupport_GetConvexRadius(convexShapeSupportHandle)
     }
     
     /** C++ `JPH::ConvexShape::SupportBuffer`. */
-    open class SupportBuffer internal constructor(internal val convexShapeSupportBufferHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class SupportBuffer internal constructor(internal val convexShapeSupportBufferHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphConvexShapeSupportBuffer_create(), owned = true)
     
         override fun close() =
             closeOnce { JphConvexShapeSupportBuffer_destroy(convexShapeSupportBufferHandle) }
     
-        open var data: IntArray
+        var data: IntArray
             get() = interopScope {
                 val count = JphConvexShapeSupportBuffer_GetData(convexShapeSupportBufferHandle, NullPointer, 0)
                 val returned = IntArray(count)

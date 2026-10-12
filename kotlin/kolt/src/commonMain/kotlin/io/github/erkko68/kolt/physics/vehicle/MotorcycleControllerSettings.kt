@@ -45,27 +45,27 @@ open class MotorcycleControllerSettings internal constructor(internal val motorc
     override fun close() =
         closeOnce { JphMotorcycleControllerSettings_release(motorcycleControllerSettingsHandle) }
 
-    open var maxLeanAngle: Float
+    var maxLeanAngle: Float
         get() = JphMotorcycleControllerSettings_GetMaxLeanAngle(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetMaxLeanAngle(motorcycleControllerSettingsHandle, value)
 
-    open var leanSpringConstant: Float
+    var leanSpringConstant: Float
         get() = JphMotorcycleControllerSettings_GetLeanSpringConstant(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSpringConstant(motorcycleControllerSettingsHandle, value)
 
-    open var leanSpringDamping: Float
+    var leanSpringDamping: Float
         get() = JphMotorcycleControllerSettings_GetLeanSpringDamping(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSpringDamping(motorcycleControllerSettingsHandle, value)
 
-    open var leanSpringIntegrationCoefficient: Float
+    var leanSpringIntegrationCoefficient: Float
         get() = JphMotorcycleControllerSettings_GetLeanSpringIntegrationCoefficient(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSpringIntegrationCoefficient(motorcycleControllerSettingsHandle, value)
 
-    open var leanSpringIntegrationCoefficientDecay: Float
+    var leanSpringIntegrationCoefficientDecay: Float
         get() = JphMotorcycleControllerSettings_GetLeanSpringIntegrationCoefficientDecay(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSpringIntegrationCoefficientDecay(motorcycleControllerSettingsHandle, value)
 
-    open var leanSmoothingFactor: Float
+    var leanSmoothingFactor: Float
         get() = JphMotorcycleControllerSettings_GetLeanSmoothingFactor(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSmoothingFactor(motorcycleControllerSettingsHandle, value)
 

@@ -51,7 +51,7 @@ open class TransformedShapeCollector internal constructor(internal val transform
     open fun onBodyEnd() =
         JphTransformedShapeCollector_OnBodyEnd(transformedShapeCollectorHandle)
 
-    open var context: TransformedShape?
+    var context: TransformedShape?
         get() = JphTransformedShapeCollector_GetContext(transformedShapeCollectorHandle).takeIf { it != NullPointer }?.let { TransformedShape(it) }
         set(context) = JphTransformedShapeCollector_SetContext(transformedShapeCollectorHandle, context?.transformedShapeHandle ?: NullPointer)
 
@@ -61,22 +61,22 @@ open class TransformedShapeCollector internal constructor(internal val transform
     open fun addHit(result: TransformedShape) =
         JphTransformedShapeCollector_AddHit(transformedShapeCollectorHandle, result.transformedShapeHandle)
 
-    open fun updateEarlyOutFraction(fraction: Float) =
+    fun updateEarlyOutFraction(fraction: Float) =
         JphTransformedShapeCollector_UpdateEarlyOutFraction(transformedShapeCollectorHandle, fraction)
 
-    open fun resetEarlyOutFraction(fraction: Float) =
+    fun resetEarlyOutFraction(fraction: Float) =
         JphTransformedShapeCollector_ResetEarlyOutFraction(transformedShapeCollectorHandle, fraction)
 
-    open fun forceEarlyOut() =
+    fun forceEarlyOut() =
         JphTransformedShapeCollector_ForceEarlyOut(transformedShapeCollectorHandle)
 
-    open fun shouldEarlyOut(): Boolean =
+    fun shouldEarlyOut(): Boolean =
         JphTransformedShapeCollector_ShouldEarlyOut(transformedShapeCollectorHandle)
 
-    open val earlyOutFraction: Float
+    val earlyOutFraction: Float
         get() = JphTransformedShapeCollector_GetEarlyOutFraction(transformedShapeCollectorHandle)
 
-    open val positiveEarlyOutFraction: Float
+    val positiveEarlyOutFraction: Float
         get() = JphTransformedShapeCollector_GetPositiveEarlyOutFraction(transformedShapeCollectorHandle)
 
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {

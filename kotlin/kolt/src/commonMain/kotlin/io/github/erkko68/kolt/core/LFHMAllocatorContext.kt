@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::LFHMAllocatorContext`. */
-open class LFHMAllocatorContext internal constructor(internal val lfhmAllocatorContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class LFHMAllocatorContext internal constructor(internal val lfhmAllocatorContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

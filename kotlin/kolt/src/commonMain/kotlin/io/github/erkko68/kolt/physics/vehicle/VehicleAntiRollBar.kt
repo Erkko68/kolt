@@ -33,27 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleAntiRollBar`. */
-open class VehicleAntiRollBar internal constructor(internal val vehicleAntiRollBarHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class VehicleAntiRollBar internal constructor(internal val vehicleAntiRollBarHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphVehicleAntiRollBar_create(), owned = true)
 
     override fun close() =
         closeOnce { JphVehicleAntiRollBar_destroy(vehicleAntiRollBarHandle) }
 
-    open fun saveBinaryState(stream: StreamOut) =
+    fun saveBinaryState(stream: StreamOut) =
         JphVehicleAntiRollBar_SaveBinaryState(vehicleAntiRollBarHandle, stream.streamOutHandle)
 
-    open fun restoreBinaryState(stream: StreamIn) =
+    fun restoreBinaryState(stream: StreamIn) =
         JphVehicleAntiRollBar_RestoreBinaryState(vehicleAntiRollBarHandle, stream.streamInHandle)
 
-    open var leftWheel: Int
+    var leftWheel: Int
         get() = JphVehicleAntiRollBar_GetLeftWheel(vehicleAntiRollBarHandle)
         set(value) = JphVehicleAntiRollBar_SetLeftWheel(vehicleAntiRollBarHandle, value)
 
-    open var rightWheel: Int
+    var rightWheel: Int
         get() = JphVehicleAntiRollBar_GetRightWheel(vehicleAntiRollBarHandle)
         set(value) = JphVehicleAntiRollBar_SetRightWheel(vehicleAntiRollBarHandle, value)
 
-    open var stiffness: Float
+    var stiffness: Float
         get() = JphVehicleAntiRollBar_GetStiffness(vehicleAntiRollBarHandle)
         set(value) = JphVehicleAntiRollBar_SetStiffness(vehicleAntiRollBarHandle, value)
 

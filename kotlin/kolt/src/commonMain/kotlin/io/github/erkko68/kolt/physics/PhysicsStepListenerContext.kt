@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PhysicsStepListenerContext`. */
-open class PhysicsStepListenerContext internal constructor(internal val physicsStepListenerContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class PhysicsStepListenerContext internal constructor(internal val physicsStepListenerContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

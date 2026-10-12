@@ -33,117 +33,117 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PhysicsSettings`. */
-open class PhysicsSettings internal constructor(internal val physicsSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class PhysicsSettings internal constructor(internal val physicsSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphPhysicsSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphPhysicsSettings_destroy(physicsSettingsHandle) }
 
-    open var maxInFlightBodyPairs: Int
+    var maxInFlightBodyPairs: Int
         get() = JphPhysicsSettings_GetMaxInFlightBodyPairs(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetMaxInFlightBodyPairs(physicsSettingsHandle, value)
 
-    open var stepListenersBatchSize: Int
+    var stepListenersBatchSize: Int
         get() = JphPhysicsSettings_GetStepListenersBatchSize(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetStepListenersBatchSize(physicsSettingsHandle, value)
 
-    open var stepListenerBatchesPerJob: Int
+    var stepListenerBatchesPerJob: Int
         get() = JphPhysicsSettings_GetStepListenerBatchesPerJob(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetStepListenerBatchesPerJob(physicsSettingsHandle, value)
 
-    open var baumgarte: Float
+    var baumgarte: Float
         get() = JphPhysicsSettings_GetBaumgarte(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetBaumgarte(physicsSettingsHandle, value)
 
-    open var speculativeContactDistance: Float
+    var speculativeContactDistance: Float
         get() = JphPhysicsSettings_GetSpeculativeContactDistance(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetSpeculativeContactDistance(physicsSettingsHandle, value)
 
-    open var penetrationSlop: Float
+    var penetrationSlop: Float
         get() = JphPhysicsSettings_GetPenetrationSlop(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetPenetrationSlop(physicsSettingsHandle, value)
 
-    open var linearCastThreshold: Float
+    var linearCastThreshold: Float
         get() = JphPhysicsSettings_GetLinearCastThreshold(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetLinearCastThreshold(physicsSettingsHandle, value)
 
-    open var linearCastMaxPenetration: Float
+    var linearCastMaxPenetration: Float
         get() = JphPhysicsSettings_GetLinearCastMaxPenetration(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetLinearCastMaxPenetration(physicsSettingsHandle, value)
 
-    open var manifoldTolerance: Float
+    var manifoldTolerance: Float
         get() = JphPhysicsSettings_GetManifoldTolerance(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetManifoldTolerance(physicsSettingsHandle, value)
 
-    open var maxPenetrationDistance: Float
+    var maxPenetrationDistance: Float
         get() = JphPhysicsSettings_GetMaxPenetrationDistance(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetMaxPenetrationDistance(physicsSettingsHandle, value)
 
-    open var bodyPairCacheMaxDeltaPositionSq: Float
+    var bodyPairCacheMaxDeltaPositionSq: Float
         get() = JphPhysicsSettings_GetBodyPairCacheMaxDeltaPositionSq(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetBodyPairCacheMaxDeltaPositionSq(physicsSettingsHandle, value)
 
-    open var bodyPairCacheCosMaxDeltaRotationDiv2: Float
+    var bodyPairCacheCosMaxDeltaRotationDiv2: Float
         get() = JphPhysicsSettings_GetBodyPairCacheCosMaxDeltaRotationDiv2(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetBodyPairCacheCosMaxDeltaRotationDiv2(physicsSettingsHandle, value)
 
-    open var contactNormalCosMaxDeltaRotation: Float
+    var contactNormalCosMaxDeltaRotation: Float
         get() = JphPhysicsSettings_GetContactNormalCosMaxDeltaRotation(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetContactNormalCosMaxDeltaRotation(physicsSettingsHandle, value)
 
-    open var contactPointPreserveLambdaMaxDistSq: Float
+    var contactPointPreserveLambdaMaxDistSq: Float
         get() = JphPhysicsSettings_GetContactPointPreserveLambdaMaxDistSq(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetContactPointPreserveLambdaMaxDistSq(physicsSettingsHandle, value)
 
-    open var internalEdgeRemovalVertexToleranceSq: Float
+    var internalEdgeRemovalVertexToleranceSq: Float
         get() = JphPhysicsSettings_GetInternalEdgeRemovalVertexToleranceSq(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetInternalEdgeRemovalVertexToleranceSq(physicsSettingsHandle, value)
 
-    open var numVelocitySteps: Int
+    var numVelocitySteps: Int
         get() = JphPhysicsSettings_GetNumVelocitySteps(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetNumVelocitySteps(physicsSettingsHandle, value)
 
-    open var numPositionSteps: Int
+    var numPositionSteps: Int
         get() = JphPhysicsSettings_GetNumPositionSteps(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetNumPositionSteps(physicsSettingsHandle, value)
 
-    open var minVelocityForRestitution: Float
+    var minVelocityForRestitution: Float
         get() = JphPhysicsSettings_GetMinVelocityForRestitution(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetMinVelocityForRestitution(physicsSettingsHandle, value)
 
-    open var timeBeforeSleep: Float
+    var timeBeforeSleep: Float
         get() = JphPhysicsSettings_GetTimeBeforeSleep(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetTimeBeforeSleep(physicsSettingsHandle, value)
 
-    open var pointVelocitySleepThreshold: Float
+    var pointVelocitySleepThreshold: Float
         get() = JphPhysicsSettings_GetPointVelocitySleepThreshold(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetPointVelocitySleepThreshold(physicsSettingsHandle, value)
 
-    open var deterministicSimulation: Boolean
+    var deterministicSimulation: Boolean
         get() = JphPhysicsSettings_GetDeterministicSimulation(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetDeterministicSimulation(physicsSettingsHandle, value)
 
-    open var constraintWarmStart: Boolean
+    var constraintWarmStart: Boolean
         get() = JphPhysicsSettings_GetConstraintWarmStart(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetConstraintWarmStart(physicsSettingsHandle, value)
 
-    open var useBodyPairContactCache: Boolean
+    var useBodyPairContactCache: Boolean
         get() = JphPhysicsSettings_GetUseBodyPairContactCache(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetUseBodyPairContactCache(physicsSettingsHandle, value)
 
-    open var useManifoldReduction: Boolean
+    var useManifoldReduction: Boolean
         get() = JphPhysicsSettings_GetUseManifoldReduction(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetUseManifoldReduction(physicsSettingsHandle, value)
 
-    open var useLargeIslandSplitter: Boolean
+    var useLargeIslandSplitter: Boolean
         get() = JphPhysicsSettings_GetUseLargeIslandSplitter(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetUseLargeIslandSplitter(physicsSettingsHandle, value)
 
-    open var allowSleeping: Boolean
+    var allowSleeping: Boolean
         get() = JphPhysicsSettings_GetAllowSleeping(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetAllowSleeping(physicsSettingsHandle, value)
 
-    open var checkActiveEdges: Boolean
+    var checkActiveEdges: Boolean
         get() = JphPhysicsSettings_GetCheckActiveEdges(physicsSettingsHandle)
         set(value) = JphPhysicsSettings_SetCheckActiveEdges(physicsSettingsHandle, value)
 }

@@ -33,13 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RayCastResult`. */
-open class RayCastResult internal constructor(internal val rayCastResultHandle: NativePointer, owned: Boolean = false) : BroadPhaseCastResult(JphRayCastResult_asBroadPhaseCastResult(rayCastResultHandle), owned), AutoCloseable {
+class RayCastResult internal constructor(internal val rayCastResultHandle: NativePointer, owned: Boolean = false) : BroadPhaseCastResult(JphRayCastResult_asBroadPhaseCastResult(rayCastResultHandle), owned), AutoCloseable {
     constructor() : this(JphRayCastResult_create(), owned = true)
 
     override fun close() =
         closeOnce { JphRayCastResult_destroy(rayCastResultHandle) }
 
-    open var subShapeID2: SubShapeID
+    var subShapeID2: SubShapeID
         get() = SubShapeID(JphRayCastResult_GetSubShapeID2(rayCastResultHandle))
         set(value) = JphRayCastResult_SetSubShapeID2(rayCastResultHandle, value.value)
 }

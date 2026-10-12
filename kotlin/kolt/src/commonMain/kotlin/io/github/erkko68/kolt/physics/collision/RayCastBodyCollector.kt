@@ -51,7 +51,7 @@ open class RayCastBodyCollector internal constructor(internal val rayCastBodyCol
     open fun onBodyEnd() =
         JphRayCastBodyCollector_OnBodyEnd(rayCastBodyCollectorHandle)
 
-    open var context: TransformedShape?
+    var context: TransformedShape?
         get() = JphRayCastBodyCollector_GetContext(rayCastBodyCollectorHandle).takeIf { it != NullPointer }?.let { TransformedShape(it) }
         set(context) = JphRayCastBodyCollector_SetContext(rayCastBodyCollectorHandle, context?.transformedShapeHandle ?: NullPointer)
 
@@ -61,22 +61,22 @@ open class RayCastBodyCollector internal constructor(internal val rayCastBodyCol
     open fun addHit(result: BroadPhaseCastResult) =
         JphRayCastBodyCollector_AddHit(rayCastBodyCollectorHandle, result.broadPhaseCastResultHandle)
 
-    open fun updateEarlyOutFraction(fraction: Float) =
+    fun updateEarlyOutFraction(fraction: Float) =
         JphRayCastBodyCollector_UpdateEarlyOutFraction(rayCastBodyCollectorHandle, fraction)
 
-    open fun resetEarlyOutFraction(fraction: Float) =
+    fun resetEarlyOutFraction(fraction: Float) =
         JphRayCastBodyCollector_ResetEarlyOutFraction(rayCastBodyCollectorHandle, fraction)
 
-    open fun forceEarlyOut() =
+    fun forceEarlyOut() =
         JphRayCastBodyCollector_ForceEarlyOut(rayCastBodyCollectorHandle)
 
-    open fun shouldEarlyOut(): Boolean =
+    fun shouldEarlyOut(): Boolean =
         JphRayCastBodyCollector_ShouldEarlyOut(rayCastBodyCollectorHandle)
 
-    open val earlyOutFraction: Float
+    val earlyOutFraction: Float
         get() = JphRayCastBodyCollector_GetEarlyOutFraction(rayCastBodyCollectorHandle)
 
-    open val positiveEarlyOutFraction: Float
+    val positiveEarlyOutFraction: Float
         get() = JphRayCastBodyCollector_GetPositiveEarlyOutFraction(rayCastBodyCollectorHandle)
 
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {

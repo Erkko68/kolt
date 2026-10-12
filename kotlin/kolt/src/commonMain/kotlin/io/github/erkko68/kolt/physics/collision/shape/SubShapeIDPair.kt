@@ -33,26 +33,26 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SubShapeIDPair`. */
-open class SubShapeIDPair internal constructor(internal val subShapeIDPairHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class SubShapeIDPair internal constructor(internal val subShapeIDPairHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSubShapeIDPair_create(), owned = true)
     constructor(body1ID: BodyID, subShapeID1: SubShapeID, body2ID: BodyID, subShapeID2: SubShapeID) : this(JphSubShapeIDPair_create_BodyID_SubShapeID_BodyID_SubShapeID(body1ID.value, subShapeID1.value, body2ID.value, subShapeID2.value), owned = true)
 
     override fun close() =
         closeOnce { JphSubShapeIDPair_destroy(subShapeIDPairHandle) }
 
-    open val body1ID: BodyID
+    val body1ID: BodyID
         get() = BodyID(JphSubShapeIDPair_GetBody1ID(subShapeIDPairHandle))
 
-    open val subShapeID1: SubShapeID
+    val subShapeID1: SubShapeID
         get() = SubShapeID(JphSubShapeIDPair_GetSubShapeID1(subShapeIDPairHandle))
 
-    open val body2ID: BodyID
+    val body2ID: BodyID
         get() = BodyID(JphSubShapeIDPair_GetBody2ID(subShapeIDPairHandle))
 
-    open val subShapeID2: SubShapeID
+    val subShapeID2: SubShapeID
         get() = SubShapeID(JphSubShapeIDPair_GetSubShapeID2(subShapeIDPairHandle))
 
-    open val hash: Long
+    val hash: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)

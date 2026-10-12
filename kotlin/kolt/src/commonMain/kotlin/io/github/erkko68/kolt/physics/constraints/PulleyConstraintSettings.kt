@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PulleyConstraintSettings`. */
-open class PulleyConstraintSettings internal constructor(internal val pulleyConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphPulleyConstraintSettings_asTwoBodyConstraintSettings(pulleyConstraintSettingsHandle), owned), AutoCloseable {
+class PulleyConstraintSettings internal constructor(internal val pulleyConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphPulleyConstraintSettings_asTwoBodyConstraintSettings(pulleyConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphPulleyConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,11 +42,11 @@ open class PulleyConstraintSettings internal constructor(internal val pulleyCons
     override fun close() =
         closeOnce { JphPulleyConstraintSettings_release(pulleyConstraintSettingsHandle) }
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphPulleyConstraintSettings_GetSpace(pulleyConstraintSettingsHandle))
         set(value) = JphPulleyConstraintSettings_SetSpace(pulleyConstraintSettingsHandle, value.value)
 
-    open var bodyPoint1: Vec3
+    var bodyPoint1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -56,7 +56,7 @@ open class PulleyConstraintSettings internal constructor(internal val pulleyCons
         }
         set(value) = interopScope { JphPulleyConstraintSettings_SetBodyPoint1(pulleyConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var fixedPoint1: Vec3
+    var fixedPoint1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -66,7 +66,7 @@ open class PulleyConstraintSettings internal constructor(internal val pulleyCons
         }
         set(value) = interopScope { JphPulleyConstraintSettings_SetFixedPoint1(pulleyConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var bodyPoint2: Vec3
+    var bodyPoint2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -76,7 +76,7 @@ open class PulleyConstraintSettings internal constructor(internal val pulleyCons
         }
         set(value) = interopScope { JphPulleyConstraintSettings_SetBodyPoint2(pulleyConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var fixedPoint2: Vec3
+    var fixedPoint2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -86,15 +86,15 @@ open class PulleyConstraintSettings internal constructor(internal val pulleyCons
         }
         set(value) = interopScope { JphPulleyConstraintSettings_SetFixedPoint2(pulleyConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var ratio: Float
+    var ratio: Float
         get() = JphPulleyConstraintSettings_GetRatio(pulleyConstraintSettingsHandle)
         set(value) = JphPulleyConstraintSettings_SetRatio(pulleyConstraintSettingsHandle, value)
 
-    open var minLength: Float
+    var minLength: Float
         get() = JphPulleyConstraintSettings_GetMinLength(pulleyConstraintSettingsHandle)
         set(value) = JphPulleyConstraintSettings_SetMinLength(pulleyConstraintSettingsHandle, value)
 
-    open var maxLength: Float
+    var maxLength: Float
         get() = JphPulleyConstraintSettings_GetMaxLength(pulleyConstraintSettingsHandle)
         set(value) = JphPulleyConstraintSettings_SetMaxLength(pulleyConstraintSettingsHandle, value)
 

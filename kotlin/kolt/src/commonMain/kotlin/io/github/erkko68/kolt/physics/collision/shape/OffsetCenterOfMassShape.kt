@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::OffsetCenterOfMassShape`. */
-open class OffsetCenterOfMassShape internal constructor(internal val offsetCenterOfMassShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphOffsetCenterOfMassShape_asDecoratedShape(offsetCenterOfMassShapeHandle), owned), AutoCloseable {
+class OffsetCenterOfMassShape internal constructor(internal val offsetCenterOfMassShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphOffsetCenterOfMassShape_asDecoratedShape(offsetCenterOfMassShapeHandle), owned), AutoCloseable {
     constructor() : this(JphOffsetCenterOfMassShape_create(), owned = true)
     constructor(shape: Shape?, offset: Vec3) : this(interopScope { JphOffsetCenterOfMassShape_create_Shape_Vec3Arg(shape?.shapeHandle ?: NullPointer, toInterop(offset.toArray())) }, owned = true)
 
@@ -43,7 +43,7 @@ open class OffsetCenterOfMassShape internal constructor(internal val offsetCente
     override fun close() =
         closeOnce { JphOffsetCenterOfMassShape_release(offsetCenterOfMassShapeHandle) }
 
-    open val offset: Vec3
+    val offset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

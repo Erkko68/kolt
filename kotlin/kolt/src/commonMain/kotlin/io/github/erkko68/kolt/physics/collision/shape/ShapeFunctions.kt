@@ -33,13 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ShapeFunctions`. */
-open class ShapeFunctions internal constructor(internal val shapeFunctionsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class ShapeFunctions internal constructor(internal val shapeFunctionsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphShapeFunctions_create(), owned = true)
 
     override fun close() =
         closeOnce { JphShapeFunctions_destroy(shapeFunctionsHandle) }
 
-    open var color: Color
+    var color: Color
         get() = run {
             val returned = Color(JphColor_create(), owned = true)
             JphShapeFunctions_GetColor(shapeFunctionsHandle, returned.colorHandle)

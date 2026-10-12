@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ReversedShapeFilter`. */
-open class ReversedShapeFilter internal constructor(internal val reversedShapeFilterHandle: NativePointer, owned: Boolean = false) : ShapeFilter(JphReversedShapeFilter_asShapeFilter(reversedShapeFilterHandle), owned), AutoCloseable {
+class ReversedShapeFilter internal constructor(internal val reversedShapeFilterHandle: NativePointer, owned: Boolean = false) : ShapeFilter(JphReversedShapeFilter_asShapeFilter(reversedShapeFilterHandle), owned), AutoCloseable {
     constructor(filter: ShapeFilter) : this(JphReversedShapeFilter_create(filter.shapeFilterHandle), owned = true)
 
     override fun close() =

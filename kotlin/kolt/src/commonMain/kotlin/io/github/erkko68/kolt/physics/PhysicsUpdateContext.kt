@@ -33,13 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PhysicsUpdateContext`. */
-open class PhysicsUpdateContext internal constructor(internal val physicsUpdateContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+class PhysicsUpdateContext internal constructor(internal val physicsUpdateContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
     /** C++ `JPH::PhysicsUpdateContext::Step`. */
-    open class Step internal constructor(internal val physicsUpdateContextStepHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+    class Step internal constructor(internal val physicsUpdateContextStepHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
         /** C++ `JPH::PhysicsUpdateContext::Step::CCDBody`. */
-        open class CCDBody internal constructor(internal val physicsUpdateContextStepCCDBodyHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+        class CCDBody internal constructor(internal val physicsUpdateContextStepCCDBodyHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
         }
     
     /** C++ `JPH::PhysicsUpdateContext::BodyPairQueue`. */
-    open class BodyPairQueue internal constructor(internal val physicsUpdateContextBodyPairQueueHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    class BodyPairQueue internal constructor(internal val physicsUpdateContextBodyPairQueueHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
     }

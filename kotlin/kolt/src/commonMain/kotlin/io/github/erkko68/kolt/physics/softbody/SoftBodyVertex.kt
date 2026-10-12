@@ -33,19 +33,19 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodyVertex`. */
-open class SoftBodyVertex internal constructor(internal val softBodyVertexHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class SoftBodyVertex internal constructor(internal val softBodyVertexHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSoftBodyVertex_create(), owned = true)
 
     override fun close() =
         closeOnce { JphSoftBodyVertex_destroy(softBodyVertexHandle) }
 
-    open fun resetCollision() =
+    fun resetCollision() =
         JphSoftBodyVertex_ResetCollision(softBodyVertexHandle)
 
-    open fun markCCDContact(bodyID: BodyID, contactPlane: Plane) =
+    fun markCCDContact(bodyID: BodyID, contactPlane: Plane) =
         JphSoftBodyVertex_MarkCCDContact(softBodyVertexHandle, bodyID.value, contactPlane.planeHandle)
 
-    open var previousPosition: Vec3
+    var previousPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -55,7 +55,7 @@ open class SoftBodyVertex internal constructor(internal val softBodyVertexHandle
         }
         set(value) = interopScope { JphSoftBodyVertex_SetPreviousPosition(softBodyVertexHandle, toInterop(value.toArray())) }
 
-    open var position: Vec3
+    var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -65,7 +65,7 @@ open class SoftBodyVertex internal constructor(internal val softBodyVertexHandle
         }
         set(value) = interopScope { JphSoftBodyVertex_SetPosition(softBodyVertexHandle, toInterop(value.toArray())) }
 
-    open var velocity: Vec3
+    var velocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -75,7 +75,7 @@ open class SoftBodyVertex internal constructor(internal val softBodyVertexHandle
         }
         set(value) = interopScope { JphSoftBodyVertex_SetVelocity(softBodyVertexHandle, toInterop(value.toArray())) }
 
-    open var collisionPlane: Plane
+    var collisionPlane: Plane
         get() = run {
             val returned = Plane(JphPlane_create(), owned = true)
             JphSoftBodyVertex_GetCollisionPlane(softBodyVertexHandle, returned.planeHandle)
@@ -83,19 +83,19 @@ open class SoftBodyVertex internal constructor(internal val softBodyVertexHandle
         }
         set(value) = JphSoftBodyVertex_SetCollisionPlane(softBodyVertexHandle, value.planeHandle)
 
-    open var collidingShapeIndex: Int
+    var collidingShapeIndex: Int
         get() = JphSoftBodyVertex_GetCollidingShapeIndex(softBodyVertexHandle)
         set(value) = JphSoftBodyVertex_SetCollidingShapeIndex(softBodyVertexHandle, value)
 
-    open var hasContact: Boolean
+    var hasContact: Boolean
         get() = JphSoftBodyVertex_GetHasContact(softBodyVertexHandle)
         set(value) = JphSoftBodyVertex_SetHasContact(softBodyVertexHandle, value)
 
-    open var largestPenetration: Float
+    var largestPenetration: Float
         get() = JphSoftBodyVertex_GetLargestPenetration(softBodyVertexHandle)
         set(value) = JphSoftBodyVertex_SetLargestPenetration(softBodyVertexHandle, value)
 
-    open var invMass: Float
+    var invMass: Float
         get() = JphSoftBodyVertex_GetInvMass(softBodyVertexHandle)
         set(value) = JphSoftBodyVertex_SetInvMass(softBodyVertexHandle, value)
 }

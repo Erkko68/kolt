@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ShapeCast`. */
-open class ShapeCast internal constructor(internal val shapeCastHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class ShapeCast internal constructor(internal val shapeCastHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor(arg0: Shape?, arg1: Vec3, arg2: Mat44, arg3: Vec3, arg4: AABox) : this(interopScope { JphShapeCast_create(arg0?.shapeHandle ?: NullPointer, toInterop(arg1.toArray()), toInterop(arg2.toArray()), toInterop(arg3.toArray()), arg4.aaBoxHandle) }, owned = true)
 
     override fun close() =

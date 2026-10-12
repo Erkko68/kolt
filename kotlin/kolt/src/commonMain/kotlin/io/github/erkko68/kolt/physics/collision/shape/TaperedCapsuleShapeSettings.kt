@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TaperedCapsuleShapeSettings`. */
-open class TaperedCapsuleShapeSettings internal constructor(internal val taperedCapsuleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTaperedCapsuleShapeSettings_asConvexShapeSettings(taperedCapsuleShapeSettingsHandle), owned), AutoCloseable {
+class TaperedCapsuleShapeSettings internal constructor(internal val taperedCapsuleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTaperedCapsuleShapeSettings_asConvexShapeSettings(taperedCapsuleShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphTaperedCapsuleShapeSettings_create(), owned = true)
     constructor(halfHeightOfTaperedCylinder: Float, topRadius: Float, bottomRadius: Float, material: PhysicsMaterial?) : this(JphTaperedCapsuleShapeSettings_create_float_float_float_PhysicsMaterial(halfHeightOfTaperedCylinder, topRadius, bottomRadius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
@@ -43,21 +43,21 @@ open class TaperedCapsuleShapeSettings internal constructor(internal val tapered
     override fun close() =
         closeOnce { JphTaperedCapsuleShapeSettings_release(taperedCapsuleShapeSettingsHandle) }
 
-    open val isValid: Boolean
+    val isValid: Boolean
         get() = JphTaperedCapsuleShapeSettings_IsValid(taperedCapsuleShapeSettingsHandle)
 
-    open val isSphere: Boolean
+    val isSphere: Boolean
         get() = JphTaperedCapsuleShapeSettings_IsSphere(taperedCapsuleShapeSettingsHandle)
 
-    open var halfHeightOfTaperedCylinder: Float
+    var halfHeightOfTaperedCylinder: Float
         get() = JphTaperedCapsuleShapeSettings_GetHalfHeightOfTaperedCylinder(taperedCapsuleShapeSettingsHandle)
         set(value) = JphTaperedCapsuleShapeSettings_SetHalfHeightOfTaperedCylinder(taperedCapsuleShapeSettingsHandle, value)
 
-    open var topRadius: Float
+    var topRadius: Float
         get() = JphTaperedCapsuleShapeSettings_GetTopRadius(taperedCapsuleShapeSettingsHandle)
         set(value) = JphTaperedCapsuleShapeSettings_SetTopRadius(taperedCapsuleShapeSettingsHandle, value)
 
-    open var bottomRadius: Float
+    var bottomRadius: Float
         get() = JphTaperedCapsuleShapeSettings_GetBottomRadius(taperedCapsuleShapeSettingsHandle)
         set(value) = JphTaperedCapsuleShapeSettings_SetBottomRadius(taperedCapsuleShapeSettingsHandle, value)
 

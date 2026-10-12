@@ -73,7 +73,9 @@ internal class KotlinApiWriter(private val c: CApiWriter, private val config: Ap
             nested.joinToString("\n") { it.prependIndent("    ") },
             if (static.isEmpty()) "" else "    companion object {\n${static.joinToString("\n") { function(it, "        ") }}    }\n",
         ).filter { it.isNotEmpty() }.joinToString("\n")
-        return "/** C++ `${record.name}`. */\nopen class ${values.simpleName(cName)} internal constructor(internal val $handle: NativePointer, owned: Boolean = false)" +
+        // Open to the classes extending it, and to a Kotlin subclass when C++ calls its overrides; nothing calls another's.
+        val open = if (upcalls != null || cName in members.extended) "open " else ""
+        return "/** C++ `${record.name}`. */\n${open}class ${values.simpleName(cName)} internal constructor(internal val $handle: NativePointer, owned: Boolean = false)" +
             " : ${supertypes.joinToString()}" + if (body.isEmpty()) "\n" else " {\n$body}\n"
     }
 
@@ -102,8 +104,8 @@ internal class KotlinApiWriter(private val c: CApiWriter, private val config: Ap
     private fun function(m: Member, indent: String): String {
         val modifier = when {
             m.overrides || m.closes -> "override "
-            m.isStatic || indent.isEmpty() -> ""
-            else -> "open "
+            m.open -> "open "
+            else -> ""
         }
         fun body(text: String) = text.replace("\n", "\n$indent    ")
         if (m.isProperty) return "$indent$modifier${if (m.setter == null) "val" else "var"} ${m.name}: ${m.returns}\n$indent    get() = ${body(m.body)}\n" +

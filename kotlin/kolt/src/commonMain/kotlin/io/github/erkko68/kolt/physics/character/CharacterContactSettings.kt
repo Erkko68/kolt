@@ -33,17 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterContactSettings`. */
-open class CharacterContactSettings internal constructor(internal val characterContactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class CharacterContactSettings internal constructor(internal val characterContactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCharacterContactSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphCharacterContactSettings_destroy(characterContactSettingsHandle) }
 
-    open var canPushCharacter: Boolean
+    var canPushCharacter: Boolean
         get() = JphCharacterContactSettings_GetCanPushCharacter(characterContactSettingsHandle)
         set(value) = JphCharacterContactSettings_SetCanPushCharacter(characterContactSettingsHandle, value)
 
-    open var canReceiveImpulses: Boolean
+    var canReceiveImpulses: Boolean
         get() = JphCharacterContactSettings_GetCanReceiveImpulses(characterContactSettingsHandle)
         set(value) = JphCharacterContactSettings_SetCanReceiveImpulses(characterContactSettingsHandle, value)
 }

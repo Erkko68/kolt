@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterContact`. */
-open class CharacterContact internal constructor(internal val characterContactHandle: NativePointer, owned: Boolean = false) : CharacterContactKey(JphCharacterContact_asCharacterContactKey(characterContactHandle), owned), AutoCloseable {
+class CharacterContact internal constructor(internal val characterContactHandle: NativePointer, owned: Boolean = false) : CharacterContactKey(JphCharacterContact_asCharacterContactKey(characterContactHandle), owned), AutoCloseable {
     constructor() : this(JphCharacterContact_create(), owned = true)
 
     override fun close() =
@@ -45,7 +45,7 @@ open class CharacterContact internal constructor(internal val characterContactHa
     override fun restoreState(stream: StateRecorder) =
         JphCharacterContact_RestoreState(characterContactHandle, stream.stateRecorderHandle)
 
-    open var position: Vec3
+    var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -55,7 +55,7 @@ open class CharacterContact internal constructor(internal val characterContactHa
         }
         set(value) = interopScope { JphCharacterContact_SetPosition(characterContactHandle, toInterop(value.toArray())) }
 
-    open var linearVelocity: Vec3
+    var linearVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -65,7 +65,7 @@ open class CharacterContact internal constructor(internal val characterContactHa
         }
         set(value) = interopScope { JphCharacterContact_SetLinearVelocity(characterContactHandle, toInterop(value.toArray())) }
 
-    open var contactNormal: Vec3
+    var contactNormal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -75,7 +75,7 @@ open class CharacterContact internal constructor(internal val characterContactHa
         }
         set(value) = interopScope { JphCharacterContact_SetContactNormal(characterContactHandle, toInterop(value.toArray())) }
 
-    open var surfaceNormal: Vec3
+    var surfaceNormal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -85,27 +85,27 @@ open class CharacterContact internal constructor(internal val characterContactHa
         }
         set(value) = interopScope { JphCharacterContact_SetSurfaceNormal(characterContactHandle, toInterop(value.toArray())) }
 
-    open var distance: Float
+    var distance: Float
         get() = JphCharacterContact_GetDistance(characterContactHandle)
         set(value) = JphCharacterContact_SetDistance(characterContactHandle, value)
 
-    open var fraction: Float
+    var fraction: Float
         get() = JphCharacterContact_GetFraction(characterContactHandle)
         set(value) = JphCharacterContact_SetFraction(characterContactHandle, value)
 
-    open var motionTypeB: EMotionType
+    var motionTypeB: EMotionType
         get() = EMotionType.of(JphCharacterContact_GetMotionTypeB(characterContactHandle))
         set(value) = JphCharacterContact_SetMotionTypeB(characterContactHandle, value.value)
 
-    open var isSensorB: Boolean
+    var isSensorB: Boolean
         get() = JphCharacterContact_GetIsSensorB(characterContactHandle)
         set(value) = JphCharacterContact_SetIsSensorB(characterContactHandle, value)
 
-    open var characterB: CharacterVirtual?
+    var characterB: CharacterVirtual?
         get() = JphCharacterContact_GetCharacterB(characterContactHandle).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }
         set(value) = JphCharacterContact_SetCharacterB(characterContactHandle, value?.characterVirtualHandle ?: NullPointer)
 
-    open var userData: Long
+    var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)
@@ -115,23 +115,23 @@ open class CharacterContact internal constructor(internal val characterContactHa
         }
         set(value) = JphCharacterContact_SetUserData(characterContactHandle, value)
 
-    open var material: PhysicsMaterial?
+    var material: PhysicsMaterial?
         get() = JphCharacterContact_GetMaterial(characterContactHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(value) = JphCharacterContact_SetMaterial(characterContactHandle, value?.physicsMaterialHandle ?: NullPointer)
 
-    open var hadCollision: Boolean
+    var hadCollision: Boolean
         get() = JphCharacterContact_GetHadCollision(characterContactHandle)
         set(value) = JphCharacterContact_SetHadCollision(characterContactHandle, value)
 
-    open var wasDiscarded: Boolean
+    var wasDiscarded: Boolean
         get() = JphCharacterContact_GetWasDiscarded(characterContactHandle)
         set(value) = JphCharacterContact_SetWasDiscarded(characterContactHandle, value)
 
-    open var canPushCharacter: Boolean
+    var canPushCharacter: Boolean
         get() = JphCharacterContact_GetCanPushCharacter(characterContactHandle)
         set(value) = JphCharacterContact_SetCanPushCharacter(characterContactHandle, value)
 
-    open var isBackFacingContact: Boolean
+    var isBackFacingContact: Boolean
         get() = JphCharacterContact_GetIsBackFacingContact(characterContactHandle)
         set(value) = JphCharacterContact_SetIsBackFacingContact(characterContactHandle, value)
 }

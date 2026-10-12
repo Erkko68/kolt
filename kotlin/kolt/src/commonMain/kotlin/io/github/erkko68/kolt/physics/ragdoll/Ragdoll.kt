@@ -33,61 +33,61 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Ragdoll`. */
-open class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor(system: PhysicsSystem?) : this(JphRagdoll_create(system?.physicsSystemHandle ?: NullPointer), owned = true)
 
-    open fun addRef() =
+    fun addRef() =
         own { JphRagdoll_addRef(ragdollHandle) }
 
     override fun close() =
         closeOnce { JphRagdoll_release(ragdollHandle) }
 
-    open fun addToPhysicsSystem(activationMode: EActivation, lockBodies: Boolean) =
+    fun addToPhysicsSystem(activationMode: EActivation, lockBodies: Boolean) =
         JphRagdoll_AddToPhysicsSystem(ragdollHandle, activationMode.value, lockBodies)
 
-    open fun removeFromPhysicsSystem(lockBodies: Boolean) =
+    fun removeFromPhysicsSystem(lockBodies: Boolean) =
         JphRagdoll_RemoveFromPhysicsSystem(ragdollHandle, lockBodies)
 
-    open fun activate(lockBodies: Boolean) =
+    fun activate(lockBodies: Boolean) =
         JphRagdoll_Activate(ragdollHandle, lockBodies)
 
-    open fun isActive(lockBodies: Boolean): Boolean =
+    fun isActive(lockBodies: Boolean): Boolean =
         JphRagdoll_IsActive(ragdollHandle, lockBodies)
 
-    open fun setGroupID(groupID: Int, lockBodies: Boolean) =
+    fun setGroupID(groupID: Int, lockBodies: Boolean) =
         JphRagdoll_SetGroupID(ragdollHandle, groupID, lockBodies)
 
-    open fun setPose(pose: SkeletonPose, lockBodies: Boolean) =
+    fun setPose(pose: SkeletonPose, lockBodies: Boolean) =
         JphRagdoll_SetPose_SkeletonPose_bool(ragdollHandle, pose.skeletonPoseHandle, lockBodies)
 
-    open fun getPose(pose: SkeletonPose, lockBodies: Boolean) =
+    fun getPose(pose: SkeletonPose, lockBodies: Boolean) =
         JphRagdoll_GetPose_SkeletonPose_bool(ragdollHandle, pose.skeletonPoseHandle, lockBodies)
 
-    open fun resetWarmStart() =
+    fun resetWarmStart() =
         JphRagdoll_ResetWarmStart(ragdollHandle)
 
-    open fun driveToPoseUsingKinematics(pose: SkeletonPose, deltaTime: Float, lockBodies: Boolean) =
+    fun driveToPoseUsingKinematics(pose: SkeletonPose, deltaTime: Float, lockBodies: Boolean) =
         JphRagdoll_DriveToPoseUsingKinematics_SkeletonPose_float_bool(ragdollHandle, pose.skeletonPoseHandle, deltaTime, lockBodies)
 
-    open fun driveToPoseUsingMotors(pose: SkeletonPose) =
+    fun driveToPoseUsingMotors(pose: SkeletonPose) =
         JphRagdoll_DriveToPoseUsingMotors(ragdollHandle, pose.skeletonPoseHandle)
 
-    open fun driveToPoseUsingMotors(prevPose: SkeletonPose, pose: SkeletonPose, deltaTime: Float) =
+    fun driveToPoseUsingMotors(prevPose: SkeletonPose, pose: SkeletonPose, deltaTime: Float) =
         JphRagdoll_DriveToPoseUsingMotors_SkeletonPose_float(ragdollHandle, prevPose.skeletonPoseHandle, pose.skeletonPoseHandle, deltaTime)
 
-    open fun setLinearAndAngularVelocity(linearVelocity: Vec3, angularVelocity: Vec3, lockBodies: Boolean) =
+    fun setLinearAndAngularVelocity(linearVelocity: Vec3, angularVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphRagdoll_SetLinearAndAngularVelocity(ragdollHandle, toInterop(linearVelocity.toArray()), toInterop(angularVelocity.toArray()), lockBodies) }
 
-    open fun setLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
+    fun setLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphRagdoll_SetLinearVelocity(ragdollHandle, toInterop(linearVelocity.toArray()), lockBodies) }
 
-    open fun addLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
+    fun addLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphRagdoll_AddLinearVelocity(ragdollHandle, toInterop(linearVelocity.toArray()), lockBodies) }
 
-    open fun addImpulse(impulse: Vec3, lockBodies: Boolean) =
+    fun addImpulse(impulse: Vec3, lockBodies: Boolean) =
         interopScope { JphRagdoll_AddImpulse(ragdollHandle, toInterop(impulse.toArray()), lockBodies) }
 
-    open fun getRootTransform(lockBodies: Boolean): Pair<Vec3, Quat> =
+    fun getRootTransform(lockBodies: Boolean): Pair<Vec3, Quat> =
         interopScope {
             val positionArray = FloatArray(4)
             val positionPointer = toInterop(positionArray)
@@ -99,13 +99,13 @@ open class Ragdoll internal constructor(internal val ragdollHandle: NativePointe
             Pair(Vec3(positionArray), Quat(rotationArray))
         }
 
-    open val bodyCount: Int
+    val bodyCount: Int
         get() = JphRagdoll_GetBodyCount(ragdollHandle)
 
-    open fun getBodyID(bodyIndex: Int): BodyID =
+    fun getBodyID(bodyIndex: Int): BodyID =
         BodyID(JphRagdoll_GetBodyID(ragdollHandle, bodyIndex))
 
-    open val bodyIDs: List<BodyID>
+    val bodyIDs: List<BodyID>
         get() = interopScope {
             val count = JphRagdoll_GetBodyIDs(ragdollHandle, NullPointer, 0)
             val returned = IntArray(count)
@@ -115,19 +115,19 @@ open class Ragdoll internal constructor(internal val ragdollHandle: NativePointe
             returned.map { BodyID(it) }
         }
 
-    open val constraintCount: Int
+    val constraintCount: Int
         get() = JphRagdoll_GetConstraintCount(ragdollHandle)
 
-    open fun getConstraint(constraintIndex: Int): TwoBodyConstraint? =
+    fun getConstraint(constraintIndex: Int): TwoBodyConstraint? =
         JphRagdoll_GetConstraint(ragdollHandle, constraintIndex).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
 
-    open fun getWorldSpaceBounds(lockBodies: Boolean): AABox =
+    fun getWorldSpaceBounds(lockBodies: Boolean): AABox =
         run {
             val returned = AABox(JphAABox_create(), owned = true)
             JphRagdoll_GetWorldSpaceBounds(ragdollHandle, lockBodies, returned.aaBoxHandle)
             returned
         }
 
-    open val ragdollSettings: RagdollSettings?
+    val ragdollSettings: RagdollSettings?
         get() = JphRagdoll_GetRagdollSettings(ragdollHandle).takeIf { it != NullPointer }?.let { RagdollSettings(it) }
 }

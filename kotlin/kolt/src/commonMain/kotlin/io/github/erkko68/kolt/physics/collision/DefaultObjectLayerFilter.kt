@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DefaultObjectLayerFilter`. */
-open class DefaultObjectLayerFilter internal constructor(internal val defaultObjectLayerFilterHandle: NativePointer, owned: Boolean = false) : ObjectLayerFilter(JphDefaultObjectLayerFilter_asObjectLayerFilter(defaultObjectLayerFilterHandle), owned), AutoCloseable {
+class DefaultObjectLayerFilter internal constructor(internal val defaultObjectLayerFilterHandle: NativePointer, owned: Boolean = false) : ObjectLayerFilter(JphDefaultObjectLayerFilter_asObjectLayerFilter(defaultObjectLayerFilterHandle), owned), AutoCloseable {
     constructor(objectLayerPairFilter: ObjectLayerPairFilter, layer: Int) : this(JphDefaultObjectLayerFilter_create(objectLayerPairFilter.objectLayerPairFilterHandle, layer), owned = true)
 
     override fun close() =

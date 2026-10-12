@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DistanceConstraintSettings`. */
-open class DistanceConstraintSettings internal constructor(internal val distanceConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphDistanceConstraintSettings_asTwoBodyConstraintSettings(distanceConstraintSettingsHandle), owned), AutoCloseable {
+class DistanceConstraintSettings internal constructor(internal val distanceConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphDistanceConstraintSettings_asTwoBodyConstraintSettings(distanceConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphDistanceConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,11 +42,11 @@ open class DistanceConstraintSettings internal constructor(internal val distance
     override fun close() =
         closeOnce { JphDistanceConstraintSettings_release(distanceConstraintSettingsHandle) }
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphDistanceConstraintSettings_GetSpace(distanceConstraintSettingsHandle))
         set(value) = JphDistanceConstraintSettings_SetSpace(distanceConstraintSettingsHandle, value.value)
 
-    open var point1: Vec3
+    var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -56,7 +56,7 @@ open class DistanceConstraintSettings internal constructor(internal val distance
         }
         set(value) = interopScope { JphDistanceConstraintSettings_SetPoint1(distanceConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var point2: Vec3
+    var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -66,15 +66,15 @@ open class DistanceConstraintSettings internal constructor(internal val distance
         }
         set(value) = interopScope { JphDistanceConstraintSettings_SetPoint2(distanceConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var minDistance: Float
+    var minDistance: Float
         get() = JphDistanceConstraintSettings_GetMinDistance(distanceConstraintSettingsHandle)
         set(value) = JphDistanceConstraintSettings_SetMinDistance(distanceConstraintSettingsHandle, value)
 
-    open var maxDistance: Float
+    var maxDistance: Float
         get() = JphDistanceConstraintSettings_GetMaxDistance(distanceConstraintSettingsHandle)
         set(value) = JphDistanceConstraintSettings_SetMaxDistance(distanceConstraintSettingsHandle, value)
 
-    open var limitsSpringSettings: SpringSettings
+    var limitsSpringSettings: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
             JphDistanceConstraintSettings_GetLimitsSpringSettings(distanceConstraintSettingsHandle, returned.springSettingsHandle)

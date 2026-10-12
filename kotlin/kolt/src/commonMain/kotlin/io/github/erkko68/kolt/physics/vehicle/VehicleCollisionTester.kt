@@ -40,19 +40,19 @@ open class VehicleCollisionTester internal constructor(internal val vehicleColli
     override fun close() =
         closeOnce { JphVehicleCollisionTester_release(vehicleCollisionTesterHandle) }
 
-    open var objectLayer: Int
+    var objectLayer: Int
         get() = JphVehicleCollisionTester_GetObjectLayer(vehicleCollisionTesterHandle)
         set(objectLayer) = JphVehicleCollisionTester_SetObjectLayer(vehicleCollisionTesterHandle, objectLayer)
 
-    open var broadPhaseLayerFilter: BroadPhaseLayerFilter?
+    var broadPhaseLayerFilter: BroadPhaseLayerFilter?
         get() = JphVehicleCollisionTester_GetBroadPhaseLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { BroadPhaseLayerFilter(it) }
         set(filter) = JphVehicleCollisionTester_SetBroadPhaseLayerFilter(vehicleCollisionTesterHandle, filter?.broadPhaseLayerFilterHandle ?: NullPointer)
 
-    open var objectLayerFilter: ObjectLayerFilter?
+    var objectLayerFilter: ObjectLayerFilter?
         get() = JphVehicleCollisionTester_GetObjectLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { ObjectLayerFilter(it) }
         set(filter) = JphVehicleCollisionTester_SetObjectLayerFilter(vehicleCollisionTesterHandle, filter?.objectLayerFilterHandle ?: NullPointer)
 
-    open var bodyFilter: BodyFilter?
+    var bodyFilter: BodyFilter?
         get() = JphVehicleCollisionTester_GetBodyFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { BodyFilter(it) }
         set(filter) = JphVehicleCollisionTester_SetBodyFilter(vehicleCollisionTesterHandle, filter?.bodyFilterHandle ?: NullPointer)
 }

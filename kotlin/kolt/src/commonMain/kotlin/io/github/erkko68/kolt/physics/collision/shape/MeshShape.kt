@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MeshShape`. */
-open class MeshShape internal constructor(internal val meshShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphMeshShape_asShape(meshShapeHandle), owned), AutoCloseable {
+class MeshShape internal constructor(internal val meshShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphMeshShape_asShape(meshShapeHandle), owned), AutoCloseable {
     constructor() : this(JphMeshShape_create(), owned = true)
 
     override fun addRef() =
@@ -42,7 +42,7 @@ open class MeshShape internal constructor(internal val meshShapeHandle: NativePo
     override fun close() =
         closeOnce { JphMeshShape_release(meshShapeHandle) }
 
-    open val materialList: List<PhysicsMaterial>
+    val materialList: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphMeshShape_GetMaterialList(meshShapeHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
@@ -50,10 +50,10 @@ open class MeshShape internal constructor(internal val meshShapeHandle: NativePo
             readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
         }
 
-    open fun getMaterialIndex(subShapeID: SubShapeID): Int =
+    fun getMaterialIndex(subShapeID: SubShapeID): Int =
         JphMeshShape_GetMaterialIndex(meshShapeHandle, subShapeID.value)
 
-    open fun getTriangleUserData(subShapeID: SubShapeID): Int =
+    fun getTriangleUserData(subShapeID: SubShapeID): Int =
         JphMeshShape_GetTriangleUserData(meshShapeHandle, subShapeID.value)
 
     companion object {

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SphereShape`. */
-open class SphereShape internal constructor(internal val sphereShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphSphereShape_asConvexShape(sphereShapeHandle), owned), AutoCloseable {
+class SphereShape internal constructor(internal val sphereShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphSphereShape_asConvexShape(sphereShapeHandle), owned), AutoCloseable {
     constructor() : this(JphSphereShape_create(), owned = true)
     constructor(radius: Float, material: PhysicsMaterial?) : this(JphSphereShape_create_float_PhysicsMaterial(radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
@@ -43,7 +43,7 @@ open class SphereShape internal constructor(internal val sphereShapeHandle: Nati
     override fun close() =
         closeOnce { JphSphereShape_release(sphereShapeHandle) }
 
-    open val radius: Float
+    val radius: Float
         get() = JphSphereShape_GetRadius(sphereShapeHandle)
 
     companion object {

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::FixedConstraint`. */
-open class FixedConstraint internal constructor(internal val fixedConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphFixedConstraint_asTwoBodyConstraint(fixedConstraintHandle), owned), AutoCloseable {
+class FixedConstraint internal constructor(internal val fixedConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphFixedConstraint_asTwoBodyConstraint(fixedConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: FixedConstraintSettings) : this(JphFixedConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.fixedConstraintSettingsHandle), owned = true)
 
     override fun addRef() =
@@ -42,7 +42,7 @@ open class FixedConstraint internal constructor(internal val fixedConstraintHand
     override fun close() =
         closeOnce { JphFixedConstraint_release(fixedConstraintHandle) }
 
-    open val totalLambdaPosition: Vec3
+    val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -51,7 +51,7 @@ open class FixedConstraint internal constructor(internal val fixedConstraintHand
             Vec3(returned)
         }
 
-    open val totalLambdaRotation: Vec3
+    val totalLambdaRotation: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BroadPhase`. */
-open class BroadPhase internal constructor(internal val broadPhaseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+class BroadPhase internal constructor(internal val broadPhaseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
     /** C++ `JPH::BroadPhase::UpdateState`. */
-    open class UpdateState internal constructor(internal val broadPhaseUpdateStateHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    class UpdateState internal constructor(internal val broadPhaseUpdateStateHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
     }

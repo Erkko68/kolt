@@ -40,19 +40,19 @@ open class IndexedTriangleNoMaterial internal constructor(internal val indexedTr
     override fun close() =
         closeOnce { JphIndexedTriangleNoMaterial_destroy(indexedTriangleNoMaterialHandle) }
 
-    open fun isEquivalent(rhs: IndexedTriangleNoMaterial): Boolean =
+    fun isEquivalent(rhs: IndexedTriangleNoMaterial): Boolean =
         JphIndexedTriangleNoMaterial_IsEquivalent(indexedTriangleNoMaterialHandle, rhs.indexedTriangleNoMaterialHandle)
 
-    open fun isOpposite(rhs: IndexedTriangleNoMaterial): Boolean =
+    fun isOpposite(rhs: IndexedTriangleNoMaterial): Boolean =
         JphIndexedTriangleNoMaterial_IsOpposite(indexedTriangleNoMaterialHandle, rhs.indexedTriangleNoMaterialHandle)
 
-    open fun isDegenerate(vertices: List<Float3>): Boolean =
+    fun isDegenerate(vertices: List<Float3>): Boolean =
         interopScope { JphIndexedTriangleNoMaterial_IsDegenerate(indexedTriangleNoMaterialHandle, toInterop(FloatArray(vertices.size * 3).also { a -> vertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), vertices.size) }
 
-    open fun rotate() =
+    fun rotate() =
         JphIndexedTriangleNoMaterial_Rotate(indexedTriangleNoMaterialHandle)
 
-    open fun getCentroid(vertices: List<Float3>): Vec3 =
+    fun getCentroid(vertices: List<Float3>): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -70,7 +70,7 @@ open class IndexedTriangleNoMaterial internal constructor(internal val indexedTr
             returned[0]
         }
 
-    open var idx: IntArray
+    var idx: IntArray
         get() = interopScope {
             val count = JphIndexedTriangleNoMaterial_GetIdx(indexedTriangleNoMaterialHandle, NullPointer, 0)
             val returned = IntArray(count)

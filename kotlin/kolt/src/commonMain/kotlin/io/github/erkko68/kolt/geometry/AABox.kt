@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::AABox`. */
-open class AABox internal constructor(internal val aaBoxHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class AABox internal constructor(internal val aaBoxHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphAABox_create(), owned = true)
     constructor(min: Vec3, max: Vec3) : this(interopScope { JphAABox_create_Vec3Arg_Vec3Arg(toInterop(min.toArray()), toInterop(max.toArray())) }, owned = true)
     constructor(min: DVec3, max: DVec3) : this(interopScope { JphAABox_create_DVec3Arg_DVec3Arg(toInterop(min.toArray()), toInterop(max.toArray())) }, owned = true)
@@ -42,38 +42,38 @@ open class AABox internal constructor(internal val aaBoxHandle: NativePointer, o
     override fun close() =
         closeOnce { JphAABox_destroy(aaBoxHandle) }
 
-    open fun setEmpty() =
+    fun setEmpty() =
         JphAABox_SetEmpty(aaBoxHandle)
 
-    open val isValid: Boolean
+    val isValid: Boolean
         get() = JphAABox_IsValid(aaBoxHandle)
 
-    open fun encapsulate(pos: Vec3) =
+    fun encapsulate(pos: Vec3) =
         interopScope { JphAABox_Encapsulate_Vec3Arg(aaBoxHandle, toInterop(pos.toArray())) }
 
-    open fun encapsulate(rhs: AABox) =
+    fun encapsulate(rhs: AABox) =
         JphAABox_Encapsulate_AABox(aaBoxHandle, rhs.aaBoxHandle)
 
-    open fun encapsulate(rhs: Triangle) =
+    fun encapsulate(rhs: Triangle) =
         JphAABox_Encapsulate_Triangle(aaBoxHandle, rhs.triangleHandle)
 
-    open fun encapsulate(vertices: List<Float3>, triangle: IndexedTriangle) =
+    fun encapsulate(vertices: List<Float3>, triangle: IndexedTriangle) =
         interopScope { JphAABox_Encapsulate_VertexList_IndexedTriangle(aaBoxHandle, toInterop(FloatArray(vertices.size * 3).also { a -> vertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), vertices.size, triangle.indexedTriangleHandle) }
 
-    open fun intersect(other: AABox): AABox =
+    fun intersect(other: AABox): AABox =
         run {
             val returned = AABox(JphAABox_create(), owned = true)
             JphAABox_Intersect(aaBoxHandle, other.aaBoxHandle, returned.aaBoxHandle)
             returned
         }
 
-    open fun ensureMinimalEdgeLength(minEdgeLength: Float) =
+    fun ensureMinimalEdgeLength(minEdgeLength: Float) =
         JphAABox_EnsureMinimalEdgeLength(aaBoxHandle, minEdgeLength)
 
-    open fun expandBy(vector: Vec3) =
+    fun expandBy(vector: Vec3) =
         interopScope { JphAABox_ExpandBy(aaBoxHandle, toInterop(vector.toArray())) }
 
-    open val center: Vec3
+    val center: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -82,7 +82,7 @@ open class AABox internal constructor(internal val aaBoxHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open val extent: Vec3
+    val extent: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -91,7 +91,7 @@ open class AABox internal constructor(internal val aaBoxHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open val size: Vec3
+    val size: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -100,55 +100,55 @@ open class AABox internal constructor(internal val aaBoxHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open val surfaceArea: Float
+    val surfaceArea: Float
         get() = JphAABox_GetSurfaceArea(aaBoxHandle)
 
-    open val volume: Float
+    val volume: Float
         get() = JphAABox_GetVolume(aaBoxHandle)
 
-    open fun contains(other: AABox): Boolean =
+    fun contains(other: AABox): Boolean =
         JphAABox_Contains_AABox(aaBoxHandle, other.aaBoxHandle)
 
-    open fun contains(other: Vec3): Boolean =
+    fun contains(other: Vec3): Boolean =
         interopScope { JphAABox_Contains_Vec3Arg(aaBoxHandle, toInterop(other.toArray())) }
 
-    open fun contains(other: DVec3): Boolean =
+    fun contains(other: DVec3): Boolean =
         interopScope { JphAABox_Contains_DVec3Arg(aaBoxHandle, toInterop(other.toArray())) }
 
-    open fun overlaps(other: AABox): Boolean =
+    fun overlaps(other: AABox): Boolean =
         JphAABox_Overlaps_AABox(aaBoxHandle, other.aaBoxHandle)
 
-    open fun overlaps(plane: Plane): Boolean =
+    fun overlaps(plane: Plane): Boolean =
         JphAABox_Overlaps_Plane(aaBoxHandle, plane.planeHandle)
 
-    open fun translate(translation: Vec3) =
+    fun translate(translation: Vec3) =
         interopScope { JphAABox_Translate_Vec3Arg(aaBoxHandle, toInterop(translation.toArray())) }
 
-    open fun translate(translation: DVec3) =
+    fun translate(translation: DVec3) =
         interopScope { JphAABox_Translate_DVec3Arg(aaBoxHandle, toInterop(translation.toArray())) }
 
-    open fun transformed(matrix: Mat44): AABox =
+    fun transformed(matrix: Mat44): AABox =
         interopScope {
             val returned = AABox(JphAABox_create(), owned = true)
             JphAABox_Transformed_Mat44Arg(aaBoxHandle, toInterop(matrix.toArray()), returned.aaBoxHandle)
             returned
         }
 
-    open fun transformed(matrix: DMat44): AABox =
+    fun transformed(matrix: DMat44): AABox =
         run {
             val returned = AABox(JphAABox_create(), owned = true)
             JphAABox_Transformed_DMat44Arg(aaBoxHandle, matrix.dMat44Handle, returned.aaBoxHandle)
             returned
         }
 
-    open fun scaled(scale: Vec3): AABox =
+    fun scaled(scale: Vec3): AABox =
         interopScope {
             val returned = AABox(JphAABox_create(), owned = true)
             JphAABox_Scaled(aaBoxHandle, toInterop(scale.toArray()), returned.aaBoxHandle)
             returned
         }
 
-    open fun getSupport(direction: Vec3): Vec3 =
+    fun getSupport(direction: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -157,7 +157,7 @@ open class AABox internal constructor(internal val aaBoxHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open fun getClosestPoint(point: Vec3): Vec3 =
+    fun getClosestPoint(point: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -166,10 +166,10 @@ open class AABox internal constructor(internal val aaBoxHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open fun getSqDistanceTo(point: Vec3): Float =
+    fun getSqDistanceTo(point: Vec3): Float =
         interopScope { JphAABox_GetSqDistanceTo(aaBoxHandle, toInterop(point.toArray())) }
 
-    open var min: Vec3
+    var min: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -179,7 +179,7 @@ open class AABox internal constructor(internal val aaBoxHandle: NativePointer, o
         }
         set(value) = interopScope { JphAABox_SetMin(aaBoxHandle, toInterop(value.toArray())) }
 
-    open var max: Vec3
+    var max: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConeConstraintSettings`. */
-open class ConeConstraintSettings internal constructor(internal val coneConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphConeConstraintSettings_asTwoBodyConstraintSettings(coneConstraintSettingsHandle), owned), AutoCloseable {
+class ConeConstraintSettings internal constructor(internal val coneConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphConeConstraintSettings_asTwoBodyConstraintSettings(coneConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphConeConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,11 +42,11 @@ open class ConeConstraintSettings internal constructor(internal val coneConstrai
     override fun close() =
         closeOnce { JphConeConstraintSettings_release(coneConstraintSettingsHandle) }
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphConeConstraintSettings_GetSpace(coneConstraintSettingsHandle))
         set(value) = JphConeConstraintSettings_SetSpace(coneConstraintSettingsHandle, value.value)
 
-    open var point1: Vec3
+    var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -56,7 +56,7 @@ open class ConeConstraintSettings internal constructor(internal val coneConstrai
         }
         set(value) = interopScope { JphConeConstraintSettings_SetPoint1(coneConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var twistAxis1: Vec3
+    var twistAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -66,7 +66,7 @@ open class ConeConstraintSettings internal constructor(internal val coneConstrai
         }
         set(value) = interopScope { JphConeConstraintSettings_SetTwistAxis1(coneConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var point2: Vec3
+    var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -76,7 +76,7 @@ open class ConeConstraintSettings internal constructor(internal val coneConstrai
         }
         set(value) = interopScope { JphConeConstraintSettings_SetPoint2(coneConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var twistAxis2: Vec3
+    var twistAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -86,7 +86,7 @@ open class ConeConstraintSettings internal constructor(internal val coneConstrai
         }
         set(value) = interopScope { JphConeConstraintSettings_SetTwistAxis2(coneConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var halfConeAngle: Float
+    var halfConeAngle: Float
         get() = JphConeConstraintSettings_GetHalfConeAngle(coneConstraintSettingsHandle)
         set(value) = JphConeConstraintSettings_SetHalfConeAngle(coneConstraintSettingsHandle, value)
 

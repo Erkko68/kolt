@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConvexHullShapeSettings`. */
-open class ConvexHullShapeSettings internal constructor(internal val convexHullShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphConvexHullShapeSettings_asConvexShapeSettings(convexHullShapeSettingsHandle), owned), AutoCloseable {
+class ConvexHullShapeSettings internal constructor(internal val convexHullShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphConvexHullShapeSettings_asConvexShapeSettings(convexHullShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphConvexHullShapeSettings_create(), owned = true)
     constructor(points: List<Vec3>, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphConvexHullShapeSettings_create_Array_float_PhysicsMaterial(toInterop(FloatArray(points.size * 4).also { a -> points.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), points.size, convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
 
@@ -43,7 +43,7 @@ open class ConvexHullShapeSettings internal constructor(internal val convexHullS
     override fun close() =
         closeOnce { JphConvexHullShapeSettings_release(convexHullShapeSettingsHandle) }
 
-    open var points: List<Vec3>
+    var points: List<Vec3>
         get() = interopScope {
             val count = JphConvexHullShapeSettings_GetPoints(convexHullShapeSettingsHandle, NullPointer, 0)
             val returned = FloatArray(count * 4)
@@ -54,15 +54,15 @@ open class ConvexHullShapeSettings internal constructor(internal val convexHullS
         }
         set(value) = interopScope { JphConvexHullShapeSettings_SetPoints(convexHullShapeSettingsHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
 
-    open var maxConvexRadius: Float
+    var maxConvexRadius: Float
         get() = JphConvexHullShapeSettings_GetMaxConvexRadius(convexHullShapeSettingsHandle)
         set(value) = JphConvexHullShapeSettings_SetMaxConvexRadius(convexHullShapeSettingsHandle, value)
 
-    open var maxErrorConvexRadius: Float
+    var maxErrorConvexRadius: Float
         get() = JphConvexHullShapeSettings_GetMaxErrorConvexRadius(convexHullShapeSettingsHandle)
         set(value) = JphConvexHullShapeSettings_SetMaxErrorConvexRadius(convexHullShapeSettingsHandle, value)
 
-    open var hullTolerance: Float
+    var hullTolerance: Float
         get() = JphConvexHullShapeSettings_GetHullTolerance(convexHullShapeSettingsHandle)
         set(value) = JphConvexHullShapeSettings_SetHullTolerance(convexHullShapeSettingsHandle, value)
 

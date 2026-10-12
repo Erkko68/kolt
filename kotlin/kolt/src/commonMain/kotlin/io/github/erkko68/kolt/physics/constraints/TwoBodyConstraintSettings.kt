@@ -40,7 +40,7 @@ open class TwoBodyConstraintSettings internal constructor(internal val twoBodyCo
     override fun close() =
         closeOnce { JphTwoBodyConstraintSettings_release(twoBodyConstraintSettingsHandle) }
 
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
+    fun create(body1: Body, body2: Body): TwoBodyConstraint? =
         JphTwoBodyConstraintSettings_Create(twoBodyConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
 
     companion object {

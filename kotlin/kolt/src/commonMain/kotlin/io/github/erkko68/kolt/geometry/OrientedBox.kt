@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::OrientedBox`. */
-open class OrientedBox internal constructor(internal val orientedBoxHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class OrientedBox internal constructor(internal val orientedBoxHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphOrientedBox_create(), owned = true)
     constructor(orientation: Mat44, halfExtents: Vec3) : this(interopScope { JphOrientedBox_create_Mat44Arg_Vec3Arg(toInterop(orientation.toArray()), toInterop(halfExtents.toArray())) }, owned = true)
     constructor(orientation: Mat44, box: AABox) : this(interopScope { JphOrientedBox_create_Mat44Arg_AABox(toInterop(orientation.toArray()), box.aaBoxHandle) }, owned = true)
@@ -41,13 +41,13 @@ open class OrientedBox internal constructor(internal val orientedBoxHandle: Nati
     override fun close() =
         closeOnce { JphOrientedBox_destroy(orientedBoxHandle) }
 
-    open fun overlaps(box: AABox, epsilon: Float): Boolean =
+    fun overlaps(box: AABox, epsilon: Float): Boolean =
         JphOrientedBox_Overlaps_AABox_float(orientedBoxHandle, box.aaBoxHandle, epsilon)
 
-    open fun overlaps(box: OrientedBox, epsilon: Float): Boolean =
+    fun overlaps(box: OrientedBox, epsilon: Float): Boolean =
         JphOrientedBox_Overlaps_OrientedBox_float(orientedBoxHandle, box.orientedBoxHandle, epsilon)
 
-    open var orientation: Mat44
+    var orientation: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -57,7 +57,7 @@ open class OrientedBox internal constructor(internal val orientedBoxHandle: Nati
         }
         set(value) = interopScope { JphOrientedBox_SetOrientation(orientedBoxHandle, toInterop(value.toArray())) }
 
-    open var halfExtents: Vec3
+    var halfExtents: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

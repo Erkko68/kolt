@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ScaledShape`. */
-open class ScaledShape internal constructor(internal val scaledShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphScaledShape_asDecoratedShape(scaledShapeHandle), owned), AutoCloseable {
+class ScaledShape internal constructor(internal val scaledShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphScaledShape_asDecoratedShape(scaledShapeHandle), owned), AutoCloseable {
     constructor() : this(JphScaledShape_create(), owned = true)
     constructor(shape: Shape?, scale: Vec3) : this(interopScope { JphScaledShape_create_Shape_Vec3Arg(shape?.shapeHandle ?: NullPointer, toInterop(scale.toArray())) }, owned = true)
 
@@ -43,7 +43,7 @@ open class ScaledShape internal constructor(internal val scaledShapeHandle: Nati
     override fun close() =
         closeOnce { JphScaledShape_release(scaledShapeHandle) }
 
-    open val scale: Vec3
+    val scale: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

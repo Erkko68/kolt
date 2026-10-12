@@ -33,38 +33,38 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TrackedVehicleController`. */
-open class TrackedVehicleController internal constructor(internal val trackedVehicleControllerHandle: NativePointer, owned: Boolean = false) : VehicleController(JphTrackedVehicleController_asVehicleController(trackedVehicleControllerHandle), owned), AutoCloseable {
+class TrackedVehicleController internal constructor(internal val trackedVehicleControllerHandle: NativePointer, owned: Boolean = false) : VehicleController(JphTrackedVehicleController_asVehicleController(trackedVehicleControllerHandle), owned), AutoCloseable {
     constructor(settings: TrackedVehicleControllerSettings, constraint: VehicleConstraint) : this(JphTrackedVehicleController_create(settings.trackedVehicleControllerSettingsHandle, constraint.vehicleConstraintHandle), owned = true)
 
     override fun close() =
         closeOnce { JphTrackedVehicleController_destroy(trackedVehicleControllerHandle) }
 
-    open fun setDriverInput(forward: Float, leftRatio: Float, rightRatio: Float, brake: Float) =
+    fun setDriverInput(forward: Float, leftRatio: Float, rightRatio: Float, brake: Float) =
         JphTrackedVehicleController_SetDriverInput(trackedVehicleControllerHandle, forward, leftRatio, rightRatio, brake)
 
-    open var forwardInput: Float
+    var forwardInput: Float
         get() = JphTrackedVehicleController_GetForwardInput(trackedVehicleControllerHandle)
         set(forward) = JphTrackedVehicleController_SetForwardInput(trackedVehicleControllerHandle, forward)
 
-    open var leftRatio: Float
+    var leftRatio: Float
         get() = JphTrackedVehicleController_GetLeftRatio(trackedVehicleControllerHandle)
         set(leftRatio) = JphTrackedVehicleController_SetLeftRatio(trackedVehicleControllerHandle, leftRatio)
 
-    open var rightRatio: Float
+    var rightRatio: Float
         get() = JphTrackedVehicleController_GetRightRatio(trackedVehicleControllerHandle)
         set(rightRatio) = JphTrackedVehicleController_SetRightRatio(trackedVehicleControllerHandle, rightRatio)
 
-    open var brakeInput: Float
+    var brakeInput: Float
         get() = JphTrackedVehicleController_GetBrakeInput(trackedVehicleControllerHandle)
         set(brake) = JphTrackedVehicleController_SetBrakeInput(trackedVehicleControllerHandle, brake)
 
-    open val engine: VehicleEngine
+    val engine: VehicleEngine
         get() = VehicleEngine(JphTrackedVehicleController_GetEngine(trackedVehicleControllerHandle))
 
-    open val transmission: VehicleTransmission
+    val transmission: VehicleTransmission
         get() = VehicleTransmission(JphTrackedVehicleController_GetTransmission(trackedVehicleControllerHandle))
 
-    open val tracks: List<VehicleTrack>
+    val tracks: List<VehicleTrack>
         get() = interopScope {
             val count = JphTrackedVehicleController_GetTracks(trackedVehicleControllerHandle, NullPointer, 0)
             val returned = List(count) { VehicleTrack(JphVehicleTrack_create(), owned = true) }

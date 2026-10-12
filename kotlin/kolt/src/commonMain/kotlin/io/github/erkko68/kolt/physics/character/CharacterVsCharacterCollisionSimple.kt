@@ -42,13 +42,13 @@ open class CharacterVsCharacterCollisionSimple internal constructor(internal val
     override fun close() =
         closeOnce { JphCharacterVsCharacterCollisionSimple_destroy(characterVsCharacterCollisionSimpleHandle) }
 
-    open fun add(character: CharacterVirtual?) =
+    fun add(character: CharacterVirtual?) =
         JphCharacterVsCharacterCollisionSimple_Add(characterVsCharacterCollisionSimpleHandle, character?.characterVirtualHandle ?: NullPointer)
 
-    open fun remove(character: CharacterVirtual?) =
+    fun remove(character: CharacterVirtual?) =
         JphCharacterVsCharacterCollisionSimple_Remove(characterVsCharacterCollisionSimpleHandle, character?.characterVirtualHandle ?: NullPointer)
 
-    open var characters: List<CharacterVirtual>
+    var characters: List<CharacterVirtual>
         get() = interopScope {
             val count = JphCharacterVsCharacterCollisionSimple_GetCharacters(characterVsCharacterCollisionSimpleHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })

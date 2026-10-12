@@ -45,10 +45,10 @@ open class GroupFilter internal constructor(internal val groupFilterHandle: Nati
     override fun close() =
         closeOnce { JphGroupFilter_release(groupFilterHandle) }
 
-    open val rtti: RTTI?
+    val rtti: RTTI?
         get() = JphGroupFilter_GetRTTI(groupFilterHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
-    open fun castTo(rtti: RTTI?): NativePointer =
+    fun castTo(rtti: RTTI?): NativePointer =
         JphGroupFilter_CastTo(groupFilterHandle, rtti?.rttiHandle ?: NullPointer)
 
     open fun canCollide(group1: CollisionGroup, group2: CollisionGroup): Boolean =

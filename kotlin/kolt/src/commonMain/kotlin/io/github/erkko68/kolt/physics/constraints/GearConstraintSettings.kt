@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::GearConstraintSettings`. */
-open class GearConstraintSettings internal constructor(internal val gearConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphGearConstraintSettings_asTwoBodyConstraintSettings(gearConstraintSettingsHandle), owned), AutoCloseable {
+class GearConstraintSettings internal constructor(internal val gearConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphGearConstraintSettings_asTwoBodyConstraintSettings(gearConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphGearConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,14 +42,14 @@ open class GearConstraintSettings internal constructor(internal val gearConstrai
     override fun close() =
         closeOnce { JphGearConstraintSettings_release(gearConstraintSettingsHandle) }
 
-    open fun setRatio(numTeethGear1: Int, numTeethGear2: Int) =
+    fun setRatio(numTeethGear1: Int, numTeethGear2: Int) =
         JphGearConstraintSettings_SetRatio(gearConstraintSettingsHandle, numTeethGear1, numTeethGear2)
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphGearConstraintSettings_GetSpace(gearConstraintSettingsHandle))
         set(value) = JphGearConstraintSettings_SetSpace(gearConstraintSettingsHandle, value.value)
 
-    open var hingeAxis1: Vec3
+    var hingeAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -59,7 +59,7 @@ open class GearConstraintSettings internal constructor(internal val gearConstrai
         }
         set(value) = interopScope { JphGearConstraintSettings_SetHingeAxis1(gearConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var hingeAxis2: Vec3
+    var hingeAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -69,7 +69,7 @@ open class GearConstraintSettings internal constructor(internal val gearConstrai
         }
         set(value) = interopScope { JphGearConstraintSettings_SetHingeAxis2(gearConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open val ratio: Float
+    val ratio: Float
         get() = JphGearConstraintSettings_GetRatio(gearConstraintSettingsHandle)
 
     companion object {

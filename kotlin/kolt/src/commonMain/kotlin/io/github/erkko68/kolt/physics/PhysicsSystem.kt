@@ -33,32 +33,32 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PhysicsSystem`. */
-open class PhysicsSystem internal constructor(internal val physicsSystemHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class PhysicsSystem internal constructor(internal val physicsSystemHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphPhysicsSystem_create(), owned = true)
 
     override fun close() =
         closeOnce { JphPhysicsSystem_destroy(physicsSystemHandle) }
 
-    open fun init(maxBodies: Int, numBodyMutexes: Int, maxBodyPairs: Int, maxContactConstraints: Int, broadPhaseLayerInterface: BroadPhaseLayerInterface, objectVsBroadPhaseLayerFilter: ObjectVsBroadPhaseLayerFilter, objectLayerPairFilter: ObjectLayerPairFilter) =
+    fun init(maxBodies: Int, numBodyMutexes: Int, maxBodyPairs: Int, maxContactConstraints: Int, broadPhaseLayerInterface: BroadPhaseLayerInterface, objectVsBroadPhaseLayerFilter: ObjectVsBroadPhaseLayerFilter, objectLayerPairFilter: ObjectLayerPairFilter) =
         JphPhysicsSystem_Init(physicsSystemHandle, maxBodies, numBodyMutexes, maxBodyPairs, maxContactConstraints, broadPhaseLayerInterface.broadPhaseLayerInterfaceHandle, objectVsBroadPhaseLayerFilter.objectVsBroadPhaseLayerFilterHandle, objectLayerPairFilter.objectLayerPairFilterHandle)
 
-    open var bodyActivationListener: BodyActivationListener?
+    var bodyActivationListener: BodyActivationListener?
         get() = JphPhysicsSystem_GetBodyActivationListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { BodyActivationListener(it) }
         set(listener) = JphPhysicsSystem_SetBodyActivationListener(physicsSystemHandle, listener?.bodyActivationListenerHandle ?: NullPointer)
 
-    open var contactListener: ContactListener?
+    var contactListener: ContactListener?
         get() = JphPhysicsSystem_GetContactListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { ContactListener(it) }
         set(listener) = JphPhysicsSystem_SetContactListener(physicsSystemHandle, listener?.contactListenerHandle ?: NullPointer)
 
-    open var softBodyContactListener: SoftBodyContactListener?
+    var softBodyContactListener: SoftBodyContactListener?
         get() = JphPhysicsSystem_GetSoftBodyContactListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { SoftBodyContactListener(it) }
         set(listener) = JphPhysicsSystem_SetSoftBodyContactListener(physicsSystemHandle, listener?.softBodyContactListenerHandle ?: NullPointer)
 
-    open var simShapeFilter: SimShapeFilter?
+    var simShapeFilter: SimShapeFilter?
         get() = JphPhysicsSystem_GetSimShapeFilter(physicsSystemHandle).takeIf { it != NullPointer }?.let { SimShapeFilter(it) }
         set(shapeFilter) = JphPhysicsSystem_SetSimShapeFilter(physicsSystemHandle, shapeFilter?.simShapeFilterHandle ?: NullPointer)
 
-    open var physicsSettings: PhysicsSettings
+    var physicsSettings: PhysicsSettings
         get() = run {
             val returned = PhysicsSettings(JphPhysicsSettings_create(), owned = true)
             JphPhysicsSystem_GetPhysicsSettings(physicsSystemHandle, returned.physicsSettingsHandle)
@@ -66,34 +66,34 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
         }
         set(settings) = JphPhysicsSystem_SetPhysicsSettings(physicsSystemHandle, settings.physicsSettingsHandle)
 
-    open val bodyInterface: BodyInterface
+    val bodyInterface: BodyInterface
         get() = BodyInterface(JphPhysicsSystem_GetBodyInterface(physicsSystemHandle))
 
-    open val bodyInterfaceNoLock: BodyInterface
+    val bodyInterfaceNoLock: BodyInterface
         get() = BodyInterface(JphPhysicsSystem_GetBodyInterfaceNoLock(physicsSystemHandle))
 
-    open val broadPhaseQuery: BroadPhaseQuery
+    val broadPhaseQuery: BroadPhaseQuery
         get() = BroadPhaseQuery(JphPhysicsSystem_GetBroadPhaseQuery(physicsSystemHandle))
 
-    open val narrowPhaseQuery: NarrowPhaseQuery
+    val narrowPhaseQuery: NarrowPhaseQuery
         get() = NarrowPhaseQuery(JphPhysicsSystem_GetNarrowPhaseQuery(physicsSystemHandle))
 
-    open val narrowPhaseQueryNoLock: NarrowPhaseQuery
+    val narrowPhaseQueryNoLock: NarrowPhaseQuery
         get() = NarrowPhaseQuery(JphPhysicsSystem_GetNarrowPhaseQueryNoLock(physicsSystemHandle))
 
-    open fun addConstraint(constraint: Constraint?) =
+    fun addConstraint(constraint: Constraint?) =
         JphPhysicsSystem_AddConstraint(physicsSystemHandle, constraint?.constraintHandle ?: NullPointer)
 
-    open fun removeConstraint(constraint: Constraint?) =
+    fun removeConstraint(constraint: Constraint?) =
         JphPhysicsSystem_RemoveConstraint(physicsSystemHandle, constraint?.constraintHandle ?: NullPointer)
 
-    open fun addConstraints(constraints: List<Constraint>, number: Int) =
+    fun addConstraints(constraints: List<Constraint>, number: Int) =
         interopScope { JphPhysicsSystem_AddConstraints(physicsSystemHandle, toInterop(constraints.map { it.constraintHandle }), number) }
 
-    open fun removeConstraints(constraints: List<Constraint>, number: Int) =
+    fun removeConstraints(constraints: List<Constraint>, number: Int) =
         interopScope { JphPhysicsSystem_RemoveConstraints(physicsSystemHandle, toInterop(constraints.map { it.constraintHandle }), number) }
 
-    open val constraints: List<Constraint>
+    val constraints: List<Constraint>
         get() = interopScope {
             val count = JphPhysicsSystem_GetConstraints(physicsSystemHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
@@ -101,31 +101,31 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
             readPointers(returnedPointer, count).map { Constraint(it, owned = true) }
         }
 
-    open fun optimizeBroadPhase() =
+    fun optimizeBroadPhase() =
         JphPhysicsSystem_OptimizeBroadPhase(physicsSystemHandle)
 
-    open fun addStepListener(listener: PhysicsStepListener?) =
+    fun addStepListener(listener: PhysicsStepListener?) =
         JphPhysicsSystem_AddStepListener(physicsSystemHandle, listener?.physicsStepListenerHandle ?: NullPointer)
 
-    open fun removeStepListener(listener: PhysicsStepListener?) =
+    fun removeStepListener(listener: PhysicsStepListener?) =
         JphPhysicsSystem_RemoveStepListener(physicsSystemHandle, listener?.physicsStepListenerHandle ?: NullPointer)
 
-    open fun update(deltaTime: Float, collisionSteps: Int, tempAllocator: TempAllocator?, jobSystem: JobSystem?): EPhysicsUpdateError =
+    fun update(deltaTime: Float, collisionSteps: Int, tempAllocator: TempAllocator?, jobSystem: JobSystem?): EPhysicsUpdateError =
         EPhysicsUpdateError.of(JphPhysicsSystem_Update(physicsSystemHandle, deltaTime, collisionSteps, tempAllocator?.tempAllocatorHandle ?: NullPointer, jobSystem?.jobSystemHandle ?: NullPointer))
 
-    open fun saveState(stream: StateRecorder, state: EStateRecorderState, filter: StateRecorderFilter?) =
+    fun saveState(stream: StateRecorder, state: EStateRecorderState, filter: StateRecorderFilter?) =
         JphPhysicsSystem_SaveState(physicsSystemHandle, stream.stateRecorderHandle, state.value, filter?.stateRecorderFilterHandle ?: NullPointer)
 
-    open fun restoreState(stream: StateRecorder, filter: StateRecorderFilter?): Boolean =
+    fun restoreState(stream: StateRecorder, filter: StateRecorderFilter?): Boolean =
         JphPhysicsSystem_RestoreState(physicsSystemHandle, stream.stateRecorderHandle, filter?.stateRecorderFilterHandle ?: NullPointer)
 
-    open fun saveBodyState(body: Body, stream: StateRecorder) =
+    fun saveBodyState(body: Body, stream: StateRecorder) =
         JphPhysicsSystem_SaveBodyState(physicsSystemHandle, body.bodyHandle, stream.stateRecorderHandle)
 
-    open fun restoreBodyState(body: Body, stream: StateRecorder) =
+    fun restoreBodyState(body: Body, stream: StateRecorder) =
         JphPhysicsSystem_RestoreBodyState(physicsSystemHandle, body.bodyHandle, stream.stateRecorderHandle)
 
-    open var gravity: Vec3
+    var gravity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -135,31 +135,31 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
         }
         set(gravity) = interopScope { JphPhysicsSystem_SetGravity(physicsSystemHandle, toInterop(gravity.toArray())) }
 
-    open val bodyLockInterfaceNoLock: BodyLockInterfaceNoLock
+    val bodyLockInterfaceNoLock: BodyLockInterfaceNoLock
         get() = BodyLockInterfaceNoLock(JphPhysicsSystem_GetBodyLockInterfaceNoLock(physicsSystemHandle))
 
-    open val bodyLockInterface: BodyLockInterfaceLocking
+    val bodyLockInterface: BodyLockInterfaceLocking
         get() = BodyLockInterfaceLocking(JphPhysicsSystem_GetBodyLockInterface(physicsSystemHandle))
 
-    open val broadPhaseLayerInterface: BroadPhaseLayerInterface
+    val broadPhaseLayerInterface: BroadPhaseLayerInterface
         get() = BroadPhaseLayerInterface(JphPhysicsSystem_GetBroadPhaseLayerInterface(physicsSystemHandle))
 
-    open val objectVsBroadPhaseLayerFilter: ObjectVsBroadPhaseLayerFilter
+    val objectVsBroadPhaseLayerFilter: ObjectVsBroadPhaseLayerFilter
         get() = ObjectVsBroadPhaseLayerFilter(JphPhysicsSystem_GetObjectVsBroadPhaseLayerFilter(physicsSystemHandle))
 
-    open val objectLayerPairFilter: ObjectLayerPairFilter
+    val objectLayerPairFilter: ObjectLayerPairFilter
         get() = ObjectLayerPairFilter(JphPhysicsSystem_GetObjectLayerPairFilter(physicsSystemHandle))
 
-    open val numBodies: Int
+    val numBodies: Int
         get() = JphPhysicsSystem_GetNumBodies(physicsSystemHandle)
 
-    open fun getNumActiveBodies(type: EBodyType): Int =
+    fun getNumActiveBodies(type: EBodyType): Int =
         JphPhysicsSystem_GetNumActiveBodies(physicsSystemHandle, type.value)
 
-    open val maxBodies: Int
+    val maxBodies: Int
         get() = JphPhysicsSystem_GetMaxBodies(physicsSystemHandle)
 
-    open val bodies: List<BodyID>
+    val bodies: List<BodyID>
         get() = interopScope {
             val count = JphPhysicsSystem_GetBodies(physicsSystemHandle, NullPointer, 0)
             val returned = IntArray(count)
@@ -169,7 +169,7 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
             returned.map { BodyID(it) }
         }
 
-    open fun getActiveBodies(type: EBodyType): List<BodyID> =
+    fun getActiveBodies(type: EBodyType): List<BodyID> =
         interopScope {
             val count = JphPhysicsSystem_GetActiveBodies(physicsSystemHandle, type.value, NullPointer, 0)
             val returned = IntArray(count)
@@ -179,10 +179,10 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
             returned.map { BodyID(it) }
         }
 
-    open fun wereBodiesInContact(body1ID: BodyID, body2ID: BodyID): Boolean =
+    fun wereBodiesInContact(body1ID: BodyID, body2ID: BodyID): Boolean =
         JphPhysicsSystem_WereBodiesInContact(physicsSystemHandle, body1ID.value, body2ID.value)
 
-    open val bounds: AABox
+    val bounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
             JphPhysicsSystem_GetBounds(physicsSystemHandle, returned.aaBoxHandle)

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PulleyConstraint`. */
-open class PulleyConstraint internal constructor(internal val pulleyConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphPulleyConstraint_asTwoBodyConstraint(pulleyConstraintHandle), owned), AutoCloseable {
+class PulleyConstraint internal constructor(internal val pulleyConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphPulleyConstraint_asTwoBodyConstraint(pulleyConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: PulleyConstraintSettings) : this(JphPulleyConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.pulleyConstraintSettingsHandle), owned = true)
 
     override fun addRef() =
@@ -42,18 +42,18 @@ open class PulleyConstraint internal constructor(internal val pulleyConstraintHa
     override fun close() =
         closeOnce { JphPulleyConstraint_release(pulleyConstraintHandle) }
 
-    open fun setLength(minLength: Float, maxLength: Float) =
+    fun setLength(minLength: Float, maxLength: Float) =
         JphPulleyConstraint_SetLength(pulleyConstraintHandle, minLength, maxLength)
 
-    open val minLength: Float
+    val minLength: Float
         get() = JphPulleyConstraint_GetMinLength(pulleyConstraintHandle)
 
-    open val maxLength: Float
+    val maxLength: Float
         get() = JphPulleyConstraint_GetMaxLength(pulleyConstraintHandle)
 
-    open val currentLength: Float
+    val currentLength: Float
         get() = JphPulleyConstraint_GetCurrentLength(pulleyConstraintHandle)
 
-    open val totalLambdaPosition: Float
+    val totalLambdaPosition: Float
         get() = JphPulleyConstraint_GetTotalLambdaPosition(pulleyConstraintHandle)
 }

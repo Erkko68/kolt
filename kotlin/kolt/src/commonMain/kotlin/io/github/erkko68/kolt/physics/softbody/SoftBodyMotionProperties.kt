@@ -33,19 +33,19 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodyMotionProperties`. */
-open class SoftBodyMotionProperties internal constructor(internal val softBodyMotionPropertiesHandle: NativePointer, owned: Boolean = false) : MotionProperties(JphSoftBodyMotionProperties_asMotionProperties(softBodyMotionPropertiesHandle), owned), AutoCloseable {
+class SoftBodyMotionProperties internal constructor(internal val softBodyMotionPropertiesHandle: NativePointer, owned: Boolean = false) : MotionProperties(JphSoftBodyMotionProperties_asMotionProperties(softBodyMotionPropertiesHandle), owned), AutoCloseable {
     constructor() : this(JphSoftBodyMotionProperties_create(), owned = true)
 
     override fun close() =
         closeOnce { JphSoftBodyMotionProperties_destroy(softBodyMotionPropertiesHandle) }
 
-    open fun initialize(settings: SoftBodyCreationSettings) =
+    fun initialize(settings: SoftBodyCreationSettings) =
         JphSoftBodyMotionProperties_Initialize(softBodyMotionPropertiesHandle, settings.softBodyCreationSettingsHandle)
 
-    open val settings: SoftBodySharedSettings?
+    val settings: SoftBodySharedSettings?
         get() = JphSoftBodyMotionProperties_GetSettings(softBodyMotionPropertiesHandle).takeIf { it != NullPointer }?.let { SoftBodySharedSettings(it) }
 
-    open val vertices: List<SoftBodyVertex>
+    val vertices: List<SoftBodyVertex>
         get() = interopScope {
             val count = JphSoftBodyMotionProperties_GetVertices(softBodyMotionPropertiesHandle, NullPointer, 0)
             val returned = List(count) { SoftBodyVertex(JphSoftBodyVertex_create(), owned = true) }
@@ -53,10 +53,10 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
             returned
         }
 
-    open fun getVertex(index: Int): SoftBodyVertex =
+    fun getVertex(index: Int): SoftBodyVertex =
         SoftBodyVertex(JphSoftBodyMotionProperties_GetVertex(softBodyMotionPropertiesHandle, index))
 
-    open fun getRodRotation(index: Int): Quat =
+    fun getRodRotation(index: Int): Quat =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -65,7 +65,7 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
             Quat(returned)
         }
 
-    open fun getRodAngularVelocity(index: Int): Vec3 =
+    fun getRodAngularVelocity(index: Int): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -74,7 +74,7 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
             Vec3(returned)
         }
 
-    open val materials: List<PhysicsMaterial>
+    val materials: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphSoftBodyMotionProperties_GetMaterials(softBodyMotionPropertiesHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
@@ -82,7 +82,7 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
             readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
         }
 
-    open val faces: List<SoftBodySharedSettings.Face>
+    val faces: List<SoftBodySharedSettings.Face>
         get() = interopScope {
             val count = JphSoftBodyMotionProperties_GetFaces(softBodyMotionPropertiesHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.Face(JphSoftBodySharedSettingsFace_create(), owned = true) }
@@ -90,52 +90,52 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
             returned
         }
 
-    open fun getFace(index: Int): SoftBodySharedSettings.Face =
+    fun getFace(index: Int): SoftBodySharedSettings.Face =
         run {
             val returned = SoftBodySharedSettings.Face(JphSoftBodySharedSettingsFace_create(), owned = true)
             JphSoftBodyMotionProperties_GetFace(softBodyMotionPropertiesHandle, index, returned.softBodySharedSettingsFaceHandle)
             returned
         }
 
-    open var numIterations: Int
+    var numIterations: Int
         get() = JphSoftBodyMotionProperties_GetNumIterations(softBodyMotionPropertiesHandle)
         set(numIterations) = JphSoftBodyMotionProperties_SetNumIterations(softBodyMotionPropertiesHandle, numIterations)
 
-    open var pressure: Float
+    var pressure: Float
         get() = JphSoftBodyMotionProperties_GetPressure(softBodyMotionPropertiesHandle)
         set(pressure) = JphSoftBodyMotionProperties_SetPressure(softBodyMotionPropertiesHandle, pressure)
 
-    open var updatePosition: Boolean
+    var updatePosition: Boolean
         get() = JphSoftBodyMotionProperties_GetUpdatePosition(softBodyMotionPropertiesHandle)
         set(updatePosition) = JphSoftBodyMotionProperties_SetUpdatePosition(softBodyMotionPropertiesHandle, updatePosition)
 
-    open var facesDoubleSided: Boolean
+    var facesDoubleSided: Boolean
         get() = JphSoftBodyMotionProperties_GetFacesDoubleSided(softBodyMotionPropertiesHandle)
         set(doubleSided) = JphSoftBodyMotionProperties_SetFacesDoubleSided(softBodyMotionPropertiesHandle, doubleSided)
 
-    open var enableSkinConstraints: Boolean
+    var enableSkinConstraints: Boolean
         get() = JphSoftBodyMotionProperties_GetEnableSkinConstraints(softBodyMotionPropertiesHandle)
         set(enableSkinConstraints) = JphSoftBodyMotionProperties_SetEnableSkinConstraints(softBodyMotionPropertiesHandle, enableSkinConstraints)
 
-    open var skinnedMaxDistanceMultiplier: Float
+    var skinnedMaxDistanceMultiplier: Float
         get() = JphSoftBodyMotionProperties_GetSkinnedMaxDistanceMultiplier(softBodyMotionPropertiesHandle)
         set(skinnedMaxDistanceMultiplier) = JphSoftBodyMotionProperties_SetSkinnedMaxDistanceMultiplier(softBodyMotionPropertiesHandle, skinnedMaxDistanceMultiplier)
 
-    open var vertexRadius: Float
+    var vertexRadius: Float
         get() = JphSoftBodyMotionProperties_GetVertexRadius(softBodyMotionPropertiesHandle)
         set(vertexRadius) = JphSoftBodyMotionProperties_SetVertexRadius(softBodyMotionPropertiesHandle, vertexRadius)
 
-    open val localBounds: AABox
+    val localBounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
             JphSoftBodyMotionProperties_GetLocalBounds(softBodyMotionPropertiesHandle, returned.aaBoxHandle)
             returned
         }
 
-    open val volume: Float
+    val volume: Float
         get() = JphSoftBodyMotionProperties_GetVolume(softBodyMotionPropertiesHandle)
 
-    open fun calculateMassAndInertia() =
+    fun calculateMassAndInertia() =
         JphSoftBodyMotionProperties_CalculateMassAndInertia(softBodyMotionPropertiesHandle)
 
     override fun saveState(stream: StateRecorder) =
@@ -144,22 +144,22 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
     override fun restoreState(stream: StateRecorder) =
         JphSoftBodyMotionProperties_RestoreState(softBodyMotionPropertiesHandle, stream.stateRecorderHandle)
 
-    open fun customUpdate(deltaTime: Float, softBody: Body, system: PhysicsSystem) =
+    fun customUpdate(deltaTime: Float, softBody: Body, system: PhysicsSystem) =
         JphSoftBodyMotionProperties_CustomUpdate(softBodyMotionPropertiesHandle, deltaTime, softBody.bodyHandle, system.physicsSystemHandle)
 
-    open fun initializeUpdateContext(deltaTime: Float, softBody: Body, system: PhysicsSystem, context: SoftBodyUpdateContext) =
+    fun initializeUpdateContext(deltaTime: Float, softBody: Body, system: PhysicsSystem, context: SoftBodyUpdateContext) =
         JphSoftBodyMotionProperties_InitializeUpdateContext(softBodyMotionPropertiesHandle, deltaTime, softBody.bodyHandle, system.physicsSystemHandle, context.softBodyUpdateContextHandle)
 
-    open fun determineCollidingShapes(context: SoftBodyUpdateContext, system: PhysicsSystem, bodyLockInterface: BodyLockInterface) =
+    fun determineCollidingShapes(context: SoftBodyUpdateContext, system: PhysicsSystem, bodyLockInterface: BodyLockInterface) =
         JphSoftBodyMotionProperties_DetermineCollidingShapes(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, system.physicsSystemHandle, bodyLockInterface.bodyLockInterfaceHandle)
 
-    open fun parallelUpdate(context: SoftBodyUpdateContext, physicsSettings: PhysicsSettings): SoftBodyMotionProperties.EStatus =
+    fun parallelUpdate(context: SoftBodyUpdateContext, physicsSettings: PhysicsSettings): SoftBodyMotionProperties.EStatus =
         SoftBodyMotionProperties.EStatus.of(JphSoftBodyMotionProperties_ParallelUpdate(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, physicsSettings.physicsSettingsHandle))
 
-    open fun updateRigidBodyVelocities(context: SoftBodyUpdateContext, bodyInterface: BodyInterface) =
+    fun updateRigidBodyVelocities(context: SoftBodyUpdateContext, bodyInterface: BodyInterface) =
         JphSoftBodyMotionProperties_UpdateRigidBodyVelocities(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, bodyInterface.bodyInterfaceHandle)
 
-    open fun requestContactCallback() =
+    fun requestContactCallback() =
         JphSoftBodyMotionProperties_RequestContactCallback(softBodyMotionPropertiesHandle)
 
     /** C++ `JPH::SoftBodyMotionProperties::EStatus`. */

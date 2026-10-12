@@ -41,10 +41,10 @@ open class CharacterContactKey internal constructor(internal val characterContac
     override fun close() =
         closeOnce { JphCharacterContactKey_destroy(characterContactKeyHandle) }
 
-    open fun isSameBody(other: CharacterContactKey): Boolean =
+    fun isSameBody(other: CharacterContactKey): Boolean =
         JphCharacterContactKey_IsSameBody(characterContactKeyHandle, other.characterContactKeyHandle)
 
-    open val hash: Long
+    val hash: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)
@@ -59,11 +59,11 @@ open class CharacterContactKey internal constructor(internal val characterContac
     open fun restoreState(stream: StateRecorder) =
         JphCharacterContactKey_RestoreState(characterContactKeyHandle, stream.stateRecorderHandle)
 
-    open var bodyB: BodyID
+    var bodyB: BodyID
         get() = BodyID(JphCharacterContactKey_GetBodyB(characterContactKeyHandle))
         set(value) = JphCharacterContactKey_SetBodyB(characterContactKeyHandle, value.value)
 
-    open var characterIDB: CharacterID
+    var characterIDB: CharacterID
         get() = run {
             val returned = CharacterID(JphCharacterID_create(), owned = true)
             JphCharacterContactKey_GetCharacterIDB(characterContactKeyHandle, returned.characterIDHandle)
@@ -71,7 +71,7 @@ open class CharacterContactKey internal constructor(internal val characterContac
         }
         set(value) = JphCharacterContactKey_SetCharacterIDB(characterContactKeyHandle, value.characterIDHandle)
 
-    open var subShapeIDB: SubShapeID
+    var subShapeIDB: SubShapeID
         get() = SubShapeID(JphCharacterContactKey_GetSubShapeIDB(characterContactKeyHandle))
         set(value) = JphCharacterContactKey_SetSubShapeIDB(characterContactKeyHandle, value.value)
 }

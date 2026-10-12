@@ -33,12 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BroadPhaseLayerInterfaceTable`. */
-open class BroadPhaseLayerInterfaceTable internal constructor(internal val broadPhaseLayerInterfaceTableHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceTableHandle), owned), AutoCloseable {
+class BroadPhaseLayerInterfaceTable internal constructor(internal val broadPhaseLayerInterfaceTableHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceTableHandle), owned), AutoCloseable {
     constructor(numObjectLayers: Int, numBroadPhaseLayers: Int) : this(JphBroadPhaseLayerInterfaceTable_create(numObjectLayers, numBroadPhaseLayers), owned = true)
 
     override fun close() =
         closeOnce { JphBroadPhaseLayerInterfaceTable_destroy(broadPhaseLayerInterfaceTableHandle) }
 
-    open fun mapObjectToBroadPhaseLayer(objectLayer: Int, broadPhaseLayer: BroadPhaseLayer) =
+    fun mapObjectToBroadPhaseLayer(objectLayer: Int, broadPhaseLayer: BroadPhaseLayer) =
         JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer(broadPhaseLayerInterfaceTableHandle, objectLayer, broadPhaseLayer.value)
 }

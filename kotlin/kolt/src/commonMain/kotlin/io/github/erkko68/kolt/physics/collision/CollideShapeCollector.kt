@@ -51,7 +51,7 @@ open class CollideShapeCollector internal constructor(internal val collideShapeC
     open fun onBodyEnd() =
         JphCollideShapeCollector_OnBodyEnd(collideShapeCollectorHandle)
 
-    open var context: TransformedShape?
+    var context: TransformedShape?
         get() = JphCollideShapeCollector_GetContext(collideShapeCollectorHandle).takeIf { it != NullPointer }?.let { TransformedShape(it) }
         set(context) = JphCollideShapeCollector_SetContext(collideShapeCollectorHandle, context?.transformedShapeHandle ?: NullPointer)
 
@@ -61,22 +61,22 @@ open class CollideShapeCollector internal constructor(internal val collideShapeC
     open fun addHit(result: CollideShapeResult) =
         JphCollideShapeCollector_AddHit(collideShapeCollectorHandle, result.collideShapeResultHandle)
 
-    open fun updateEarlyOutFraction(fraction: Float) =
+    fun updateEarlyOutFraction(fraction: Float) =
         JphCollideShapeCollector_UpdateEarlyOutFraction(collideShapeCollectorHandle, fraction)
 
-    open fun resetEarlyOutFraction(fraction: Float) =
+    fun resetEarlyOutFraction(fraction: Float) =
         JphCollideShapeCollector_ResetEarlyOutFraction(collideShapeCollectorHandle, fraction)
 
-    open fun forceEarlyOut() =
+    fun forceEarlyOut() =
         JphCollideShapeCollector_ForceEarlyOut(collideShapeCollectorHandle)
 
-    open fun shouldEarlyOut(): Boolean =
+    fun shouldEarlyOut(): Boolean =
         JphCollideShapeCollector_ShouldEarlyOut(collideShapeCollectorHandle)
 
-    open val earlyOutFraction: Float
+    val earlyOutFraction: Float
         get() = JphCollideShapeCollector_GetEarlyOutFraction(collideShapeCollectorHandle)
 
-    open val positiveEarlyOutFraction: Float
+    val positiveEarlyOutFraction: Float
         get() = JphCollideShapeCollector_GetPositiveEarlyOutFraction(collideShapeCollectorHandle)
 
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {

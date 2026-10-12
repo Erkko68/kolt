@@ -33,13 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MassProperties`. */
-open class MassProperties internal constructor(internal val massPropertiesHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class MassProperties internal constructor(internal val massPropertiesHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphMassProperties_create(), owned = true)
 
     override fun close() =
         closeOnce { JphMassProperties_destroy(massPropertiesHandle) }
 
-    open fun decomposePrincipalMomentsOfInertia(): Triple<Boolean, Mat44, Vec3> =
+    fun decomposePrincipalMomentsOfInertia(): Triple<Boolean, Mat44, Vec3> =
         interopScope {
             val rotationArray = FloatArray(16)
             val rotationPointer = toInterop(rotationArray)
@@ -51,32 +51,32 @@ open class MassProperties internal constructor(internal val massPropertiesHandle
             Triple(nativeResult, Mat44(rotationArray), Vec3(diagonalArray))
         }
 
-    open fun setMassAndInertiaOfSolidBox(boxSize: Vec3, density: Float) =
+    fun setMassAndInertiaOfSolidBox(boxSize: Vec3, density: Float) =
         interopScope { JphMassProperties_SetMassAndInertiaOfSolidBox(massPropertiesHandle, toInterop(boxSize.toArray()), density) }
 
-    open fun scaleToMass(mass: Float) =
+    fun scaleToMass(mass: Float) =
         JphMassProperties_ScaleToMass(massPropertiesHandle, mass)
 
-    open fun rotate(rotation: Mat44) =
+    fun rotate(rotation: Mat44) =
         interopScope { JphMassProperties_Rotate(massPropertiesHandle, toInterop(rotation.toArray())) }
 
-    open fun translate(translation: Vec3) =
+    fun translate(translation: Vec3) =
         interopScope { JphMassProperties_Translate(massPropertiesHandle, toInterop(translation.toArray())) }
 
-    open fun scale(scale: Vec3) =
+    fun scale(scale: Vec3) =
         interopScope { JphMassProperties_Scale(massPropertiesHandle, toInterop(scale.toArray())) }
 
-    open fun saveBinaryState(stream: StreamOut) =
+    fun saveBinaryState(stream: StreamOut) =
         JphMassProperties_SaveBinaryState(massPropertiesHandle, stream.streamOutHandle)
 
-    open fun restoreBinaryState(stream: StreamIn) =
+    fun restoreBinaryState(stream: StreamIn) =
         JphMassProperties_RestoreBinaryState(massPropertiesHandle, stream.streamInHandle)
 
-    open var mass: Float
+    var mass: Float
         get() = JphMassProperties_GetMass(massPropertiesHandle)
         set(value) = JphMassProperties_SetMass(massPropertiesHandle, value)
 
-    open var inertia: Mat44
+    var inertia: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)

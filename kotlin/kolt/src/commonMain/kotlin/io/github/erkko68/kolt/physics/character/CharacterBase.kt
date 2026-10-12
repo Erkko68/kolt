@@ -42,13 +42,13 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
     override fun close() =
         closeOnce { JphCharacterBase_release(characterBaseHandle) }
 
-    open fun setMaxSlopeAngle(maxSlopeAngle: Float) =
+    fun setMaxSlopeAngle(maxSlopeAngle: Float) =
         JphCharacterBase_SetMaxSlopeAngle(characterBaseHandle, maxSlopeAngle)
 
-    open val cosMaxSlopeAngle: Float
+    val cosMaxSlopeAngle: Float
         get() = JphCharacterBase_GetCosMaxSlopeAngle(characterBaseHandle)
 
-    open var up: Vec3
+    var up: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -58,7 +58,7 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
         }
         set(up) = interopScope { JphCharacterBase_SetUp(characterBaseHandle, toInterop(up.toArray())) }
 
-    open var supportingVolume: Plane
+    var supportingVolume: Plane
         get() = run {
             val returned = Plane(JphPlane_create(), owned = true)
             JphCharacterBase_GetSupportingVolume(characterBaseHandle, returned.planeHandle)
@@ -66,19 +66,19 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
         }
         set(plane) = JphCharacterBase_SetSupportingVolume(characterBaseHandle, plane.planeHandle)
 
-    open fun isSlopeTooSteep(normal: Vec3): Boolean =
+    fun isSlopeTooSteep(normal: Vec3): Boolean =
         interopScope { JphCharacterBase_IsSlopeTooSteep(characterBaseHandle, toInterop(normal.toArray())) }
 
-    open val shape: Shape?
+    val shape: Shape?
         get() = JphCharacterBase_GetShape(characterBaseHandle).takeIf { it != NullPointer }?.let { Shape(it) }
 
-    open val groundState: CharacterBase.EGroundState
+    val groundState: CharacterBase.EGroundState
         get() = CharacterBase.EGroundState.of(JphCharacterBase_GetGroundState(characterBaseHandle))
 
-    open val isSupported: Boolean
+    val isSupported: Boolean
         get() = JphCharacterBase_IsSupported(characterBaseHandle)
 
-    open val groundPosition: Vec3
+    val groundPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -87,7 +87,7 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
             Vec3(returned)
         }
 
-    open val groundNormal: Vec3
+    val groundNormal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -96,7 +96,7 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
             Vec3(returned)
         }
 
-    open val groundVelocity: Vec3
+    val groundVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -105,16 +105,16 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
             Vec3(returned)
         }
 
-    open val groundMaterial: PhysicsMaterial?
+    val groundMaterial: PhysicsMaterial?
         get() = JphCharacterBase_GetGroundMaterial(characterBaseHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
-    open val groundBodyID: BodyID
+    val groundBodyID: BodyID
         get() = BodyID(JphCharacterBase_GetGroundBodyID(characterBaseHandle))
 
-    open val groundSubShapeID: SubShapeID
+    val groundSubShapeID: SubShapeID
         get() = SubShapeID(JphCharacterBase_GetGroundSubShapeID(characterBaseHandle))
 
-    open val groundUserData: Long
+    val groundUserData: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)
@@ -123,10 +123,10 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
             returned[0]
         }
 
-    open fun saveState(stream: StateRecorder) =
+    fun saveState(stream: StateRecorder) =
         JphCharacterBase_SaveState(characterBaseHandle, stream.stateRecorderHandle)
 
-    open fun restoreState(stream: StateRecorder) =
+    fun restoreState(stream: StateRecorder) =
         JphCharacterBase_RestoreState(characterBaseHandle, stream.stateRecorderHandle)
 
     /** C++ `JPH::CharacterBase::EGroundState`. */

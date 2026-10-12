@@ -33,55 +33,55 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodySharedSettings`. */
-open class SoftBodySharedSettings internal constructor(internal val softBodySharedSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class SoftBodySharedSettings internal constructor(internal val softBodySharedSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphSoftBodySharedSettings_create(), owned = true)
 
-    open fun addRef() =
+    fun addRef() =
         own { JphSoftBodySharedSettings_addRef(softBodySharedSettingsHandle) }
 
     override fun close() =
         closeOnce { JphSoftBodySharedSettings_release(softBodySharedSettingsHandle) }
 
-    open fun createConstraints(vertexAttributes: SoftBodySharedSettings.VertexAttributes?, vertexAttributesLength: Int, bendType: SoftBodySharedSettings.EBendType, angleTolerance: Float) =
+    fun createConstraints(vertexAttributes: SoftBodySharedSettings.VertexAttributes?, vertexAttributesLength: Int, bendType: SoftBodySharedSettings.EBendType, angleTolerance: Float) =
         JphSoftBodySharedSettings_CreateConstraints(softBodySharedSettingsHandle, vertexAttributes?.softBodySharedSettingsVertexAttributesHandle ?: NullPointer, vertexAttributesLength, bendType.value, angleTolerance)
 
-    open fun calculateEdgeLengths() =
+    fun calculateEdgeLengths() =
         JphSoftBodySharedSettings_CalculateEdgeLengths(softBodySharedSettingsHandle)
 
-    open fun calculateRodProperties() =
+    fun calculateRodProperties() =
         JphSoftBodySharedSettings_CalculateRodProperties(softBodySharedSettingsHandle)
 
-    open fun calculateLRALengths(maxDistanceMultiplier: Float) =
+    fun calculateLRALengths(maxDistanceMultiplier: Float) =
         JphSoftBodySharedSettings_CalculateLRALengths(softBodySharedSettingsHandle, maxDistanceMultiplier)
 
-    open fun calculateBendConstraintConstants() =
+    fun calculateBendConstraintConstants() =
         JphSoftBodySharedSettings_CalculateBendConstraintConstants(softBodySharedSettingsHandle)
 
-    open fun calculateVolumeConstraintVolumes() =
+    fun calculateVolumeConstraintVolumes() =
         JphSoftBodySharedSettings_CalculateVolumeConstraintVolumes(softBodySharedSettingsHandle)
 
-    open fun calculateSkinnedConstraintNormals() =
+    fun calculateSkinnedConstraintNormals() =
         JphSoftBodySharedSettings_CalculateSkinnedConstraintNormals(softBodySharedSettingsHandle)
 
-    open fun optimize(results: SoftBodySharedSettings.OptimizationResults) =
+    fun optimize(results: SoftBodySharedSettings.OptimizationResults) =
         JphSoftBodySharedSettings_Optimize_OptimizationResults(softBodySharedSettingsHandle, results.softBodySharedSettingsOptimizationResultsHandle)
 
-    open fun optimize() =
+    fun optimize() =
         JphSoftBodySharedSettings_Optimize(softBodySharedSettingsHandle)
 
-    open fun clone(): SoftBodySharedSettings? =
+    fun clone(): SoftBodySharedSettings? =
         JphSoftBodySharedSettings_Clone(softBodySharedSettingsHandle).takeIf { it != NullPointer }?.let { SoftBodySharedSettings(it, owned = true) }
 
-    open fun saveBinaryState(stream: StreamOut) =
+    fun saveBinaryState(stream: StreamOut) =
         JphSoftBodySharedSettings_SaveBinaryState(softBodySharedSettingsHandle, stream.streamOutHandle)
 
-    open fun restoreBinaryState(stream: StreamIn) =
+    fun restoreBinaryState(stream: StreamIn) =
         JphSoftBodySharedSettings_RestoreBinaryState(softBodySharedSettingsHandle, stream.streamInHandle)
 
-    open fun addFace(face: SoftBodySharedSettings.Face) =
+    fun addFace(face: SoftBodySharedSettings.Face) =
         JphSoftBodySharedSettings_AddFace(softBodySharedSettingsHandle, face.softBodySharedSettingsFaceHandle)
 
-    open var vertices: List<SoftBodySharedSettings.Vertex>
+    var vertices: List<SoftBodySharedSettings.Vertex>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetVertices(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.Vertex(JphSoftBodySharedSettingsVertex_create(), owned = true) }
@@ -90,7 +90,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetVertices(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsVertexHandle }), value.size) }
 
-    open var faces: List<SoftBodySharedSettings.Face>
+    var faces: List<SoftBodySharedSettings.Face>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetFaces(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.Face(JphSoftBodySharedSettingsFace_create(), owned = true) }
@@ -99,7 +99,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetFaces(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsFaceHandle }), value.size) }
 
-    open var edgeConstraints: List<SoftBodySharedSettings.Edge>
+    var edgeConstraints: List<SoftBodySharedSettings.Edge>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetEdgeConstraints(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.Edge(JphSoftBodySharedSettingsEdge_create(), owned = true) }
@@ -108,7 +108,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetEdgeConstraints(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsEdgeHandle }), value.size) }
 
-    open var dihedralBendConstraints: List<SoftBodySharedSettings.DihedralBend>
+    var dihedralBendConstraints: List<SoftBodySharedSettings.DihedralBend>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetDihedralBendConstraints(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.DihedralBend(JphSoftBodySharedSettingsDihedralBend_create(), owned = true) }
@@ -117,7 +117,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetDihedralBendConstraints(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsDihedralBendHandle }), value.size) }
 
-    open var volumeConstraints: List<SoftBodySharedSettings.Volume>
+    var volumeConstraints: List<SoftBodySharedSettings.Volume>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetVolumeConstraints(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.Volume(JphSoftBodySharedSettingsVolume_create(), owned = true) }
@@ -126,7 +126,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetVolumeConstraints(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsVolumeHandle }), value.size) }
 
-    open var skinnedConstraints: List<SoftBodySharedSettings.Skinned>
+    var skinnedConstraints: List<SoftBodySharedSettings.Skinned>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetSkinnedConstraints(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.Skinned(JphSoftBodySharedSettingsSkinned_create(), owned = true) }
@@ -135,7 +135,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetSkinnedConstraints(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsSkinnedHandle }), value.size) }
 
-    open var invBindMatrices: List<SoftBodySharedSettings.InvBind>
+    var invBindMatrices: List<SoftBodySharedSettings.InvBind>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetInvBindMatrices(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.InvBind(JphSoftBodySharedSettingsInvBind_create(), owned = true) }
@@ -144,7 +144,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetInvBindMatrices(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsInvBindHandle }), value.size) }
 
-    open var lraConstraints: List<SoftBodySharedSettings.LRA>
+    var lraConstraints: List<SoftBodySharedSettings.LRA>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetLRAConstraints(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.LRA(JphSoftBodySharedSettingsLRA_create(), owned = true) }
@@ -153,7 +153,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetLRAConstraints(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsLRAHandle }), value.size) }
 
-    open var rodStretchShearConstraints: List<SoftBodySharedSettings.RodStretchShear>
+    var rodStretchShearConstraints: List<SoftBodySharedSettings.RodStretchShear>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetRodStretchShearConstraints(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.RodStretchShear(JphSoftBodySharedSettingsRodStretchShear_create(), owned = true) }
@@ -162,7 +162,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetRodStretchShearConstraints(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsRodStretchShearHandle }), value.size) }
 
-    open var rodBendTwistConstraints: List<SoftBodySharedSettings.RodBendTwist>
+    var rodBendTwistConstraints: List<SoftBodySharedSettings.RodBendTwist>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetRodBendTwistConstraints(softBodySharedSettingsHandle, NullPointer, 0)
             val returned = List(count) { SoftBodySharedSettings.RodBendTwist(JphSoftBodySharedSettingsRodBendTwist_create(), owned = true) }
@@ -171,7 +171,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         }
         set(value) = interopScope { JphSoftBodySharedSettings_SetRodBendTwistConstraints(softBodySharedSettingsHandle, toInterop(value.map { it.softBodySharedSettingsRodBendTwistHandle }), value.size) }
 
-    open var materials: List<PhysicsMaterial>
+    var materials: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphSoftBodySharedSettings_GetMaterials(softBodySharedSettingsHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
@@ -181,42 +181,42 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
         set(value) = interopScope { JphSoftBodySharedSettings_SetMaterials(softBodySharedSettingsHandle, toInterop(value.map { it.physicsMaterialHandle }), value.size) }
 
     /** C++ `JPH::SoftBodySharedSettings::VertexAttributes`. */
-    open class VertexAttributes internal constructor(internal val softBodySharedSettingsVertexAttributesHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class VertexAttributes internal constructor(internal val softBodySharedSettingsVertexAttributesHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsVertexAttributes_create(), owned = true)
         constructor(compliance: Float, shearCompliance: Float, bendCompliance: Float, lraType: SoftBodySharedSettings.ELRAType, lraMaxDistanceMultiplier: Float) : this(JphSoftBodySharedSettingsVertexAttributes_create_float_float_float_ELRAType_float(compliance, shearCompliance, bendCompliance, lraType.value, lraMaxDistanceMultiplier), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsVertexAttributes_destroy(softBodySharedSettingsVertexAttributesHandle) }
     
-        open var compliance: Float
+        var compliance: Float
             get() = JphSoftBodySharedSettingsVertexAttributes_GetCompliance(softBodySharedSettingsVertexAttributesHandle)
             set(value) = JphSoftBodySharedSettingsVertexAttributes_SetCompliance(softBodySharedSettingsVertexAttributesHandle, value)
     
-        open var shearCompliance: Float
+        var shearCompliance: Float
             get() = JphSoftBodySharedSettingsVertexAttributes_GetShearCompliance(softBodySharedSettingsVertexAttributesHandle)
             set(value) = JphSoftBodySharedSettingsVertexAttributes_SetShearCompliance(softBodySharedSettingsVertexAttributesHandle, value)
     
-        open var bendCompliance: Float
+        var bendCompliance: Float
             get() = JphSoftBodySharedSettingsVertexAttributes_GetBendCompliance(softBodySharedSettingsVertexAttributesHandle)
             set(value) = JphSoftBodySharedSettingsVertexAttributes_SetBendCompliance(softBodySharedSettingsVertexAttributesHandle, value)
     
-        open var lraType: SoftBodySharedSettings.ELRAType
+        var lraType: SoftBodySharedSettings.ELRAType
             get() = SoftBodySharedSettings.ELRAType.of(JphSoftBodySharedSettingsVertexAttributes_GetLRAType(softBodySharedSettingsVertexAttributesHandle))
             set(value) = JphSoftBodySharedSettingsVertexAttributes_SetLRAType(softBodySharedSettingsVertexAttributesHandle, value.value)
     
-        open var lraMaxDistanceMultiplier: Float
+        var lraMaxDistanceMultiplier: Float
             get() = JphSoftBodySharedSettingsVertexAttributes_GetLRAMaxDistanceMultiplier(softBodySharedSettingsVertexAttributesHandle)
             set(value) = JphSoftBodySharedSettingsVertexAttributes_SetLRAMaxDistanceMultiplier(softBodySharedSettingsVertexAttributesHandle, value)
     }
     
     /** C++ `JPH::SoftBodySharedSettings::OptimizationResults`. */
-    open class OptimizationResults internal constructor(internal val softBodySharedSettingsOptimizationResultsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class OptimizationResults internal constructor(internal val softBodySharedSettingsOptimizationResultsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsOptimizationResults_create(), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsOptimizationResults_destroy(softBodySharedSettingsOptimizationResultsHandle) }
     
-        open var edgeRemap: IntArray
+        var edgeRemap: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsOptimizationResults_GetEdgeRemap(softBodySharedSettingsOptimizationResultsHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -227,7 +227,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsOptimizationResults_SetEdgeRemap(softBodySharedSettingsOptimizationResultsHandle, toInterop(value), value.size) }
     
-        open var lraRemap: IntArray
+        var lraRemap: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsOptimizationResults_GetLRARemap(softBodySharedSettingsOptimizationResultsHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -238,7 +238,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsOptimizationResults_SetLRARemap(softBodySharedSettingsOptimizationResultsHandle, toInterop(value), value.size) }
     
-        open var rodStretchShearConstraintRemap: IntArray
+        var rodStretchShearConstraintRemap: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsOptimizationResults_GetRodStretchShearConstraintRemap(softBodySharedSettingsOptimizationResultsHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -249,7 +249,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsOptimizationResults_SetRodStretchShearConstraintRemap(softBodySharedSettingsOptimizationResultsHandle, toInterop(value), value.size) }
     
-        open var rodBendTwistConstraintRemap: IntArray
+        var rodBendTwistConstraintRemap: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsOptimizationResults_GetRodBendTwistConstraintRemap(softBodySharedSettingsOptimizationResultsHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -260,7 +260,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsOptimizationResults_SetRodBendTwistConstraintRemap(softBodySharedSettingsOptimizationResultsHandle, toInterop(value), value.size) }
     
-        open var dihedralBendRemap: IntArray
+        var dihedralBendRemap: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsOptimizationResults_GetDihedralBendRemap(softBodySharedSettingsOptimizationResultsHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -271,7 +271,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsOptimizationResults_SetDihedralBendRemap(softBodySharedSettingsOptimizationResultsHandle, toInterop(value), value.size) }
     
-        open var volumeRemap: IntArray
+        var volumeRemap: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsOptimizationResults_GetVolumeRemap(softBodySharedSettingsOptimizationResultsHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -282,7 +282,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsOptimizationResults_SetVolumeRemap(softBodySharedSettingsOptimizationResultsHandle, toInterop(value), value.size) }
     
-        open var skinnedRemap: IntArray
+        var skinnedRemap: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsOptimizationResults_GetSkinnedRemap(softBodySharedSettingsOptimizationResultsHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -295,14 +295,14 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::Vertex`. */
-    open class Vertex internal constructor(internal val softBodySharedSettingsVertexHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class Vertex internal constructor(internal val softBodySharedSettingsVertexHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsVertex_create(), owned = true)
         constructor(position: Float3, velocity: Float3, invMass: Float) : this(interopScope { JphSoftBodySharedSettingsVertex_create_Float3_Float3_float(toInterop(position.toArray()), toInterop(velocity.toArray()), invMass) }, owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsVertex_destroy(softBodySharedSettingsVertexHandle) }
     
-        open var position: Float3
+        var position: Float3
             get() = interopScope {
                 val returned = FloatArray(3)
                 val returnedPointer = toInterop(returned)
@@ -312,7 +312,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsVertex_SetPosition(softBodySharedSettingsVertexHandle, toInterop(value.toArray())) }
     
-        open var velocity: Float3
+        var velocity: Float3
             get() = interopScope {
                 val returned = FloatArray(3)
                 val returnedPointer = toInterop(returned)
@@ -322,7 +322,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsVertex_SetVelocity(softBodySharedSettingsVertexHandle, toInterop(value.toArray())) }
     
-        open var invMass: Float
+        var invMass: Float
             get() = JphSoftBodySharedSettingsVertex_GetInvMass(softBodySharedSettingsVertexHandle)
             set(value) = JphSoftBodySharedSettingsVertex_SetInvMass(softBodySharedSettingsVertexHandle, value)
     
@@ -333,17 +333,17 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::Face`. */
-    open class Face internal constructor(internal val softBodySharedSettingsFaceHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class Face internal constructor(internal val softBodySharedSettingsFaceHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsFace_create(), owned = true)
         constructor(vertex1: Int, vertex2: Int, vertex3: Int, materialIndex: Int) : this(JphSoftBodySharedSettingsFace_create_uint32_uint32_uint32_uint32(vertex1, vertex2, vertex3, materialIndex), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsFace_destroy(softBodySharedSettingsFaceHandle) }
     
-        open val isDegenerate: Boolean
+        val isDegenerate: Boolean
             get() = JphSoftBodySharedSettingsFace_IsDegenerate(softBodySharedSettingsFaceHandle)
     
-        open var vertex: IntArray
+        var vertex: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsFace_GetVertex(softBodySharedSettingsFaceHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -354,7 +354,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsFace_SetVertex(softBodySharedSettingsFaceHandle, toInterop(value), value.size) }
     
-        open var materialIndex: Int
+        var materialIndex: Int
             get() = JphSoftBodySharedSettingsFace_GetMaterialIndex(softBodySharedSettingsFaceHandle)
             set(value) = JphSoftBodySharedSettingsFace_SetMaterialIndex(softBodySharedSettingsFaceHandle, value)
     
@@ -365,17 +365,17 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::Edge`. */
-    open class Edge internal constructor(internal val softBodySharedSettingsEdgeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class Edge internal constructor(internal val softBodySharedSettingsEdgeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsEdge_create(), owned = true)
         constructor(vertex1: Int, vertex2: Int, compliance: Float) : this(JphSoftBodySharedSettingsEdge_create_uint32_uint32_float(vertex1, vertex2, compliance), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsEdge_destroy(softBodySharedSettingsEdgeHandle) }
     
-        open val minVertexIndex: Int
+        val minVertexIndex: Int
             get() = JphSoftBodySharedSettingsEdge_GetMinVertexIndex(softBodySharedSettingsEdgeHandle)
     
-        open var vertex: IntArray
+        var vertex: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsEdge_GetVertex(softBodySharedSettingsEdgeHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -386,11 +386,11 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsEdge_SetVertex(softBodySharedSettingsEdgeHandle, toInterop(value), value.size) }
     
-        open var restLength: Float
+        var restLength: Float
             get() = JphSoftBodySharedSettingsEdge_GetRestLength(softBodySharedSettingsEdgeHandle)
             set(value) = JphSoftBodySharedSettingsEdge_SetRestLength(softBodySharedSettingsEdgeHandle, value)
     
-        open var compliance: Float
+        var compliance: Float
             get() = JphSoftBodySharedSettingsEdge_GetCompliance(softBodySharedSettingsEdgeHandle)
             set(value) = JphSoftBodySharedSettingsEdge_SetCompliance(softBodySharedSettingsEdgeHandle, value)
     
@@ -401,17 +401,17 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::DihedralBend`. */
-    open class DihedralBend internal constructor(internal val softBodySharedSettingsDihedralBendHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class DihedralBend internal constructor(internal val softBodySharedSettingsDihedralBendHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsDihedralBend_create(), owned = true)
         constructor(vertex1: Int, vertex2: Int, vertex3: Int, vertex4: Int, compliance: Float) : this(JphSoftBodySharedSettingsDihedralBend_create_uint32_uint32_uint32_uint32_float(vertex1, vertex2, vertex3, vertex4, compliance), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsDihedralBend_destroy(softBodySharedSettingsDihedralBendHandle) }
     
-        open val minVertexIndex: Int
+        val minVertexIndex: Int
             get() = JphSoftBodySharedSettingsDihedralBend_GetMinVertexIndex(softBodySharedSettingsDihedralBendHandle)
     
-        open var vertex: IntArray
+        var vertex: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsDihedralBend_GetVertex(softBodySharedSettingsDihedralBendHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -422,11 +422,11 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsDihedralBend_SetVertex(softBodySharedSettingsDihedralBendHandle, toInterop(value), value.size) }
     
-        open var compliance: Float
+        var compliance: Float
             get() = JphSoftBodySharedSettingsDihedralBend_GetCompliance(softBodySharedSettingsDihedralBendHandle)
             set(value) = JphSoftBodySharedSettingsDihedralBend_SetCompliance(softBodySharedSettingsDihedralBendHandle, value)
     
-        open var initialAngle: Float
+        var initialAngle: Float
             get() = JphSoftBodySharedSettingsDihedralBend_GetInitialAngle(softBodySharedSettingsDihedralBendHandle)
             set(value) = JphSoftBodySharedSettingsDihedralBend_SetInitialAngle(softBodySharedSettingsDihedralBendHandle, value)
     
@@ -437,17 +437,17 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::Volume`. */
-    open class Volume internal constructor(internal val softBodySharedSettingsVolumeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class Volume internal constructor(internal val softBodySharedSettingsVolumeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsVolume_create(), owned = true)
         constructor(vertex1: Int, vertex2: Int, vertex3: Int, vertex4: Int, compliance: Float) : this(JphSoftBodySharedSettingsVolume_create_uint32_uint32_uint32_uint32_float(vertex1, vertex2, vertex3, vertex4, compliance), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsVolume_destroy(softBodySharedSettingsVolumeHandle) }
     
-        open val minVertexIndex: Int
+        val minVertexIndex: Int
             get() = JphSoftBodySharedSettingsVolume_GetMinVertexIndex(softBodySharedSettingsVolumeHandle)
     
-        open var vertex: IntArray
+        var vertex: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsVolume_GetVertex(softBodySharedSettingsVolumeHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -458,11 +458,11 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsVolume_SetVertex(softBodySharedSettingsVolumeHandle, toInterop(value), value.size) }
     
-        open var sixRestVolume: Float
+        var sixRestVolume: Float
             get() = JphSoftBodySharedSettingsVolume_GetSixRestVolume(softBodySharedSettingsVolumeHandle)
             set(value) = JphSoftBodySharedSettingsVolume_SetSixRestVolume(softBodySharedSettingsVolumeHandle, value)
     
-        open var compliance: Float
+        var compliance: Float
             get() = JphSoftBodySharedSettingsVolume_GetCompliance(softBodySharedSettingsVolumeHandle)
             set(value) = JphSoftBodySharedSettingsVolume_SetCompliance(softBodySharedSettingsVolumeHandle, value)
     
@@ -473,18 +473,18 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::InvBind`. */
-    open class InvBind internal constructor(internal val softBodySharedSettingsInvBindHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class InvBind internal constructor(internal val softBodySharedSettingsInvBindHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsInvBind_create(), owned = true)
         constructor(jointIndex: Int, invBind: Mat44) : this(interopScope { JphSoftBodySharedSettingsInvBind_create_uint32_Mat44Arg(jointIndex, toInterop(invBind.toArray())) }, owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsInvBind_destroy(softBodySharedSettingsInvBindHandle) }
     
-        open var jointIndex: Int
+        var jointIndex: Int
             get() = JphSoftBodySharedSettingsInvBind_GetJointIndex(softBodySharedSettingsInvBindHandle)
             set(value) = JphSoftBodySharedSettingsInvBind_SetJointIndex(softBodySharedSettingsInvBindHandle, value)
     
-        open var invBind: Mat44
+        var invBind: Mat44
             get() = interopScope {
                 val returned = FloatArray(16)
                 val returnedPointer = toInterop(returned)
@@ -501,18 +501,18 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::SkinWeight`. */
-    open class SkinWeight internal constructor(internal val softBodySharedSettingsSkinWeightHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class SkinWeight internal constructor(internal val softBodySharedSettingsSkinWeightHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsSkinWeight_create(), owned = true)
         constructor(invBindIndex: Int, weight: Float) : this(JphSoftBodySharedSettingsSkinWeight_create_uint32_float(invBindIndex, weight), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsSkinWeight_destroy(softBodySharedSettingsSkinWeightHandle) }
     
-        open var invBindIndex: Int
+        var invBindIndex: Int
             get() = JphSoftBodySharedSettingsSkinWeight_GetInvBindIndex(softBodySharedSettingsSkinWeightHandle)
             set(value) = JphSoftBodySharedSettingsSkinWeight_SetInvBindIndex(softBodySharedSettingsSkinWeightHandle, value)
     
-        open var weight: Float
+        var weight: Float
             get() = JphSoftBodySharedSettingsSkinWeight_GetWeight(softBodySharedSettingsSkinWeightHandle)
             set(value) = JphSoftBodySharedSettingsSkinWeight_SetWeight(softBodySharedSettingsSkinWeightHandle, value)
     
@@ -523,21 +523,21 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::Skinned`. */
-    open class Skinned internal constructor(internal val softBodySharedSettingsSkinnedHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class Skinned internal constructor(internal val softBodySharedSettingsSkinnedHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsSkinned_create(), owned = true)
         constructor(vertex: Int, maxDistance: Float, backStopDistance: Float, backStopRadius: Float) : this(JphSoftBodySharedSettingsSkinned_create_uint32_float_float_float(vertex, maxDistance, backStopDistance, backStopRadius), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsSkinned_destroy(softBodySharedSettingsSkinnedHandle) }
     
-        open fun normalizeWeights() =
+        fun normalizeWeights() =
             JphSoftBodySharedSettingsSkinned_NormalizeWeights(softBodySharedSettingsSkinnedHandle)
     
-        open var vertex: Int
+        var vertex: Int
             get() = JphSoftBodySharedSettingsSkinned_GetVertex(softBodySharedSettingsSkinnedHandle)
             set(value) = JphSoftBodySharedSettingsSkinned_SetVertex(softBodySharedSettingsSkinnedHandle, value)
     
-        open var weights: List<SoftBodySharedSettings.SkinWeight>
+        var weights: List<SoftBodySharedSettings.SkinWeight>
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsSkinned_GetWeights(softBodySharedSettingsSkinnedHandle, NullPointer, 0)
                 val returned = List(count) { SoftBodySharedSettings.SkinWeight(JphSoftBodySharedSettingsSkinWeight_create(), owned = true) }
@@ -546,19 +546,19 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsSkinned_SetWeights(softBodySharedSettingsSkinnedHandle, toInterop(value.map { it.softBodySharedSettingsSkinWeightHandle }), value.size) }
     
-        open var maxDistance: Float
+        var maxDistance: Float
             get() = JphSoftBodySharedSettingsSkinned_GetMaxDistance(softBodySharedSettingsSkinnedHandle)
             set(value) = JphSoftBodySharedSettingsSkinned_SetMaxDistance(softBodySharedSettingsSkinnedHandle, value)
     
-        open var backStopDistance: Float
+        var backStopDistance: Float
             get() = JphSoftBodySharedSettingsSkinned_GetBackStopDistance(softBodySharedSettingsSkinnedHandle)
             set(value) = JphSoftBodySharedSettingsSkinned_SetBackStopDistance(softBodySharedSettingsSkinnedHandle, value)
     
-        open var backStopRadius: Float
+        var backStopRadius: Float
             get() = JphSoftBodySharedSettingsSkinned_GetBackStopRadius(softBodySharedSettingsSkinnedHandle)
             set(value) = JphSoftBodySharedSettingsSkinned_SetBackStopRadius(softBodySharedSettingsSkinnedHandle, value)
     
-        open var normalInfo: Int
+        var normalInfo: Int
             get() = JphSoftBodySharedSettingsSkinned_GetNormalInfo(softBodySharedSettingsSkinnedHandle)
             set(value) = JphSoftBodySharedSettingsSkinned_SetNormalInfo(softBodySharedSettingsSkinnedHandle, value)
     
@@ -569,17 +569,17 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::LRA`. */
-    open class LRA internal constructor(internal val softBodySharedSettingsLRAHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class LRA internal constructor(internal val softBodySharedSettingsLRAHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsLRA_create(), owned = true)
         constructor(vertex1: Int, vertex2: Int, maxDistance: Float) : this(JphSoftBodySharedSettingsLRA_create_uint32_uint32_float(vertex1, vertex2, maxDistance), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsLRA_destroy(softBodySharedSettingsLRAHandle) }
     
-        open val minVertexIndex: Int
+        val minVertexIndex: Int
             get() = JphSoftBodySharedSettingsLRA_GetMinVertexIndex(softBodySharedSettingsLRAHandle)
     
-        open var vertex: IntArray
+        var vertex: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsLRA_GetVertex(softBodySharedSettingsLRAHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -590,7 +590,7 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsLRA_SetVertex(softBodySharedSettingsLRAHandle, toInterop(value), value.size) }
     
-        open var maxDistance: Float
+        var maxDistance: Float
             get() = JphSoftBodySharedSettingsLRA_GetMaxDistance(softBodySharedSettingsLRAHandle)
             set(value) = JphSoftBodySharedSettingsLRA_SetMaxDistance(softBodySharedSettingsLRAHandle, value)
     
@@ -601,17 +601,17 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::RodStretchShear`. */
-    open class RodStretchShear internal constructor(internal val softBodySharedSettingsRodStretchShearHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class RodStretchShear internal constructor(internal val softBodySharedSettingsRodStretchShearHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsRodStretchShear_create(), owned = true)
         constructor(vertex1: Int, vertex2: Int, compliance: Float) : this(JphSoftBodySharedSettingsRodStretchShear_create_uint32_uint32_float(vertex1, vertex2, compliance), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsRodStretchShear_destroy(softBodySharedSettingsRodStretchShearHandle) }
     
-        open val minVertexIndex: Int
+        val minVertexIndex: Int
             get() = JphSoftBodySharedSettingsRodStretchShear_GetMinVertexIndex(softBodySharedSettingsRodStretchShearHandle)
     
-        open var vertex: IntArray
+        var vertex: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsRodStretchShear_GetVertex(softBodySharedSettingsRodStretchShearHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -622,19 +622,19 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsRodStretchShear_SetVertex(softBodySharedSettingsRodStretchShearHandle, toInterop(value), value.size) }
     
-        open var length: Float
+        var length: Float
             get() = JphSoftBodySharedSettingsRodStretchShear_GetLength(softBodySharedSettingsRodStretchShearHandle)
             set(value) = JphSoftBodySharedSettingsRodStretchShear_SetLength(softBodySharedSettingsRodStretchShearHandle, value)
     
-        open var invMass: Float
+        var invMass: Float
             get() = JphSoftBodySharedSettingsRodStretchShear_GetInvMass(softBodySharedSettingsRodStretchShearHandle)
             set(value) = JphSoftBodySharedSettingsRodStretchShear_SetInvMass(softBodySharedSettingsRodStretchShearHandle, value)
     
-        open var compliance: Float
+        var compliance: Float
             get() = JphSoftBodySharedSettingsRodStretchShear_GetCompliance(softBodySharedSettingsRodStretchShearHandle)
             set(value) = JphSoftBodySharedSettingsRodStretchShear_SetCompliance(softBodySharedSettingsRodStretchShearHandle, value)
     
-        open var bishop: Quat
+        var bishop: Quat
             get() = interopScope {
                 val returned = FloatArray(4)
                 val returnedPointer = toInterop(returned)
@@ -651,14 +651,14 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
     }
     
     /** C++ `JPH::SoftBodySharedSettings::RodBendTwist`. */
-    open class RodBendTwist internal constructor(internal val softBodySharedSettingsRodBendTwistHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class RodBendTwist internal constructor(internal val softBodySharedSettingsRodBendTwistHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphSoftBodySharedSettingsRodBendTwist_create(), owned = true)
         constructor(rod1: Int, rod2: Int, compliance: Float) : this(JphSoftBodySharedSettingsRodBendTwist_create_uint32_uint32_float(rod1, rod2, compliance), owned = true)
     
         override fun close() =
             closeOnce { JphSoftBodySharedSettingsRodBendTwist_destroy(softBodySharedSettingsRodBendTwistHandle) }
     
-        open var rod: IntArray
+        var rod: IntArray
             get() = interopScope {
                 val count = JphSoftBodySharedSettingsRodBendTwist_GetRod(softBodySharedSettingsRodBendTwistHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -669,11 +669,11 @@ open class SoftBodySharedSettings internal constructor(internal val softBodyShar
             }
             set(value) = interopScope { JphSoftBodySharedSettingsRodBendTwist_SetRod(softBodySharedSettingsRodBendTwistHandle, toInterop(value), value.size) }
     
-        open var compliance: Float
+        var compliance: Float
             get() = JphSoftBodySharedSettingsRodBendTwist_GetCompliance(softBodySharedSettingsRodBendTwistHandle)
             set(value) = JphSoftBodySharedSettingsRodBendTwist_SetCompliance(softBodySharedSettingsRodBendTwistHandle, value)
     
-        open var omega0: Quat
+        var omega0: Quat
             get() = interopScope {
                 val returned = FloatArray(4)
                 val returnedPointer = toInterop(returned)

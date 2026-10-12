@@ -37,9 +37,9 @@ open class TempAllocator internal constructor(internal val tempAllocatorHandle: 
     override fun close() =
         closeOnce { JphTempAllocator_destroy(tempAllocatorHandle) }
 
-    open fun allocate(size: Int): NativePointer =
+    fun allocate(size: Int): NativePointer =
         JphTempAllocator_Allocate(tempAllocatorHandle, size)
 
-    open fun free(address: NativePointer, size: Int) =
+    fun free(address: NativePointer, size: Int) =
         JphTempAllocator_Free(tempAllocatorHandle, address, size)
 }

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PointConstraint`. */
-open class PointConstraint internal constructor(internal val pointConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphPointConstraint_asTwoBodyConstraint(pointConstraintHandle), owned), AutoCloseable {
+class PointConstraint internal constructor(internal val pointConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphPointConstraint_asTwoBodyConstraint(pointConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: PointConstraintSettings) : this(JphPointConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.pointConstraintSettingsHandle), owned = true)
 
     override fun addRef() =
@@ -42,13 +42,13 @@ open class PointConstraint internal constructor(internal val pointConstraintHand
     override fun close() =
         closeOnce { JphPointConstraint_release(pointConstraintHandle) }
 
-    open fun setPoint1(space: EConstraintSpace, point1: Vec3) =
+    fun setPoint1(space: EConstraintSpace, point1: Vec3) =
         interopScope { JphPointConstraint_SetPoint1(pointConstraintHandle, space.value, toInterop(point1.toArray())) }
 
-    open fun setPoint2(space: EConstraintSpace, point2: Vec3) =
+    fun setPoint2(space: EConstraintSpace, point2: Vec3) =
         interopScope { JphPointConstraint_SetPoint2(pointConstraintHandle, space.value, toInterop(point2.toArray())) }
 
-    open val localSpacePoint1: Vec3
+    val localSpacePoint1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -57,7 +57,7 @@ open class PointConstraint internal constructor(internal val pointConstraintHand
             Vec3(returned)
         }
 
-    open val localSpacePoint2: Vec3
+    val localSpacePoint2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -66,7 +66,7 @@ open class PointConstraint internal constructor(internal val pointConstraintHand
             Vec3(returned)
         }
 
-    open val totalLambdaPosition: Vec3
+    val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

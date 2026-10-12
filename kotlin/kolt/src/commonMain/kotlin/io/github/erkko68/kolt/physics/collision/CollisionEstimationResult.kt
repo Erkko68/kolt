@@ -33,13 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollisionEstimationResult`. */
-open class CollisionEstimationResult internal constructor(internal val collisionEstimationResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class CollisionEstimationResult internal constructor(internal val collisionEstimationResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCollisionEstimationResult_create(), owned = true)
 
     override fun close() =
         closeOnce { JphCollisionEstimationResult_destroy(collisionEstimationResultHandle) }
 
-    open var linearVelocity1: Vec3
+    var linearVelocity1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -49,7 +49,7 @@ open class CollisionEstimationResult internal constructor(internal val collision
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetLinearVelocity1(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
-    open var angularVelocity1: Vec3
+    var angularVelocity1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -59,7 +59,7 @@ open class CollisionEstimationResult internal constructor(internal val collision
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetAngularVelocity1(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
-    open var linearVelocity2: Vec3
+    var linearVelocity2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -69,7 +69,7 @@ open class CollisionEstimationResult internal constructor(internal val collision
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetLinearVelocity2(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
-    open var angularVelocity2: Vec3
+    var angularVelocity2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -79,7 +79,7 @@ open class CollisionEstimationResult internal constructor(internal val collision
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetAngularVelocity2(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
-    open var frictionPoint: Vec3
+    var frictionPoint: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -89,7 +89,7 @@ open class CollisionEstimationResult internal constructor(internal val collision
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetFrictionPoint(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
-    open var tangent1: Vec3
+    var tangent1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -99,7 +99,7 @@ open class CollisionEstimationResult internal constructor(internal val collision
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetTangent1(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
-    open var tangent2: Vec3
+    var tangent2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -109,19 +109,19 @@ open class CollisionEstimationResult internal constructor(internal val collision
         }
         set(value) = interopScope { JphCollisionEstimationResult_SetTangent2(collisionEstimationResultHandle, toInterop(value.toArray())) }
 
-    open var frictionImpulse1: Float
+    var frictionImpulse1: Float
         get() = JphCollisionEstimationResult_GetFrictionImpulse1(collisionEstimationResultHandle)
         set(value) = JphCollisionEstimationResult_SetFrictionImpulse1(collisionEstimationResultHandle, value)
 
-    open var frictionImpulse2: Float
+    var frictionImpulse2: Float
         get() = JphCollisionEstimationResult_GetFrictionImpulse2(collisionEstimationResultHandle)
         set(value) = JphCollisionEstimationResult_SetFrictionImpulse2(collisionEstimationResultHandle, value)
 
-    open var angularFrictionImpulse: Float
+    var angularFrictionImpulse: Float
         get() = JphCollisionEstimationResult_GetAngularFrictionImpulse(collisionEstimationResultHandle)
         set(value) = JphCollisionEstimationResult_SetAngularFrictionImpulse(collisionEstimationResultHandle, value)
 
-    open var contactImpulse: FloatArray
+    var contactImpulse: FloatArray
         get() = interopScope {
             val count = JphCollisionEstimationResult_GetContactImpulse(collisionEstimationResultHandle, NullPointer, 0)
             val returned = FloatArray(count)

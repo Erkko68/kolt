@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ObjectVsBroadPhaseLayerFilterTable`. */
-open class ObjectVsBroadPhaseLayerFilterTable internal constructor(internal val objectVsBroadPhaseLayerFilterTableHandle: NativePointer, owned: Boolean = false) : ObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterTable_asObjectVsBroadPhaseLayerFilter(objectVsBroadPhaseLayerFilterTableHandle), owned), AutoCloseable {
+class ObjectVsBroadPhaseLayerFilterTable internal constructor(internal val objectVsBroadPhaseLayerFilterTableHandle: NativePointer, owned: Boolean = false) : ObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterTable_asObjectVsBroadPhaseLayerFilter(objectVsBroadPhaseLayerFilterTableHandle), owned), AutoCloseable {
     constructor(broadPhaseLayerInterface: BroadPhaseLayerInterface, numBroadPhaseLayers: Int, objectLayerPairFilter: ObjectLayerPairFilter, numObjectLayers: Int) : this(JphObjectVsBroadPhaseLayerFilterTable_create(broadPhaseLayerInterface.broadPhaseLayerInterfaceHandle, numBroadPhaseLayers, objectLayerPairFilter.objectLayerPairFilterHandle, numObjectLayers), owned = true)
 
     override fun close() =

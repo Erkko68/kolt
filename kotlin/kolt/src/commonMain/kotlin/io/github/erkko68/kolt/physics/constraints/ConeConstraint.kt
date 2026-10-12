@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConeConstraint`. */
-open class ConeConstraint internal constructor(internal val coneConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphConeConstraint_asTwoBodyConstraint(coneConstraintHandle), owned), AutoCloseable {
+class ConeConstraint internal constructor(internal val coneConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphConeConstraint_asTwoBodyConstraint(coneConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: ConeConstraintSettings) : this(JphConeConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.coneConstraintSettingsHandle), owned = true)
 
     override fun addRef() =
@@ -42,13 +42,13 @@ open class ConeConstraint internal constructor(internal val coneConstraintHandle
     override fun close() =
         closeOnce { JphConeConstraint_release(coneConstraintHandle) }
 
-    open fun setHalfConeAngle(halfConeAngle: Float) =
+    fun setHalfConeAngle(halfConeAngle: Float) =
         JphConeConstraint_SetHalfConeAngle(coneConstraintHandle, halfConeAngle)
 
-    open val cosHalfConeAngle: Float
+    val cosHalfConeAngle: Float
         get() = JphConeConstraint_GetCosHalfConeAngle(coneConstraintHandle)
 
-    open val totalLambdaPosition: Vec3
+    val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -57,6 +57,6 @@ open class ConeConstraint internal constructor(internal val coneConstraintHandle
             Vec3(returned)
         }
 
-    open val totalLambdaRotation: Float
+    val totalLambdaRotation: Float
         get() = JphConeConstraint_GetTotalLambdaRotation(coneConstraintHandle)
 }

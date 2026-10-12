@@ -42,13 +42,13 @@ open class IgnoreMultipleBodiesFilter internal constructor(internal val ignoreMu
     override fun close() =
         closeOnce { JphIgnoreMultipleBodiesFilter_destroy(ignoreMultipleBodiesFilterHandle) }
 
-    open fun clear() =
+    fun clear() =
         JphIgnoreMultipleBodiesFilter_Clear(ignoreMultipleBodiesFilterHandle)
 
-    open fun reserve(size: Int) =
+    fun reserve(size: Int) =
         JphIgnoreMultipleBodiesFilter_Reserve(ignoreMultipleBodiesFilterHandle, size)
 
-    open fun ignoreBody(bodyID: BodyID) =
+    fun ignoreBody(bodyID: BodyID) =
         JphIgnoreMultipleBodiesFilter_IgnoreBody(ignoreMultipleBodiesFilterHandle, bodyID.value)
 
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {

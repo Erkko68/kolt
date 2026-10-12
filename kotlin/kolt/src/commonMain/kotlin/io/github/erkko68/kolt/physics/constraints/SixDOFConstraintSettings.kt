@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SixDOFConstraintSettings`. */
-open class SixDOFConstraintSettings internal constructor(internal val sixDOFConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSixDOFConstraintSettings_asTwoBodyConstraintSettings(sixDOFConstraintSettingsHandle), owned), AutoCloseable {
+class SixDOFConstraintSettings internal constructor(internal val sixDOFConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSixDOFConstraintSettings_asTwoBodyConstraintSettings(sixDOFConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphSixDOFConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,26 +42,26 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
     override fun close() =
         closeOnce { JphSixDOFConstraintSettings_release(sixDOFConstraintSettingsHandle) }
 
-    open fun makeFreeAxis(axis: SixDOFConstraintSettings.EAxis) =
+    fun makeFreeAxis(axis: SixDOFConstraintSettings.EAxis) =
         JphSixDOFConstraintSettings_MakeFreeAxis(sixDOFConstraintSettingsHandle, axis.value)
 
-    open fun isFreeAxis(axis: SixDOFConstraintSettings.EAxis): Boolean =
+    fun isFreeAxis(axis: SixDOFConstraintSettings.EAxis): Boolean =
         JphSixDOFConstraintSettings_IsFreeAxis(sixDOFConstraintSettingsHandle, axis.value)
 
-    open fun makeFixedAxis(axis: SixDOFConstraintSettings.EAxis) =
+    fun makeFixedAxis(axis: SixDOFConstraintSettings.EAxis) =
         JphSixDOFConstraintSettings_MakeFixedAxis(sixDOFConstraintSettingsHandle, axis.value)
 
-    open fun isFixedAxis(axis: SixDOFConstraintSettings.EAxis): Boolean =
+    fun isFixedAxis(axis: SixDOFConstraintSettings.EAxis): Boolean =
         JphSixDOFConstraintSettings_IsFixedAxis(sixDOFConstraintSettingsHandle, axis.value)
 
-    open fun setLimitedAxis(axis: SixDOFConstraintSettings.EAxis, min: Float, max: Float) =
+    fun setLimitedAxis(axis: SixDOFConstraintSettings.EAxis, min: Float, max: Float) =
         JphSixDOFConstraintSettings_SetLimitedAxis(sixDOFConstraintSettingsHandle, axis.value, min, max)
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphSixDOFConstraintSettings_GetSpace(sixDOFConstraintSettingsHandle))
         set(value) = JphSixDOFConstraintSettings_SetSpace(sixDOFConstraintSettingsHandle, value.value)
 
-    open var position1: Vec3
+    var position1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -71,7 +71,7 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetPosition1(sixDOFConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var axisX1: Vec3
+    var axisX1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -81,7 +81,7 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetAxisX1(sixDOFConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var axisY1: Vec3
+    var axisY1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -91,7 +91,7 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetAxisY1(sixDOFConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var position2: Vec3
+    var position2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -101,7 +101,7 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetPosition2(sixDOFConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var axisX2: Vec3
+    var axisX2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -111,7 +111,7 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetAxisX2(sixDOFConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var axisY2: Vec3
+    var axisY2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -121,7 +121,7 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetAxisY2(sixDOFConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var maxFriction: FloatArray
+    var maxFriction: FloatArray
         get() = interopScope {
             val count = JphSixDOFConstraintSettings_GetMaxFriction(sixDOFConstraintSettingsHandle, NullPointer, 0)
             val returned = FloatArray(count)
@@ -132,11 +132,11 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetMaxFriction(sixDOFConstraintSettingsHandle, toInterop(value), value.size) }
 
-    open var swingType: ESwingType
+    var swingType: ESwingType
         get() = ESwingType.of(JphSixDOFConstraintSettings_GetSwingType(sixDOFConstraintSettingsHandle))
         set(value) = JphSixDOFConstraintSettings_SetSwingType(sixDOFConstraintSettingsHandle, value.value)
 
-    open var limitMin: FloatArray
+    var limitMin: FloatArray
         get() = interopScope {
             val count = JphSixDOFConstraintSettings_GetLimitMin(sixDOFConstraintSettingsHandle, NullPointer, 0)
             val returned = FloatArray(count)
@@ -147,7 +147,7 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetLimitMin(sixDOFConstraintSettingsHandle, toInterop(value), value.size) }
 
-    open var limitMax: FloatArray
+    var limitMax: FloatArray
         get() = interopScope {
             val count = JphSixDOFConstraintSettings_GetLimitMax(sixDOFConstraintSettingsHandle, NullPointer, 0)
             val returned = FloatArray(count)
@@ -158,7 +158,7 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetLimitMax(sixDOFConstraintSettingsHandle, toInterop(value), value.size) }
 
-    open var limitsSpringSettings: List<SpringSettings>
+    var limitsSpringSettings: List<SpringSettings>
         get() = interopScope {
             val count = JphSixDOFConstraintSettings_GetLimitsSpringSettings(sixDOFConstraintSettingsHandle, NullPointer, 0)
             val returned = List(count) { SpringSettings(JphSpringSettings_create(), owned = true) }
@@ -167,7 +167,7 @@ open class SixDOFConstraintSettings internal constructor(internal val sixDOFCons
         }
         set(value) = interopScope { JphSixDOFConstraintSettings_SetLimitsSpringSettings(sixDOFConstraintSettingsHandle, toInterop(value.map { it.springSettingsHandle }), value.size) }
 
-    open var motorSettings: List<MotorSettings>
+    var motorSettings: List<MotorSettings>
         get() = interopScope {
             val count = JphSixDOFConstraintSettings_GetMotorSettings(sixDOFConstraintSettingsHandle, NullPointer, 0)
             val returned = List(count) { MotorSettings(JphMotorSettings_create(), owned = true) }

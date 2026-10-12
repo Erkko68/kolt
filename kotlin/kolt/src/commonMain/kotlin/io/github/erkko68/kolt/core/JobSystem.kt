@@ -37,35 +37,35 @@ open class JobSystem internal constructor(internal val jobSystemHandle: NativePo
     override fun close() =
         closeOnce { JphJobSystem_destroy(jobSystemHandle) }
 
-    open val maxConcurrency: Int
+    val maxConcurrency: Int
         get() = JphJobSystem_GetMaxConcurrency(jobSystemHandle)
 
-    open fun createBarrier(): JobSystem.Barrier? =
+    fun createBarrier(): JobSystem.Barrier? =
         JphJobSystem_CreateBarrier(jobSystemHandle).takeIf { it != NullPointer }?.let { JobSystem.Barrier(it) }
 
-    open fun destroyBarrier(barrier: JobSystem.Barrier?) =
+    fun destroyBarrier(barrier: JobSystem.Barrier?) =
         JphJobSystem_DestroyBarrier(jobSystemHandle, barrier?.jobSystemBarrierHandle ?: NullPointer)
 
-    open fun waitForJobs(barrier: JobSystem.Barrier?) =
+    fun waitForJobs(barrier: JobSystem.Barrier?) =
         JphJobSystem_WaitForJobs(jobSystemHandle, barrier?.jobSystemBarrierHandle ?: NullPointer)
 
     /** C++ `JPH::JobSystem::JobHandle`. */
-    open class JobHandle internal constructor(internal val jobSystemJobHandleHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class JobHandle internal constructor(internal val jobSystemJobHandleHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphJobSystemJobHandle_create(), owned = true)
     
         override fun close() =
             closeOnce { JphJobSystemJobHandle_destroy(jobSystemJobHandleHandle) }
     
-        open val isValid: Boolean
+        val isValid: Boolean
             get() = JphJobSystemJobHandle_IsValid(jobSystemJobHandleHandle)
     
-        open val isDone: Boolean
+        val isDone: Boolean
             get() = JphJobSystemJobHandle_IsDone(jobSystemJobHandleHandle)
     
-        open fun addDependency(count: Int) =
+        fun addDependency(count: Int) =
             JphJobSystemJobHandle_AddDependency(jobSystemJobHandleHandle, count)
     
-        open fun removeDependency(count: Int) =
+        fun removeDependency(count: Int) =
             JphJobSystemJobHandle_RemoveDependency(jobSystemJobHandleHandle, count)
     
         companion object {
@@ -75,11 +75,11 @@ open class JobSystem internal constructor(internal val jobSystemHandle: NativePo
     }
     
     /** C++ `JPH::JobSystem::Barrier`. */
-    open class Barrier internal constructor(internal val jobSystemBarrierHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
-        open fun addJob(job: JobSystem.JobHandle) =
+    class Barrier internal constructor(internal val jobSystemBarrierHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+        fun addJob(job: JobSystem.JobHandle) =
             JphJobSystemBarrier_AddJob(jobSystemBarrierHandle, job.jobSystemJobHandleHandle)
     
-        open fun addJobs(handles: JobSystem.JobHandle?, numHandles: Int) =
+        fun addJobs(handles: JobSystem.JobHandle?, numHandles: Int) =
             JphJobSystemBarrier_AddJobs(jobSystemBarrierHandle, handles?.jobSystemJobHandleHandle ?: NullPointer, numHandles)
     }
     }

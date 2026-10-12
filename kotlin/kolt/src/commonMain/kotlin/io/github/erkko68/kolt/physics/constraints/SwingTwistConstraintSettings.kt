@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SwingTwistConstraintSettings`. */
-open class SwingTwistConstraintSettings internal constructor(internal val swingTwistConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSwingTwistConstraintSettings_asTwoBodyConstraintSettings(swingTwistConstraintSettingsHandle), owned), AutoCloseable {
+class SwingTwistConstraintSettings internal constructor(internal val swingTwistConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSwingTwistConstraintSettings_asTwoBodyConstraintSettings(swingTwistConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphSwingTwistConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,11 +42,11 @@ open class SwingTwistConstraintSettings internal constructor(internal val swingT
     override fun close() =
         closeOnce { JphSwingTwistConstraintSettings_release(swingTwistConstraintSettingsHandle) }
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphSwingTwistConstraintSettings_GetSpace(swingTwistConstraintSettingsHandle))
         set(value) = JphSwingTwistConstraintSettings_SetSpace(swingTwistConstraintSettingsHandle, value.value)
 
-    open var position1: Vec3
+    var position1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -56,7 +56,7 @@ open class SwingTwistConstraintSettings internal constructor(internal val swingT
         }
         set(value) = interopScope { JphSwingTwistConstraintSettings_SetPosition1(swingTwistConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var twistAxis1: Vec3
+    var twistAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -66,7 +66,7 @@ open class SwingTwistConstraintSettings internal constructor(internal val swingT
         }
         set(value) = interopScope { JphSwingTwistConstraintSettings_SetTwistAxis1(swingTwistConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var planeAxis1: Vec3
+    var planeAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -76,7 +76,7 @@ open class SwingTwistConstraintSettings internal constructor(internal val swingT
         }
         set(value) = interopScope { JphSwingTwistConstraintSettings_SetPlaneAxis1(swingTwistConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var position2: Vec3
+    var position2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -86,7 +86,7 @@ open class SwingTwistConstraintSettings internal constructor(internal val swingT
         }
         set(value) = interopScope { JphSwingTwistConstraintSettings_SetPosition2(swingTwistConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var twistAxis2: Vec3
+    var twistAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -96,7 +96,7 @@ open class SwingTwistConstraintSettings internal constructor(internal val swingT
         }
         set(value) = interopScope { JphSwingTwistConstraintSettings_SetTwistAxis2(swingTwistConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var planeAxis2: Vec3
+    var planeAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -106,31 +106,31 @@ open class SwingTwistConstraintSettings internal constructor(internal val swingT
         }
         set(value) = interopScope { JphSwingTwistConstraintSettings_SetPlaneAxis2(swingTwistConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var swingType: ESwingType
+    var swingType: ESwingType
         get() = ESwingType.of(JphSwingTwistConstraintSettings_GetSwingType(swingTwistConstraintSettingsHandle))
         set(value) = JphSwingTwistConstraintSettings_SetSwingType(swingTwistConstraintSettingsHandle, value.value)
 
-    open var normalHalfConeAngle: Float
+    var normalHalfConeAngle: Float
         get() = JphSwingTwistConstraintSettings_GetNormalHalfConeAngle(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetNormalHalfConeAngle(swingTwistConstraintSettingsHandle, value)
 
-    open var planeHalfConeAngle: Float
+    var planeHalfConeAngle: Float
         get() = JphSwingTwistConstraintSettings_GetPlaneHalfConeAngle(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetPlaneHalfConeAngle(swingTwistConstraintSettingsHandle, value)
 
-    open var twistMinAngle: Float
+    var twistMinAngle: Float
         get() = JphSwingTwistConstraintSettings_GetTwistMinAngle(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetTwistMinAngle(swingTwistConstraintSettingsHandle, value)
 
-    open var twistMaxAngle: Float
+    var twistMaxAngle: Float
         get() = JphSwingTwistConstraintSettings_GetTwistMaxAngle(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetTwistMaxAngle(swingTwistConstraintSettingsHandle, value)
 
-    open var maxFrictionTorque: Float
+    var maxFrictionTorque: Float
         get() = JphSwingTwistConstraintSettings_GetMaxFrictionTorque(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetMaxFrictionTorque(swingTwistConstraintSettingsHandle, value)
 
-    open var swingMotorSettings: MotorSettings
+    var swingMotorSettings: MotorSettings
         get() = run {
             val returned = MotorSettings(JphMotorSettings_create(), owned = true)
             JphSwingTwistConstraintSettings_GetSwingMotorSettings(swingTwistConstraintSettingsHandle, returned.motorSettingsHandle)
@@ -138,7 +138,7 @@ open class SwingTwistConstraintSettings internal constructor(internal val swingT
         }
         set(value) = JphSwingTwistConstraintSettings_SetSwingMotorSettings(swingTwistConstraintSettingsHandle, value.motorSettingsHandle)
 
-    open var twistMotorSettings: MotorSettings
+    var twistMotorSettings: MotorSettings
         get() = run {
             val returned = MotorSettings(JphMotorSettings_create(), owned = true)
             JphSwingTwistConstraintSettings_GetTwistMotorSettings(swingTwistConstraintSettingsHandle, returned.motorSettingsHandle)

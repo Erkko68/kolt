@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MotorSettings`. */
-open class MotorSettings internal constructor(internal val motorSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class MotorSettings internal constructor(internal val motorSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphMotorSettings_create(), owned = true)
     constructor(mode: ESpringMode, frequency: Float, damping: Float) : this(JphMotorSettings_create_ESpringMode_float_float(mode.value, frequency, damping), owned = true)
     constructor(frequency: Float, damping: Float) : this(JphMotorSettings_create_float_float(frequency, damping), owned = true)
@@ -43,28 +43,28 @@ open class MotorSettings internal constructor(internal val motorSettingsHandle: 
     override fun close() =
         closeOnce { JphMotorSettings_destroy(motorSettingsHandle) }
 
-    open fun setForceLimits(min: Float, max: Float) =
+    fun setForceLimits(min: Float, max: Float) =
         JphMotorSettings_SetForceLimits(motorSettingsHandle, min, max)
 
-    open fun setTorqueLimits(min: Float, max: Float) =
+    fun setTorqueLimits(min: Float, max: Float) =
         JphMotorSettings_SetTorqueLimits(motorSettingsHandle, min, max)
 
-    open fun setForceLimit(limit: Float) =
+    fun setForceLimit(limit: Float) =
         JphMotorSettings_SetForceLimit(motorSettingsHandle, limit)
 
-    open fun setTorqueLimit(limit: Float) =
+    fun setTorqueLimit(limit: Float) =
         JphMotorSettings_SetTorqueLimit(motorSettingsHandle, limit)
 
-    open val isValid: Boolean
+    val isValid: Boolean
         get() = JphMotorSettings_IsValid(motorSettingsHandle)
 
-    open fun saveBinaryState(stream: StreamOut) =
+    fun saveBinaryState(stream: StreamOut) =
         JphMotorSettings_SaveBinaryState(motorSettingsHandle, stream.streamOutHandle)
 
-    open fun restoreBinaryState(stream: StreamIn) =
+    fun restoreBinaryState(stream: StreamIn) =
         JphMotorSettings_RestoreBinaryState(motorSettingsHandle, stream.streamInHandle)
 
-    open var springSettings: SpringSettings
+    var springSettings: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
             JphMotorSettings_GetSpringSettings(motorSettingsHandle, returned.springSettingsHandle)
@@ -72,19 +72,19 @@ open class MotorSettings internal constructor(internal val motorSettingsHandle: 
         }
         set(value) = JphMotorSettings_SetSpringSettings(motorSettingsHandle, value.springSettingsHandle)
 
-    open var minForceLimit: Float
+    var minForceLimit: Float
         get() = JphMotorSettings_GetMinForceLimit(motorSettingsHandle)
         set(value) = JphMotorSettings_SetMinForceLimit(motorSettingsHandle, value)
 
-    open var maxForceLimit: Float
+    var maxForceLimit: Float
         get() = JphMotorSettings_GetMaxForceLimit(motorSettingsHandle)
         set(value) = JphMotorSettings_SetMaxForceLimit(motorSettingsHandle, value)
 
-    open var minTorqueLimit: Float
+    var minTorqueLimit: Float
         get() = JphMotorSettings_GetMinTorqueLimit(motorSettingsHandle)
         set(value) = JphMotorSettings_SetMinTorqueLimit(motorSettingsHandle, value)
 
-    open var maxTorqueLimit: Float
+    var maxTorqueLimit: Float
         get() = JphMotorSettings_GetMaxTorqueLimit(motorSettingsHandle)
         set(value) = JphMotorSettings_SetMaxTorqueLimit(motorSettingsHandle, value)
 

@@ -45,36 +45,36 @@ open class ConstraintSettings internal constructor(internal val constraintSettin
     override fun close() =
         closeOnce { JphConstraintSettings_release(constraintSettingsHandle) }
 
-    open val rtti: RTTI?
+    val rtti: RTTI?
         get() = JphConstraintSettings_GetRTTI(constraintSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
-    open fun castTo(rtti: RTTI?): NativePointer =
+    fun castTo(rtti: RTTI?): NativePointer =
         JphConstraintSettings_CastTo(constraintSettingsHandle, rtti?.rttiHandle ?: NullPointer)
 
     open fun saveBinaryState(stream: StreamOut) =
         JphConstraintSettings_SaveBinaryState(constraintSettingsHandle, stream.streamOutHandle)
 
-    open var enabled: Boolean
+    var enabled: Boolean
         get() = JphConstraintSettings_GetEnabled(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetEnabled(constraintSettingsHandle, value)
 
-    open var constraintPriority: Int
+    var constraintPriority: Int
         get() = JphConstraintSettings_GetConstraintPriority(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetConstraintPriority(constraintSettingsHandle, value)
 
-    open var numVelocityStepsOverride: Int
+    var numVelocityStepsOverride: Int
         get() = JphConstraintSettings_GetNumVelocityStepsOverride(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetNumVelocityStepsOverride(constraintSettingsHandle, value)
 
-    open var numPositionStepsOverride: Int
+    var numPositionStepsOverride: Int
         get() = JphConstraintSettings_GetNumPositionStepsOverride(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetNumPositionStepsOverride(constraintSettingsHandle, value)
 
-    open var drawConstraintSize: Float
+    var drawConstraintSize: Float
         get() = JphConstraintSettings_GetDrawConstraintSize(constraintSettingsHandle)
         set(value) = JphConstraintSettings_SetDrawConstraintSize(constraintSettingsHandle, value)
 
-    open var userData: Long
+    var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)

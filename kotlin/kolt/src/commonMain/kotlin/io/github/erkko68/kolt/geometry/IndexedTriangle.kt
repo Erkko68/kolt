@@ -33,14 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::IndexedTriangle`. */
-open class IndexedTriangle internal constructor(internal val indexedTriangleHandle: NativePointer, owned: Boolean = false) : IndexedTriangleNoMaterial(JphIndexedTriangle_asIndexedTriangleNoMaterial(indexedTriangleHandle), owned), AutoCloseable {
+class IndexedTriangle internal constructor(internal val indexedTriangleHandle: NativePointer, owned: Boolean = false) : IndexedTriangleNoMaterial(JphIndexedTriangle_asIndexedTriangleNoMaterial(indexedTriangleHandle), owned), AutoCloseable {
     constructor(i1: Int, i2: Int, i3: Int, materialIndex: Int, userData: Int) : this(JphIndexedTriangle_create_uint32_uint32_uint32_uint32_uint(i1, i2, i3, materialIndex, userData), owned = true)
     constructor() : this(JphIndexedTriangle_create(), owned = true)
 
     override fun close() =
         closeOnce { JphIndexedTriangle_destroy(indexedTriangleHandle) }
 
-    open val lowestIndexFirst: IndexedTriangle
+    val lowestIndexFirst: IndexedTriangle
         get() = run {
             val returned = IndexedTriangle(JphIndexedTriangle_create(), owned = true)
             JphIndexedTriangle_GetLowestIndexFirst(indexedTriangleHandle, returned.indexedTriangleHandle)
@@ -56,11 +56,11 @@ open class IndexedTriangle internal constructor(internal val indexedTriangleHand
             returned[0]
         }
 
-    open var materialIndex: Int
+    var materialIndex: Int
         get() = JphIndexedTriangle_GetMaterialIndex(indexedTriangleHandle)
         set(value) = JphIndexedTriangle_SetMaterialIndex(indexedTriangleHandle, value)
 
-    open var userData: Int
+    var userData: Int
         get() = JphIndexedTriangle_GetUserData(indexedTriangleHandle)
         set(value) = JphIndexedTriangle_SetUserData(indexedTriangleHandle, value)
 }

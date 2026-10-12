@@ -33,35 +33,35 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RagdollSettings`. */
-open class RagdollSettings internal constructor(internal val ragdollSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class RagdollSettings internal constructor(internal val ragdollSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphRagdollSettings_create(), owned = true)
 
-    open fun addRef() =
+    fun addRef() =
         own { JphRagdollSettings_addRef(ragdollSettingsHandle) }
 
     override fun close() =
         closeOnce { JphRagdollSettings_release(ragdollSettingsHandle) }
 
-    open fun stabilize(): Boolean =
+    fun stabilize(): Boolean =
         JphRagdollSettings_Stabilize(ragdollSettingsHandle)
 
-    open fun calculateConstraintPriorities(basePriority: Int) =
+    fun calculateConstraintPriorities(basePriority: Int) =
         JphRagdollSettings_CalculateConstraintPriorities(ragdollSettingsHandle, basePriority)
 
-    open fun saveBinaryState(stream: StreamOut, saveShapes: Boolean, saveGroupFilter: Boolean) =
+    fun saveBinaryState(stream: StreamOut, saveShapes: Boolean, saveGroupFilter: Boolean) =
         JphRagdollSettings_SaveBinaryState(ragdollSettingsHandle, stream.streamOutHandle, saveShapes, saveGroupFilter)
 
-    open fun createRagdoll(collisionGroup: Int, userData: Long, system: PhysicsSystem?): Ragdoll? =
+    fun createRagdoll(collisionGroup: Int, userData: Long, system: PhysicsSystem?): Ragdoll? =
         JphRagdollSettings_CreateRagdoll(ragdollSettingsHandle, collisionGroup, userData, system?.physicsSystemHandle ?: NullPointer).takeIf { it != NullPointer }?.let { Ragdoll(it) }
 
-    open var skeleton: Skeleton?
+    var skeleton: Skeleton?
         get() = JphRagdollSettings_GetSkeleton(ragdollSettingsHandle).takeIf { it != NullPointer }?.let { Skeleton(it) }
         set(value) = JphRagdollSettings_SetSkeleton(ragdollSettingsHandle, value?.skeletonHandle ?: NullPointer)
 
-    open fun calculateBodyIndexToConstraintIndex() =
+    fun calculateBodyIndexToConstraintIndex() =
         JphRagdollSettings_CalculateBodyIndexToConstraintIndex(ragdollSettingsHandle)
 
-    open val bodyIndexToConstraintIndex: IntArray
+    val bodyIndexToConstraintIndex: IntArray
         get() = interopScope {
             val count = JphRagdollSettings_GetBodyIndexToConstraintIndex(ragdollSettingsHandle, NullPointer, 0)
             val returned = IntArray(count)
@@ -71,13 +71,13 @@ open class RagdollSettings internal constructor(internal val ragdollSettingsHand
             returned
         }
 
-    open fun getConstraintIndexForBodyIndex(bodyIndex: Int): Int =
+    fun getConstraintIndexForBodyIndex(bodyIndex: Int): Int =
         JphRagdollSettings_GetConstraintIndexForBodyIndex(ragdollSettingsHandle, bodyIndex)
 
-    open fun calculateConstraintIndexToBodyIdxPair() =
+    fun calculateConstraintIndexToBodyIdxPair() =
         JphRagdollSettings_CalculateConstraintIndexToBodyIdxPair(ragdollSettingsHandle)
 
-    open var parts: List<RagdollSettings.Part>
+    var parts: List<RagdollSettings.Part>
         get() = interopScope {
             val count = JphRagdollSettings_GetParts(ragdollSettingsHandle, NullPointer, 0)
             val returned = List(count) { RagdollSettings.Part(JphRagdollSettingsPart_create(), owned = true) }
@@ -86,7 +86,7 @@ open class RagdollSettings internal constructor(internal val ragdollSettingsHand
         }
         set(value) = interopScope { JphRagdollSettings_SetParts(ragdollSettingsHandle, toInterop(value.map { it.ragdollSettingsPartHandle }), value.size) }
 
-    open var additionalConstraints: List<RagdollSettings.AdditionalConstraint>
+    var additionalConstraints: List<RagdollSettings.AdditionalConstraint>
         get() = interopScope {
             val count = JphRagdollSettings_GetAdditionalConstraints(ragdollSettingsHandle, NullPointer, 0)
             val returned = List(count) { RagdollSettings.AdditionalConstraint(JphRagdollSettingsAdditionalConstraint_create(), owned = true) }
@@ -96,13 +96,13 @@ open class RagdollSettings internal constructor(internal val ragdollSettingsHand
         set(value) = interopScope { JphRagdollSettings_SetAdditionalConstraints(ragdollSettingsHandle, toInterop(value.map { it.ragdollSettingsAdditionalConstraintHandle }), value.size) }
 
     /** C++ `JPH::RagdollSettings::Part`. */
-    open class Part internal constructor(internal val ragdollSettingsPartHandle: NativePointer, owned: Boolean = false) : BodyCreationSettings(JphRagdollSettingsPart_asBodyCreationSettings(ragdollSettingsPartHandle), owned), AutoCloseable {
+    class Part internal constructor(internal val ragdollSettingsPartHandle: NativePointer, owned: Boolean = false) : BodyCreationSettings(JphRagdollSettingsPart_asBodyCreationSettings(ragdollSettingsPartHandle), owned), AutoCloseable {
         constructor() : this(JphRagdollSettingsPart_create(), owned = true)
     
         override fun close() =
             closeOnce { JphRagdollSettingsPart_destroy(ragdollSettingsPartHandle) }
     
-        open var toParent: TwoBodyConstraintSettings?
+        var toParent: TwoBodyConstraintSettings?
             get() = JphRagdollSettingsPart_GetToParent(ragdollSettingsPartHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraintSettings(it) }
             set(value) = JphRagdollSettingsPart_SetToParent(ragdollSettingsPartHandle, value?.twoBodyConstraintSettingsHandle ?: NullPointer)
     
@@ -113,14 +113,14 @@ open class RagdollSettings internal constructor(internal val ragdollSettingsHand
     }
     
     /** C++ `JPH::RagdollSettings::AdditionalConstraint`. */
-    open class AdditionalConstraint internal constructor(internal val ragdollSettingsAdditionalConstraintHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    class AdditionalConstraint internal constructor(internal val ragdollSettingsAdditionalConstraintHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
         constructor() : this(JphRagdollSettingsAdditionalConstraint_create(), owned = true)
         constructor(bodyIdx1: Int, bodyIdx2: Int, constraint: TwoBodyConstraintSettings?) : this(JphRagdollSettingsAdditionalConstraint_create_int_int_TwoBodyConstraintSettings(bodyIdx1, bodyIdx2, constraint?.twoBodyConstraintSettingsHandle ?: NullPointer), owned = true)
     
         override fun close() =
             closeOnce { JphRagdollSettingsAdditionalConstraint_destroy(ragdollSettingsAdditionalConstraintHandle) }
     
-        open var bodyIdx: IntArray
+        var bodyIdx: IntArray
             get() = interopScope {
                 val count = JphRagdollSettingsAdditionalConstraint_GetBodyIdx(ragdollSettingsAdditionalConstraintHandle, NullPointer, 0)
                 val returned = IntArray(count)
@@ -131,7 +131,7 @@ open class RagdollSettings internal constructor(internal val ragdollSettingsHand
             }
             set(value) = interopScope { JphRagdollSettingsAdditionalConstraint_SetBodyIdx(ragdollSettingsAdditionalConstraintHandle, toInterop(value), value.size) }
     
-        open var constraint: TwoBodyConstraintSettings?
+        var constraint: TwoBodyConstraintSettings?
             get() = JphRagdollSettingsAdditionalConstraint_GetConstraint(ragdollSettingsAdditionalConstraintHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraintSettings(it) }
             set(value) = JphRagdollSettingsAdditionalConstraint_SetConstraint(ragdollSettingsAdditionalConstraintHandle, value?.twoBodyConstraintSettingsHandle ?: NullPointer)
     

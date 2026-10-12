@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterVirtualSettings`. */
-open class CharacterVirtualSettings internal constructor(internal val characterVirtualSettingsHandle: NativePointer, owned: Boolean = false) : CharacterBaseSettings(JphCharacterVirtualSettings_asCharacterBaseSettings(characterVirtualSettingsHandle), owned), AutoCloseable {
+class CharacterVirtualSettings internal constructor(internal val characterVirtualSettingsHandle: NativePointer, owned: Boolean = false) : CharacterBaseSettings(JphCharacterVirtualSettings_asCharacterBaseSettings(characterVirtualSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCharacterVirtualSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,7 +42,7 @@ open class CharacterVirtualSettings internal constructor(internal val characterV
     override fun close() =
         closeOnce { JphCharacterVirtualSettings_release(characterVirtualSettingsHandle) }
 
-    open var id: CharacterID
+    var id: CharacterID
         get() = run {
             val returned = CharacterID(JphCharacterID_create(), owned = true)
             JphCharacterVirtualSettings_GetID(characterVirtualSettingsHandle, returned.characterIDHandle)
@@ -50,15 +50,15 @@ open class CharacterVirtualSettings internal constructor(internal val characterV
         }
         set(value) = JphCharacterVirtualSettings_SetID(characterVirtualSettingsHandle, value.characterIDHandle)
 
-    open var mass: Float
+    var mass: Float
         get() = JphCharacterVirtualSettings_GetMass(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMass(characterVirtualSettingsHandle, value)
 
-    open var maxStrength: Float
+    var maxStrength: Float
         get() = JphCharacterVirtualSettings_GetMaxStrength(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMaxStrength(characterVirtualSettingsHandle, value)
 
-    open var shapeOffset: Vec3
+    var shapeOffset: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -68,55 +68,55 @@ open class CharacterVirtualSettings internal constructor(internal val characterV
         }
         set(value) = interopScope { JphCharacterVirtualSettings_SetShapeOffset(characterVirtualSettingsHandle, toInterop(value.toArray())) }
 
-    open var backFaceMode: EBackFaceMode
+    var backFaceMode: EBackFaceMode
         get() = EBackFaceMode.of(JphCharacterVirtualSettings_GetBackFaceMode(characterVirtualSettingsHandle))
         set(value) = JphCharacterVirtualSettings_SetBackFaceMode(characterVirtualSettingsHandle, value.value)
 
-    open var predictiveContactDistance: Float
+    var predictiveContactDistance: Float
         get() = JphCharacterVirtualSettings_GetPredictiveContactDistance(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetPredictiveContactDistance(characterVirtualSettingsHandle, value)
 
-    open var maxCollisionIterations: Int
+    var maxCollisionIterations: Int
         get() = JphCharacterVirtualSettings_GetMaxCollisionIterations(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMaxCollisionIterations(characterVirtualSettingsHandle, value)
 
-    open var maxConstraintIterations: Int
+    var maxConstraintIterations: Int
         get() = JphCharacterVirtualSettings_GetMaxConstraintIterations(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMaxConstraintIterations(characterVirtualSettingsHandle, value)
 
-    open var minTimeRemaining: Float
+    var minTimeRemaining: Float
         get() = JphCharacterVirtualSettings_GetMinTimeRemaining(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMinTimeRemaining(characterVirtualSettingsHandle, value)
 
-    open var collisionTolerance: Float
+    var collisionTolerance: Float
         get() = JphCharacterVirtualSettings_GetCollisionTolerance(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetCollisionTolerance(characterVirtualSettingsHandle, value)
 
-    open var characterPadding: Float
+    var characterPadding: Float
         get() = JphCharacterVirtualSettings_GetCharacterPadding(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetCharacterPadding(characterVirtualSettingsHandle, value)
 
-    open var maxNumHits: Int
+    var maxNumHits: Int
         get() = JphCharacterVirtualSettings_GetMaxNumHits(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetMaxNumHits(characterVirtualSettingsHandle, value)
 
-    open var hitReductionCosMaxAngle: Float
+    var hitReductionCosMaxAngle: Float
         get() = JphCharacterVirtualSettings_GetHitReductionCosMaxAngle(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetHitReductionCosMaxAngle(characterVirtualSettingsHandle, value)
 
-    open var penetrationRecoverySpeed: Float
+    var penetrationRecoverySpeed: Float
         get() = JphCharacterVirtualSettings_GetPenetrationRecoverySpeed(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetPenetrationRecoverySpeed(characterVirtualSettingsHandle, value)
 
-    open var innerBodyShape: Shape?
+    var innerBodyShape: Shape?
         get() = JphCharacterVirtualSettings_GetInnerBodyShape(characterVirtualSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(value) = JphCharacterVirtualSettings_SetInnerBodyShape(characterVirtualSettingsHandle, value?.shapeHandle ?: NullPointer)
 
-    open var innerBodyIDOverride: BodyID
+    var innerBodyIDOverride: BodyID
         get() = BodyID(JphCharacterVirtualSettings_GetInnerBodyIDOverride(characterVirtualSettingsHandle))
         set(value) = JphCharacterVirtualSettings_SetInnerBodyIDOverride(characterVirtualSettingsHandle, value.value)
 
-    open var innerBodyLayer: Int
+    var innerBodyLayer: Int
         get() = JphCharacterVirtualSettings_GetInnerBodyLayer(characterVirtualSettingsHandle)
         set(value) = JphCharacterVirtualSettings_SetInnerBodyLayer(characterVirtualSettingsHandle, value)
 }

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TempAllocatorMalloc`. */
-open class TempAllocatorMalloc internal constructor(internal val tempAllocatorMallocHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorMalloc_asTempAllocator(tempAllocatorMallocHandle), owned), AutoCloseable {
+class TempAllocatorMalloc internal constructor(internal val tempAllocatorMallocHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorMalloc_asTempAllocator(tempAllocatorMallocHandle), owned), AutoCloseable {
     constructor() : this(JphTempAllocatorMalloc_create(), owned = true)
 
     override fun close() =

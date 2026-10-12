@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::GearConstraint`. */
-open class GearConstraint internal constructor(internal val gearConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphGearConstraint_asTwoBodyConstraint(gearConstraintHandle), owned), AutoCloseable {
+class GearConstraint internal constructor(internal val gearConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphGearConstraint_asTwoBodyConstraint(gearConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: GearConstraintSettings) : this(JphGearConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.gearConstraintSettingsHandle), owned = true)
 
     override fun addRef() =
@@ -42,9 +42,9 @@ open class GearConstraint internal constructor(internal val gearConstraintHandle
     override fun close() =
         closeOnce { JphGearConstraint_release(gearConstraintHandle) }
 
-    open fun setConstraints(gear1: Constraint?, gear2: Constraint?) =
+    fun setConstraints(gear1: Constraint?, gear2: Constraint?) =
         JphGearConstraint_SetConstraints(gearConstraintHandle, gear1?.constraintHandle ?: NullPointer, gear2?.constraintHandle ?: NullPointer)
 
-    open val totalLambda: Float
+    val totalLambda: Float
         get() = JphGearConstraint_GetTotalLambda(gearConstraintHandle)
 }

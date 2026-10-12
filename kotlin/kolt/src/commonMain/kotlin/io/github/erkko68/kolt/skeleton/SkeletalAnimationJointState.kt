@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 
 /** C++ `JPH::SkeletalAnimation::JointState`. */
-open class SkeletalAnimationJointState internal constructor(internal val skeletalAnimationJointStateHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class SkeletalAnimationJointState internal constructor(internal val skeletalAnimationJointStateHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

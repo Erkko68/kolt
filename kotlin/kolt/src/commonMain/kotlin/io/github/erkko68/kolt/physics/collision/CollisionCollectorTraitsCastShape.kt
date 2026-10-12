@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollisionCollectorTraitsCastShape`. */
-open class CollisionCollectorTraitsCastShape internal constructor(internal val collisionCollectorTraitsCastShapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class CollisionCollectorTraitsCastShape internal constructor(internal val collisionCollectorTraitsCastShapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

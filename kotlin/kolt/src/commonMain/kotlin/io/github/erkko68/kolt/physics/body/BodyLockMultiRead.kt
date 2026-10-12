@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyLockMultiRead`. */
-open class BodyLockMultiRead internal constructor(internal val bodyLockMultiReadHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class BodyLockMultiRead internal constructor(internal val bodyLockMultiReadHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

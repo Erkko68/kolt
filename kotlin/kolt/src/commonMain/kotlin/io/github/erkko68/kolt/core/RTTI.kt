@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RTTI`. */
-open class RTTI internal constructor(internal val rttiHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class RTTI internal constructor(internal val rttiHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

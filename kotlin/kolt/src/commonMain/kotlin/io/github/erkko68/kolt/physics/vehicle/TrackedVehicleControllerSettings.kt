@@ -45,7 +45,7 @@ open class TrackedVehicleControllerSettings internal constructor(internal val tr
     override fun close() =
         closeOnce { JphTrackedVehicleControllerSettings_release(trackedVehicleControllerSettingsHandle) }
 
-    open var engine: VehicleEngineSettings
+    var engine: VehicleEngineSettings
         get() = run {
             val returned = VehicleEngineSettings(JphVehicleEngineSettings_create(), owned = true)
             JphTrackedVehicleControllerSettings_GetEngine(trackedVehicleControllerSettingsHandle, returned.vehicleEngineSettingsHandle)
@@ -53,7 +53,7 @@ open class TrackedVehicleControllerSettings internal constructor(internal val tr
         }
         set(value) = JphTrackedVehicleControllerSettings_SetEngine(trackedVehicleControllerSettingsHandle, value.vehicleEngineSettingsHandle)
 
-    open var transmission: VehicleTransmissionSettings
+    var transmission: VehicleTransmissionSettings
         get() = run {
             val returned = VehicleTransmissionSettings(JphVehicleTransmissionSettings_create(), owned = true)
             JphTrackedVehicleControllerSettings_GetTransmission(trackedVehicleControllerSettingsHandle, returned.vehicleTransmissionSettingsHandle)
@@ -61,7 +61,7 @@ open class TrackedVehicleControllerSettings internal constructor(internal val tr
         }
         set(value) = JphTrackedVehicleControllerSettings_SetTransmission(trackedVehicleControllerSettingsHandle, value.vehicleTransmissionSettingsHandle)
 
-    open var tracks: List<VehicleTrackSettings>
+    var tracks: List<VehicleTrackSettings>
         get() = interopScope {
             val count = JphTrackedVehicleControllerSettings_GetTracks(trackedVehicleControllerSettingsHandle, NullPointer, 0)
             val returned = List(count) { VehicleTrackSettings(JphVehicleTrackSettings_create(), owned = true) }

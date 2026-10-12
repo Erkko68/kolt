@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DMat44`. */
-open class DMat44 internal constructor(internal val dMat44Handle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class DMat44 internal constructor(internal val dMat44Handle: NativePointer, owned: Boolean = false) : NativeObject(owned)

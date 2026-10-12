@@ -33,20 +33,20 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterID`. */
-open class CharacterID internal constructor(internal val characterIDHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class CharacterID internal constructor(internal val characterIDHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCharacterID_create(), owned = true)
     constructor(id: Int) : this(JphCharacterID_create_uint32(id), owned = true)
 
     override fun close() =
         closeOnce { JphCharacterID_destroy(characterIDHandle) }
 
-    open val value: Int
+    val value: Int
         get() = JphCharacterID_GetValue(characterIDHandle)
 
-    open val isInvalid: Boolean
+    val isInvalid: Boolean
         get() = JphCharacterID_IsInvalid(characterIDHandle)
 
-    open val hash: Long
+    val hash: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)

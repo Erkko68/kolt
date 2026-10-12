@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PointConstraintSettings`. */
-open class PointConstraintSettings internal constructor(internal val pointConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphPointConstraintSettings_asTwoBodyConstraintSettings(pointConstraintSettingsHandle), owned), AutoCloseable {
+class PointConstraintSettings internal constructor(internal val pointConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphPointConstraintSettings_asTwoBodyConstraintSettings(pointConstraintSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphPointConstraintSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,11 +42,11 @@ open class PointConstraintSettings internal constructor(internal val pointConstr
     override fun close() =
         closeOnce { JphPointConstraintSettings_release(pointConstraintSettingsHandle) }
 
-    open var space: EConstraintSpace
+    var space: EConstraintSpace
         get() = EConstraintSpace.of(JphPointConstraintSettings_GetSpace(pointConstraintSettingsHandle))
         set(value) = JphPointConstraintSettings_SetSpace(pointConstraintSettingsHandle, value.value)
 
-    open var point1: Vec3
+    var point1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -56,7 +56,7 @@ open class PointConstraintSettings internal constructor(internal val pointConstr
         }
         set(value) = interopScope { JphPointConstraintSettings_SetPoint1(pointConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var point2: Vec3
+    var point2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

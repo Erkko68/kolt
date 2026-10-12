@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::GroupFilterTable`. */
-open class GroupFilterTable internal constructor(internal val groupFilterTableHandle: NativePointer, owned: Boolean = false) : GroupFilter(JphGroupFilterTable_asGroupFilter(groupFilterTableHandle), owned), AutoCloseable {
+class GroupFilterTable internal constructor(internal val groupFilterTableHandle: NativePointer, owned: Boolean = false) : GroupFilter(JphGroupFilterTable_asGroupFilter(groupFilterTableHandle), owned), AutoCloseable {
     constructor(numSubGroups: Int) : this(JphGroupFilterTable_create(numSubGroups), owned = true)
 
     override fun addRef() =
@@ -42,13 +42,13 @@ open class GroupFilterTable internal constructor(internal val groupFilterTableHa
     override fun close() =
         closeOnce { JphGroupFilterTable_release(groupFilterTableHandle) }
 
-    open fun disableCollision(subGroup1: Int, subGroup2: Int) =
+    fun disableCollision(subGroup1: Int, subGroup2: Int) =
         JphGroupFilterTable_DisableCollision(groupFilterTableHandle, subGroup1, subGroup2)
 
-    open fun enableCollision(subGroup1: Int, subGroup2: Int) =
+    fun enableCollision(subGroup1: Int, subGroup2: Int) =
         JphGroupFilterTable_EnableCollision(groupFilterTableHandle, subGroup1, subGroup2)
 
-    open fun isCollisionEnabled(subGroup1: Int, subGroup2: Int): Boolean =
+    fun isCollisionEnabled(subGroup1: Int, subGroup2: Int): Boolean =
         JphGroupFilterTable_IsCollisionEnabled(groupFilterTableHandle, subGroup1, subGroup2)
 
     companion object {

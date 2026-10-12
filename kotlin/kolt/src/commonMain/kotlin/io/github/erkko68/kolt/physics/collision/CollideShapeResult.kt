@@ -43,14 +43,14 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
     open val earlyOutFraction: Float
         get() = JphCollideShapeResult_GetEarlyOutFraction(collideShapeResultHandle)
 
-    open fun reversed(): CollideShapeResult =
+    fun reversed(): CollideShapeResult =
         run {
             val returned = CollideShapeResult(JphCollideShapeResult_create(), owned = true)
             JphCollideShapeResult_Reversed(collideShapeResultHandle, returned.collideShapeResultHandle)
             returned
         }
 
-    open var contactPointOn1: Vec3
+    var contactPointOn1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -60,7 +60,7 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
         }
         set(value) = interopScope { JphCollideShapeResult_SetContactPointOn1(collideShapeResultHandle, toInterop(value.toArray())) }
 
-    open var contactPointOn2: Vec3
+    var contactPointOn2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -70,7 +70,7 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
         }
         set(value) = interopScope { JphCollideShapeResult_SetContactPointOn2(collideShapeResultHandle, toInterop(value.toArray())) }
 
-    open var penetrationAxis: Vec3
+    var penetrationAxis: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -80,23 +80,23 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
         }
         set(value) = interopScope { JphCollideShapeResult_SetPenetrationAxis(collideShapeResultHandle, toInterop(value.toArray())) }
 
-    open var penetrationDepth: Float
+    var penetrationDepth: Float
         get() = JphCollideShapeResult_GetPenetrationDepth(collideShapeResultHandle)
         set(value) = JphCollideShapeResult_SetPenetrationDepth(collideShapeResultHandle, value)
 
-    open var subShapeID1: SubShapeID
+    var subShapeID1: SubShapeID
         get() = SubShapeID(JphCollideShapeResult_GetSubShapeID1(collideShapeResultHandle))
         set(value) = JphCollideShapeResult_SetSubShapeID1(collideShapeResultHandle, value.value)
 
-    open var subShapeID2: SubShapeID
+    var subShapeID2: SubShapeID
         get() = SubShapeID(JphCollideShapeResult_GetSubShapeID2(collideShapeResultHandle))
         set(value) = JphCollideShapeResult_SetSubShapeID2(collideShapeResultHandle, value.value)
 
-    open var bodyID2: BodyID
+    var bodyID2: BodyID
         get() = BodyID(JphCollideShapeResult_GetBodyID2(collideShapeResultHandle))
         set(value) = JphCollideShapeResult_SetBodyID2(collideShapeResultHandle, value.value)
 
-    open var shape1Face: List<Vec3>
+    var shape1Face: List<Vec3>
         get() = interopScope {
             val count = JphCollideShapeResult_GetShape1Face(collideShapeResultHandle, NullPointer, 0)
             val returned = FloatArray(count * 4)
@@ -107,7 +107,7 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
         }
         set(value) = interopScope { JphCollideShapeResult_SetShape1Face(collideShapeResultHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
 
-    open var shape2Face: List<Vec3>
+    var shape2Face: List<Vec3>
         get() = interopScope {
             val count = JphCollideShapeResult_GetShape2Face(collideShapeResultHandle, NullPointer, 0)
             val returned = FloatArray(count * 4)

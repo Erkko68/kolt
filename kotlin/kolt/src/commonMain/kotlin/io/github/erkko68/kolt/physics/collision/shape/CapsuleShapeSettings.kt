@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CapsuleShapeSettings`. */
-open class CapsuleShapeSettings internal constructor(internal val capsuleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphCapsuleShapeSettings_asConvexShapeSettings(capsuleShapeSettingsHandle), owned), AutoCloseable {
+class CapsuleShapeSettings internal constructor(internal val capsuleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphCapsuleShapeSettings_asConvexShapeSettings(capsuleShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCapsuleShapeSettings_create(), owned = true)
     constructor(halfHeightOfCylinder: Float, radius: Float, material: PhysicsMaterial?) : this(JphCapsuleShapeSettings_create_float_float_PhysicsMaterial(halfHeightOfCylinder, radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
@@ -43,17 +43,17 @@ open class CapsuleShapeSettings internal constructor(internal val capsuleShapeSe
     override fun close() =
         closeOnce { JphCapsuleShapeSettings_release(capsuleShapeSettingsHandle) }
 
-    open val isValid: Boolean
+    val isValid: Boolean
         get() = JphCapsuleShapeSettings_IsValid(capsuleShapeSettingsHandle)
 
-    open val isSphere: Boolean
+    val isSphere: Boolean
         get() = JphCapsuleShapeSettings_IsSphere(capsuleShapeSettingsHandle)
 
-    open var radius: Float
+    var radius: Float
         get() = JphCapsuleShapeSettings_GetRadius(capsuleShapeSettingsHandle)
         set(value) = JphCapsuleShapeSettings_SetRadius(capsuleShapeSettingsHandle, value)
 
-    open var halfHeightOfCylinder: Float
+    var halfHeightOfCylinder: Float
         get() = JphCapsuleShapeSettings_GetHalfHeightOfCylinder(capsuleShapeSettingsHandle)
         set(value) = JphCapsuleShapeSettings_SetHalfHeightOfCylinder(capsuleShapeSettingsHandle, value)
 

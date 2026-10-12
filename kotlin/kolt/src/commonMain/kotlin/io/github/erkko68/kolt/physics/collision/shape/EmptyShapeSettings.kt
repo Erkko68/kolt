@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::EmptyShapeSettings`. */
-open class EmptyShapeSettings internal constructor(internal val emptyShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphEmptyShapeSettings_asShapeSettings(emptyShapeSettingsHandle), owned), AutoCloseable {
+class EmptyShapeSettings internal constructor(internal val emptyShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphEmptyShapeSettings_asShapeSettings(emptyShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphEmptyShapeSettings_create(), owned = true)
     constructor(centerOfMass: Vec3) : this(interopScope { JphEmptyShapeSettings_create_Vec3Arg(toInterop(centerOfMass.toArray())) }, owned = true)
 
@@ -43,7 +43,7 @@ open class EmptyShapeSettings internal constructor(internal val emptyShapeSettin
     override fun close() =
         closeOnce { JphEmptyShapeSettings_release(emptyShapeSettingsHandle) }
 
-    open var centerOfMass: Vec3
+    var centerOfMass: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Character`. */
-open class Character internal constructor(internal val characterHandle: NativePointer, owned: Boolean = false) : CharacterBase(JphCharacter_asCharacterBase(characterHandle), owned), AutoCloseable {
+class Character internal constructor(internal val characterHandle: NativePointer, owned: Boolean = false) : CharacterBase(JphCharacter_asCharacterBase(characterHandle), owned), AutoCloseable {
     constructor(settings: CharacterSettings?, position: Vec3, rotation: Quat, userData: Long, system: PhysicsSystem?) : this(interopScope { JphCharacter_create(settings?.characterSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), userData, system?.physicsSystemHandle ?: NullPointer) }, owned = true)
 
     override fun addRef() =
@@ -42,22 +42,22 @@ open class Character internal constructor(internal val characterHandle: NativePo
     override fun close() =
         closeOnce { JphCharacter_release(characterHandle) }
 
-    open fun addToPhysicsSystem(activationMode: EActivation, lockBodies: Boolean) =
+    fun addToPhysicsSystem(activationMode: EActivation, lockBodies: Boolean) =
         JphCharacter_AddToPhysicsSystem(characterHandle, activationMode.value, lockBodies)
 
-    open fun removeFromPhysicsSystem(lockBodies: Boolean) =
+    fun removeFromPhysicsSystem(lockBodies: Boolean) =
         JphCharacter_RemoveFromPhysicsSystem(characterHandle, lockBodies)
 
-    open fun activate(lockBodies: Boolean) =
+    fun activate(lockBodies: Boolean) =
         JphCharacter_Activate(characterHandle, lockBodies)
 
-    open fun postSimulation(maxSeparationDistance: Float, lockBodies: Boolean) =
+    fun postSimulation(maxSeparationDistance: Float, lockBodies: Boolean) =
         JphCharacter_PostSimulation(characterHandle, maxSeparationDistance, lockBodies)
 
-    open fun setLinearAndAngularVelocity(linearVelocity: Vec3, angularVelocity: Vec3, lockBodies: Boolean) =
+    fun setLinearAndAngularVelocity(linearVelocity: Vec3, angularVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphCharacter_SetLinearAndAngularVelocity(characterHandle, toInterop(linearVelocity.toArray()), toInterop(angularVelocity.toArray()), lockBodies) }
 
-    open fun getLinearVelocity(lockBodies: Boolean): Vec3 =
+    fun getLinearVelocity(lockBodies: Boolean): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -66,19 +66,19 @@ open class Character internal constructor(internal val characterHandle: NativePo
             Vec3(returned)
         }
 
-    open fun setLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
+    fun setLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphCharacter_SetLinearVelocity(characterHandle, toInterop(linearVelocity.toArray()), lockBodies) }
 
-    open fun addLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
+    fun addLinearVelocity(linearVelocity: Vec3, lockBodies: Boolean) =
         interopScope { JphCharacter_AddLinearVelocity(characterHandle, toInterop(linearVelocity.toArray()), lockBodies) }
 
-    open fun addImpulse(impulse: Vec3, lockBodies: Boolean) =
+    fun addImpulse(impulse: Vec3, lockBodies: Boolean) =
         interopScope { JphCharacter_AddImpulse(characterHandle, toInterop(impulse.toArray()), lockBodies) }
 
-    open val bodyID: BodyID
+    val bodyID: BodyID
         get() = BodyID(JphCharacter_GetBodyID(characterHandle))
 
-    open fun getPositionAndRotation(lockBodies: Boolean): Pair<Vec3, Quat> =
+    fun getPositionAndRotation(lockBodies: Boolean): Pair<Vec3, Quat> =
         interopScope {
             val positionArray = FloatArray(4)
             val positionPointer = toInterop(positionArray)
@@ -90,10 +90,10 @@ open class Character internal constructor(internal val characterHandle: NativePo
             Pair(Vec3(positionArray), Quat(rotationArray))
         }
 
-    open fun setPositionAndRotation(position: Vec3, rotation: Quat, activationMode: EActivation, lockBodies: Boolean) =
+    fun setPositionAndRotation(position: Vec3, rotation: Quat, activationMode: EActivation, lockBodies: Boolean) =
         interopScope { JphCharacter_SetPositionAndRotation(characterHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), activationMode.value, lockBodies) }
 
-    open fun getPosition(lockBodies: Boolean): Vec3 =
+    fun getPosition(lockBodies: Boolean): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -102,10 +102,10 @@ open class Character internal constructor(internal val characterHandle: NativePo
             Vec3(returned)
         }
 
-    open fun setPosition(position: Vec3, activationMode: EActivation, lockBodies: Boolean) =
+    fun setPosition(position: Vec3, activationMode: EActivation, lockBodies: Boolean) =
         interopScope { JphCharacter_SetPosition(characterHandle, toInterop(position.toArray()), activationMode.value, lockBodies) }
 
-    open fun getRotation(lockBodies: Boolean): Quat =
+    fun getRotation(lockBodies: Boolean): Quat =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -114,10 +114,10 @@ open class Character internal constructor(internal val characterHandle: NativePo
             Quat(returned)
         }
 
-    open fun setRotation(rotation: Quat, activationMode: EActivation, lockBodies: Boolean) =
+    fun setRotation(rotation: Quat, activationMode: EActivation, lockBodies: Boolean) =
         interopScope { JphCharacter_SetRotation(characterHandle, toInterop(rotation.toArray()), activationMode.value, lockBodies) }
 
-    open fun getCenterOfMassPosition(lockBodies: Boolean): Vec3 =
+    fun getCenterOfMassPosition(lockBodies: Boolean): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -126,7 +126,7 @@ open class Character internal constructor(internal val characterHandle: NativePo
             Vec3(returned)
         }
 
-    open fun getWorldTransform(lockBodies: Boolean): Mat44 =
+    fun getWorldTransform(lockBodies: Boolean): Mat44 =
         interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -135,26 +135,26 @@ open class Character internal constructor(internal val characterHandle: NativePo
             Mat44(returned)
         }
 
-    open val layer: Int
+    val layer: Int
         get() = JphCharacter_GetLayer(characterHandle)
 
-    open fun setLayer(layer: Int, lockBodies: Boolean) =
+    fun setLayer(layer: Int, lockBodies: Boolean) =
         JphCharacter_SetLayer(characterHandle, layer, lockBodies)
 
-    open fun setShape(shape: Shape?, maxPenetrationDepth: Float, lockBodies: Boolean): Boolean =
+    fun setShape(shape: Shape?, maxPenetrationDepth: Float, lockBodies: Boolean): Boolean =
         JphCharacter_SetShape(characterHandle, shape?.shapeHandle ?: NullPointer, maxPenetrationDepth, lockBodies)
 
-    open fun getTransformedShape(lockBodies: Boolean): TransformedShape =
+    fun getTransformedShape(lockBodies: Boolean): TransformedShape =
         run {
             val returned = TransformedShape(JphTransformedShape_create(), owned = true)
             JphCharacter_GetTransformedShape(characterHandle, lockBodies, returned.transformedShapeHandle)
             returned
         }
 
-    open fun checkCollision(position: Vec3, rotation: Quat, movementDirection: Vec3, maxSeparationDistance: Float, shape: Shape?, baseOffset: Vec3, collector: CollideShapeCollector, lockBodies: Boolean) =
+    fun checkCollision(position: Vec3, rotation: Quat, movementDirection: Vec3, maxSeparationDistance: Float, shape: Shape?, baseOffset: Vec3, collector: CollideShapeCollector, lockBodies: Boolean) =
         interopScope { JphCharacter_CheckCollision(characterHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), toInterop(movementDirection.toArray()), maxSeparationDistance, shape?.shapeHandle ?: NullPointer, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle, lockBodies) }
 
-    open fun getCharacterSettings(lockBodies: Boolean): CharacterSettings =
+    fun getCharacterSettings(lockBodies: Boolean): CharacterSettings =
         run {
             val returned = CharacterSettings(JphCharacterSettings_create(), owned = true)
             JphCharacter_GetCharacterSettings(characterHandle, lockBodies, returned.characterSettingsHandle)

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ScaledShapeSettings`. */
-open class ScaledShapeSettings internal constructor(internal val scaledShapeSettingsHandle: NativePointer, owned: Boolean = false) : DecoratedShapeSettings(JphScaledShapeSettings_asDecoratedShapeSettings(scaledShapeSettingsHandle), owned), AutoCloseable {
+class ScaledShapeSettings internal constructor(internal val scaledShapeSettingsHandle: NativePointer, owned: Boolean = false) : DecoratedShapeSettings(JphScaledShapeSettings_asDecoratedShapeSettings(scaledShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphScaledShapeSettings_create(), owned = true)
     constructor(shape: ShapeSettings?, scale: Vec3) : this(interopScope { JphScaledShapeSettings_create_ShapeSettings_Vec3Arg(shape?.shapeSettingsHandle ?: NullPointer, toInterop(scale.toArray())) }, owned = true)
     constructor(shape: Shape?, scale: Vec3) : this(interopScope { JphScaledShapeSettings_create_Shape_Vec3Arg(shape?.shapeHandle ?: NullPointer, toInterop(scale.toArray())) }, owned = true)
@@ -44,7 +44,7 @@ open class ScaledShapeSettings internal constructor(internal val scaledShapeSett
     override fun close() =
         closeOnce { JphScaledShapeSettings_release(scaledShapeSettingsHandle) }
 
-    open var scale: Vec3
+    var scale: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

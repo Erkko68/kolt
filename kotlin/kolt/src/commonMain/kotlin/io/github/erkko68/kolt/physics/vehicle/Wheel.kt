@@ -42,28 +42,28 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
     open val settings: WheelSettings?
         get() = JphWheel_GetSettings(wheelHandle).takeIf { it != NullPointer }?.let { WheelSettings(it) }
 
-    open var angularVelocity: Float
+    var angularVelocity: Float
         get() = JphWheel_GetAngularVelocity(wheelHandle)
         set(vel) = JphWheel_SetAngularVelocity(wheelHandle, vel)
 
-    open var rotationAngle: Float
+    var rotationAngle: Float
         get() = JphWheel_GetRotationAngle(wheelHandle)
         set(angle) = JphWheel_SetRotationAngle(wheelHandle, angle)
 
-    open var steerAngle: Float
+    var steerAngle: Float
         get() = JphWheel_GetSteerAngle(wheelHandle)
         set(angle) = JphWheel_SetSteerAngle(wheelHandle, angle)
 
-    open fun hasContact(): Boolean =
+    fun hasContact(): Boolean =
         JphWheel_HasContact(wheelHandle)
 
-    open val contactBodyID: BodyID
+    val contactBodyID: BodyID
         get() = BodyID(JphWheel_GetContactBodyID(wheelHandle))
 
-    open val contactSubShapeID: SubShapeID
+    val contactSubShapeID: SubShapeID
         get() = SubShapeID(JphWheel_GetContactSubShapeID(wheelHandle))
 
-    open val contactPosition: Vec3
+    val contactPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -72,7 +72,7 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open val contactPointVelocity: Vec3
+    val contactPointVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -81,7 +81,7 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open val contactNormal: Vec3
+    val contactNormal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -90,7 +90,7 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open val contactLongitudinal: Vec3
+    val contactLongitudinal: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -99,7 +99,7 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open val contactLateral: Vec3
+    val contactLateral: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -108,24 +108,24 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
             Vec3(returned)
         }
 
-    open val suspensionLength: Float
+    val suspensionLength: Float
         get() = JphWheel_GetSuspensionLength(wheelHandle)
 
-    open fun hasHitHardPoint(): Boolean =
+    fun hasHitHardPoint(): Boolean =
         JphWheel_HasHitHardPoint(wheelHandle)
 
-    open val suspensionLambda: Float
+    val suspensionLambda: Float
         get() = JphWheel_GetSuspensionLambda(wheelHandle)
 
-    open val longitudinalLambda: Float
+    val longitudinalLambda: Float
         get() = JphWheel_GetLongitudinalLambda(wheelHandle)
 
-    open val lateralLambda: Float
+    val lateralLambda: Float
         get() = JphWheel_GetLateralLambda(wheelHandle)
 
-    open fun solveLongitudinalConstraintPart(constraint: VehicleConstraint, minImpulse: Float, maxImpulse: Float): Boolean =
+    fun solveLongitudinalConstraintPart(constraint: VehicleConstraint, minImpulse: Float, maxImpulse: Float): Boolean =
         JphWheel_SolveLongitudinalConstraintPart(wheelHandle, constraint.vehicleConstraintHandle, minImpulse, maxImpulse)
 
-    open fun solveLateralConstraintPart(constraint: VehicleConstraint, minImpulse: Float, maxImpulse: Float): Boolean =
+    fun solveLateralConstraintPart(constraint: VehicleConstraint, minImpulse: Float, maxImpulse: Float): Boolean =
         JphWheel_SolveLateralConstraintPart(wheelHandle, constraint.vehicleConstraintHandle, minImpulse, maxImpulse)
 }

@@ -39,23 +39,23 @@ open class CollideSettingsBase internal constructor(internal val collideSettings
     override fun close() =
         closeOnce { JphCollideSettingsBase_destroy(collideSettingsBaseHandle) }
 
-    open var activeEdgeMode: EActiveEdgeMode
+    var activeEdgeMode: EActiveEdgeMode
         get() = EActiveEdgeMode.of(JphCollideSettingsBase_GetActiveEdgeMode(collideSettingsBaseHandle))
         set(value) = JphCollideSettingsBase_SetActiveEdgeMode(collideSettingsBaseHandle, value.value)
 
-    open var collectFacesMode: ECollectFacesMode
+    var collectFacesMode: ECollectFacesMode
         get() = ECollectFacesMode.of(JphCollideSettingsBase_GetCollectFacesMode(collideSettingsBaseHandle))
         set(value) = JphCollideSettingsBase_SetCollectFacesMode(collideSettingsBaseHandle, value.value)
 
-    open var collisionTolerance: Float
+    var collisionTolerance: Float
         get() = JphCollideSettingsBase_GetCollisionTolerance(collideSettingsBaseHandle)
         set(value) = JphCollideSettingsBase_SetCollisionTolerance(collideSettingsBaseHandle, value)
 
-    open var penetrationTolerance: Float
+    var penetrationTolerance: Float
         get() = JphCollideSettingsBase_GetPenetrationTolerance(collideSettingsBaseHandle)
         set(value) = JphCollideSettingsBase_SetPenetrationTolerance(collideSettingsBaseHandle, value)
 
-    open var activeEdgeMovementDirection: Vec3
+    var activeEdgeMovementDirection: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

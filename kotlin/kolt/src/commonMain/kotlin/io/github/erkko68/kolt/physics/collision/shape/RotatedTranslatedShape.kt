@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RotatedTranslatedShape`. */
-open class RotatedTranslatedShape internal constructor(internal val rotatedTranslatedShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphRotatedTranslatedShape_asDecoratedShape(rotatedTranslatedShapeHandle), owned), AutoCloseable {
+class RotatedTranslatedShape internal constructor(internal val rotatedTranslatedShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphRotatedTranslatedShape_asDecoratedShape(rotatedTranslatedShapeHandle), owned), AutoCloseable {
     constructor() : this(JphRotatedTranslatedShape_create(), owned = true)
     constructor(position: Vec3, rotation: Quat, shape: Shape?) : this(interopScope { JphRotatedTranslatedShape_create_Vec3Arg_QuatArg_Shape(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) }, owned = true)
 
@@ -43,7 +43,7 @@ open class RotatedTranslatedShape internal constructor(internal val rotatedTrans
     override fun close() =
         closeOnce { JphRotatedTranslatedShape_release(rotatedTranslatedShapeHandle) }
 
-    open val rotation: Quat
+    val rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -52,7 +52,7 @@ open class RotatedTranslatedShape internal constructor(internal val rotatedTrans
             Quat(returned)
         }
 
-    open val position: Vec3
+    val position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -61,7 +61,7 @@ open class RotatedTranslatedShape internal constructor(internal val rotatedTrans
             Vec3(returned)
         }
 
-    open fun transformScale(scale: Vec3): Vec3 =
+    fun transformScale(scale: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)

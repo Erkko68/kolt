@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TaperedCapsuleShape`. */
-open class TaperedCapsuleShape internal constructor(internal val taperedCapsuleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTaperedCapsuleShape_asConvexShape(taperedCapsuleShapeHandle), owned), AutoCloseable {
+class TaperedCapsuleShape internal constructor(internal val taperedCapsuleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTaperedCapsuleShape_asConvexShape(taperedCapsuleShapeHandle), owned), AutoCloseable {
     constructor() : this(JphTaperedCapsuleShape_create(), owned = true)
 
     override fun addRef() =
@@ -42,13 +42,13 @@ open class TaperedCapsuleShape internal constructor(internal val taperedCapsuleS
     override fun close() =
         closeOnce { JphTaperedCapsuleShape_release(taperedCapsuleShapeHandle) }
 
-    open val topRadius: Float
+    val topRadius: Float
         get() = JphTaperedCapsuleShape_GetTopRadius(taperedCapsuleShapeHandle)
 
-    open val bottomRadius: Float
+    val bottomRadius: Float
         get() = JphTaperedCapsuleShape_GetBottomRadius(taperedCapsuleShapeHandle)
 
-    open val halfHeight: Float
+    val halfHeight: Float
         get() = JphTaperedCapsuleShape_GetHalfHeight(taperedCapsuleShapeHandle)
 
     companion object {

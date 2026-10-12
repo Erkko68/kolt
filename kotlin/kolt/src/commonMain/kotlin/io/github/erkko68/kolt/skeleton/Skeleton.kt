@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 
 /** C++ `JPH::Skeleton`. */
-open class Skeleton internal constructor(internal val skeletonHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+class Skeleton internal constructor(internal val skeletonHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
     /** C++ `JPH::Skeleton::Joint`. */
-    open class Joint internal constructor(internal val skeletonJointHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    class Joint internal constructor(internal val skeletonJointHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
     }

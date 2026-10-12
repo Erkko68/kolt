@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::HingeConstraint`. */
-open class HingeConstraint internal constructor(internal val hingeConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphHingeConstraint_asTwoBodyConstraint(hingeConstraintHandle), owned), AutoCloseable {
+class HingeConstraint internal constructor(internal val hingeConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphHingeConstraint_asTwoBodyConstraint(hingeConstraintHandle), owned), AutoCloseable {
     constructor(body1: Body, body2: Body, settings: HingeConstraintSettings) : this(JphHingeConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.hingeConstraintSettingsHandle), owned = true)
 
     override fun addRef() =
@@ -42,7 +42,7 @@ open class HingeConstraint internal constructor(internal val hingeConstraintHand
     override fun close() =
         closeOnce { JphHingeConstraint_release(hingeConstraintHandle) }
 
-    open val localSpacePoint1: Vec3
+    val localSpacePoint1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -51,7 +51,7 @@ open class HingeConstraint internal constructor(internal val hingeConstraintHand
             Vec3(returned)
         }
 
-    open val localSpacePoint2: Vec3
+    val localSpacePoint2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -60,7 +60,7 @@ open class HingeConstraint internal constructor(internal val hingeConstraintHand
             Vec3(returned)
         }
 
-    open val localSpaceHingeAxis1: Vec3
+    val localSpaceHingeAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -69,7 +69,7 @@ open class HingeConstraint internal constructor(internal val hingeConstraintHand
             Vec3(returned)
         }
 
-    open val localSpaceHingeAxis2: Vec3
+    val localSpaceHingeAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -78,7 +78,7 @@ open class HingeConstraint internal constructor(internal val hingeConstraintHand
             Vec3(returned)
         }
 
-    open val localSpaceNormalAxis1: Vec3
+    val localSpaceNormalAxis1: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -87,7 +87,7 @@ open class HingeConstraint internal constructor(internal val hingeConstraintHand
             Vec3(returned)
         }
 
-    open val localSpaceNormalAxis2: Vec3
+    val localSpaceNormalAxis2: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -96,48 +96,48 @@ open class HingeConstraint internal constructor(internal val hingeConstraintHand
             Vec3(returned)
         }
 
-    open val currentAngle: Float
+    val currentAngle: Float
         get() = JphHingeConstraint_GetCurrentAngle(hingeConstraintHandle)
 
-    open var maxFrictionTorque: Float
+    var maxFrictionTorque: Float
         get() = JphHingeConstraint_GetMaxFrictionTorque(hingeConstraintHandle)
         set(frictionTorque) = JphHingeConstraint_SetMaxFrictionTorque(hingeConstraintHandle, frictionTorque)
 
-    open val motorSettings: MotorSettings
+    val motorSettings: MotorSettings
         get() = MotorSettings(JphHingeConstraint_GetMotorSettings(hingeConstraintHandle))
 
-    open var motorState: EMotorState
+    var motorState: EMotorState
         get() = EMotorState.of(JphHingeConstraint_GetMotorState(hingeConstraintHandle))
         set(state) = JphHingeConstraint_SetMotorState(hingeConstraintHandle, state.value)
 
-    open var targetAngularVelocity: Float
+    var targetAngularVelocity: Float
         get() = JphHingeConstraint_GetTargetAngularVelocity(hingeConstraintHandle)
         set(angularVelocity) = JphHingeConstraint_SetTargetAngularVelocity(hingeConstraintHandle, angularVelocity)
 
-    open var targetAngle: Float
+    var targetAngle: Float
         get() = JphHingeConstraint_GetTargetAngle(hingeConstraintHandle)
         set(angle) = JphHingeConstraint_SetTargetAngle(hingeConstraintHandle, angle)
 
-    open fun setTargetOrientationBS(orientation: Quat) =
+    fun setTargetOrientationBS(orientation: Quat) =
         interopScope { JphHingeConstraint_SetTargetOrientationBS(hingeConstraintHandle, toInterop(orientation.toArray())) }
 
-    open fun setLimits(limitsMin: Float, limitsMax: Float) =
+    fun setLimits(limitsMin: Float, limitsMax: Float) =
         JphHingeConstraint_SetLimits(hingeConstraintHandle, limitsMin, limitsMax)
 
-    open val limitsMin: Float
+    val limitsMin: Float
         get() = JphHingeConstraint_GetLimitsMin(hingeConstraintHandle)
 
-    open val limitsMax: Float
+    val limitsMax: Float
         get() = JphHingeConstraint_GetLimitsMax(hingeConstraintHandle)
 
-    open fun hasLimits(): Boolean =
+    fun hasLimits(): Boolean =
         JphHingeConstraint_HasLimits(hingeConstraintHandle)
 
-    open var limitsSpringSettings: SpringSettings
+    var limitsSpringSettings: SpringSettings
         get() = SpringSettings(JphHingeConstraint_GetLimitsSpringSettings(hingeConstraintHandle))
         set(limitsSpringSettings) = JphHingeConstraint_SetLimitsSpringSettings(hingeConstraintHandle, limitsSpringSettings.springSettingsHandle)
 
-    open val totalLambdaPosition: Vec3
+    val totalLambdaPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -146,9 +146,9 @@ open class HingeConstraint internal constructor(internal val hingeConstraintHand
             Vec3(returned)
         }
 
-    open val totalLambdaRotationLimits: Float
+    val totalLambdaRotationLimits: Float
         get() = JphHingeConstraint_GetTotalLambdaRotationLimits(hingeConstraintHandle)
 
-    open val totalLambdaMotor: Float
+    val totalLambdaMotor: Float
         get() = JphHingeConstraint_GetTotalLambdaMotor(hingeConstraintHandle)
 }

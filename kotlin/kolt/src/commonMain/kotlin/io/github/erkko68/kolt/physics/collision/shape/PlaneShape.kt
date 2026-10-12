@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PlaneShape`. */
-open class PlaneShape internal constructor(internal val planeShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphPlaneShape_asShape(planeShapeHandle), owned), AutoCloseable {
+class PlaneShape internal constructor(internal val planeShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphPlaneShape_asShape(planeShapeHandle), owned), AutoCloseable {
     constructor() : this(JphPlaneShape_create(), owned = true)
     constructor(plane: Plane, material: PhysicsMaterial?, halfExtent: Float) : this(JphPlaneShape_create_Plane_PhysicsMaterial_float(plane.planeHandle, material?.physicsMaterialHandle ?: NullPointer, halfExtent), owned = true)
 
@@ -43,17 +43,17 @@ open class PlaneShape internal constructor(internal val planeShapeHandle: Native
     override fun close() =
         closeOnce { JphPlaneShape_release(planeShapeHandle) }
 
-    open val plane: Plane
+    val plane: Plane
         get() = run {
             val returned = Plane(JphPlane_create(), owned = true)
             JphPlaneShape_GetPlane(planeShapeHandle, returned.planeHandle)
             returned
         }
 
-    open val halfExtent: Float
+    val halfExtent: Float
         get() = JphPlaneShape_GetHalfExtent(planeShapeHandle)
 
-    open var material: PhysicsMaterial?
+    var material: PhysicsMaterial?
         get() = JphPlaneShape_GetMaterial(planeShapeHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(material) = JphPlaneShape_SetMaterial(planeShapeHandle, material?.physicsMaterialHandle ?: NullPointer)
 

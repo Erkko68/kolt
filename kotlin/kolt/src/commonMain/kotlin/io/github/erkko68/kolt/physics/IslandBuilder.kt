@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::IslandBuilder`. */
-open class IslandBuilder internal constructor(internal val islandBuilderHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class IslandBuilder internal constructor(internal val islandBuilderHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

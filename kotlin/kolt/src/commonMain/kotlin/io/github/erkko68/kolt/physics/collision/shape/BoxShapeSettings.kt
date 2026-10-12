@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BoxShapeSettings`. */
-open class BoxShapeSettings internal constructor(internal val boxShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphBoxShapeSettings_asConvexShapeSettings(boxShapeSettingsHandle), owned), AutoCloseable {
+class BoxShapeSettings internal constructor(internal val boxShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphBoxShapeSettings_asConvexShapeSettings(boxShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphBoxShapeSettings_create(), owned = true)
     constructor(halfExtent: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphBoxShapeSettings_create_Vec3Arg_float_PhysicsMaterial(toInterop(halfExtent.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
 
@@ -43,7 +43,7 @@ open class BoxShapeSettings internal constructor(internal val boxShapeSettingsHa
     override fun close() =
         closeOnce { JphBoxShapeSettings_release(boxShapeSettingsHandle) }
 
-    open var halfExtent: Vec3
+    var halfExtent: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -53,7 +53,7 @@ open class BoxShapeSettings internal constructor(internal val boxShapeSettingsHa
         }
         set(value) = interopScope { JphBoxShapeSettings_SetHalfExtent(boxShapeSettingsHandle, toInterop(value.toArray())) }
 
-    open var convexRadius: Float
+    var convexRadius: Float
         get() = JphBoxShapeSettings_GetConvexRadius(boxShapeSettingsHandle)
         set(value) = JphBoxShapeSettings_SetConvexRadius(boxShapeSettingsHandle, value)
 

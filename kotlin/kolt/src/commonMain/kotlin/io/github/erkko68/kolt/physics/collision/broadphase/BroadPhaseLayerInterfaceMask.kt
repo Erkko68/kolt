@@ -33,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BroadPhaseLayerInterfaceMask`. */
-open class BroadPhaseLayerInterfaceMask internal constructor(internal val broadPhaseLayerInterfaceMaskHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceMaskHandle), owned), AutoCloseable {
+class BroadPhaseLayerInterfaceMask internal constructor(internal val broadPhaseLayerInterfaceMaskHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceMaskHandle), owned), AutoCloseable {
     constructor(numBroadPhaseLayers: Int) : this(JphBroadPhaseLayerInterfaceMask_create(numBroadPhaseLayers), owned = true)
 
     override fun close() =
         closeOnce { JphBroadPhaseLayerInterfaceMask_destroy(broadPhaseLayerInterfaceMaskHandle) }
 
-    open fun configureLayer(broadPhaseLayer: BroadPhaseLayer, groupsToInclude: Int, groupsToExclude: Int) =
+    fun configureLayer(broadPhaseLayer: BroadPhaseLayer, groupsToInclude: Int, groupsToExclude: Int) =
         JphBroadPhaseLayerInterfaceMask_ConfigureLayer(broadPhaseLayerInterfaceMaskHandle, broadPhaseLayer.value, groupsToInclude, groupsToExclude)
 
-    open fun shouldCollide(layer1: Int, layer2: BroadPhaseLayer): Boolean =
+    fun shouldCollide(layer1: Int, layer2: BroadPhaseLayer): Boolean =
         JphBroadPhaseLayerInterfaceMask_ShouldCollide(broadPhaseLayerInterfaceMaskHandle, layer1, layer2.value)
 }

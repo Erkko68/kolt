@@ -45,19 +45,19 @@ open class WheelSettingsWV internal constructor(internal val wheelSettingsWVHand
     override fun close() =
         closeOnce { JphWheelSettingsWV_release(wheelSettingsWVHandle) }
 
-    open var inertia: Float
+    var inertia: Float
         get() = JphWheelSettingsWV_GetInertia(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetInertia(wheelSettingsWVHandle, value)
 
-    open var angularDamping: Float
+    var angularDamping: Float
         get() = JphWheelSettingsWV_GetAngularDamping(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetAngularDamping(wheelSettingsWVHandle, value)
 
-    open var maxSteerAngle: Float
+    var maxSteerAngle: Float
         get() = JphWheelSettingsWV_GetMaxSteerAngle(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetMaxSteerAngle(wheelSettingsWVHandle, value)
 
-    open var longitudinalFriction: LinearCurve
+    var longitudinalFriction: LinearCurve
         get() = run {
             val returned = LinearCurve(JphLinearCurve_create(), owned = true)
             JphWheelSettingsWV_GetLongitudinalFriction(wheelSettingsWVHandle, returned.linearCurveHandle)
@@ -65,7 +65,7 @@ open class WheelSettingsWV internal constructor(internal val wheelSettingsWVHand
         }
         set(value) = JphWheelSettingsWV_SetLongitudinalFriction(wheelSettingsWVHandle, value.linearCurveHandle)
 
-    open var lateralFriction: LinearCurve
+    var lateralFriction: LinearCurve
         get() = run {
             val returned = LinearCurve(JphLinearCurve_create(), owned = true)
             JphWheelSettingsWV_GetLateralFriction(wheelSettingsWVHandle, returned.linearCurveHandle)
@@ -73,11 +73,11 @@ open class WheelSettingsWV internal constructor(internal val wheelSettingsWVHand
         }
         set(value) = JphWheelSettingsWV_SetLateralFriction(wheelSettingsWVHandle, value.linearCurveHandle)
 
-    open var maxBrakeTorque: Float
+    var maxBrakeTorque: Float
         get() = JphWheelSettingsWV_GetMaxBrakeTorque(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetMaxBrakeTorque(wheelSettingsWVHandle, value)
 
-    open var maxHandBrakeTorque: Float
+    var maxHandBrakeTorque: Float
         get() = JphWheelSettingsWV_GetMaxHandBrakeTorque(wheelSettingsWVHandle)
         set(value) = JphWheelSettingsWV_SetMaxHandBrakeTorque(wheelSettingsWVHandle, value)
 

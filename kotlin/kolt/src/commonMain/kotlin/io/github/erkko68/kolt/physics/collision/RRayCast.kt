@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RRayCast`. */
-open class RRayCast internal constructor(internal val rRayCastHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class RRayCast internal constructor(internal val rRayCastHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor(ray: RayCast) : this(JphRRayCast_create_RayCast(ray.rayCastHandle), owned = true)
     constructor() : this(JphRRayCast_create(), owned = true)
     constructor(arg0: Vec3, arg1: Vec3) : this(interopScope { JphRRayCast_create_ArgType_Vec3Arg(toInterop(arg0.toArray()), toInterop(arg1.toArray())) }, owned = true)

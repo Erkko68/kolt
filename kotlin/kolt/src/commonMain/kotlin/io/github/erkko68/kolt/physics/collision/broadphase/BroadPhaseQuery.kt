@@ -33,29 +33,29 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BroadPhaseQuery`. */
-open class BroadPhaseQuery internal constructor(internal val broadPhaseQueryHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class BroadPhaseQuery internal constructor(internal val broadPhaseQueryHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     override fun close() =
         closeOnce { JphBroadPhaseQuery_destroy(broadPhaseQueryHandle) }
 
-    open fun castRay(ray: RayCast, collector: RayCastBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
+    fun castRay(ray: RayCast, collector: RayCastBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
         JphBroadPhaseQuery_CastRay(broadPhaseQueryHandle, ray.rayCastHandle, collector.rayCastBodyCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle)
 
-    open fun collideAABox(box: AABox, collector: CollideShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
+    fun collideAABox(box: AABox, collector: CollideShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
         JphBroadPhaseQuery_CollideAABox(broadPhaseQueryHandle, box.aaBoxHandle, collector.collideShapeBodyCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle)
 
-    open fun collideSphere(center: Vec3, radius: Float, collector: CollideShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
+    fun collideSphere(center: Vec3, radius: Float, collector: CollideShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
         interopScope { JphBroadPhaseQuery_CollideSphere(broadPhaseQueryHandle, toInterop(center.toArray()), radius, collector.collideShapeBodyCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle) }
 
-    open fun collidePoint(point: Vec3, collector: CollideShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
+    fun collidePoint(point: Vec3, collector: CollideShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
         interopScope { JphBroadPhaseQuery_CollidePoint(broadPhaseQueryHandle, toInterop(point.toArray()), collector.collideShapeBodyCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle) }
 
-    open fun collideOrientedBox(box: OrientedBox, collector: CollideShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
+    fun collideOrientedBox(box: OrientedBox, collector: CollideShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
         JphBroadPhaseQuery_CollideOrientedBox(broadPhaseQueryHandle, box.orientedBoxHandle, collector.collideShapeBodyCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle)
 
-    open fun castAABox(box: AABoxCast, collector: CastShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
+    fun castAABox(box: AABoxCast, collector: CastShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
         JphBroadPhaseQuery_CastAABox(broadPhaseQueryHandle, box.aaBoxCastHandle, collector.castShapeBodyCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle)
 
-    open val bounds: AABox
+    val bounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
             JphBroadPhaseQuery_GetBounds(broadPhaseQueryHandle, returned.aaBoxHandle)

@@ -33,24 +33,24 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TempAllocatorImpl`. */
-open class TempAllocatorImpl internal constructor(internal val tempAllocatorImplHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorImpl_asTempAllocator(tempAllocatorImplHandle), owned), AutoCloseable {
+class TempAllocatorImpl internal constructor(internal val tempAllocatorImplHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorImpl_asTempAllocator(tempAllocatorImplHandle), owned), AutoCloseable {
     constructor(size: Int) : this(JphTempAllocatorImpl_create(size), owned = true)
 
     override fun close() =
         closeOnce { JphTempAllocatorImpl_destroy(tempAllocatorImplHandle) }
 
-    open val isEmpty: Boolean
+    val isEmpty: Boolean
         get() = JphTempAllocatorImpl_IsEmpty(tempAllocatorImplHandle)
 
-    open val size: Int
+    val size: Int
         get() = JphTempAllocatorImpl_GetSize(tempAllocatorImplHandle)
 
-    open val usage: Int
+    val usage: Int
         get() = JphTempAllocatorImpl_GetUsage(tempAllocatorImplHandle)
 
-    open fun canAllocate(size: Int): Boolean =
+    fun canAllocate(size: Int): Boolean =
         JphTempAllocatorImpl_CanAllocate(tempAllocatorImplHandle, size)
 
-    open fun ownsMemory(address: NativePointer): Boolean =
+    fun ownsMemory(address: NativePointer): Boolean =
         JphTempAllocatorImpl_OwnsMemory(tempAllocatorImplHandle, address)
 }

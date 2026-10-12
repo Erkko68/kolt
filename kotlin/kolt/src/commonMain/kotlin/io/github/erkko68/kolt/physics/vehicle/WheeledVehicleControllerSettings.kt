@@ -45,7 +45,7 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
     override fun close() =
         closeOnce { JphWheeledVehicleControllerSettings_release(wheeledVehicleControllerSettingsHandle) }
 
-    open var engine: VehicleEngineSettings
+    var engine: VehicleEngineSettings
         get() = run {
             val returned = VehicleEngineSettings(JphVehicleEngineSettings_create(), owned = true)
             JphWheeledVehicleControllerSettings_GetEngine(wheeledVehicleControllerSettingsHandle, returned.vehicleEngineSettingsHandle)
@@ -53,7 +53,7 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
         }
         set(value) = JphWheeledVehicleControllerSettings_SetEngine(wheeledVehicleControllerSettingsHandle, value.vehicleEngineSettingsHandle)
 
-    open var transmission: VehicleTransmissionSettings
+    var transmission: VehicleTransmissionSettings
         get() = run {
             val returned = VehicleTransmissionSettings(JphVehicleTransmissionSettings_create(), owned = true)
             JphWheeledVehicleControllerSettings_GetTransmission(wheeledVehicleControllerSettingsHandle, returned.vehicleTransmissionSettingsHandle)
@@ -61,7 +61,7 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
         }
         set(value) = JphWheeledVehicleControllerSettings_SetTransmission(wheeledVehicleControllerSettingsHandle, value.vehicleTransmissionSettingsHandle)
 
-    open var differentials: List<VehicleDifferentialSettings>
+    var differentials: List<VehicleDifferentialSettings>
         get() = interopScope {
             val count = JphWheeledVehicleControllerSettings_GetDifferentials(wheeledVehicleControllerSettingsHandle, NullPointer, 0)
             val returned = List(count) { VehicleDifferentialSettings(JphVehicleDifferentialSettings_create(), owned = true) }
@@ -70,7 +70,7 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
         }
         set(value) = interopScope { JphWheeledVehicleControllerSettings_SetDifferentials(wheeledVehicleControllerSettingsHandle, toInterop(value.map { it.vehicleDifferentialSettingsHandle }), value.size) }
 
-    open var differentialLimitedSlipRatio: Float
+    var differentialLimitedSlipRatio: Float
         get() = JphWheeledVehicleControllerSettings_GetDifferentialLimitedSlipRatio(wheeledVehicleControllerSettingsHandle)
         set(value) = JphWheeledVehicleControllerSettings_SetDifferentialLimitedSlipRatio(wheeledVehicleControllerSettingsHandle, value)
 

@@ -37,6 +37,6 @@ open class JobSystemWithBarrier internal constructor(internal val jobSystemWithB
     override fun close() =
         closeOnce { JphJobSystemWithBarrier_destroy(jobSystemWithBarrierHandle) }
 
-    open fun init(maxBarriers: Int) =
+    fun init(maxBarriers: Int) =
         JphJobSystemWithBarrier_Init(jobSystemWithBarrierHandle, maxBarriers)
 }

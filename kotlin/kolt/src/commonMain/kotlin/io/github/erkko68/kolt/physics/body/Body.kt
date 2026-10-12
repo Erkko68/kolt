@@ -33,90 +33,90 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Body`. */
-open class Body internal constructor(internal val bodyHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
-    open val id: BodyID
+class Body internal constructor(internal val bodyHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+    val id: BodyID
         get() = BodyID(JphBody_GetID(bodyHandle))
 
-    open val bodyType: EBodyType
+    val bodyType: EBodyType
         get() = EBodyType.of(JphBody_GetBodyType(bodyHandle))
 
-    open val isRigidBody: Boolean
+    val isRigidBody: Boolean
         get() = JphBody_IsRigidBody(bodyHandle)
 
-    open val isSoftBody: Boolean
+    val isSoftBody: Boolean
         get() = JphBody_IsSoftBody(bodyHandle)
 
-    open val isActive: Boolean
+    val isActive: Boolean
         get() = JphBody_IsActive(bodyHandle)
 
-    open val isStatic: Boolean
+    val isStatic: Boolean
         get() = JphBody_IsStatic(bodyHandle)
 
-    open val isKinematic: Boolean
+    val isKinematic: Boolean
         get() = JphBody_IsKinematic(bodyHandle)
 
-    open val isDynamic: Boolean
+    val isDynamic: Boolean
         get() = JphBody_IsDynamic(bodyHandle)
 
-    open fun canBeKinematicOrDynamic(): Boolean =
+    fun canBeKinematicOrDynamic(): Boolean =
         JphBody_CanBeKinematicOrDynamic(bodyHandle)
 
-    open var isSensor: Boolean
+    var isSensor: Boolean
         get() = JphBody_IsSensor(bodyHandle)
         set(isSensor) = JphBody_SetIsSensor(bodyHandle, isSensor)
 
-    open var collideKinematicVsNonDynamic: Boolean
+    var collideKinematicVsNonDynamic: Boolean
         get() = JphBody_GetCollideKinematicVsNonDynamic(bodyHandle)
         set(collide) = JphBody_SetCollideKinematicVsNonDynamic(bodyHandle, collide)
 
-    open var useManifoldReduction: Boolean
+    var useManifoldReduction: Boolean
         get() = JphBody_GetUseManifoldReduction(bodyHandle)
         set(useReduction) = JphBody_SetUseManifoldReduction(bodyHandle, useReduction)
 
-    open fun getUseManifoldReductionWithBody(body2: Body): Boolean =
+    fun getUseManifoldReductionWithBody(body2: Body): Boolean =
         JphBody_GetUseManifoldReductionWithBody(bodyHandle, body2.bodyHandle)
 
-    open var applyGyroscopicForce: Boolean
+    var applyGyroscopicForce: Boolean
         get() = JphBody_GetApplyGyroscopicForce(bodyHandle)
         set(apply) = JphBody_SetApplyGyroscopicForce(bodyHandle, apply)
 
-    open var enhancedInternalEdgeRemoval: Boolean
+    var enhancedInternalEdgeRemoval: Boolean
         get() = JphBody_GetEnhancedInternalEdgeRemoval(bodyHandle)
         set(apply) = JphBody_SetEnhancedInternalEdgeRemoval(bodyHandle, apply)
 
-    open fun getEnhancedInternalEdgeRemovalWithBody(body2: Body): Boolean =
+    fun getEnhancedInternalEdgeRemovalWithBody(body2: Body): Boolean =
         JphBody_GetEnhancedInternalEdgeRemovalWithBody(bodyHandle, body2.bodyHandle)
 
-    open var motionType: EMotionType
+    var motionType: EMotionType
         get() = EMotionType.of(JphBody_GetMotionType(bodyHandle))
         set(motionType) = JphBody_SetMotionType(bodyHandle, motionType.value)
 
-    open val broadPhaseLayer: BroadPhaseLayer
+    val broadPhaseLayer: BroadPhaseLayer
         get() = BroadPhaseLayer(JphBody_GetBroadPhaseLayer(bodyHandle))
 
-    open val objectLayer: Int
+    val objectLayer: Int
         get() = JphBody_GetObjectLayer(bodyHandle)
 
-    open var collisionGroup: CollisionGroup
+    var collisionGroup: CollisionGroup
         get() = CollisionGroup(JphBody_GetCollisionGroup(bodyHandle))
         set(group) = JphBody_SetCollisionGroup(bodyHandle, group.collisionGroupHandle)
 
-    open var allowSleeping: Boolean
+    var allowSleeping: Boolean
         get() = JphBody_GetAllowSleeping(bodyHandle)
         set(allow) = JphBody_SetAllowSleeping(bodyHandle, allow)
 
-    open fun resetSleepTimer() =
+    fun resetSleepTimer() =
         JphBody_ResetSleepTimer(bodyHandle)
 
-    open var friction: Float
+    var friction: Float
         get() = JphBody_GetFriction(bodyHandle)
         set(friction) = JphBody_SetFriction(bodyHandle, friction)
 
-    open var restitution: Float
+    var restitution: Float
         get() = JphBody_GetRestitution(bodyHandle)
         set(restitution) = JphBody_SetRestitution(bodyHandle, restitution)
 
-    open var linearVelocity: Vec3
+    var linearVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -126,10 +126,10 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
         }
         set(linearVelocity) = interopScope { JphBody_SetLinearVelocity(bodyHandle, toInterop(linearVelocity.toArray())) }
 
-    open fun setLinearVelocityClamped(linearVelocity: Vec3) =
+    fun setLinearVelocityClamped(linearVelocity: Vec3) =
         interopScope { JphBody_SetLinearVelocityClamped(bodyHandle, toInterop(linearVelocity.toArray())) }
 
-    open var angularVelocity: Vec3
+    var angularVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -139,10 +139,10 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
         }
         set(angularVelocity) = interopScope { JphBody_SetAngularVelocity(bodyHandle, toInterop(angularVelocity.toArray())) }
 
-    open fun setAngularVelocityClamped(angularVelocity: Vec3) =
+    fun setAngularVelocityClamped(angularVelocity: Vec3) =
         interopScope { JphBody_SetAngularVelocityClamped(bodyHandle, toInterop(angularVelocity.toArray())) }
 
-    open fun getPointVelocityCOM(pointRelativeToCOM: Vec3): Vec3 =
+    fun getPointVelocityCOM(pointRelativeToCOM: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -151,7 +151,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Vec3(returned)
         }
 
-    open fun getPointVelocity(point: Vec3): Vec3 =
+    fun getPointVelocity(point: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -160,16 +160,16 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Vec3(returned)
         }
 
-    open fun addForce(force: Vec3) =
+    fun addForce(force: Vec3) =
         interopScope { JphBody_AddForce(bodyHandle, toInterop(force.toArray())) }
 
-    open fun addForce(force: Vec3, position: Vec3) =
+    fun addForce(force: Vec3, position: Vec3) =
         interopScope { JphBody_AddForce_RVec3Arg(bodyHandle, toInterop(force.toArray()), toInterop(position.toArray())) }
 
-    open fun addTorque(torque: Vec3) =
+    fun addTorque(torque: Vec3) =
         interopScope { JphBody_AddTorque(bodyHandle, toInterop(torque.toArray())) }
 
-    open val accumulatedForce: Vec3
+    val accumulatedForce: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -178,7 +178,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Vec3(returned)
         }
 
-    open val accumulatedTorque: Vec3
+    val accumulatedTorque: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -187,16 +187,16 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Vec3(returned)
         }
 
-    open fun resetForce() =
+    fun resetForce() =
         JphBody_ResetForce(bodyHandle)
 
-    open fun resetTorque() =
+    fun resetTorque() =
         JphBody_ResetTorque(bodyHandle)
 
-    open fun resetMotion() =
+    fun resetMotion() =
         JphBody_ResetMotion(bodyHandle)
 
-    open val inverseInertia: Mat44
+    val inverseInertia: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -205,19 +205,19 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Mat44(returned)
         }
 
-    open fun addImpulse(impulse: Vec3) =
+    fun addImpulse(impulse: Vec3) =
         interopScope { JphBody_AddImpulse(bodyHandle, toInterop(impulse.toArray())) }
 
-    open fun addImpulse(impulse: Vec3, position: Vec3) =
+    fun addImpulse(impulse: Vec3, position: Vec3) =
         interopScope { JphBody_AddImpulse_RVec3Arg(bodyHandle, toInterop(impulse.toArray()), toInterop(position.toArray())) }
 
-    open fun addAngularImpulse(angularImpulse: Vec3) =
+    fun addAngularImpulse(angularImpulse: Vec3) =
         interopScope { JphBody_AddAngularImpulse(bodyHandle, toInterop(angularImpulse.toArray())) }
 
-    open fun moveKinematic(targetPosition: Vec3, targetRotation: Quat, deltaTime: Float) =
+    fun moveKinematic(targetPosition: Vec3, targetRotation: Quat, deltaTime: Float) =
         interopScope { JphBody_MoveKinematic(bodyHandle, toInterop(targetPosition.toArray()), toInterop(targetRotation.toArray()), deltaTime) }
 
-    open fun getSubmergedVolume(surfacePosition: Vec3, surfaceNormal: Vec3): Triple<Float, Float, Vec3> =
+    fun getSubmergedVolume(surfacePosition: Vec3, surfaceNormal: Vec3): Triple<Float, Float, Vec3> =
         interopScope {
             val totalVolumeArray = FloatArray(1)
             val totalVolumePointer = toInterop(totalVolumeArray)
@@ -232,22 +232,22 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Triple(totalVolumeArray[0], submergedVolumeArray[0], Vec3(relativeCenterOfBuoyancyArray))
         }
 
-    open fun applyBuoyancyImpulse(surfacePosition: Vec3, surfaceNormal: Vec3, buoyancy: Float, linearDrag: Float, angularDrag: Float, fluidVelocity: Vec3, gravity: Vec3, deltaTime: Float): Boolean =
+    fun applyBuoyancyImpulse(surfacePosition: Vec3, surfaceNormal: Vec3, buoyancy: Float, linearDrag: Float, angularDrag: Float, fluidVelocity: Vec3, gravity: Vec3, deltaTime: Float): Boolean =
         interopScope { JphBody_ApplyBuoyancyImpulse_RVec3Arg_Vec3Arg_float_float_float_Vec3Arg_Vec3Arg_float(bodyHandle, toInterop(surfacePosition.toArray()), toInterop(surfaceNormal.toArray()), buoyancy, linearDrag, angularDrag, toInterop(fluidVelocity.toArray()), toInterop(gravity.toArray()), deltaTime) }
 
-    open fun applyBuoyancyImpulse(totalVolume: Float, submergedVolume: Float, relativeCenterOfBuoyancy: Vec3, buoyancy: Float, linearDrag: Float, angularDrag: Float, fluidVelocity: Vec3, gravity: Vec3, deltaTime: Float): Boolean =
+    fun applyBuoyancyImpulse(totalVolume: Float, submergedVolume: Float, relativeCenterOfBuoyancy: Vec3, buoyancy: Float, linearDrag: Float, angularDrag: Float, fluidVelocity: Vec3, gravity: Vec3, deltaTime: Float): Boolean =
         interopScope { JphBody_ApplyBuoyancyImpulse_float_float_Vec3Arg_float_float_float_Vec3Arg_Vec3Arg_float(bodyHandle, totalVolume, submergedVolume, toInterop(relativeCenterOfBuoyancy.toArray()), buoyancy, linearDrag, angularDrag, toInterop(fluidVelocity.toArray()), toInterop(gravity.toArray()), deltaTime) }
 
-    open val isInBroadPhase: Boolean
+    val isInBroadPhase: Boolean
         get() = JphBody_IsInBroadPhase(bodyHandle)
 
-    open val isCollisionCacheInvalid: Boolean
+    val isCollisionCacheInvalid: Boolean
         get() = JphBody_IsCollisionCacheInvalid(bodyHandle)
 
-    open val shape: Shape?
+    val shape: Shape?
         get() = JphBody_GetShape(bodyHandle).takeIf { it != NullPointer }?.let { Shape(it) }
 
-    open val position: Vec3
+    val position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -256,7 +256,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Vec3(returned)
         }
 
-    open val rotation: Quat
+    val rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -265,7 +265,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Quat(returned)
         }
 
-    open val worldTransform: Mat44
+    val worldTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -274,7 +274,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Mat44(returned)
         }
 
-    open val centerOfMassPosition: Vec3
+    val centerOfMassPosition: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -283,7 +283,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Vec3(returned)
         }
 
-    open val centerOfMassTransform: Mat44
+    val centerOfMassTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -292,7 +292,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Mat44(returned)
         }
 
-    open val inverseCenterOfMassTransform: Mat44
+    val inverseCenterOfMassTransform: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -301,26 +301,26 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Mat44(returned)
         }
 
-    open val worldSpaceBounds: AABox
+    val worldSpaceBounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)
             JphBody_GetWorldSpaceBounds(bodyHandle, returned.aaBoxHandle)
             returned
         }
 
-    open fun validateCachedBounds() =
+    fun validateCachedBounds() =
         JphBody_ValidateCachedBounds(bodyHandle)
 
-    open fun validateMotion() =
+    fun validateMotion() =
         JphBody_ValidateMotion(bodyHandle)
 
-    open val motionProperties: MotionProperties?
+    val motionProperties: MotionProperties?
         get() = JphBody_GetMotionProperties(bodyHandle).takeIf { it != NullPointer }?.let { MotionProperties(it) }
 
-    open val motionPropertiesUnchecked: MotionProperties?
+    val motionPropertiesUnchecked: MotionProperties?
         get() = JphBody_GetMotionPropertiesUnchecked(bodyHandle).takeIf { it != NullPointer }?.let { MotionProperties(it) }
 
-    open var userData: Long
+    var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)
@@ -330,7 +330,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
         }
         set(userData) = JphBody_SetUserData(bodyHandle, userData)
 
-    open fun getWorldSpaceSurfaceNormal(subShapeID: SubShapeID, position: Vec3): Vec3 =
+    fun getWorldSpaceSurfaceNormal(subShapeID: SubShapeID, position: Vec3): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -339,79 +339,79 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
             Vec3(returned)
         }
 
-    open val transformedShape: TransformedShape
+    val transformedShape: TransformedShape
         get() = run {
             val returned = TransformedShape(JphTransformedShape_create(), owned = true)
             JphBody_GetTransformedShape(bodyHandle, returned.transformedShapeHandle)
             returned
         }
 
-    open val bodyCreationSettings: BodyCreationSettings
+    val bodyCreationSettings: BodyCreationSettings
         get() = run {
             val returned = BodyCreationSettings(JphBodyCreationSettings_create(), owned = true)
             JphBody_GetBodyCreationSettings(bodyHandle, returned.bodyCreationSettingsHandle)
             returned
         }
 
-    open fun applyBodyCreationSettings(bodyCreationSettings: BodyCreationSettings, bplInterface: BroadPhaseLayerInterface) =
+    fun applyBodyCreationSettings(bodyCreationSettings: BodyCreationSettings, bplInterface: BroadPhaseLayerInterface) =
         JphBody_ApplyBodyCreationSettings(bodyHandle, bodyCreationSettings.bodyCreationSettingsHandle, bplInterface.broadPhaseLayerInterfaceHandle)
 
-    open val softBodyCreationSettings: SoftBodyCreationSettings
+    val softBodyCreationSettings: SoftBodyCreationSettings
         get() = run {
             val returned = SoftBodyCreationSettings(JphSoftBodyCreationSettings_create(), owned = true)
             JphBody_GetSoftBodyCreationSettings(bodyHandle, returned.softBodyCreationSettingsHandle)
             returned
         }
 
-    open fun applySoftBodyCreationSettings(softBodyCreationSettings: SoftBodyCreationSettings, bplInterface: BroadPhaseLayerInterface) =
+    fun applySoftBodyCreationSettings(softBodyCreationSettings: SoftBodyCreationSettings, bplInterface: BroadPhaseLayerInterface) =
         JphBody_ApplySoftBodyCreationSettings(bodyHandle, softBodyCreationSettings.softBodyCreationSettingsHandle, bplInterface.broadPhaseLayerInterfaceHandle)
 
-    open fun addPositionStep(linearVelocityTimesDeltaTime: Vec3) =
+    fun addPositionStep(linearVelocityTimesDeltaTime: Vec3) =
         interopScope { JphBody_AddPositionStep(bodyHandle, toInterop(linearVelocityTimesDeltaTime.toArray())) }
 
-    open fun subPositionStep(linearVelocityTimesDeltaTime: Vec3) =
+    fun subPositionStep(linearVelocityTimesDeltaTime: Vec3) =
         interopScope { JphBody_SubPositionStep(bodyHandle, toInterop(linearVelocityTimesDeltaTime.toArray())) }
 
-    open fun addRotationStep(angularVelocityTimesDeltaTime: Vec3) =
+    fun addRotationStep(angularVelocityTimesDeltaTime: Vec3) =
         interopScope { JphBody_AddRotationStep(bodyHandle, toInterop(angularVelocityTimesDeltaTime.toArray())) }
 
-    open fun subRotationStep(angularVelocityTimesDeltaTime: Vec3) =
+    fun subRotationStep(angularVelocityTimesDeltaTime: Vec3) =
         interopScope { JphBody_SubRotationStep(bodyHandle, toInterop(angularVelocityTimesDeltaTime.toArray())) }
 
-    open fun setObjectLayerInternal(layer: Int, bplInterface: BroadPhaseLayerInterface) =
+    fun setObjectLayerInternal(layer: Int, bplInterface: BroadPhaseLayerInterface) =
         JphBody_SetObjectLayerInternal(bodyHandle, layer, bplInterface.broadPhaseLayerInterfaceHandle)
 
-    open fun setInBroadPhaseInternal(inBroadPhase: Boolean) =
+    fun setInBroadPhaseInternal(inBroadPhase: Boolean) =
         JphBody_SetInBroadPhaseInternal(bodyHandle, inBroadPhase)
 
-    open fun invalidateContactCacheInternal(): Boolean =
+    fun invalidateContactCacheInternal(): Boolean =
         JphBody_InvalidateContactCacheInternal(bodyHandle)
 
-    open fun validateContactCacheInternal() =
+    fun validateContactCacheInternal() =
         JphBody_ValidateContactCacheInternal(bodyHandle)
 
-    open fun calculateWorldSpaceBoundsInternal() =
+    fun calculateWorldSpaceBoundsInternal() =
         JphBody_CalculateWorldSpaceBoundsInternal(bodyHandle)
 
-    open fun setPositionAndRotationInternal(position: Vec3, rotation: Quat, resetSleepTimer: Boolean) =
+    fun setPositionAndRotationInternal(position: Vec3, rotation: Quat, resetSleepTimer: Boolean) =
         interopScope { JphBody_SetPositionAndRotationInternal(bodyHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), resetSleepTimer) }
 
-    open fun updateCenterOfMassInternal(previousCenterOfMass: Vec3, updateMassProperties: Boolean) =
+    fun updateCenterOfMassInternal(previousCenterOfMass: Vec3, updateMassProperties: Boolean) =
         interopScope { JphBody_UpdateCenterOfMassInternal(bodyHandle, toInterop(previousCenterOfMass.toArray()), updateMassProperties) }
 
-    open fun setShapeInternal(shape: Shape?, updateMassProperties: Boolean) =
+    fun setShapeInternal(shape: Shape?, updateMassProperties: Boolean) =
         JphBody_SetShapeInternal(bodyHandle, shape?.shapeHandle ?: NullPointer, updateMassProperties)
 
-    open val indexInActiveBodiesInternal: Int
+    val indexInActiveBodiesInternal: Int
         get() = JphBody_GetIndexInActiveBodiesInternal(bodyHandle)
 
-    open fun updateSleepStateInternal(deltaTime: Float, maxMovement: Float, timeBeforeSleep: Float): ECanSleep =
+    fun updateSleepStateInternal(deltaTime: Float, maxMovement: Float, timeBeforeSleep: Float): ECanSleep =
         ECanSleep.of(JphBody_UpdateSleepStateInternal(bodyHandle, deltaTime, maxMovement, timeBeforeSleep))
 
-    open fun saveState(stream: StateRecorder) =
+    fun saveState(stream: StateRecorder) =
         JphBody_SaveState(bodyHandle, stream.stateRecorderHandle)
 
-    open fun restoreState(stream: StateRecorder) =
+    fun restoreState(stream: StateRecorder) =
         JphBody_RestoreState(bodyHandle, stream.stateRecorderHandle)
 
     companion object {

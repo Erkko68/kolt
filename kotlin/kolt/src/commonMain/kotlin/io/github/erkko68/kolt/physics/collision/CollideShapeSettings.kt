@@ -33,21 +33,21 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollideShapeSettings`. */
-open class CollideShapeSettings internal constructor(internal val collideShapeSettingsHandle: NativePointer, owned: Boolean = false) : CollideSettingsBase(JphCollideShapeSettings_asCollideSettingsBase(collideShapeSettingsHandle), owned), AutoCloseable {
+class CollideShapeSettings internal constructor(internal val collideShapeSettingsHandle: NativePointer, owned: Boolean = false) : CollideSettingsBase(JphCollideShapeSettings_asCollideSettingsBase(collideShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCollideShapeSettings_create(), owned = true)
 
     override fun close() =
         closeOnce { JphCollideShapeSettings_destroy(collideShapeSettingsHandle) }
 
-    open var maxSeparationDistance: Float
+    var maxSeparationDistance: Float
         get() = JphCollideShapeSettings_GetMaxSeparationDistance(collideShapeSettingsHandle)
         set(value) = JphCollideShapeSettings_SetMaxSeparationDistance(collideShapeSettingsHandle, value)
 
-    open var backFaceMode: EBackFaceMode
+    var backFaceMode: EBackFaceMode
         get() = EBackFaceMode.of(JphCollideShapeSettings_GetBackFaceMode(collideShapeSettingsHandle))
         set(value) = JphCollideShapeSettings_SetBackFaceMode(collideShapeSettingsHandle, value.value)
 
-    open var internalEdgeRemovalVertexToleranceSq: Float
+    var internalEdgeRemovalVertexToleranceSq: Float
         get() = JphCollideShapeSettings_GetInternalEdgeRemovalVertexToleranceSq(collideShapeSettingsHandle)
         set(value) = JphCollideShapeSettings_SetInternalEdgeRemovalVertexToleranceSq(collideShapeSettingsHandle, value)
 }

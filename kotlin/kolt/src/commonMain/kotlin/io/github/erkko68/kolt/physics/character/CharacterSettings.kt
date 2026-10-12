@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterSettings`. */
-open class CharacterSettings internal constructor(internal val characterSettingsHandle: NativePointer, owned: Boolean = false) : CharacterBaseSettings(JphCharacterSettings_asCharacterBaseSettings(characterSettingsHandle), owned), AutoCloseable {
+class CharacterSettings internal constructor(internal val characterSettingsHandle: NativePointer, owned: Boolean = false) : CharacterBaseSettings(JphCharacterSettings_asCharacterBaseSettings(characterSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCharacterSettings_create(), owned = true)
 
     override fun addRef() =
@@ -42,23 +42,23 @@ open class CharacterSettings internal constructor(internal val characterSettings
     override fun close() =
         closeOnce { JphCharacterSettings_release(characterSettingsHandle) }
 
-    open var layer: Int
+    var layer: Int
         get() = JphCharacterSettings_GetLayer(characterSettingsHandle)
         set(value) = JphCharacterSettings_SetLayer(characterSettingsHandle, value)
 
-    open var mass: Float
+    var mass: Float
         get() = JphCharacterSettings_GetMass(characterSettingsHandle)
         set(value) = JphCharacterSettings_SetMass(characterSettingsHandle, value)
 
-    open var friction: Float
+    var friction: Float
         get() = JphCharacterSettings_GetFriction(characterSettingsHandle)
         set(value) = JphCharacterSettings_SetFriction(characterSettingsHandle, value)
 
-    open var gravityFactor: Float
+    var gravityFactor: Float
         get() = JphCharacterSettings_GetGravityFactor(characterSettingsHandle)
         set(value) = JphCharacterSettings_SetGravityFactor(characterSettingsHandle, value)
 
-    open var allowedDOFs: EAllowedDOFs
+    var allowedDOFs: EAllowedDOFs
         get() = EAllowedDOFs.of(JphCharacterSettings_GetAllowedDOFs(characterSettingsHandle))
         set(value) = JphCharacterSettings_SetAllowedDOFs(characterSettingsHandle, value.value)
 }

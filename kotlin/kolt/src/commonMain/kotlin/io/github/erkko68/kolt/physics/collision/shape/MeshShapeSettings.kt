@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MeshShapeSettings`. */
-open class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphMeshShapeSettings_asShapeSettings(meshShapeSettingsHandle), owned), AutoCloseable {
+class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphMeshShapeSettings_asShapeSettings(meshShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphMeshShapeSettings_create(), owned = true)
     constructor(triangles: List<Triangle>, materials: List<PhysicsMaterial>) : this(interopScope { JphMeshShapeSettings_create_TriangleList_PhysicsMaterialList(toInterop(triangles.map { it.triangleHandle }), triangles.size, toInterop(materials.map { it.physicsMaterialHandle }), materials.size) }, owned = true)
     constructor(vertices: List<Float3>, triangles: List<IndexedTriangle>, materials: List<PhysicsMaterial>) : this(interopScope { JphMeshShapeSettings_create_VertexList_IndexedTriangleList_PhysicsMaterialList(toInterop(FloatArray(vertices.size * 3).also { a -> vertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), vertices.size, toInterop(triangles.map { it.indexedTriangleHandle }), triangles.size, toInterop(materials.map { it.physicsMaterialHandle }), materials.size) }, owned = true)
@@ -44,10 +44,10 @@ open class MeshShapeSettings internal constructor(internal val meshShapeSettings
     override fun close() =
         closeOnce { JphMeshShapeSettings_release(meshShapeSettingsHandle) }
 
-    open fun sanitize() =
+    fun sanitize() =
         JphMeshShapeSettings_Sanitize(meshShapeSettingsHandle)
 
-    open var triangleVertices: List<Float3>
+    var triangleVertices: List<Float3>
         get() = interopScope {
             val count = JphMeshShapeSettings_GetTriangleVertices(meshShapeSettingsHandle, NullPointer, 0)
             val returned = FloatArray(count * 3)
@@ -58,7 +58,7 @@ open class MeshShapeSettings internal constructor(internal val meshShapeSettings
         }
         set(value) = interopScope { JphMeshShapeSettings_SetTriangleVertices(meshShapeSettingsHandle, toInterop(FloatArray(value.size * 3).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), value.size) }
 
-    open var indexedTriangles: List<IndexedTriangle>
+    var indexedTriangles: List<IndexedTriangle>
         get() = interopScope {
             val count = JphMeshShapeSettings_GetIndexedTriangles(meshShapeSettingsHandle, NullPointer, 0)
             val returned = List(count) { IndexedTriangle(JphIndexedTriangle_create(), owned = true) }
@@ -67,7 +67,7 @@ open class MeshShapeSettings internal constructor(internal val meshShapeSettings
         }
         set(value) = interopScope { JphMeshShapeSettings_SetIndexedTriangles(meshShapeSettingsHandle, toInterop(value.map { it.indexedTriangleHandle }), value.size) }
 
-    open var materials: List<PhysicsMaterial>
+    var materials: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphMeshShapeSettings_GetMaterials(meshShapeSettingsHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
@@ -76,19 +76,19 @@ open class MeshShapeSettings internal constructor(internal val meshShapeSettings
         }
         set(value) = interopScope { JphMeshShapeSettings_SetMaterials(meshShapeSettingsHandle, toInterop(value.map { it.physicsMaterialHandle }), value.size) }
 
-    open var maxTrianglesPerLeaf: Int
+    var maxTrianglesPerLeaf: Int
         get() = JphMeshShapeSettings_GetMaxTrianglesPerLeaf(meshShapeSettingsHandle)
         set(value) = JphMeshShapeSettings_SetMaxTrianglesPerLeaf(meshShapeSettingsHandle, value)
 
-    open var activeEdgeCosThresholdAngle: Float
+    var activeEdgeCosThresholdAngle: Float
         get() = JphMeshShapeSettings_GetActiveEdgeCosThresholdAngle(meshShapeSettingsHandle)
         set(value) = JphMeshShapeSettings_SetActiveEdgeCosThresholdAngle(meshShapeSettingsHandle, value)
 
-    open var perTriangleUserData: Boolean
+    var perTriangleUserData: Boolean
         get() = JphMeshShapeSettings_GetPerTriangleUserData(meshShapeSettingsHandle)
         set(value) = JphMeshShapeSettings_SetPerTriangleUserData(meshShapeSettingsHandle, value)
 
-    open var buildQuality: MeshShapeSettings.EBuildQuality
+    var buildQuality: MeshShapeSettings.EBuildQuality
         get() = MeshShapeSettings.EBuildQuality.of(JphMeshShapeSettings_GetBuildQuality(meshShapeSettingsHandle))
         set(value) = JphMeshShapeSettings_SetBuildQuality(meshShapeSettingsHandle, value.value)
 

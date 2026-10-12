@@ -40,6 +40,6 @@ open class DecoratedShape internal constructor(internal val decoratedShapeHandle
     override fun close() =
         closeOnce { JphDecoratedShape_release(decoratedShapeHandle) }
 
-    open val innerShape: Shape?
+    val innerShape: Shape?
         get() = JphDecoratedShape_GetInnerShape(decoratedShapeHandle).takeIf { it != NullPointer }?.let { Shape(it) }
 }

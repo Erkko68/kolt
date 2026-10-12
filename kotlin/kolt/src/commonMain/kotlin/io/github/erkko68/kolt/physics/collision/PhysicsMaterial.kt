@@ -39,22 +39,22 @@ open class PhysicsMaterial internal constructor(internal val physicsMaterialHand
         if (this::class != PhysicsMaterial::class) JphPhysicsMaterial_bindUpcalls(physicsMaterialHandle, Upcalls.reference(this))
     }
 
-    open fun addRef() =
+    fun addRef() =
         own { JphPhysicsMaterial_addRef(physicsMaterialHandle) }
 
     override fun close() =
         closeOnce { JphPhysicsMaterial_release(physicsMaterialHandle) }
 
-    open val rtti: RTTI?
+    val rtti: RTTI?
         get() = JphPhysicsMaterial_GetRTTI(physicsMaterialHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
-    open fun castTo(rtti: RTTI?): NativePointer =
+    fun castTo(rtti: RTTI?): NativePointer =
         JphPhysicsMaterial_CastTo(physicsMaterialHandle, rtti?.rttiHandle ?: NullPointer)
 
-    open val debugName: String?
+    val debugName: String?
         get() = stringFromInterop(JphPhysicsMaterial_GetDebugName(physicsMaterialHandle))
 
-    open val debugColor: Color
+    val debugColor: Color
         get() = run {
             val returned = Color(JphColor_create(), owned = true)
             JphPhysicsMaterial_GetDebugColor(physicsMaterialHandle, returned.colorHandle)

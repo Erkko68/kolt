@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::HeightFieldShape`. */
-open class HeightFieldShape internal constructor(internal val heightFieldShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphHeightFieldShape_asShape(heightFieldShapeHandle), owned), AutoCloseable {
+class HeightFieldShape internal constructor(internal val heightFieldShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphHeightFieldShape_asShape(heightFieldShapeHandle), owned), AutoCloseable {
     constructor() : this(JphHeightFieldShape_create(), owned = true)
 
     override fun addRef() =
@@ -42,19 +42,19 @@ open class HeightFieldShape internal constructor(internal val heightFieldShapeHa
     override fun close() =
         closeOnce { JphHeightFieldShape_release(heightFieldShapeHandle) }
 
-    open fun clone(): HeightFieldShape? =
+    fun clone(): HeightFieldShape? =
         JphHeightFieldShape_Clone(heightFieldShapeHandle).takeIf { it != NullPointer }?.let { HeightFieldShape(it, owned = true) }
 
-    open val sampleCount: Int
+    val sampleCount: Int
         get() = JphHeightFieldShape_GetSampleCount(heightFieldShapeHandle)
 
-    open val blockSize: Int
+    val blockSize: Int
         get() = JphHeightFieldShape_GetBlockSize(heightFieldShapeHandle)
 
-    open fun getMaterial(x: Int, y: Int): PhysicsMaterial? =
+    fun getMaterial(x: Int, y: Int): PhysicsMaterial? =
         JphHeightFieldShape_GetMaterial(heightFieldShapeHandle, x, y).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
-    open fun getPosition(x: Int, y: Int): Vec3 =
+    fun getPosition(x: Int, y: Int): Vec3 =
         interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -63,10 +63,10 @@ open class HeightFieldShape internal constructor(internal val heightFieldShapeHa
             Vec3(returned)
         }
 
-    open fun isNoCollision(x: Int, y: Int): Boolean =
+    fun isNoCollision(x: Int, y: Int): Boolean =
         JphHeightFieldShape_IsNoCollision(heightFieldShapeHandle, x, y)
 
-    open fun projectOntoSurface(localPosition: Vec3): Triple<Boolean, Vec3, SubShapeID> =
+    fun projectOntoSurface(localPosition: Vec3): Triple<Boolean, Vec3, SubShapeID> =
         interopScope {
             val surfacePositionArray = FloatArray(4)
             val surfacePositionPointer = toInterop(surfacePositionArray)
@@ -78,7 +78,7 @@ open class HeightFieldShape internal constructor(internal val heightFieldShapeHa
             Triple(nativeResult, Vec3(surfacePositionArray), SubShapeID(subShapeIDArray[0]))
         }
 
-    open fun getSubShapeCoordinates(subShapeID: SubShapeID): Triple<Int, Int, Int> =
+    fun getSubShapeCoordinates(subShapeID: SubShapeID): Triple<Int, Int, Int> =
         interopScope {
             val xArray = IntArray(1)
             val xPointer = toInterop(xArray)
@@ -93,23 +93,23 @@ open class HeightFieldShape internal constructor(internal val heightFieldShapeHa
             Triple(xArray[0], yArray[0], triangleIndexArray[0])
         }
 
-    open val minHeightValue: Float
+    val minHeightValue: Float
         get() = JphHeightFieldShape_GetMinHeightValue(heightFieldShapeHandle)
 
-    open val maxHeightValue: Float
+    val maxHeightValue: Float
         get() = JphHeightFieldShape_GetMaxHeightValue(heightFieldShapeHandle)
 
-    open fun getHeights(x: Int, y: Int, sizeX: Int, sizeY: Int, heights: FloatArray, heightsStride: Long) =
+    fun getHeights(x: Int, y: Int, sizeX: Int, sizeY: Int, heights: FloatArray, heightsStride: Long) =
         interopScope {
             val heightsPointer = toInterop(heights)
             JphHeightFieldShape_GetHeights(heightFieldShapeHandle, x, y, sizeX, sizeY, heightsPointer, heightsStride)
             heightsPointer.fromInterop(heights)
         }
 
-    open fun setHeights(x: Int, y: Int, sizeX: Int, sizeY: Int, heights: FloatArray, heightsStride: Long, allocator: TempAllocator, activeEdgeCosThresholdAngle: Float) =
+    fun setHeights(x: Int, y: Int, sizeX: Int, sizeY: Int, heights: FloatArray, heightsStride: Long, allocator: TempAllocator, activeEdgeCosThresholdAngle: Float) =
         interopScope { JphHeightFieldShape_SetHeights(heightFieldShapeHandle, x, y, sizeX, sizeY, toInterop(heights), heightsStride, allocator.tempAllocatorHandle, activeEdgeCosThresholdAngle) }
 
-    open val materialList: List<PhysicsMaterial>
+    val materialList: List<PhysicsMaterial>
         get() = interopScope {
             val count = JphHeightFieldShape_GetMaterialList(heightFieldShapeHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
@@ -117,7 +117,7 @@ open class HeightFieldShape internal constructor(internal val heightFieldShapeHa
             readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
         }
 
-    open fun getMaterials(x: Int, y: Int, sizeX: Int, sizeY: Int, materials: ByteArray, materialsStride: Long) =
+    fun getMaterials(x: Int, y: Int, sizeX: Int, sizeY: Int, materials: ByteArray, materialsStride: Long) =
         interopScope {
             val materialsPointer = toInterop(materials)
             JphHeightFieldShape_GetMaterials(heightFieldShapeHandle, x, y, sizeX, sizeY, materialsPointer, materialsStride)

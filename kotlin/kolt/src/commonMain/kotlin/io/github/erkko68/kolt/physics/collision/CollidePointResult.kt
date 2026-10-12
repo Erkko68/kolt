@@ -33,20 +33,20 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollidePointResult`. */
-open class CollidePointResult internal constructor(internal val collidePointResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class CollidePointResult internal constructor(internal val collidePointResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphCollidePointResult_create(), owned = true)
 
     override fun close() =
         closeOnce { JphCollidePointResult_destroy(collidePointResultHandle) }
 
-    open val earlyOutFraction: Float
+    val earlyOutFraction: Float
         get() = JphCollidePointResult_GetEarlyOutFraction(collidePointResultHandle)
 
-    open var bodyID: BodyID
+    var bodyID: BodyID
         get() = BodyID(JphCollidePointResult_GetBodyID(collidePointResultHandle))
         set(value) = JphCollidePointResult_SetBodyID(collidePointResultHandle, value.value)
 
-    open var subShapeID2: SubShapeID
+    var subShapeID2: SubShapeID
         get() = SubShapeID(JphCollidePointResult_GetSubShapeID2(collidePointResultHandle))
         set(value) = JphCollidePointResult_SetSubShapeID2(collidePointResultHandle, value.value)
 }

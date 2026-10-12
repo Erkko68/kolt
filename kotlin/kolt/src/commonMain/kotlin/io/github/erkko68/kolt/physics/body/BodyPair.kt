@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyPair`. */
-open class BodyPair internal constructor(internal val bodyPairHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class BodyPair internal constructor(internal val bodyPairHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

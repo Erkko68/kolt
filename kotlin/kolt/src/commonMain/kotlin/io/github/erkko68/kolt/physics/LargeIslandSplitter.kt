@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::LargeIslandSplitter`. */
-open class LargeIslandSplitter internal constructor(internal val largeIslandSplitterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+class LargeIslandSplitter internal constructor(internal val largeIslandSplitterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
     /** C++ `JPH::LargeIslandSplitter::EStatus`. */
     enum class EStatus(internal val value: Int) {
         WaitingForBatch(0),

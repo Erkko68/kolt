@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::NonCopyable`. */
-open class NonCopyable internal constructor(internal val nonCopyableHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class NonCopyable internal constructor(internal val nonCopyableHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

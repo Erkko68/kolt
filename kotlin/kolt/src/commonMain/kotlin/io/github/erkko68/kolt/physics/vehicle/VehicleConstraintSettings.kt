@@ -45,7 +45,7 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
     override fun close() =
         closeOnce { JphVehicleConstraintSettings_release(vehicleConstraintSettingsHandle) }
 
-    open var up: Vec3
+    var up: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -55,7 +55,7 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
         }
         set(value) = interopScope { JphVehicleConstraintSettings_SetUp(vehicleConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var forward: Vec3
+    var forward: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -65,11 +65,11 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
         }
         set(value) = interopScope { JphVehicleConstraintSettings_SetForward(vehicleConstraintSettingsHandle, toInterop(value.toArray())) }
 
-    open var maxPitchRollAngle: Float
+    var maxPitchRollAngle: Float
         get() = JphVehicleConstraintSettings_GetMaxPitchRollAngle(vehicleConstraintSettingsHandle)
         set(value) = JphVehicleConstraintSettings_SetMaxPitchRollAngle(vehicleConstraintSettingsHandle, value)
 
-    open var wheels: List<WheelSettings>
+    var wheels: List<WheelSettings>
         get() = interopScope {
             val count = JphVehicleConstraintSettings_GetWheels(vehicleConstraintSettingsHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
@@ -78,7 +78,7 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
         }
         set(value) = interopScope { JphVehicleConstraintSettings_SetWheels(vehicleConstraintSettingsHandle, toInterop(value.map { it.wheelSettingsHandle }), value.size) }
 
-    open var antiRollBars: List<VehicleAntiRollBar>
+    var antiRollBars: List<VehicleAntiRollBar>
         get() = interopScope {
             val count = JphVehicleConstraintSettings_GetAntiRollBars(vehicleConstraintSettingsHandle, NullPointer, 0)
             val returned = List(count) { VehicleAntiRollBar(JphVehicleAntiRollBar_create(), owned = true) }
@@ -87,7 +87,7 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
         }
         set(value) = interopScope { JphVehicleConstraintSettings_SetAntiRollBars(vehicleConstraintSettingsHandle, toInterop(value.map { it.vehicleAntiRollBarHandle }), value.size) }
 
-    open var controller: VehicleControllerSettings?
+    var controller: VehicleControllerSettings?
         get() = JphVehicleConstraintSettings_GetController(vehicleConstraintSettingsHandle).takeIf { it != NullPointer }?.let { VehicleControllerSettings(it) }
         set(value) = JphVehicleConstraintSettings_SetController(vehicleConstraintSettingsHandle, value?.vehicleControllerSettingsHandle ?: NullPointer)
 

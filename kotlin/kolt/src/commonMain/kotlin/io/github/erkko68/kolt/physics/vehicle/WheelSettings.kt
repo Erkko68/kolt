@@ -45,10 +45,10 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
     override fun close() =
         closeOnce { JphWheelSettings_release(wheelSettingsHandle) }
 
-    open val rtti: RTTI?
+    val rtti: RTTI?
         get() = JphWheelSettings_GetRTTI(wheelSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
-    open fun castTo(rtti: RTTI?): NativePointer =
+    fun castTo(rtti: RTTI?): NativePointer =
         JphWheelSettings_CastTo(wheelSettingsHandle, rtti?.rttiHandle ?: NullPointer)
 
     open fun saveBinaryState(stream: StreamOut) =
@@ -57,7 +57,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
     open fun restoreBinaryState(stream: StreamIn) =
         JphWheelSettings_RestoreBinaryState(wheelSettingsHandle, stream.streamInHandle)
 
-    open var position: Vec3
+    var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -67,7 +67,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetPosition(wheelSettingsHandle, toInterop(value.toArray())) }
 
-    open var suspensionForcePoint: Vec3
+    var suspensionForcePoint: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -77,7 +77,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetSuspensionForcePoint(wheelSettingsHandle, toInterop(value.toArray())) }
 
-    open var suspensionDirection: Vec3
+    var suspensionDirection: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -87,7 +87,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetSuspensionDirection(wheelSettingsHandle, toInterop(value.toArray())) }
 
-    open var steeringAxis: Vec3
+    var steeringAxis: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -97,7 +97,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetSteeringAxis(wheelSettingsHandle, toInterop(value.toArray())) }
 
-    open var wheelUp: Vec3
+    var wheelUp: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -107,7 +107,7 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetWheelUp(wheelSettingsHandle, toInterop(value.toArray())) }
 
-    open var wheelForward: Vec3
+    var wheelForward: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -117,19 +117,19 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = interopScope { JphWheelSettings_SetWheelForward(wheelSettingsHandle, toInterop(value.toArray())) }
 
-    open var suspensionMinLength: Float
+    var suspensionMinLength: Float
         get() = JphWheelSettings_GetSuspensionMinLength(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetSuspensionMinLength(wheelSettingsHandle, value)
 
-    open var suspensionMaxLength: Float
+    var suspensionMaxLength: Float
         get() = JphWheelSettings_GetSuspensionMaxLength(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetSuspensionMaxLength(wheelSettingsHandle, value)
 
-    open var suspensionPreloadLength: Float
+    var suspensionPreloadLength: Float
         get() = JphWheelSettings_GetSuspensionPreloadLength(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetSuspensionPreloadLength(wheelSettingsHandle, value)
 
-    open var suspensionSpring: SpringSettings
+    var suspensionSpring: SpringSettings
         get() = run {
             val returned = SpringSettings(JphSpringSettings_create(), owned = true)
             JphWheelSettings_GetSuspensionSpring(wheelSettingsHandle, returned.springSettingsHandle)
@@ -137,15 +137,15 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
         }
         set(value) = JphWheelSettings_SetSuspensionSpring(wheelSettingsHandle, value.springSettingsHandle)
 
-    open var radius: Float
+    var radius: Float
         get() = JphWheelSettings_GetRadius(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetRadius(wheelSettingsHandle, value)
 
-    open var width: Float
+    var width: Float
         get() = JphWheelSettings_GetWidth(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetWidth(wheelSettingsHandle, value)
 
-    open var enableSuspensionForcePoint: Boolean
+    var enableSuspensionForcePoint: Boolean
         get() = JphWheelSettings_GetEnableSuspensionForcePoint(wheelSettingsHandle)
         set(value) = JphWheelSettings_SetEnableSuspensionForcePoint(wheelSettingsHandle, value)
 

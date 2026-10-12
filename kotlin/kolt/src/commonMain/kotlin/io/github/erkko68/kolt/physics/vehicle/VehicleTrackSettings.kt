@@ -39,17 +39,17 @@ open class VehicleTrackSettings internal constructor(internal val vehicleTrackSe
     override fun close() =
         closeOnce { JphVehicleTrackSettings_destroy(vehicleTrackSettingsHandle) }
 
-    open fun saveBinaryState(stream: StreamOut) =
+    fun saveBinaryState(stream: StreamOut) =
         JphVehicleTrackSettings_SaveBinaryState(vehicleTrackSettingsHandle, stream.streamOutHandle)
 
-    open fun restoreBinaryState(stream: StreamIn) =
+    fun restoreBinaryState(stream: StreamIn) =
         JphVehicleTrackSettings_RestoreBinaryState(vehicleTrackSettingsHandle, stream.streamInHandle)
 
-    open var drivenWheel: Int
+    var drivenWheel: Int
         get() = JphVehicleTrackSettings_GetDrivenWheel(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetDrivenWheel(vehicleTrackSettingsHandle, value)
 
-    open var wheels: IntArray
+    var wheels: IntArray
         get() = interopScope {
             val count = JphVehicleTrackSettings_GetWheels(vehicleTrackSettingsHandle, NullPointer, 0)
             val returned = IntArray(count)
@@ -60,19 +60,19 @@ open class VehicleTrackSettings internal constructor(internal val vehicleTrackSe
         }
         set(value) = interopScope { JphVehicleTrackSettings_SetWheels(vehicleTrackSettingsHandle, toInterop(value), value.size) }
 
-    open var inertia: Float
+    var inertia: Float
         get() = JphVehicleTrackSettings_GetInertia(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetInertia(vehicleTrackSettingsHandle, value)
 
-    open var angularDamping: Float
+    var angularDamping: Float
         get() = JphVehicleTrackSettings_GetAngularDamping(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetAngularDamping(vehicleTrackSettingsHandle, value)
 
-    open var maxBrakeTorque: Float
+    var maxBrakeTorque: Float
         get() = JphVehicleTrackSettings_GetMaxBrakeTorque(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetMaxBrakeTorque(vehicleTrackSettingsHandle, value)
 
-    open var differentialRatio: Float
+    var differentialRatio: Float
         get() = JphVehicleTrackSettings_GetDifferentialRatio(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetDifferentialRatio(vehicleTrackSettingsHandle, value)
 

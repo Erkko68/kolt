@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Triangle`. */
-open class Triangle internal constructor(internal val triangleHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+class Triangle internal constructor(internal val triangleHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     constructor() : this(JphTriangle_create(), owned = true)
     constructor(v1: Float3, v2: Float3, v3: Float3, materialIndex: Int, userData: Int) : this(interopScope { JphTriangle_create_Float3_Float3_Float3_uint32_uint32(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), materialIndex, userData) }, owned = true)
     constructor(v1: Vec3, v2: Vec3, v3: Vec3, materialIndex: Int, userData: Int) : this(interopScope { JphTriangle_create_Vec3Arg_Vec3Arg_Vec3Arg_uint32_uint32(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), materialIndex, userData) }, owned = true)
@@ -41,7 +41,7 @@ open class Triangle internal constructor(internal val triangleHandle: NativePoin
     override fun close() =
         closeOnce { JphTriangle_destroy(triangleHandle) }
 
-    open val centroid: Vec3
+    val centroid: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -50,7 +50,7 @@ open class Triangle internal constructor(internal val triangleHandle: NativePoin
             Vec3(returned)
         }
 
-    open var v: List<Float3>
+    var v: List<Float3>
         get() = interopScope {
             val count = JphTriangle_GetV(triangleHandle, NullPointer, 0)
             val returned = FloatArray(count * 3)
@@ -61,11 +61,11 @@ open class Triangle internal constructor(internal val triangleHandle: NativePoin
         }
         set(value) = interopScope { JphTriangle_SetV(triangleHandle, toInterop(FloatArray(value.size * 3).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), value.size) }
 
-    open var materialIndex: Int
+    var materialIndex: Int
         get() = JphTriangle_GetMaterialIndex(triangleHandle)
         set(value) = JphTriangle_SetMaterialIndex(triangleHandle, value)
 
-    open var userData: Int
+    var userData: Int
         get() = JphTriangle_GetUserData(triangleHandle)
         set(value) = JphTriangle_SetUserData(triangleHandle, value)
 }

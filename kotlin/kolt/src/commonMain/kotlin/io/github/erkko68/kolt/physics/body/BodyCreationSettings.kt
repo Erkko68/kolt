@@ -41,11 +41,11 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
     override fun close() =
         closeOnce { JphBodyCreationSettings_destroy(bodyCreationSettingsHandle) }
 
-    open var shapeSettings: ShapeSettings?
+    var shapeSettings: ShapeSettings?
         get() = JphBodyCreationSettings_GetShapeSettings(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
         set(shape) = JphBodyCreationSettings_SetShapeSettings(bodyCreationSettingsHandle, shape?.shapeSettingsHandle ?: NullPointer)
 
-    open fun convertShapeSettings(): Shape =
+    fun convertShapeSettings(): Shape =
         interopScope {
             val error = ByteArray(256)
             val errorPointer = toInterop(error)
@@ -55,27 +55,27 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
             Shape(returned, owned = true)
         }
 
-    open var shape: Shape?
+    var shape: Shape?
         get() = JphBodyCreationSettings_GetShape(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(shape) = JphBodyCreationSettings_SetShape(bodyCreationSettingsHandle, shape?.shapeHandle ?: NullPointer)
 
-    open fun hasMassProperties(): Boolean =
+    fun hasMassProperties(): Boolean =
         JphBodyCreationSettings_HasMassProperties(bodyCreationSettingsHandle)
 
-    open val massProperties: MassProperties
+    val massProperties: MassProperties
         get() = run {
             val returned = MassProperties(JphMassProperties_create(), owned = true)
             JphBodyCreationSettings_GetMassProperties(bodyCreationSettingsHandle, returned.massPropertiesHandle)
             returned
         }
 
-    open fun saveBinaryState(stream: StreamOut) =
+    fun saveBinaryState(stream: StreamOut) =
         JphBodyCreationSettings_SaveBinaryState(bodyCreationSettingsHandle, stream.streamOutHandle)
 
-    open fun restoreBinaryState(stream: StreamIn) =
+    fun restoreBinaryState(stream: StreamIn) =
         JphBodyCreationSettings_RestoreBinaryState(bodyCreationSettingsHandle, stream.streamInHandle)
 
-    open var position: Vec3
+    var position: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -85,7 +85,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = interopScope { JphBodyCreationSettings_SetPosition(bodyCreationSettingsHandle, toInterop(value.toArray())) }
 
-    open var rotation: Quat
+    var rotation: Quat
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -95,7 +95,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = interopScope { JphBodyCreationSettings_SetRotation(bodyCreationSettingsHandle, toInterop(value.toArray())) }
 
-    open var linearVelocity: Vec3
+    var linearVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -105,7 +105,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = interopScope { JphBodyCreationSettings_SetLinearVelocity(bodyCreationSettingsHandle, toInterop(value.toArray())) }
 
-    open var angularVelocity: Vec3
+    var angularVelocity: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
             val returnedPointer = toInterop(returned)
@@ -115,7 +115,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = interopScope { JphBodyCreationSettings_SetAngularVelocity(bodyCreationSettingsHandle, toInterop(value.toArray())) }
 
-    open var userData: Long
+    var userData: Long
         get() = interopScope {
             val returned = LongArray(1)
             val returnedPointer = toInterop(returned)
@@ -125,11 +125,11 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = JphBodyCreationSettings_SetUserData(bodyCreationSettingsHandle, value)
 
-    open var objectLayer: Int
+    var objectLayer: Int
         get() = JphBodyCreationSettings_GetObjectLayer(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetObjectLayer(bodyCreationSettingsHandle, value)
 
-    open var collisionGroup: CollisionGroup
+    var collisionGroup: CollisionGroup
         get() = run {
             val returned = CollisionGroup(JphCollisionGroup_create(), owned = true)
             JphBodyCreationSettings_GetCollisionGroup(bodyCreationSettingsHandle, returned.collisionGroupHandle)
@@ -137,91 +137,91 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = JphBodyCreationSettings_SetCollisionGroup(bodyCreationSettingsHandle, value.collisionGroupHandle)
 
-    open var motionType: EMotionType
+    var motionType: EMotionType
         get() = EMotionType.of(JphBodyCreationSettings_GetMotionType(bodyCreationSettingsHandle))
         set(value) = JphBodyCreationSettings_SetMotionType(bodyCreationSettingsHandle, value.value)
 
-    open var allowedDOFs: EAllowedDOFs
+    var allowedDOFs: EAllowedDOFs
         get() = EAllowedDOFs.of(JphBodyCreationSettings_GetAllowedDOFs(bodyCreationSettingsHandle))
         set(value) = JphBodyCreationSettings_SetAllowedDOFs(bodyCreationSettingsHandle, value.value)
 
-    open var allowDynamicOrKinematic: Boolean
+    var allowDynamicOrKinematic: Boolean
         get() = JphBodyCreationSettings_GetAllowDynamicOrKinematic(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetAllowDynamicOrKinematic(bodyCreationSettingsHandle, value)
 
-    open var isSensor: Boolean
+    var isSensor: Boolean
         get() = JphBodyCreationSettings_GetIsSensor(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetIsSensor(bodyCreationSettingsHandle, value)
 
-    open var collideKinematicVsNonDynamic: Boolean
+    var collideKinematicVsNonDynamic: Boolean
         get() = JphBodyCreationSettings_GetCollideKinematicVsNonDynamic(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetCollideKinematicVsNonDynamic(bodyCreationSettingsHandle, value)
 
-    open var useManifoldReduction: Boolean
+    var useManifoldReduction: Boolean
         get() = JphBodyCreationSettings_GetUseManifoldReduction(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetUseManifoldReduction(bodyCreationSettingsHandle, value)
 
-    open var applyGyroscopicForce: Boolean
+    var applyGyroscopicForce: Boolean
         get() = JphBodyCreationSettings_GetApplyGyroscopicForce(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetApplyGyroscopicForce(bodyCreationSettingsHandle, value)
 
-    open var motionQuality: EMotionQuality
+    var motionQuality: EMotionQuality
         get() = EMotionQuality.of(JphBodyCreationSettings_GetMotionQuality(bodyCreationSettingsHandle))
         set(value) = JphBodyCreationSettings_SetMotionQuality(bodyCreationSettingsHandle, value.value)
 
-    open var enhancedInternalEdgeRemoval: Boolean
+    var enhancedInternalEdgeRemoval: Boolean
         get() = JphBodyCreationSettings_GetEnhancedInternalEdgeRemoval(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetEnhancedInternalEdgeRemoval(bodyCreationSettingsHandle, value)
 
-    open var allowSleeping: Boolean
+    var allowSleeping: Boolean
         get() = JphBodyCreationSettings_GetAllowSleeping(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetAllowSleeping(bodyCreationSettingsHandle, value)
 
-    open var friction: Float
+    var friction: Float
         get() = JphBodyCreationSettings_GetFriction(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetFriction(bodyCreationSettingsHandle, value)
 
-    open var restitution: Float
+    var restitution: Float
         get() = JphBodyCreationSettings_GetRestitution(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetRestitution(bodyCreationSettingsHandle, value)
 
-    open var linearDamping: Float
+    var linearDamping: Float
         get() = JphBodyCreationSettings_GetLinearDamping(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetLinearDamping(bodyCreationSettingsHandle, value)
 
-    open var angularDamping: Float
+    var angularDamping: Float
         get() = JphBodyCreationSettings_GetAngularDamping(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetAngularDamping(bodyCreationSettingsHandle, value)
 
-    open var maxLinearVelocity: Float
+    var maxLinearVelocity: Float
         get() = JphBodyCreationSettings_GetMaxLinearVelocity(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetMaxLinearVelocity(bodyCreationSettingsHandle, value)
 
-    open var maxAngularVelocity: Float
+    var maxAngularVelocity: Float
         get() = JphBodyCreationSettings_GetMaxAngularVelocity(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetMaxAngularVelocity(bodyCreationSettingsHandle, value)
 
-    open var gravityFactor: Float
+    var gravityFactor: Float
         get() = JphBodyCreationSettings_GetGravityFactor(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetGravityFactor(bodyCreationSettingsHandle, value)
 
-    open var numVelocityStepsOverride: Int
+    var numVelocityStepsOverride: Int
         get() = JphBodyCreationSettings_GetNumVelocityStepsOverride(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetNumVelocityStepsOverride(bodyCreationSettingsHandle, value)
 
-    open var numPositionStepsOverride: Int
+    var numPositionStepsOverride: Int
         get() = JphBodyCreationSettings_GetNumPositionStepsOverride(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetNumPositionStepsOverride(bodyCreationSettingsHandle, value)
 
-    open var overrideMassProperties: EOverrideMassProperties
+    var overrideMassProperties: EOverrideMassProperties
         get() = EOverrideMassProperties.of(JphBodyCreationSettings_GetOverrideMassProperties(bodyCreationSettingsHandle))
         set(value) = JphBodyCreationSettings_SetOverrideMassProperties(bodyCreationSettingsHandle, value.value)
 
-    open var inertiaMultiplier: Float
+    var inertiaMultiplier: Float
         get() = JphBodyCreationSettings_GetInertiaMultiplier(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetInertiaMultiplier(bodyCreationSettingsHandle, value)
 
-    open var massPropertiesOverride: MassProperties
+    var massPropertiesOverride: MassProperties
         get() = run {
             val returned = MassProperties(JphMassProperties_create(), owned = true)
             JphBodyCreationSettings_GetMassPropertiesOverride(bodyCreationSettingsHandle, returned.massPropertiesHandle)

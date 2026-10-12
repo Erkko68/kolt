@@ -33,44 +33,44 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MotorcycleController`. */
-open class MotorcycleController internal constructor(internal val motorcycleControllerHandle: NativePointer, owned: Boolean = false) : WheeledVehicleController(JphMotorcycleController_asWheeledVehicleController(motorcycleControllerHandle), owned), AutoCloseable {
+class MotorcycleController internal constructor(internal val motorcycleControllerHandle: NativePointer, owned: Boolean = false) : WheeledVehicleController(JphMotorcycleController_asWheeledVehicleController(motorcycleControllerHandle), owned), AutoCloseable {
     constructor(settings: MotorcycleControllerSettings, constraint: VehicleConstraint) : this(JphMotorcycleController_create(settings.motorcycleControllerSettingsHandle, constraint.vehicleConstraintHandle), owned = true)
 
     override fun close() =
         closeOnce { JphMotorcycleController_destroy(motorcycleControllerHandle) }
 
-    open val wheelBase: Float
+    val wheelBase: Float
         get() = JphMotorcycleController_GetWheelBase(motorcycleControllerHandle)
 
-    open fun enableLeanController(enable: Boolean) =
+    fun enableLeanController(enable: Boolean) =
         JphMotorcycleController_EnableLeanController(motorcycleControllerHandle, enable)
 
-    open val isLeanControllerEnabled: Boolean
+    val isLeanControllerEnabled: Boolean
         get() = JphMotorcycleController_IsLeanControllerEnabled(motorcycleControllerHandle)
 
-    open fun enableLeanSteeringLimit(enable: Boolean) =
+    fun enableLeanSteeringLimit(enable: Boolean) =
         JphMotorcycleController_EnableLeanSteeringLimit(motorcycleControllerHandle, enable)
 
-    open val isLeanSteeringLimitEnabled: Boolean
+    val isLeanSteeringLimitEnabled: Boolean
         get() = JphMotorcycleController_IsLeanSteeringLimitEnabled(motorcycleControllerHandle)
 
-    open var leanSpringConstant: Float
+    var leanSpringConstant: Float
         get() = JphMotorcycleController_GetLeanSpringConstant(motorcycleControllerHandle)
         set(constant) = JphMotorcycleController_SetLeanSpringConstant(motorcycleControllerHandle, constant)
 
-    open var leanSpringDamping: Float
+    var leanSpringDamping: Float
         get() = JphMotorcycleController_GetLeanSpringDamping(motorcycleControllerHandle)
         set(damping) = JphMotorcycleController_SetLeanSpringDamping(motorcycleControllerHandle, damping)
 
-    open var leanSpringIntegrationCoefficient: Float
+    var leanSpringIntegrationCoefficient: Float
         get() = JphMotorcycleController_GetLeanSpringIntegrationCoefficient(motorcycleControllerHandle)
         set(coefficient) = JphMotorcycleController_SetLeanSpringIntegrationCoefficient(motorcycleControllerHandle, coefficient)
 
-    open var leanSpringIntegrationCoefficientDecay: Float
+    var leanSpringIntegrationCoefficientDecay: Float
         get() = JphMotorcycleController_GetLeanSpringIntegrationCoefficientDecay(motorcycleControllerHandle)
         set(decay) = JphMotorcycleController_SetLeanSpringIntegrationCoefficientDecay(motorcycleControllerHandle, decay)
 
-    open var leanSmoothingFactor: Float
+    var leanSmoothingFactor: Float
         get() = JphMotorcycleController_GetLeanSmoothingFactor(motorcycleControllerHandle)
         set(factor) = JphMotorcycleController_SetLeanSmoothingFactor(motorcycleControllerHandle, factor)
 }

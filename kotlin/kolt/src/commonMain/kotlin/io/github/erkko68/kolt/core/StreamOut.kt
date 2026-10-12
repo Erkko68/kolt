@@ -33,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::StreamOut`. */
-open class StreamOut internal constructor(internal val streamOutHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+class StreamOut internal constructor(internal val streamOutHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

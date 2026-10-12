@@ -40,13 +40,13 @@ open class TwoBodyConstraint internal constructor(internal val twoBodyConstraint
     override fun close() =
         closeOnce { JphTwoBodyConstraint_release(twoBodyConstraintHandle) }
 
-    open val body1: Body?
+    val body1: Body?
         get() = JphTwoBodyConstraint_GetBody1(twoBodyConstraintHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
-    open val body2: Body?
+    val body2: Body?
         get() = JphTwoBodyConstraint_GetBody2(twoBodyConstraintHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
-    open val constraintToBody1Matrix: Mat44
+    val constraintToBody1Matrix: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
@@ -55,7 +55,7 @@ open class TwoBodyConstraint internal constructor(internal val twoBodyConstraint
             Mat44(returned)
         }
 
-    open val constraintToBody2Matrix: Mat44
+    val constraintToBody2Matrix: Mat44
         get() = interopScope {
             val returned = FloatArray(16)
             val returnedPointer = toInterop(returned)
