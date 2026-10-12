@@ -545,10 +545,7 @@ typedef enum JphValidateResult {
     JPH_VALIDATE_RESULT_REJECT_ALL_CONTACTS_FOR_THIS_BODY_PAIR = 3,
 } JphValidateResult;
 
-typedef void (*JphJobSystemThreadPoolInitExitFunction)(int32_t);
 typedef int32_t (*JphUpcall)(void* userData, int32_t method, const uint64_t* args, uint64_t* result);
-typedef void (*JphVehicleConstraintCombineFunction)(uint32_t, float*, float*, const JphBody*, uint32_t);
-typedef void (*JphWheeledVehicleControllerTireMaxImpulseCallback)(uint32_t, float*, float*, float, float, float, float, float, float);
 
 #ifdef __cplusplus
 }

@@ -41,6 +41,18 @@ class JobSystemThreadPool internal constructor(internal val jobSystemThreadPoolH
     override fun close() =
         closeOnce { JphJobSystemThreadPool_destroy(jobSystemThreadPoolHandle) }
 
+    fun setThreadInitFunction(initFunction: ((Int) -> Unit)?) =
+        run {
+            val initFunctionUser = if (initFunction == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> initFunction(readSlot(args, 0).toInt()) })
+            JphJobSystemThreadPool_SetThreadInitFunction(jobSystemThreadPoolHandle, Upcalls.function, initFunctionUser)
+        }
+
+    fun setThreadExitFunction(exitFunction: ((Int) -> Unit)?) =
+        run {
+            val exitFunctionUser = if (exitFunction == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> exitFunction(readSlot(args, 0).toInt()) })
+            JphJobSystemThreadPool_SetThreadExitFunction(jobSystemThreadPoolHandle, Upcalls.function, exitFunctionUser)
+        }
+
     fun init(maxJobs: Int, maxBarriers: Int, numThreads: Int) =
         JphJobSystemThreadPool_Init(jobSystemThreadPoolHandle, maxJobs, maxBarriers, numThreads)
 

@@ -37,6 +37,9 @@ internal external fun JphPhysicsSystem_SetSimShapeFilter(self: NativePointer, in
 @ExternalSymbolName("JphPhysicsSystem_GetSimShapeFilter")
 internal external fun JphPhysicsSystem_GetSimShapeFilter(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPhysicsSystem_SetSimCollideBodyVsBody")
+internal external fun JphPhysicsSystem_SetSimCollideBodyVsBody(self: NativePointer, inBodyVsBody: NativePointer, inBodyVsBodyUser: NativePointer)
+
 @ExternalSymbolName("JphPhysicsSystem_sDefaultSimCollideBodyVsBody")
 internal external fun JphPhysicsSystem_sDefaultSimCollideBodyVsBody(inBody1: NativePointer, inBody2: NativePointer, inCenterOfMassTransform1: NativePointer, inCenterOfMassTransform2: NativePointer, ioCollideShapeSettings: NativePointer, ioCollector: NativePointer, inShapeFilter: NativePointer)
 

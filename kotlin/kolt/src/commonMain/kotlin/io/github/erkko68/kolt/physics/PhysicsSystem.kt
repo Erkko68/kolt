@@ -59,6 +59,12 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
         get() = JphPhysicsSystem_GetSimShapeFilter(physicsSystemHandle).takeIf { it != NullPointer }?.let { SimShapeFilter(it) }
         set(shapeFilter) = JphPhysicsSystem_SetSimShapeFilter(physicsSystemHandle, shapeFilter?.simShapeFilterHandle ?: NullPointer)
 
+    fun setSimCollideBodyVsBody(bodyVsBody: ((Body, Body, Mat44, Mat44, CollideShapeSettings, CollideShapeCollector, ShapeFilter) -> Unit)?) =
+        run {
+            val bodyVsBodyUser = if (bodyVsBody == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> bodyVsBody(Body(readPointerSlot(args, 0)), Body(readPointerSlot(args, 1)), Mat44(readFloats(readPointerSlot(args, 2), 16)), Mat44(readFloats(readPointerSlot(args, 3), 16)), CollideShapeSettings(readPointerSlot(args, 4)), CollideShapeCollector(readPointerSlot(args, 5)), ShapeFilter(readPointerSlot(args, 6))) })
+            JphPhysicsSystem_SetSimCollideBodyVsBody(physicsSystemHandle, Upcalls.function, bodyVsBodyUser)
+        }
+
     var physicsSettings: PhysicsSettings
         get() = run {
             val returned = PhysicsSettings(JphPhysicsSettings_create(), owned = true)

@@ -59,4 +59,4 @@ internal external fun JphWheeledVehicleController_SetDifferentialLimitedSlipRati
 internal external fun JphWheeledVehicleController_GetWheelSpeedAtClutch(self: NativePointer): Float
 
 @ExternalSymbolName("JphWheeledVehicleController_SetTireMaxImpulseCallback")
-internal external fun JphWheeledVehicleController_SetTireMaxImpulseCallback(self: NativePointer, inTireMaxImpulseCallback: NativePointer)
+internal external fun JphWheeledVehicleController_SetTireMaxImpulseCallback(self: NativePointer, inTireMaxImpulseCallback: NativePointer, inTireMaxImpulseCallbackUser: NativePointer)

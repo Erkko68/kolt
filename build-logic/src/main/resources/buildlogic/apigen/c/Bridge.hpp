@@ -55,6 +55,16 @@ inline bool upcall(Upcall call, void* user, const void* self, int32_t method, co
     return handled;
 }
 
+// A function written outside C++ that a std::function calls: method 0 of its user data, which index -1 says the last
+// copy of the function is gone.
+struct Callback {
+    Upcall call;
+    std::shared_ptr<void> user;
+
+    Callback(Upcall call, void* user) : call(call), user(user, [call](void* u) { call(u, -1, nullptr, nullptr); }) {}
+    void operator()(const uint64_t* args, uint64_t* result) const { call(user.get(), 0, args, result); }
+};
+
 // C and C++ types naming one object (a handle, a math mirror): cpp() and c() convert pointers between them.
 #define APIGEN_TYPE(C, ...) \
     inline __VA_ARGS__* cpp(C* p) { return reinterpret_cast<__VA_ARGS__*>(p); } \

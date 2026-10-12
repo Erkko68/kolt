@@ -55,6 +55,14 @@ expect object Upcalls {
     fun reference(target: NativeObject): NativePointer
 }
 
+/** A Kotlin function C++ holds as a `std::function`: upcall 0 runs it, and it lives until C++ drops the function. */
+class NativeCallback(private val run: (args: NativePointer, result: NativePointer) -> Unit) : NativeObject(false) {
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        run(args, result)
+        return true
+    }
+}
+
 /** Slot [index] of an upcall's arguments: a number's bits, or with [readPointerSlot] a pointer. */
 expect fun readSlot(args: NativePointer, index: Int): Long
 expect fun readPointerSlot(args: NativePointer, index: Int): NativePointer

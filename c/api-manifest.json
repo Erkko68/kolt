@@ -45,8 +45,8 @@
 {"name":"JphJobSystemThreadPool_destroy","returns":"void","params":[["self","ptr"]]},
 {"name":"JphJobSystemThreadPool_asJobSystemWithBarrier","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphJobSystemThreadPool_asJobSystem","returns":"ptr","params":[["self","ptr"]]},
-{"name":"JphJobSystemThreadPool_SetThreadInitFunction","returns":"void","params":[["self","ptr"],["inInitFunction","ptr"]]},
-{"name":"JphJobSystemThreadPool_SetThreadExitFunction","returns":"void","params":[["self","ptr"],["inExitFunction","ptr"]]},
+{"name":"JphJobSystemThreadPool_SetThreadInitFunction","returns":"void","params":[["self","ptr"],["inInitFunction","ptr"],["inInitFunctionUser","ptr"]]},
+{"name":"JphJobSystemThreadPool_SetThreadExitFunction","returns":"void","params":[["self","ptr"],["inExitFunction","ptr"],["inExitFunctionUser","ptr"]]},
 {"name":"JphJobSystemThreadPool_Init","returns":"void","params":[["self","ptr"],["inMaxJobs","i32"],["inMaxBarriers","i32"],["inNumThreads","i32"]]},
 {"name":"JphJobSystemThreadPool_SetNumThreads","returns":"void","params":[["self","ptr"],["inNumThreads","i32"]]}
 ],
@@ -313,6 +313,7 @@
 {"name":"JphPhysicsSystem_GetSoftBodyContactListener","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphPhysicsSystem_SetSimShapeFilter","returns":"void","params":[["self","ptr"],["inShapeFilter","ptr"]]},
 {"name":"JphPhysicsSystem_GetSimShapeFilter","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPhysicsSystem_SetSimCollideBodyVsBody","returns":"void","params":[["self","ptr"],["inBodyVsBody","ptr"],["inBodyVsBodyUser","ptr"]]},
 {"name":"JphPhysicsSystem_sDefaultSimCollideBodyVsBody","returns":"void","params":[["inBody1","ptr"],["inBody2","ptr"],["inCenterOfMassTransform1","ptr"],["inCenterOfMassTransform2","ptr"],["ioCollideShapeSettings","ptr"],["ioCollector","ptr"],["inShapeFilter","ptr"]]},
 {"name":"JphPhysicsSystem_SetPhysicsSettings","returns":"void","params":[["self","ptr"],["inSettings","ptr"]]},
 {"name":"JphPhysicsSystem_GetPhysicsSettings","returns":"void","params":[["self","ptr"],["out","ptr"]]},
@@ -3439,7 +3440,10 @@
 {"name":"JphVehicleConstraint_GetMaxPitchRollAngle","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphVehicleConstraint_SetVehicleCollisionTester","returns":"void","params":[["self","ptr"],["inTester","ptr"]]},
 {"name":"JphVehicleConstraint_GetVehicleCollisionTester","returns":"ptr","params":[["self","ptr"]]},
-{"name":"JphVehicleConstraint_SetCombineFriction","returns":"void","params":[["self","ptr"],["inCombineFriction","ptr"]]},
+{"name":"JphVehicleConstraint_SetCombineFriction","returns":"void","params":[["self","ptr"],["inCombineFriction","ptr"],["inCombineFrictionUser","ptr"]]},
+{"name":"JphVehicleConstraint_SetPreStepCallback","returns":"void","params":[["self","ptr"],["inPreStepCallback","ptr"],["inPreStepCallbackUser","ptr"]]},
+{"name":"JphVehicleConstraint_SetPostCollideCallback","returns":"void","params":[["self","ptr"],["inPostCollideCallback","ptr"],["inPostCollideCallbackUser","ptr"]]},
+{"name":"JphVehicleConstraint_SetPostStepCallback","returns":"void","params":[["self","ptr"],["inPostStepCallback","ptr"],["inPostStepCallbackUser","ptr"]]},
 {"name":"JphVehicleConstraint_OverrideGravity","returns":"void","params":[["self","ptr"],["inGravity","ptr"]]},
 {"name":"JphVehicleConstraint_IsGravityOverridden","returns":"bool","params":[["self","ptr"]]},
 {"name":"JphVehicleConstraint_GetGravityOverride","returns":"void","params":[["self","ptr"],["out","ptr"]]},
@@ -3762,7 +3766,7 @@
 {"name":"JphWheeledVehicleController_GetDifferentialLimitedSlipRatio","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphWheeledVehicleController_SetDifferentialLimitedSlipRatio","returns":"void","params":[["self","ptr"],["inV","f32"]]},
 {"name":"JphWheeledVehicleController_GetWheelSpeedAtClutch","returns":"f32","params":[["self","ptr"]]},
-{"name":"JphWheeledVehicleController_SetTireMaxImpulseCallback","returns":"void","params":[["self","ptr"],["inTireMaxImpulseCallback","ptr"]]}
+{"name":"JphWheeledVehicleController_SetTireMaxImpulseCallback","returns":"void","params":[["self","ptr"],["inTireMaxImpulseCallback","ptr"],["inTireMaxImpulseCallbackUser","ptr"]]}
 ],
 "kolt/generated/physics/vehicle/JphWheeledVehicleControllerSettings.h": [
 {"name":"JphWheeledVehicleControllerSettings_create","returns":"ptr","params":[]},

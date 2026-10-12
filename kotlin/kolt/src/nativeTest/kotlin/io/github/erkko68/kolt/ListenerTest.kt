@@ -28,6 +28,7 @@ import io.github.erkko68.kolt.physics.collision.broadphase.BroadPhaseLayerInterf
 import io.github.erkko68.kolt.physics.collision.broadphase.ObjectVsBroadPhaseLayerFilterTable
 import io.github.erkko68.kolt.physics.collision.shape.BoxShape
 import io.github.erkko68.kolt.physics.collision.shape.SphereShape
+import kotlin.concurrent.AtomicInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -81,7 +82,15 @@ class ListenerTest {
         }
         assertEquals(listOf(ball), activated)
 
+        // A Kotlin function in place of Jolt's own collision of two bodies, which it passes on to.
+        val collided = AtomicInt(0)
+        system.setSimCollideBodyVsBody { body1, body2, transform1, transform2, settings, collector, filter ->
+            collided.incrementAndGet()
+            PhysicsSystem.defaultSimCollideBodyVsBody(body1, body2, transform1, transform2, settings, collector, filter)
+        }
+
         repeat(120) { system.update(1f / 60, 1, temp, jobs) }
+        assertTrue(collided.value > 0)
         assertEquals(listOf(floor to ball), contacts.map { (a, b) -> if (a == floor) a to b else b to a })
         assertEquals(0.5f, bodies.getPosition(ball).y, 0.05f)
 

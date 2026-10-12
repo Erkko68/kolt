@@ -22,13 +22,10 @@ void JphVehicleConstraint_SetMaxPitchRollAngle(JphVehicleConstraint* self, float
 float JphVehicleConstraint_GetMaxPitchRollAngle(const JphVehicleConstraint* self);
 void JphVehicleConstraint_SetVehicleCollisionTester(JphVehicleConstraint* self, const JphVehicleCollisionTester* inTester);
 const JphVehicleCollisionTester* JphVehicleConstraint_GetVehicleCollisionTester(const JphVehicleConstraint* self);
-void JphVehicleConstraint_SetCombineFriction(JphVehicleConstraint* self, JphVehicleConstraintCombineFunction inCombineFriction);
-// TODO(handwritten) JphVehicleConstraint_SetPreStepCallback: void JPH::VehicleConstraint::SetPreStepCallback(const StepCallback & inPreStepCallback)
-//     JPH::VehicleConstraint::StepCallback: arguments C takes in pieces
-// TODO(handwritten) JphVehicleConstraint_SetPostCollideCallback: void JPH::VehicleConstraint::SetPostCollideCallback(const StepCallback & inPostCollideCallback)
-//     JPH::VehicleConstraint::StepCallback: arguments C takes in pieces
-// TODO(handwritten) JphVehicleConstraint_SetPostStepCallback: void JPH::VehicleConstraint::SetPostStepCallback(const StepCallback & inPostStepCallback)
-//     JPH::VehicleConstraint::StepCallback: arguments C takes in pieces
+void JphVehicleConstraint_SetCombineFriction(JphVehicleConstraint* self, JphUpcall inCombineFriction, void* inCombineFrictionUser);
+void JphVehicleConstraint_SetPreStepCallback(JphVehicleConstraint* self, JphUpcall inPreStepCallback, void* inPreStepCallbackUser);
+void JphVehicleConstraint_SetPostCollideCallback(JphVehicleConstraint* self, JphUpcall inPostCollideCallback, void* inPostCollideCallbackUser);
+void JphVehicleConstraint_SetPostStepCallback(JphVehicleConstraint* self, JphUpcall inPostStepCallback, void* inPostStepCallbackUser);
 void JphVehicleConstraint_OverrideGravity(JphVehicleConstraint* self, const JphVec3* inGravity);
 bool JphVehicleConstraint_IsGravityOverridden(const JphVehicleConstraint* self);
 void JphVehicleConstraint_GetGravityOverride(const JphVehicleConstraint* self, JphVec3* out);

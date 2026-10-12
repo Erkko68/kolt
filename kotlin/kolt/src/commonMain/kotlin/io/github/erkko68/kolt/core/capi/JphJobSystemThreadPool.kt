@@ -20,10 +20,10 @@ internal external fun JphJobSystemThreadPool_asJobSystemWithBarrier(self: Native
 internal external fun JphJobSystemThreadPool_asJobSystem(self: NativePointer): NativePointer
 
 @ExternalSymbolName("JphJobSystemThreadPool_SetThreadInitFunction")
-internal external fun JphJobSystemThreadPool_SetThreadInitFunction(self: NativePointer, inInitFunction: NativePointer)
+internal external fun JphJobSystemThreadPool_SetThreadInitFunction(self: NativePointer, inInitFunction: NativePointer, inInitFunctionUser: NativePointer)
 
 @ExternalSymbolName("JphJobSystemThreadPool_SetThreadExitFunction")
-internal external fun JphJobSystemThreadPool_SetThreadExitFunction(self: NativePointer, inExitFunction: NativePointer)
+internal external fun JphJobSystemThreadPool_SetThreadExitFunction(self: NativePointer, inExitFunction: NativePointer, inExitFunctionUser: NativePointer)
 
 @ExternalSymbolName("JphJobSystemThreadPool_Init")
 internal external fun JphJobSystemThreadPool_Init(self: NativePointer, inMaxJobs: Int, inMaxBarriers: Int, inNumThreads: Int)

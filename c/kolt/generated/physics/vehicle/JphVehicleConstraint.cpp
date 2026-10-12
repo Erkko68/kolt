@@ -40,8 +40,20 @@ const JphVehicleCollisionTester* JphVehicleConstraint_GetVehicleCollisionTester(
     return kolt::c(kolt::cpp(self)->GetVehicleCollisionTester());
 }
 
-void JphVehicleConstraint_SetCombineFriction(JphVehicleConstraint* self, JphVehicleConstraintCombineFunction inCombineFriction) {
-    kolt::cpp(self)->SetCombineFriction(inCombineFriction ? JPH::VehicleConstraint::CombineFunction([=](auto&& a0, auto&& a1, auto&& a2, auto&& a3, auto&& a4) { inCombineFriction(static_cast<uint32_t>(a0), &a1, &a2, kolt::c(&a3), (a4).GetValue()); }) : nullptr);
+void JphVehicleConstraint_SetCombineFriction(JphVehicleConstraint* self, JphUpcall inCombineFriction, void* inCombineFrictionUser) {
+    kolt::cpp(self)->SetCombineFriction(inCombineFrictionUser ? JPH::VehicleConstraint::CombineFunction([f = kolt::Callback(inCombineFriction, inCombineFrictionUser)](auto&& p0, auto&& p1, auto&& p2, auto&& p3, auto&& p4) { const uint64_t args[] = {kolt::slot(static_cast<uint32_t>(p0)), kolt::slot(&p1), kolt::slot(&p2), kolt::slot(kolt::c(&p3)), kolt::slot((p4).GetValue())}; uint64_t result = 0; f(args, &result); }) : nullptr);
+}
+
+void JphVehicleConstraint_SetPreStepCallback(JphVehicleConstraint* self, JphUpcall inPreStepCallback, void* inPreStepCallbackUser) {
+    kolt::cpp(self)->SetPreStepCallback(inPreStepCallbackUser ? JPH::VehicleConstraint::StepCallback([f = kolt::Callback(inPreStepCallback, inPreStepCallbackUser)](auto&& p0, auto&& p1) { const uint64_t args[] = {kolt::slot(kolt::c(&p0)), kolt::slot(kolt::c(&p1))}; uint64_t result = 0; f(args, &result); }) : nullptr);
+}
+
+void JphVehicleConstraint_SetPostCollideCallback(JphVehicleConstraint* self, JphUpcall inPostCollideCallback, void* inPostCollideCallbackUser) {
+    kolt::cpp(self)->SetPostCollideCallback(inPostCollideCallbackUser ? JPH::VehicleConstraint::StepCallback([f = kolt::Callback(inPostCollideCallback, inPostCollideCallbackUser)](auto&& p0, auto&& p1) { const uint64_t args[] = {kolt::slot(kolt::c(&p0)), kolt::slot(kolt::c(&p1))}; uint64_t result = 0; f(args, &result); }) : nullptr);
+}
+
+void JphVehicleConstraint_SetPostStepCallback(JphVehicleConstraint* self, JphUpcall inPostStepCallback, void* inPostStepCallbackUser) {
+    kolt::cpp(self)->SetPostStepCallback(inPostStepCallbackUser ? JPH::VehicleConstraint::StepCallback([f = kolt::Callback(inPostStepCallback, inPostStepCallbackUser)](auto&& p0, auto&& p1) { const uint64_t args[] = {kolt::slot(kolt::c(&p0)), kolt::slot(kolt::c(&p1))}; uint64_t result = 0; f(args, &result); }) : nullptr);
 }
 
 void JphVehicleConstraint_OverrideGravity(JphVehicleConstraint* self, const JphVec3* inGravity) {

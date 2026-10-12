@@ -24,12 +24,12 @@ JphJobSystem* JphJobSystemThreadPool_asJobSystem(JphJobSystemThreadPool* self) {
     return kolt::c(static_cast<JPH::JobSystem*>(kolt::cpp(self)));
 }
 
-void JphJobSystemThreadPool_SetThreadInitFunction(JphJobSystemThreadPool* self, JphJobSystemThreadPoolInitExitFunction inInitFunction) {
-    kolt::cpp(self)->SetThreadInitFunction(inInitFunction ? JPH::JobSystemThreadPool::InitExitFunction([=](auto&& a0) { inInitFunction(static_cast<int32_t>(a0)); }) : nullptr);
+void JphJobSystemThreadPool_SetThreadInitFunction(JphJobSystemThreadPool* self, JphUpcall inInitFunction, void* inInitFunctionUser) {
+    kolt::cpp(self)->SetThreadInitFunction(inInitFunctionUser ? JPH::JobSystemThreadPool::InitExitFunction([f = kolt::Callback(inInitFunction, inInitFunctionUser)](auto&& p0) { const uint64_t args[] = {kolt::slot(static_cast<int32_t>(p0))}; uint64_t result = 0; f(args, &result); }) : nullptr);
 }
 
-void JphJobSystemThreadPool_SetThreadExitFunction(JphJobSystemThreadPool* self, JphJobSystemThreadPoolInitExitFunction inExitFunction) {
-    kolt::cpp(self)->SetThreadExitFunction(inExitFunction ? JPH::JobSystemThreadPool::InitExitFunction([=](auto&& a0) { inExitFunction(static_cast<int32_t>(a0)); }) : nullptr);
+void JphJobSystemThreadPool_SetThreadExitFunction(JphJobSystemThreadPool* self, JphUpcall inExitFunction, void* inExitFunctionUser) {
+    kolt::cpp(self)->SetThreadExitFunction(inExitFunctionUser ? JPH::JobSystemThreadPool::InitExitFunction([f = kolt::Callback(inExitFunction, inExitFunctionUser)](auto&& p0) { const uint64_t args[] = {kolt::slot(static_cast<int32_t>(p0))}; uint64_t result = 0; f(args, &result); }) : nullptr);
 }
 
 void JphJobSystemThreadPool_Init(JphJobSystemThreadPool* self, uint32_t inMaxJobs, uint32_t inMaxBarriers, int32_t inNumThreads) {

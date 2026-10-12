@@ -48,6 +48,10 @@ const JphSimShapeFilter* JphPhysicsSystem_GetSimShapeFilter(const JphPhysicsSyst
     return kolt::c(kolt::cpp(self)->GetSimShapeFilter());
 }
 
+void JphPhysicsSystem_SetSimCollideBodyVsBody(JphPhysicsSystem* self, JphUpcall inBodyVsBody, void* inBodyVsBodyUser) {
+    kolt::cpp(self)->SetSimCollideBodyVsBody(inBodyVsBodyUser ? JPH::PhysicsSystem::SimCollideBodyVsBody([f = kolt::Callback(inBodyVsBody, inBodyVsBodyUser)](auto&& p0, auto&& p1, auto&& p2, auto&& p3, auto&& p4, auto&& p5, auto&& p6) { JphMat44 a2; *&a2 = kolt::mirror<JphMat44>(p2); JphMat44 a3; *&a3 = kolt::mirror<JphMat44>(p3); const uint64_t args[] = {kolt::slot(kolt::c(&p0)), kolt::slot(kolt::c(&p1)), kolt::slot(&a2), kolt::slot(&a3), kolt::slot(kolt::c(&p4)), kolt::slot(kolt::c(&p5)), kolt::slot(kolt::c(&p6))}; uint64_t result = 0; f(args, &result); }) : nullptr);
+}
+
 void JphPhysicsSystem_sDefaultSimCollideBodyVsBody(const JphBody* inBody1, const JphBody* inBody2, const JphMat44* inCenterOfMassTransform1, const JphMat44* inCenterOfMassTransform2, JphCollideShapeSettings* ioCollideShapeSettings, JphCollideShapeCollector* ioCollector, const JphShapeFilter* inShapeFilter) {
     JPH::PhysicsSystem::sDefaultSimCollideBodyVsBody(*kolt::cpp(inBody1), *kolt::cpp(inBody2), kolt::math<JPH::Mat44>(*inCenterOfMassTransform1), kolt::math<JPH::Mat44>(*inCenterOfMassTransform2), *kolt::cpp(ioCollideShapeSettings), *kolt::cpp(ioCollector), *kolt::cpp(inShapeFilter));
 }

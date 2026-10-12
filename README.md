@@ -32,15 +32,18 @@ header's directory (`physics.body.BodyInterface`); `GetX`/`SetX` are a property 
 - A class Kotlin creates, or that Jolt hands over a reference to, is the wrapper's to `close()`; one read from an object
   Jolt keeps is borrowed, and `close()` leaves it alone.
 - A class with virtual functions is open to Kotlin: `object : ContactListener() { override fun onContactAdded(…) }`.
-  Jolt calls the overrides, from its job threads too, and keeps its own for the rest.
+  Jolt calls the overrides, from its job threads too, and keeps its own for the rest. The other classes are final.
+- A `std::function` is a Kotlin function, or null for none: `vehicle.setPreStepCallback { vehicle, context -> … }`.
+  What Jolt takes back through a reference argument, the function returns.
 - A result that's a value or an error returns the value, or throws `NativeException` with the error.
 - What Jolt writes through a reference parameter is returned: `getPositionAndRotation(id)` is a `Pair<Vec3, Quat>`,
   after the function's own result if it has one. An `io` parameter is passed in and returned.
 - A pointer to an array is a `List` or a primitive array, with the count where Jolt takes it; one Jolt writes to is a
   `MutableList`, changed in place. A `void*` is a `NativePointer`.
+- A class Jolt returns by value is a copy the wrapper owns: `shape.stats.use { … }`.
 - A second C++ base is a function: `vehicle.asPhysicsStepListener()`.
-- `c/api-coverage.txt` lists what isn't bound yet: mostly `std::function` callbacks, the stream save and restore
-  maps, and SIMD arrays by pointer.
+- `c/api-coverage.txt` lists what isn't bound yet (the stream save and restore maps, plain function pointers,
+  `std::pair`s), and what `c/api-headers.txt` leaves out as Jolt's own machinery.
 
 `./gradlew apiModel` reports the C++ API clang sees in the listed headers.
 

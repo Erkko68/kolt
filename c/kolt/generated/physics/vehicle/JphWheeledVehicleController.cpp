@@ -76,8 +76,8 @@ float JphWheeledVehicleController_GetWheelSpeedAtClutch(const JphWheeledVehicleC
     return kolt::cpp(self)->GetWheelSpeedAtClutch();
 }
 
-void JphWheeledVehicleController_SetTireMaxImpulseCallback(JphWheeledVehicleController* self, JphWheeledVehicleControllerTireMaxImpulseCallback inTireMaxImpulseCallback) {
-    kolt::cpp(self)->SetTireMaxImpulseCallback(inTireMaxImpulseCallback ? JPH::WheeledVehicleController::TireMaxImpulseCallback([=](auto&& a0, auto&& a1, auto&& a2, auto&& a3, auto&& a4, auto&& a5, auto&& a6, auto&& a7, auto&& a8) { inTireMaxImpulseCallback(static_cast<uint32_t>(a0), &a1, &a2, a3, a4, a5, a6, a7, a8); }) : nullptr);
+void JphWheeledVehicleController_SetTireMaxImpulseCallback(JphWheeledVehicleController* self, JphUpcall inTireMaxImpulseCallback, void* inTireMaxImpulseCallbackUser) {
+    kolt::cpp(self)->SetTireMaxImpulseCallback(inTireMaxImpulseCallbackUser ? JPH::WheeledVehicleController::TireMaxImpulseCallback([f = kolt::Callback(inTireMaxImpulseCallback, inTireMaxImpulseCallbackUser)](auto&& p0, auto&& p1, auto&& p2, auto&& p3, auto&& p4, auto&& p5, auto&& p6, auto&& p7, auto&& p8) { const uint64_t args[] = {kolt::slot(static_cast<uint32_t>(p0)), kolt::slot(&p1), kolt::slot(&p2), kolt::slot(p3), kolt::slot(p4), kolt::slot(p5), kolt::slot(p6), kolt::slot(p7), kolt::slot(p8)}; uint64_t result = 0; f(args, &result); }) : nullptr);
 }
 
 } // extern "C"

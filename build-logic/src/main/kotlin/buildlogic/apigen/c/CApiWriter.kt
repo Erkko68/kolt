@@ -24,6 +24,7 @@ internal class CApiWriter(
     private val bridges = CBridges(api, config, names)
     private val bound = api.apiRecords(headers).mapTo(HashSet()) { it.name }
     private val rules = BindingRules(api, config, bridges, bound).also { rules -> bridges.destroys = { it.name in bound && rules.destroys(it) } }
+    init { bridges.slot = ::upcallArgument }
     private val surface = api.surface(headers)
     private val baseModule = apiHeaders.modules.keys.first()
     private val functionNames = HashSet<String>()
@@ -191,7 +192,7 @@ internal class CApiWriter(
             val head = "    ${m.returns.spelling} ${m.name}($params) ${if (m.isConst) "const " else ""}override {\n"
             val passed = try {
                 if (!m.isPublic || !m.isApi) throw Unsupported("not API")
-                val args = m.params.mapIndexed { i, p -> upcallArgument(p, i) }
+                val args = m.params.mapIndexed { i, p -> upcallArgument(p.type, i) }
                 val returns = if (m.returns.spelling == "void") null else bridges.param(m.returns).also {
                     if (it.extra.isNotEmpty() || it.value !is CValue.Builtin && it.value !is CValue.Enum && it.value !is CValue.Scalar) throw Unsupported("${m.returns.spelling} result")
                 }
@@ -218,7 +219,7 @@ internal class CApiWriter(
             .append("    ~$shim() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }\n").append(overrides)
             .append("};\n${if (namespace.isEmpty()) "" else "} // namespace $namespace\n"}\nextern \"C\" {\n\n")
         emit(create, "class : ${record.name}", section) {
-            bridges.callbackTypes[upcall] = "typedef int32_t (*$upcall)(void* userData, int32_t method, const uint64_t* args, uint64_t* result);"
+            bridges.upcallType()
             val made = "static_cast<::$cpp*>(new ${if (namespace.isEmpty()) "" else "::$namespace::"}$shim(call))"
             Forwarder("$self* $create($upcall call)", "return $h::c(${if (counted) "$h::retain($made)" else made});", Bound(Bound.Role.UPCALLS, record.name, "createUpcalls", upcalls = bound))
         }
@@ -229,22 +230,22 @@ internal class CApiWriter(
     }
 
     /** A virtual function's argument [i] for its slot: the statements before, the value, and what it is. */
-    private fun upcallArgument(p: CppParam, i: Int): Triple<String, String, CValue> {
-        val s = shape(p.type.spelling)
-        val record = p.type.decl?.let(api.records::get)
+    private fun upcallArgument(type: CppType, i: Int): Triple<String, String, CValue> {
+        val s = shape(type.spelling)
+        val record = type.decl?.let(api.records::get)
         // A record by pointer or reference is borrowed for the call, a value struct too.
         if (record != null && handled(record) && record.accessible && s.indirection.size == 1 && s.indirection[0] != "&&")
             return Triple("", "$h::c(${if (s.indirection[0] == "&") "&" else ""}p$i)", CValue.Handle(names.type(record.name), nullable = s.indirection[0] == "*"))
-        val b = bridges.result(p.type)
+        val b = bridges.result(type)
         // What the function may write: the slot points at C++'s own, which lies as C's mirror does. Of floats, for now.
-        if (b.value == null && b.extra.isEmpty()) (try { bridges.param(p.type).value as? CValue.InOut } catch (e: Unsupported) { null })
+        if (b.value == null && b.extra.isEmpty()) (try { bridges.param(type).value as? CValue.InOut } catch (e: Unsupported) { null })
             ?.takeIf { v -> v.value.let { it is CValue.Mirror && it.element == "float" || it == CValue.Builtin("float") } }
             ?.let { return Triple("", b.convert("p$i"), it) }
-        val value = b.value?.takeIf { b.extra.isEmpty() } ?: throw Unsupported("${p.type.spelling}: no slot holds it")
+        val value = b.value?.takeIf { b.extra.isEmpty() } ?: throw Unsupported("${type.spelling}: no slot holds it")
         return when {
             value is CValue.Mirror -> Triple("        ${b.c} a$i;\n        ${b.store("p$i", "&a$i")}\n", "&a$i", value)
             value is CValue.Builtin || !b.out -> Triple("", b.convert("p$i"), value)
-            else -> throw Unsupported("${p.type.spelling}: no slot holds it")
+            else -> throw Unsupported("${type.spelling}: no slot holds it")
         }
     }
 

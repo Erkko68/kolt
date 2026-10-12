@@ -57,6 +57,7 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
     fun parameter(bridge: CBridge, name: String, out: Boolean = false): Passed? {
         val value = bridge.value ?: return null
         if (value is CValue.InOut) return inOut(value.value, name, out).takeIf { bridge.extra.isEmpty() }
+        if (value is CValue.Function) return function(value, name).takeIf { bridge.extra == listOf("void*" to "User") }
         if (value is CValue.Pointer) return when (bridge.extra) {
             emptyList<Pair<String, String>>() -> pointer(value, name, out)
             // C copies that many, so it takes the count.
@@ -76,8 +77,32 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
             // ponytail: an array per call; reuse a scratch buffer per thread if profiles show it.
             is CValue.Mirror -> Passed(type, "toInterop($name.toArray())", scoped = true)
             is CValue.Text -> Passed(type, "toInterop($name)", scoped = true)
-            is CValue.Sequence, is CValue.Fallible, is CValue.InOut, is CValue.Pointer -> null
+            is CValue.Sequence, is CValue.Fallible, is CValue.InOut, is CValue.Pointer, is CValue.Function -> null
         }
+    }
+
+    /**
+     * A Kotlin function C++ calls, or null for none: it's passed what C++ passes, and returns its result, then what it
+     * leaves in each argument C++ takes by reference. The interop package's `NativeCallback` keeps it until C++ drops it.
+     */
+    private fun function(value: CValue.Function, name: String): Passed? {
+        val args = value.args.mapIndexed { i, a -> (type(a) ?: return null) to (fromSlot(a, i) ?: return null) }
+        val outs = value.args.withIndex().filter { it.value is CValue.InOut }
+        val parts = listOfNotNull(value.returns?.let { type(it) ?: return null }) + outs.map { type(it.value) ?: return null }
+        val returns = when (parts.size) {
+            0 -> "Unit"
+            1 -> parts[0]
+            2, 3 -> "${if (parts.size == 2) "Pair" else "Triple"}<${parts.joinToString()}>"
+            else -> return null
+        }
+        fun part(k: Int) = if (parts.size == 1) "returned" else "returned.${listOf("first", "second", "third")[k]}"
+        val stores = listOfNotNull(value.returns?.let { "writeSlot(result, ${toSlot(it, part(0)) ?: return null})" }) +
+            outs.mapIndexed { k, (i, a) -> toPointerSlot(a, i, part(parts.size - outs.size + k)) ?: return null }
+        val call = "$name(${args.joinToString { it.second }})"
+        val user = "${name.trim('`')}User"
+        return Passed("((${args.joinToString { it.first }}) -> $returns)?", "Upcalls.function, $user", before = listOf(
+            "val $user = if ($name == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> ${if (parts.isEmpty()) call else (listOf("val returned = $call") + stores).joinToString("; ")} })",
+        ))
     }
 
     /** The array, or list of pointers, C takes for the [element]s of the list [name]. */
@@ -264,12 +289,13 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
         is CValue.Mirror -> kotlin(value.c).takeIf { value.c in mirrors && value.element in ARRAYS }
         is CValue.Text -> "String?"
         is CValue.Opaque -> "NativePointer"
+        is CValue.Function -> null
         is CValue.InOut -> type(value.value)
         is CValue.Pointer -> null
         is CValue.Fallible -> type(value.value)?.removeSuffix("?")
         is CValue.Sequence -> when (val e = value.element) {
             is CValue.Builtin -> ARRAYS[e.c]
-            is CValue.Sequence, is CValue.Fallible, is CValue.Text, is CValue.InOut, is CValue.Pointer, is CValue.Opaque -> null
+            is CValue.Sequence, is CValue.Fallible, is CValue.Text, is CValue.InOut, is CValue.Pointer, is CValue.Opaque, is CValue.Function -> null
             else -> type(e)?.let { "List<${it.removeSuffix("?")}>" }
         }
     }

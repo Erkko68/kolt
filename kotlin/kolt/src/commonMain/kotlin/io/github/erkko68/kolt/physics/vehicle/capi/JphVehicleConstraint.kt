@@ -32,7 +32,16 @@ internal external fun JphVehicleConstraint_SetVehicleCollisionTester(self: Nativ
 internal external fun JphVehicleConstraint_GetVehicleCollisionTester(self: NativePointer): NativePointer
 
 @ExternalSymbolName("JphVehicleConstraint_SetCombineFriction")
-internal external fun JphVehicleConstraint_SetCombineFriction(self: NativePointer, inCombineFriction: NativePointer)
+internal external fun JphVehicleConstraint_SetCombineFriction(self: NativePointer, inCombineFriction: NativePointer, inCombineFrictionUser: NativePointer)
+
+@ExternalSymbolName("JphVehicleConstraint_SetPreStepCallback")
+internal external fun JphVehicleConstraint_SetPreStepCallback(self: NativePointer, inPreStepCallback: NativePointer, inPreStepCallbackUser: NativePointer)
+
+@ExternalSymbolName("JphVehicleConstraint_SetPostCollideCallback")
+internal external fun JphVehicleConstraint_SetPostCollideCallback(self: NativePointer, inPostCollideCallback: NativePointer, inPostCollideCallbackUser: NativePointer)
+
+@ExternalSymbolName("JphVehicleConstraint_SetPostStepCallback")
+internal external fun JphVehicleConstraint_SetPostStepCallback(self: NativePointer, inPostStepCallback: NativePointer, inPostStepCallbackUser: NativePointer)
 
 @ExternalSymbolName("JphVehicleConstraint_OverrideGravity")
 internal external fun JphVehicleConstraint_OverrideGravity(self: NativePointer, inGravity: NativePointer)

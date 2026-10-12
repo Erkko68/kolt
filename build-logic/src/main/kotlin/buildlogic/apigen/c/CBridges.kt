@@ -76,6 +76,11 @@ sealed interface CValue {
     data class Pointer(val element: CValue, val const: Boolean) : CValue {
         override val c get() = element.c
     }
+    /**
+     * A function written outside C++, which C passes as an `Upcall` and its user data: C++ calls method 0 with [args]
+     * in its slots, as a virtual function's are, and index -1 once it drops the function.
+     */
+    data class Function(override val c: String, val args: List<CValue>, val returns: CValue?) : CValue
     /** A `void*`, which C passes as it is. */
     data object Opaque : CValue {
         override val c get() = "void*"
@@ -94,8 +99,15 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
     val mathTypes = sortedSetOf<String>()
     /** Whether C gets a `_destroy` for a record ([BindingRules.destroys]), so it can own one a call returns by value. */
     var destroys: (CppRecord) -> Boolean = { false }
+    /** A function's argument [i] (`p<i>`) for its slot ([CApiWriter]'s, as a virtual function's): the statements before, the value, and what it is. */
+    var slot: (CppType, Int) -> Triple<String, String, CValue> = { type, _ -> throw Unsupported("${type.spelling}: no slot holds it") }
     /** Function pointer typedefs the forwarders use, by C name. */
     val callbackTypes = sortedMapOf<String, String>()
+
+    /** C's name for Bridge.hpp's `Upcall`, declared. */
+    fun upcallType() = "${names.prefix}Upcall".also {
+        callbackTypes[it] = "typedef int32_t (*$it)(void* userData, int32_t method, const uint64_t* args, uint64_t* result);"
+    }
 
     /** [type] as a parameter: [CBridge.convert] turns the C argument into C++'s. */
     fun param(type: CppType) = of(type, result = false)
@@ -362,22 +374,24 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
     }
 
     /**
-     * A `std::function` alias C passes as a function pointer of the same shape, declared under the alias's name: its
-     * arguments cross as results do. NULL is an empty function.
+     * A `std::function` alias C passes as an `Upcall` and its user data (Bridge.hpp's `Callback`): its arguments cross
+     * in slots, as a virtual function's do, and it returns nothing or a number. No user data is an empty function.
      */
     private fun function(alias: String, signature: CppType, bridge: DirectBridges): CBridge {
         if (bridge.result || !bridge.byValue) throw Unsupported("$alias by reference or as a result")
-        val returns = signature.args.first()
-        if (returns.spelling != "void") throw Unsupported("$alias: returns a value")
-        val args = signature.args.drop(1).map { result(it) }
-        if (args.any { it.out || it.extra.isNotEmpty() }) throw Unsupported("$alias: arguments C takes in pieces")
-        val name = names.type(alias)
-        callbackTypes[name] = "typedef void (*$name)(${args.joinToString { it.c }.ifEmpty { "void" }});"
-        // By reference: one may be a class that can't be copied, or a value the callback writes.
-        val params = args.indices.joinToString { "auto&& a$it" }
-        return CBridge(name, { n ->
-            "$n ? ${cpp(alias)}([=]($params) { $n(${args.withIndex().joinToString { (i, a) -> a.convert("a$i") }}); }) : nullptr"
-        })
+        val returns = signature.args.first().takeIf { it.spelling != "void" }?.let { type ->
+            param(type).also { if (it.extra.isNotEmpty() || it.value !is CValue.Builtin && it.value !is CValue.Enum && it.value !is CValue.Scalar) throw Unsupported("$alias: returns ${type.spelling}") }
+        }
+        val args = signature.args.drop(1).mapIndexed { i, type -> slot(type, i) }
+        val upcall = upcallType()
+        // By reference: one may be a class that can't be copied, or a value the function writes.
+        val params = args.indices.joinToString { "auto&& p$it" }
+        val before = args.joinToString("") { (statements, _, _) -> statements.lines().joinToString("") { l -> l.trim().let { if (it.isEmpty()) "" else "$it " } } }
+        val slots = if (args.isEmpty()) "const uint64_t* args = nullptr;" else "const uint64_t args[] = {${args.joinToString { "$h::slot(${it.second})" }}};"
+        val result = returns?.let { " return ${it.convert("$h::unslot<${it.c}>(result)")};" }.orEmpty()
+        return CBridge(upcall, { n ->
+            "${n}User ? ${cpp(alias)}([f = $h::Callback($n, ${n}User)]($params) { $before$slots uint64_t result = 0; f(args, &result);$result }) : nullptr"
+        }, extra = listOf("void*" to "User"), value = CValue.Function(upcall, args.map { it.third }, returns?.value))
     }
 
     /**

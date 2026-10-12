@@ -51,6 +51,30 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
         get() = JphVehicleConstraint_GetVehicleCollisionTester(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleCollisionTester(it) }
         set(tester) = JphVehicleConstraint_SetVehicleCollisionTester(vehicleConstraintHandle, tester?.vehicleCollisionTesterHandle ?: NullPointer)
 
+    fun setCombineFriction(combineFriction: ((Int, Float, Float, Body, SubShapeID) -> Pair<Float, Float>)?) =
+        run {
+            val combineFrictionUser = if (combineFriction == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> val returned = combineFriction(readSlot(args, 0).toInt(), readFloats(readPointerSlot(args, 1), 1)[0], readFloats(readPointerSlot(args, 2), 1)[0], Body(readPointerSlot(args, 3)), SubShapeID(readSlot(args, 4).toInt())); writeFloats(readPointerSlot(args, 1), floatArrayOf(returned.first)); writeFloats(readPointerSlot(args, 2), floatArrayOf(returned.second)) })
+            JphVehicleConstraint_SetCombineFriction(vehicleConstraintHandle, Upcalls.function, combineFrictionUser)
+        }
+
+    fun setPreStepCallback(preStepCallback: ((VehicleConstraint, PhysicsStepListenerContext) -> Unit)?) =
+        run {
+            val preStepCallbackUser = if (preStepCallback == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> preStepCallback(VehicleConstraint(readPointerSlot(args, 0)), PhysicsStepListenerContext(readPointerSlot(args, 1))) })
+            JphVehicleConstraint_SetPreStepCallback(vehicleConstraintHandle, Upcalls.function, preStepCallbackUser)
+        }
+
+    fun setPostCollideCallback(postCollideCallback: ((VehicleConstraint, PhysicsStepListenerContext) -> Unit)?) =
+        run {
+            val postCollideCallbackUser = if (postCollideCallback == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> postCollideCallback(VehicleConstraint(readPointerSlot(args, 0)), PhysicsStepListenerContext(readPointerSlot(args, 1))) })
+            JphVehicleConstraint_SetPostCollideCallback(vehicleConstraintHandle, Upcalls.function, postCollideCallbackUser)
+        }
+
+    fun setPostStepCallback(postStepCallback: ((VehicleConstraint, PhysicsStepListenerContext) -> Unit)?) =
+        run {
+            val postStepCallbackUser = if (postStepCallback == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> postStepCallback(VehicleConstraint(readPointerSlot(args, 0)), PhysicsStepListenerContext(readPointerSlot(args, 1))) })
+            JphVehicleConstraint_SetPostStepCallback(vehicleConstraintHandle, Upcalls.function, postStepCallbackUser)
+        }
+
     fun overrideGravity(gravity: Vec3) =
         interopScope { JphVehicleConstraint_OverrideGravity(vehicleConstraintHandle, toInterop(gravity.toArray())) }
 

@@ -29,8 +29,7 @@ JphSoftBodyContactListener* JphPhysicsSystem_GetSoftBodyContactListener(const Jp
 //     float (*)(const Body &, const SubShapeID &, const Body &, const SubShapeID &): takes C++ types
 void JphPhysicsSystem_SetSimShapeFilter(JphPhysicsSystem* self, const JphSimShapeFilter* inShapeFilter);
 const JphSimShapeFilter* JphPhysicsSystem_GetSimShapeFilter(const JphPhysicsSystem* self);
-// TODO(handwritten) JphPhysicsSystem_SetSimCollideBodyVsBody: void JPH::PhysicsSystem::SetSimCollideBodyVsBody(const SimCollideBodyVsBody & inBodyVsBody)
-//     JPH::PhysicsSystem::SimCollideBodyVsBody: arguments C takes in pieces
+void JphPhysicsSystem_SetSimCollideBodyVsBody(JphPhysicsSystem* self, JphUpcall inBodyVsBody, void* inBodyVsBodyUser);
 void JphPhysicsSystem_sDefaultSimCollideBodyVsBody(const JphBody* inBody1, const JphBody* inBody2, const JphMat44* inCenterOfMassTransform1, const JphMat44* inCenterOfMassTransform2, JphCollideShapeSettings* ioCollideShapeSettings, JphCollideShapeCollector* ioCollector, const JphShapeFilter* inShapeFilter);
 void JphPhysicsSystem_SetPhysicsSettings(JphPhysicsSystem* self, const JphPhysicsSettings* inSettings);
 void JphPhysicsSystem_GetPhysicsSettings(const JphPhysicsSystem* self, JphPhysicsSettings* out);

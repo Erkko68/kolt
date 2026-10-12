@@ -79,4 +79,10 @@ open class WheeledVehicleController internal constructor(internal val wheeledVeh
 
     val wheelSpeedAtClutch: Float
         get() = JphWheeledVehicleController_GetWheelSpeedAtClutch(wheeledVehicleControllerHandle)
+
+    fun setTireMaxImpulseCallback(tireMaxImpulseCallback: ((Int, Float, Float, Float, Float, Float, Float, Float, Float) -> Pair<Float, Float>)?) =
+        run {
+            val tireMaxImpulseCallbackUser = if (tireMaxImpulseCallback == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> val returned = tireMaxImpulseCallback(readSlot(args, 0).toInt(), readFloats(readPointerSlot(args, 1), 1)[0], readFloats(readPointerSlot(args, 2), 1)[0], Float.fromBits(readSlot(args, 3).toInt()), Float.fromBits(readSlot(args, 4).toInt()), Float.fromBits(readSlot(args, 5).toInt()), Float.fromBits(readSlot(args, 6).toInt()), Float.fromBits(readSlot(args, 7).toInt()), Float.fromBits(readSlot(args, 8).toInt())); writeFloats(readPointerSlot(args, 1), floatArrayOf(returned.first)); writeFloats(readPointerSlot(args, 2), floatArrayOf(returned.second)) })
+            JphWheeledVehicleController_SetTireMaxImpulseCallback(wheeledVehicleControllerHandle, Upcalls.function, tireMaxImpulseCallbackUser)
+        }
 }
