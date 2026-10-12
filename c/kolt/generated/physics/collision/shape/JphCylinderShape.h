@@ -16,6 +16,8 @@ void JphCylinderShape_addRef(const JphCylinderShape* self);
 void JphCylinderShape_release(const JphCylinderShape* self);
 JphConvexShape* JphCylinderShape_asConvexShape(JphCylinderShape* self);
 JphShape* JphCylinderShape_asShape(JphCylinderShape* self);
+JphCylinderShape* JphCylinderShape_fromConvexShape(JphConvexShape* base);
+JphCylinderShape* JphCylinderShape_fromShape(JphShape* base);
 // skipped static void JPH::CylinderShape::sRegister(): JPH::.*::sRegister
 float JphCylinderShape_GetHalfHeight(const JphCylinderShape* self);
 float JphCylinderShape_GetRadius(const JphCylinderShape* self);

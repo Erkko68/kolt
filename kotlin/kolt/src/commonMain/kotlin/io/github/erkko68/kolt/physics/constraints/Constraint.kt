@@ -123,5 +123,5 @@ open class Constraint internal constructor(internal val constraintHandle: Native
 
     /** Debug function to convert a constraint to its settings, note that this will not save to which bodies the constraint is connected to */
     val constraintSettings: ConstraintSettings?
-        get() = JphConstraint_GetConstraintSettings(constraintHandle).takeIf { it != NullPointer }?.let { ConstraintSettings(it, owned = true) }
+        get() = JphConstraint_GetConstraintSettings(constraintHandle).takeIf { it != NullPointer }?.let { wrapConstraintSettings(it, owned = true) }
 }

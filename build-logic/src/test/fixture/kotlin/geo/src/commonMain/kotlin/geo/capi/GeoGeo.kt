@@ -9,3 +9,6 @@ internal external fun Geo_distance(a: NativePointer, b: NativePointer): Float
 
 @ExternalSymbolName("Geo_find")
 internal external fun Geo_find(id: Int): NativePointer
+
+@ExternalSymbolName("Geo_nearest")
+internal external fun Geo_nearest(to: NativePointer): NativePointer

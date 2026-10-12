@@ -14,6 +14,7 @@ void JphPathConstraintPath_release(const JphPathConstraintPath* self);
 JphPathConstraintPath* JphPathConstraintPath_createUpcalls(JphUpcall call);
 void JphPathConstraintPath_bindUpcalls(JphPathConstraintPath* self, void* userData);
 JphSerializableObject* JphPathConstraintPath_asSerializableObject(JphPathConstraintPath* self);
+int32_t JphPathConstraintPath_dynamicType(const JphPathConstraintPath* self);
 // skipped const JPH::RTTI * JPH::PathConstraintPath::GetRTTI() const: uses JPH::RTTI
 // skipped const void * JPH::PathConstraintPath::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
 // skipped static void JPH::PathConstraintPath::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI

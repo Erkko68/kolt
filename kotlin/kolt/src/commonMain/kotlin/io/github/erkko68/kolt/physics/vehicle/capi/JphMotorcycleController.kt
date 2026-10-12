@@ -16,6 +16,12 @@ internal external fun JphMotorcycleController_asWheeledVehicleController(self: N
 @ExternalSymbolName("JphMotorcycleController_asVehicleController")
 internal external fun JphMotorcycleController_asVehicleController(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphMotorcycleController_fromWheeledVehicleController")
+internal external fun JphMotorcycleController_fromWheeledVehicleController(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphMotorcycleController_fromVehicleController")
+internal external fun JphMotorcycleController_fromVehicleController(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphMotorcycleController_GetWheelBase")
 internal external fun JphMotorcycleController_GetWheelBase(self: NativePointer): Float
 

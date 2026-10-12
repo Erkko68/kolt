@@ -76,7 +76,7 @@ open class PathConstraintPath internal constructor(internal val pathConstraintPa
         when (method) {
             0 -> writeSlot(result, pathMaxFraction.toRawBits().toLong() and 0xffffffffL)
             1 -> writeSlot(result, getClosestPoint(Vec3(readFloats(readPointerSlot(args, 0), 4)), Float.fromBits(readSlot(args, 1).toInt())).toRawBits().toLong() and 0xffffffffL)
-            3 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            3 -> saveBinaryState(wrapStreamOut(readPointerSlot(args, 0)))
             else -> return false
         }
         return true
@@ -91,7 +91,7 @@ open class PathConstraintPath internal constructor(internal val pathConstraintPa
                 val returned = JphPathConstraintPath_sRestoreFromBinaryState(stream.streamInHandle, errorPointer, error.size)
                 errorPointer.fromInterop(error)
                 if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
-                PathConstraintPath(returned, owned = true)
+                wrapPathConstraintPath(returned, owned = true)
             }
     }
 }

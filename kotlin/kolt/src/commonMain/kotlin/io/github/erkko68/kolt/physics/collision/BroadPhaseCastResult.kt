@@ -61,4 +61,7 @@ open class BroadPhaseCastResult internal constructor(internal val broadPhaseCast
     var fraction: Float
         get() = JphBroadPhaseCastResult_GetFraction(broadPhaseCastResultHandle)
         set(value) = JphBroadPhaseCastResult_SetFraction(broadPhaseCastResultHandle, value)
+
+    /** This object as the [RayCastResult] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asRayCastResult() = RayCastResult(JphRayCastResult_fromBroadPhaseCastResult(broadPhaseCastResultHandle))
 }

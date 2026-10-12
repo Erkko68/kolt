@@ -57,6 +57,15 @@ JphSerializableObject* JphWheeledVehicleControllerSettings_asSerializableObject(
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphWheeledVehicleControllerSettings* JphWheeledVehicleControllerSettings_fromVehicleControllerSettings(JphVehicleControllerSettings* base) {
+    return kolt::c(static_cast<JPH::WheeledVehicleControllerSettings*>(kolt::cpp(base)));
+}
+
+int32_t JphWheeledVehicleControllerSettings_dynamicType(const JphWheeledVehicleControllerSettings* self) {
+    const JPH::WheeledVehicleControllerSettings* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::MotorcycleControllerSettings*>(object) ? 1 : 0;
+}
+
 void JphWheeledVehicleControllerSettings_GetEngine(const JphWheeledVehicleControllerSettings* self, JphVehicleEngineSettings* out) {
     *kolt::cpp(out) = kolt::cpp(self)->mEngine;
 }

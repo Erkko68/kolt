@@ -16,6 +16,8 @@ void JphSphereShape_addRef(const JphSphereShape* self);
 void JphSphereShape_release(const JphSphereShape* self);
 JphConvexShape* JphSphereShape_asConvexShape(JphSphereShape* self);
 JphShape* JphSphereShape_asShape(JphSphereShape* self);
+JphSphereShape* JphSphereShape_fromConvexShape(JphConvexShape* base);
+JphSphereShape* JphSphereShape_fromShape(JphShape* base);
 // skipped static void JPH::SphereShape::sRegister(): JPH::.*::sRegister
 float JphSphereShape_GetRadius(const JphSphereShape* self);
 

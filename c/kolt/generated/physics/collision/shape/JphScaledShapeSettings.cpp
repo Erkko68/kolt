@@ -36,6 +36,14 @@ JphSerializableObject* JphScaledShapeSettings_asSerializableObject(JphScaledShap
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphScaledShapeSettings* JphScaledShapeSettings_fromDecoratedShapeSettings(JphDecoratedShapeSettings* base) {
+    return kolt::c(static_cast<JPH::ScaledShapeSettings*>(kolt::cpp(base)));
+}
+
+JphScaledShapeSettings* JphScaledShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::ScaledShapeSettings*>(kolt::cpp(base)));
+}
+
 void JphScaledShapeSettings_GetScale(const JphScaledShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mScale);
 }

@@ -43,5 +43,8 @@ internal external fun JphPathConstraintPathHermite_asPathConstraintPath(self: Na
 @ExternalSymbolName("JphPathConstraintPathHermite_asSerializableObject")
 internal external fun JphPathConstraintPathHermite_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPathConstraintPathHermite_fromPathConstraintPath")
+internal external fun JphPathConstraintPathHermite_fromPathConstraintPath(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphPathConstraintPathHermite_AddPoint")
 internal external fun JphPathConstraintPathHermite_AddPoint(self: NativePointer, inPosition: NativePointer, inTangent: NativePointer, inNormal: NativePointer)

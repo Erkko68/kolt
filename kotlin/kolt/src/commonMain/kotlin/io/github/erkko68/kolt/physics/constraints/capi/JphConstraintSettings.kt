@@ -19,6 +19,9 @@ internal external fun JphConstraintSettings_bindUpcalls(self: NativePointer, use
 @ExternalSymbolName("JphConstraintSettings_asSerializableObject")
 internal external fun JphConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphConstraintSettings_dynamicType")
+internal external fun JphConstraintSettings_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphConstraintSettings_SaveBinaryState")
 internal external fun JphConstraintSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

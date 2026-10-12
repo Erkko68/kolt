@@ -11,6 +11,7 @@ extern "C" {
 // geo
 float Geo_distance(const GeoPoint* a, const GeoPoint* b);
 GeoShape* Geo_find(uint32_t id);
+GeoMarker* Geo_nearest(const GeoPoint* to);
 
 
 #ifdef __cplusplus

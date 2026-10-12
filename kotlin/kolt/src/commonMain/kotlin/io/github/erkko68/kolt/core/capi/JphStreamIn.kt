@@ -13,6 +13,9 @@ internal external fun JphStreamIn_createUpcalls(call: NativePointer): NativePoin
 @ExternalSymbolName("JphStreamIn_bindUpcalls")
 internal external fun JphStreamIn_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("JphStreamIn_dynamicType")
+internal external fun JphStreamIn_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphStreamIn_ReadBytes")
 internal external fun JphStreamIn_ReadBytes(self: NativePointer, outData: NativePointer, inNumBytes: Int)
 

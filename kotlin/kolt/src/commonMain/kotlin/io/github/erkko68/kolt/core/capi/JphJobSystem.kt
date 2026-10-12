@@ -7,5 +7,8 @@ import io.github.erkko68.kolt.interop.NativePointer
 @ExternalSymbolName("JphJobSystem_destroy")
 internal external fun JphJobSystem_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphJobSystem_dynamicType")
+internal external fun JphJobSystem_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphJobSystem_GetMaxConcurrency")
 internal external fun JphJobSystem_GetMaxConcurrency(self: NativePointer): Int

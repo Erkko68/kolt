@@ -13,6 +13,8 @@ void JphTwoBodyConstraintSettings_addRef(const JphTwoBodyConstraintSettings* sel
 void JphTwoBodyConstraintSettings_release(const JphTwoBodyConstraintSettings* self);
 JphConstraintSettings* JphTwoBodyConstraintSettings_asConstraintSettings(JphTwoBodyConstraintSettings* self);
 JphSerializableObject* JphTwoBodyConstraintSettings_asSerializableObject(JphTwoBodyConstraintSettings* self);
+JphTwoBodyConstraintSettings* JphTwoBodyConstraintSettings_fromConstraintSettings(JphConstraintSettings* base);
+int32_t JphTwoBodyConstraintSettings_dynamicType(const JphTwoBodyConstraintSettings* self);
 // skipped static void JPH::TwoBodyConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphTwoBodyConstraint* JphTwoBodyConstraintSettings_Create(const JphTwoBodyConstraintSettings* self, JphBody* inBody1, JphBody* inBody2);
 

@@ -32,6 +32,14 @@ JphSerializableObject* JphBoxShapeSettings_asSerializableObject(JphBoxShapeSetti
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphBoxShapeSettings* JphBoxShapeSettings_fromConvexShapeSettings(JphConvexShapeSettings* base) {
+    return kolt::c(static_cast<JPH::BoxShapeSettings*>(kolt::cpp(base)));
+}
+
+JphBoxShapeSettings* JphBoxShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::BoxShapeSettings*>(kolt::cpp(base)));
+}
+
 void JphBoxShapeSettings_GetHalfExtent(const JphBoxShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mHalfExtent);
 }

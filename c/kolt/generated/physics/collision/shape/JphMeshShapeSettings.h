@@ -16,6 +16,7 @@ void JphMeshShapeSettings_addRef(const JphMeshShapeSettings* self);
 void JphMeshShapeSettings_release(const JphMeshShapeSettings* self);
 JphShapeSettings* JphMeshShapeSettings_asShapeSettings(JphMeshShapeSettings* self);
 JphSerializableObject* JphMeshShapeSettings_asSerializableObject(JphMeshShapeSettings* self);
+JphMeshShapeSettings* JphMeshShapeSettings_fromShapeSettings(JphShapeSettings* base);
 // skipped static void JPH::MeshShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphMeshShapeSettings_Sanitize(JphMeshShapeSettings* self);
 uint32_t JphMeshShapeSettings_GetTriangleVertices(const JphMeshShapeSettings* self, JphFloat3* out, uint32_t outCapacity);

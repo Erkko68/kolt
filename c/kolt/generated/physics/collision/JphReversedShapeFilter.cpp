@@ -16,4 +16,8 @@ JphShapeFilter* JphReversedShapeFilter_asShapeFilter(JphReversedShapeFilter* sel
     return kolt::c(static_cast<JPH::ShapeFilter*>(kolt::cpp(self)));
 }
 
+JphReversedShapeFilter* JphReversedShapeFilter_fromShapeFilter(JphShapeFilter* base) {
+    return kolt::c(static_cast<JPH::ReversedShapeFilter*>(kolt::cpp(base)));
+}
+
 } // extern "C"

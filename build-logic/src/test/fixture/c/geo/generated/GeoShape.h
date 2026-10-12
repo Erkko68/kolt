@@ -12,6 +12,7 @@ extern "C" {
 void GeoShape_destroy(GeoShape* self);
 GeoShape* GeoShape_createUpcalls(GeoUpcall call);
 void GeoShape_bindUpcalls(GeoShape* self, void* userData);
+int32_t GeoShape_dynamicType(const GeoShape* self);
 GeoKind GeoShape_kind(const GeoShape* self);
 float GeoShape_area(const GeoShape* self);
 const char* GeoShape_name(const GeoShape* self);

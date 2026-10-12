@@ -12,6 +12,7 @@ extern "C" {
 JphTempAllocatorImplWithMallocFallback* JphTempAllocatorImplWithMallocFallback_create(uint32_t inSize);
 void JphTempAllocatorImplWithMallocFallback_destroy(JphTempAllocatorImplWithMallocFallback* self);
 JphTempAllocator* JphTempAllocatorImplWithMallocFallback_asTempAllocator(JphTempAllocatorImplWithMallocFallback* self);
+JphTempAllocatorImplWithMallocFallback* JphTempAllocatorImplWithMallocFallback_fromTempAllocator(JphTempAllocator* base);
 
 
 #ifdef __cplusplus

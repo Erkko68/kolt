@@ -32,6 +32,10 @@ JphSerializableObject* JphMeshShapeSettings_asSerializableObject(JphMeshShapeSet
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphMeshShapeSettings* JphMeshShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::MeshShapeSettings*>(kolt::cpp(base)));
+}
+
 void JphMeshShapeSettings_Sanitize(JphMeshShapeSettings* self) {
     kolt::cpp(self)->Sanitize();
 }

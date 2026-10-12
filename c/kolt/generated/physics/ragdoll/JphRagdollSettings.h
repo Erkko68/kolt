@@ -12,6 +12,7 @@ extern "C" {
 JphRagdollSettingsPart* JphRagdollSettingsPart_create(void);
 void JphRagdollSettingsPart_destroy(JphRagdollSettingsPart* self);
 JphBodyCreationSettings* JphRagdollSettingsPart_asBodyCreationSettings(JphRagdollSettingsPart* self);
+JphRagdollSettingsPart* JphRagdollSettingsPart_fromBodyCreationSettings(JphBodyCreationSettings* base);
 // skipped static void JPH::RagdollSettings::Part::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphTwoBodyConstraintSettings* JphRagdollSettingsPart_GetToParent(const JphRagdollSettingsPart* self);
 void JphRagdollSettingsPart_SetToParent(JphRagdollSettingsPart* self, JphTwoBodyConstraintSettings* value);

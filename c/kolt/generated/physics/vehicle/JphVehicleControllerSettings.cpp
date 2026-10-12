@@ -16,6 +16,11 @@ JphSerializableObject* JphVehicleControllerSettings_asSerializableObject(JphVehi
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+int32_t JphVehicleControllerSettings_dynamicType(const JphVehicleControllerSettings* self) {
+    const JPH::VehicleControllerSettings* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::MotorcycleControllerSettings*>(object) ? 1 : dynamic_cast<const JPH::TrackedVehicleControllerSettings*>(object) ? 2 : dynamic_cast<const JPH::WheeledVehicleControllerSettings*>(object) ? 3 : 0;
+}
+
 void JphVehicleControllerSettings_SaveBinaryState(const JphVehicleControllerSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

@@ -16,6 +16,9 @@ internal external fun JphShapeFilter_createUpcalls(call: NativePointer): NativeP
 @ExternalSymbolName("JphShapeFilter_bindUpcalls")
 internal external fun JphShapeFilter_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("JphShapeFilter_dynamicType")
+internal external fun JphShapeFilter_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphShapeFilter_ShouldCollide")
 internal external fun JphShapeFilter_ShouldCollide(self: NativePointer, inShape2: NativePointer, inSubShapeIDOfShape2: Int): Boolean
 

@@ -61,6 +61,9 @@ internal external fun JphCharacterVirtual_release(self: NativePointer)
 @ExternalSymbolName("JphCharacterVirtual_asCharacterBase")
 internal external fun JphCharacterVirtual_asCharacterBase(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCharacterVirtual_fromCharacterBase")
+internal external fun JphCharacterVirtual_fromCharacterBase(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphCharacterVirtual_GetID")
 internal external fun JphCharacterVirtual_GetID(self: NativePointer, out: NativePointer)
 

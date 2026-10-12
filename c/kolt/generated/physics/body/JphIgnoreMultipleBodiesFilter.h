@@ -14,6 +14,7 @@ void JphIgnoreMultipleBodiesFilter_destroy(JphIgnoreMultipleBodiesFilter* self);
 JphIgnoreMultipleBodiesFilter* JphIgnoreMultipleBodiesFilter_createUpcalls(JphUpcall call);
 void JphIgnoreMultipleBodiesFilter_bindUpcalls(JphIgnoreMultipleBodiesFilter* self, void* userData);
 JphBodyFilter* JphIgnoreMultipleBodiesFilter_asBodyFilter(JphIgnoreMultipleBodiesFilter* self);
+JphIgnoreMultipleBodiesFilter* JphIgnoreMultipleBodiesFilter_fromBodyFilter(JphBodyFilter* base);
 void JphIgnoreMultipleBodiesFilter_Clear(JphIgnoreMultipleBodiesFilter* self);
 void JphIgnoreMultipleBodiesFilter_Reserve(JphIgnoreMultipleBodiesFilter* self, uint32_t inSize);
 void JphIgnoreMultipleBodiesFilter_IgnoreBody(JphIgnoreMultipleBodiesFilter* self, uint32_t inBodyID);

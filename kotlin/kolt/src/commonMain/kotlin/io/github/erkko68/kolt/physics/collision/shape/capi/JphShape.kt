@@ -40,6 +40,9 @@ internal external fun JphShape_addRef(self: NativePointer)
 @ExternalSymbolName("JphShape_release")
 internal external fun JphShape_release(self: NativePointer)
 
+@ExternalSymbolName("JphShape_dynamicType")
+internal external fun JphShape_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphShape_GetType")
 internal external fun JphShape_GetType(self: NativePointer): Int
 

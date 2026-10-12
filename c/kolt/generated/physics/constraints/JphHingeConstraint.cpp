@@ -24,6 +24,14 @@ JphConstraint* JphHingeConstraint_asConstraint(JphHingeConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphHingeConstraint* JphHingeConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::HingeConstraint*>(kolt::cpp(base)));
+}
+
+JphHingeConstraint* JphHingeConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::HingeConstraint*>(kolt::cpp(base)));
+}
+
 void JphHingeConstraint_GetLocalSpacePoint1(const JphHingeConstraint* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetLocalSpacePoint1());
 }

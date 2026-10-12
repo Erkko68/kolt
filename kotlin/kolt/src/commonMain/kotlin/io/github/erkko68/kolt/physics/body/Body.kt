@@ -351,7 +351,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
 
     /** Get the shape of this body */
     val shape: Shape?
-        get() = JphBody_GetShape(bodyHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        get() = JphBody_GetShape(bodyHandle).takeIf { it != NullPointer }?.let { wrapShape(it) }
 
     /** World space position of the body */
     val position: Vec3

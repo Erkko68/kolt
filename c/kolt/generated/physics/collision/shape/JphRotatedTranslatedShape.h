@@ -16,6 +16,8 @@ void JphRotatedTranslatedShape_addRef(const JphRotatedTranslatedShape* self);
 void JphRotatedTranslatedShape_release(const JphRotatedTranslatedShape* self);
 JphDecoratedShape* JphRotatedTranslatedShape_asDecoratedShape(JphRotatedTranslatedShape* self);
 JphShape* JphRotatedTranslatedShape_asShape(JphRotatedTranslatedShape* self);
+JphRotatedTranslatedShape* JphRotatedTranslatedShape_fromDecoratedShape(JphDecoratedShape* base);
+JphRotatedTranslatedShape* JphRotatedTranslatedShape_fromShape(JphShape* base);
 // skipped static void JPH::RotatedTranslatedShape::sRegister(): JPH::.*::sRegister
 void JphRotatedTranslatedShape_GetRotation(const JphRotatedTranslatedShape* self, JphQuat* out);
 void JphRotatedTranslatedShape_GetPosition(const JphRotatedTranslatedShape* self, JphVec3* out);

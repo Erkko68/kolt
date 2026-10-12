@@ -16,6 +16,10 @@ JphVehicleTrackSettings* JphVehicleTrack_asVehicleTrackSettings(JphVehicleTrack*
     return kolt::c(static_cast<JPH::VehicleTrackSettings*>(kolt::cpp(self)));
 }
 
+JphVehicleTrack* JphVehicleTrack_fromVehicleTrackSettings(JphVehicleTrackSettings* base) {
+    return kolt::c(static_cast<JPH::VehicleTrack*>(kolt::cpp(base)));
+}
+
 void JphVehicleTrack_SaveState(const JphVehicleTrack* self, JphStateRecorder* inStream) {
     kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
 }

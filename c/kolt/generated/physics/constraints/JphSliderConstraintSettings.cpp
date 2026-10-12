@@ -28,6 +28,14 @@ JphSerializableObject* JphSliderConstraintSettings_asSerializableObject(JphSlide
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphSliderConstraintSettings* JphSliderConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::SliderConstraintSettings*>(kolt::cpp(base)));
+}
+
+JphSliderConstraintSettings* JphSliderConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::SliderConstraintSettings*>(kolt::cpp(base)));
+}
+
 void JphSliderConstraintSettings_SetSliderAxis(JphSliderConstraintSettings* self, const JphVec3* inSliderAxis) {
     kolt::cpp(self)->SetSliderAxis(kolt::math<JPH::Vec3>(*inSliderAxis));
 }

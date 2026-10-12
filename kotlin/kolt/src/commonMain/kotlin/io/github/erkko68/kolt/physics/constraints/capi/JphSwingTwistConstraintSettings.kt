@@ -22,6 +22,12 @@ internal external fun JphSwingTwistConstraintSettings_asConstraintSettings(self:
 @ExternalSymbolName("JphSwingTwistConstraintSettings_asSerializableObject")
 internal external fun JphSwingTwistConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphSwingTwistConstraintSettings_fromTwoBodyConstraintSettings")
+internal external fun JphSwingTwistConstraintSettings_fromTwoBodyConstraintSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphSwingTwistConstraintSettings_fromConstraintSettings")
+internal external fun JphSwingTwistConstraintSettings_fromConstraintSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphSwingTwistConstraintSettings_GetSpace")
 internal external fun JphSwingTwistConstraintSettings_GetSpace(self: NativePointer): Int
 

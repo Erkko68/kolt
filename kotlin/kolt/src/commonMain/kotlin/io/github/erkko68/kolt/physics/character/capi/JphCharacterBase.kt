@@ -13,6 +13,9 @@ internal external fun JphCharacterBase_addRef(self: NativePointer)
 @ExternalSymbolName("JphCharacterBase_release")
 internal external fun JphCharacterBase_release(self: NativePointer)
 
+@ExternalSymbolName("JphCharacterBase_dynamicType")
+internal external fun JphCharacterBase_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphCharacterBase_SetMaxSlopeAngle")
 internal external fun JphCharacterBase_SetMaxSlopeAngle(self: NativePointer, inMaxSlopeAngle: Float)
 

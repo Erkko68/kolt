@@ -13,6 +13,9 @@ internal external fun GeoPolygon_destroy(self: NativePointer)
 @ExternalSymbolName("GeoPolygon_asShape")
 internal external fun GeoPolygon_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("GeoPolygon_fromShape")
+internal external fun GeoPolygon_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("GeoPolygon_points")
 internal external fun GeoPolygon_points(self: NativePointer, out: NativePointer, outCapacity: Int): Int
 

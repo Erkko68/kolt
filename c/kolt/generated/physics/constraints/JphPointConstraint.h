@@ -14,6 +14,8 @@ void JphPointConstraint_addRef(const JphPointConstraint* self);
 void JphPointConstraint_release(const JphPointConstraint* self);
 JphTwoBodyConstraint* JphPointConstraint_asTwoBodyConstraint(JphPointConstraint* self);
 JphConstraint* JphPointConstraint_asConstraint(JphPointConstraint* self);
+JphPointConstraint* JphPointConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphPointConstraint* JphPointConstraint_fromConstraint(JphConstraint* base);
 void JphPointConstraint_SetPoint1(JphPointConstraint* self, JphEConstraintSpace inSpace, const JphVec3* inPoint1);
 void JphPointConstraint_SetPoint2(JphPointConstraint* self, JphEConstraintSpace inSpace, const JphVec3* inPoint2);
 void JphPointConstraint_GetLocalSpacePoint1(const JphPointConstraint* self, JphVec3* out);

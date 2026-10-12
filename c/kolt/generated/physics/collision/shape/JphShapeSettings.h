@@ -12,6 +12,7 @@ extern "C" {
 void JphShapeSettings_addRef(const JphShapeSettings* self);
 void JphShapeSettings_release(const JphShapeSettings* self);
 JphSerializableObject* JphShapeSettings_asSerializableObject(JphShapeSettings* self);
+int32_t JphShapeSettings_dynamicType(const JphShapeSettings* self);
 // skipped const JPH::RTTI * JPH::ShapeSettings::GetRTTI() const: uses JPH::RTTI
 // skipped const void * JPH::ShapeSettings::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
 // skipped static void JPH::ShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI

@@ -58,7 +58,7 @@ open class ShapeSettings internal constructor(internal val shapeSettingsHandle: 
             val returned = JphShapeSettings_Create(shapeSettingsHandle, errorPointer, error.size)
             errorPointer.fromInterop(error)
             if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
-            Shape(returned, owned = true)
+            wrapShape(returned, owned = true)
         }
 
     /**

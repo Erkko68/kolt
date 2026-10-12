@@ -86,6 +86,6 @@ open class CharacterBaseSettings internal constructor(internal val characterBase
      * Usually this is a capsule, make sure the shape is made so that the bottom of the shape is at (0, 0, 0).
      */
     var shape: Shape?
-        get() = JphCharacterBaseSettings_GetShape(characterBaseSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        get() = JphCharacterBaseSettings_GetShape(characterBaseSettingsHandle).takeIf { it != NullPointer }?.let { wrapShape(it) }
         set(value) = JphCharacterBaseSettings_SetShape(characterBaseSettingsHandle, value?.shapeHandle ?: NullPointer)
 }

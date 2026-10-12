@@ -28,6 +28,10 @@ JphSerializableObject* JphPlaneShapeSettings_asSerializableObject(JphPlaneShapeS
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphPlaneShapeSettings* JphPlaneShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::PlaneShapeSettings*>(kolt::cpp(base)));
+}
+
 void JphPlaneShapeSettings_GetPlane(const JphPlaneShapeSettings* self, JphPlane* out) {
     *kolt::cpp(out) = kolt::cpp(self)->mPlane;
 }

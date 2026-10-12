@@ -1,10 +1,19 @@
 _GeoCircle_asShape
 _GeoCircle_create
 _GeoCircle_destroy
+_GeoCircle_fromShape
 _GeoCircle_intersect
 _GeoCircle_radius
 _GeoCircle_scale
 _GeoCircle_scale_float
+_GeoMarker_at
+_GeoMarker_create
+_GeoMarker_destroy
+_GeoPin_asMarker
+_GeoPin_create
+_GeoPin_destroy
+_GeoPin_fromMarker
+_GeoPin_height
 _GeoPoint_create
 _GeoPoint_destroy
 _GeoPoint_getX
@@ -16,6 +25,7 @@ _GeoPolygon_as_float
 _GeoPolygon_as_int
 _GeoPolygon_create
 _GeoPolygon_destroy
+_GeoPolygon_fromShape
 _GeoPolygon_hash
 _GeoPolygon_points
 _GeoPolygon_visit
@@ -25,6 +35,7 @@ _GeoShape_centroid
 _GeoShape_createUpcalls
 _GeoShape_destroy
 _GeoShape_dump
+_GeoShape_dynamicType
 _GeoShape_id
 _GeoShape_kind
 _GeoShape_move_by
@@ -32,5 +43,6 @@ _GeoShape_name
 _GeoShape_set_name
 _Geo_distance
 _Geo_find
+_Geo_nearest
 _malloc
 _free

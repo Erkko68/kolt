@@ -15,6 +15,7 @@ void JphPlaneShapeSettings_addRef(const JphPlaneShapeSettings* self);
 void JphPlaneShapeSettings_release(const JphPlaneShapeSettings* self);
 JphShapeSettings* JphPlaneShapeSettings_asShapeSettings(JphPlaneShapeSettings* self);
 JphSerializableObject* JphPlaneShapeSettings_asSerializableObject(JphPlaneShapeSettings* self);
+JphPlaneShapeSettings* JphPlaneShapeSettings_fromShapeSettings(JphShapeSettings* base);
 // skipped static void JPH::PlaneShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphPlaneShapeSettings_GetPlane(const JphPlaneShapeSettings* self, JphPlane* out);
 void JphPlaneShapeSettings_SetPlane(JphPlaneShapeSettings* self, const JphPlane* value);

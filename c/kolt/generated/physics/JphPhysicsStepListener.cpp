@@ -35,6 +35,11 @@ void JphPhysicsStepListener_bindUpcalls(JphPhysicsStepListener* self, void* user
     static_cast<::JPH::JphPhysicsStepListener_Upcalls*>(kolt::cpp(self))->mUser = userData;
 }
 
+int32_t JphPhysicsStepListener_dynamicType(const JphPhysicsStepListener* self) {
+    const JPH::PhysicsStepListener* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::VehicleConstraint*>(object) ? 1 : 0;
+}
+
 void JphPhysicsStepListener_OnStep(JphPhysicsStepListener* self, const JphPhysicsStepListenerContext* inContext) {
     kolt::cpp(self)->OnStep(*kolt::cpp(inContext));
 }

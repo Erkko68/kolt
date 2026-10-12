@@ -16,6 +16,10 @@ JphWheel* JphWheelTV_asWheel(JphWheelTV* self) {
     return kolt::c(static_cast<JPH::Wheel*>(kolt::cpp(self)));
 }
 
+JphWheelTV* JphWheelTV_fromWheel(JphWheel* base) {
+    return kolt::c(static_cast<JPH::WheelTV*>(kolt::cpp(base)));
+}
+
 const JphWheelSettingsTV* JphWheelTV_GetSettings(const JphWheelTV* self) {
     return kolt::c(kolt::cpp(self)->GetSettings());
 }

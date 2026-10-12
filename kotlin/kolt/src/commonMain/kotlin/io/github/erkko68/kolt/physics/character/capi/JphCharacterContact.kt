@@ -13,6 +13,9 @@ internal external fun JphCharacterContact_destroy(self: NativePointer)
 @ExternalSymbolName("JphCharacterContact_asCharacterContactKey")
 internal external fun JphCharacterContact_asCharacterContactKey(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCharacterContact_fromCharacterContactKey")
+internal external fun JphCharacterContact_fromCharacterContactKey(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphCharacterContact_SaveState")
 internal external fun JphCharacterContact_SaveState(self: NativePointer, inStream: NativePointer)
 

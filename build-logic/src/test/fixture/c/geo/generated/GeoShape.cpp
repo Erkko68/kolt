@@ -41,6 +41,11 @@ void GeoShape_bindUpcalls(GeoShape* self, void* userData) {
     static_cast<::geo::GeoShape_Upcalls*>(geoc::cpp(self))->mUser = userData;
 }
 
+int32_t GeoShape_dynamicType(const GeoShape* self) {
+    const geo::Shape* object = geoc::cpp(self);
+    return dynamic_cast<const geo::Circle*>(object) ? 1 : dynamic_cast<const geo::Polygon*>(object) ? 2 : 0;
+}
+
 GeoKind GeoShape_kind(const GeoShape* self) {
     return static_cast<GeoKind>(geoc::cpp(self)->kind());
 }

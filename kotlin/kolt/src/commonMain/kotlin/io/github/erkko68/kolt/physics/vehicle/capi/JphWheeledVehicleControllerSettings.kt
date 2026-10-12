@@ -25,6 +25,12 @@ internal external fun JphWheeledVehicleControllerSettings_asVehicleControllerSet
 @ExternalSymbolName("JphWheeledVehicleControllerSettings_asSerializableObject")
 internal external fun JphWheeledVehicleControllerSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphWheeledVehicleControllerSettings_fromVehicleControllerSettings")
+internal external fun JphWheeledVehicleControllerSettings_fromVehicleControllerSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphWheeledVehicleControllerSettings_dynamicType")
+internal external fun JphWheeledVehicleControllerSettings_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphWheeledVehicleControllerSettings_GetEngine")
 internal external fun JphWheeledVehicleControllerSettings_GetEngine(self: NativePointer, out: NativePointer)
 

@@ -12,3 +12,6 @@ internal external fun JphIgnoreSingleBodyFilterChained_destroy(self: NativePoint
 
 @ExternalSymbolName("JphIgnoreSingleBodyFilterChained_asBodyFilter")
 internal external fun JphIgnoreSingleBodyFilterChained_asBodyFilter(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphIgnoreSingleBodyFilterChained_fromBodyFilter")
+internal external fun JphIgnoreSingleBodyFilterChained_fromBodyFilter(base: NativePointer): NativePointer

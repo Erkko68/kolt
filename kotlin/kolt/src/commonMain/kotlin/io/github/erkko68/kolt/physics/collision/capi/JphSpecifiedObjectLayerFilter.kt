@@ -12,3 +12,6 @@ internal external fun JphSpecifiedObjectLayerFilter_destroy(self: NativePointer)
 
 @ExternalSymbolName("JphSpecifiedObjectLayerFilter_asObjectLayerFilter")
 internal external fun JphSpecifiedObjectLayerFilter_asObjectLayerFilter(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphSpecifiedObjectLayerFilter_fromObjectLayerFilter")
+internal external fun JphSpecifiedObjectLayerFilter_fromObjectLayerFilter(base: NativePointer): NativePointer

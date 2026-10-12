@@ -24,6 +24,14 @@ JphConstraint* JphSliderConstraint_asConstraint(JphSliderConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphSliderConstraint* JphSliderConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::SliderConstraint*>(kolt::cpp(base)));
+}
+
+JphSliderConstraint* JphSliderConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::SliderConstraint*>(kolt::cpp(base)));
+}
+
 float JphSliderConstraint_GetCurrentPosition(const JphSliderConstraint* self) {
     return kolt::cpp(self)->GetCurrentPosition();
 }

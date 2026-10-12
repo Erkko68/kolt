@@ -13,6 +13,9 @@ internal external fun JphVehicleControllerSettings_release(self: NativePointer)
 @ExternalSymbolName("JphVehicleControllerSettings_asSerializableObject")
 internal external fun JphVehicleControllerSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphVehicleControllerSettings_dynamicType")
+internal external fun JphVehicleControllerSettings_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphVehicleControllerSettings_SaveBinaryState")
 internal external fun JphVehicleControllerSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

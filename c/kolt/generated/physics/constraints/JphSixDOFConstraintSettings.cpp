@@ -28,6 +28,14 @@ JphSerializableObject* JphSixDOFConstraintSettings_asSerializableObject(JphSixDO
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphSixDOFConstraintSettings* JphSixDOFConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::SixDOFConstraintSettings*>(kolt::cpp(base)));
+}
+
+JphSixDOFConstraintSettings* JphSixDOFConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::SixDOFConstraintSettings*>(kolt::cpp(base)));
+}
+
 void JphSixDOFConstraintSettings_MakeFreeAxis(JphSixDOFConstraintSettings* self, JphSixDOFConstraintSettingsEAxis inAxis) {
     kolt::cpp(self)->MakeFreeAxis(static_cast<JPH::SixDOFConstraintSettings::EAxis>(inAxis));
 }

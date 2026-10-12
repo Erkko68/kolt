@@ -28,6 +28,14 @@ JphSerializableObject* JphRackAndPinionConstraintSettings_asSerializableObject(J
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphRackAndPinionConstraintSettings* JphRackAndPinionConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::RackAndPinionConstraintSettings*>(kolt::cpp(base)));
+}
+
+JphRackAndPinionConstraintSettings* JphRackAndPinionConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::RackAndPinionConstraintSettings*>(kolt::cpp(base)));
+}
+
 void JphRackAndPinionConstraintSettings_SetRatio(JphRackAndPinionConstraintSettings* self, int32_t inNumTeethRack, float inRackLength, int32_t inNumTeethPinion) {
     kolt::cpp(self)->SetRatio(static_cast<int>(inNumTeethRack), inRackLength, static_cast<int>(inNumTeethPinion));
 }

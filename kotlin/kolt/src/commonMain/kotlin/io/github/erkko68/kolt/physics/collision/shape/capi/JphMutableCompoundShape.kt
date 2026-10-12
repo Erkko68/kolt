@@ -19,6 +19,12 @@ internal external fun JphMutableCompoundShape_asCompoundShape(self: NativePointe
 @ExternalSymbolName("JphMutableCompoundShape_asShape")
 internal external fun JphMutableCompoundShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphMutableCompoundShape_fromCompoundShape")
+internal external fun JphMutableCompoundShape_fromCompoundShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphMutableCompoundShape_fromShape")
+internal external fun JphMutableCompoundShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphMutableCompoundShape_Clone")
 internal external fun JphMutableCompoundShape_Clone(self: NativePointer): NativePointer
 

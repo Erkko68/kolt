@@ -19,6 +19,12 @@ internal external fun JphVehicleConstraint_asConstraint(self: NativePointer): Na
 @ExternalSymbolName("JphVehicleConstraint_asPhysicsStepListener")
 internal external fun JphVehicleConstraint_asPhysicsStepListener(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphVehicleConstraint_fromConstraint")
+internal external fun JphVehicleConstraint_fromConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphVehicleConstraint_fromPhysicsStepListener")
+internal external fun JphVehicleConstraint_fromPhysicsStepListener(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphVehicleConstraint_SetMaxPitchRollAngle")
 internal external fun JphVehicleConstraint_SetMaxPitchRollAngle(self: NativePointer, inMaxPitchRollAngle: Float)
 

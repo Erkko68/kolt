@@ -20,6 +20,14 @@ JphVehicleController* JphMotorcycleController_asVehicleController(JphMotorcycleC
     return kolt::c(static_cast<JPH::VehicleController*>(kolt::cpp(self)));
 }
 
+JphMotorcycleController* JphMotorcycleController_fromWheeledVehicleController(JphWheeledVehicleController* base) {
+    return kolt::c(static_cast<JPH::MotorcycleController*>(kolt::cpp(base)));
+}
+
+JphMotorcycleController* JphMotorcycleController_fromVehicleController(JphVehicleController* base) {
+    return kolt::c(static_cast<JPH::MotorcycleController*>(kolt::cpp(base)));
+}
+
 float JphMotorcycleController_GetWheelBase(const JphMotorcycleController* self) {
     return kolt::cpp(self)->GetWheelBase();
 }

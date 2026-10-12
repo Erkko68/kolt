@@ -9,7 +9,7 @@ import buildlogic.apigen.cpp.CppType
 import buildlogic.apigen.cpp.CppType.Kind
 
 /**
- * What kind of thing a record is to C, and what C binds of it: `_create`/`_destroy`, upcasts, methods and field
+ * What kind of thing a record is to C, and what C binds of it: `_create`/`_destroy`, casts, methods and field
  * accessors. [CBridges] asks the first to pass one, [CApiWriter] the second to write its functions. [bound]: the
  * records C writes functions for, the API headers'.
  */
@@ -85,6 +85,22 @@ internal class Records(
         ancestors(record).distinct().filter { base ->
             base !in twins(record) && !templates.uninstantiated(base) && (base.methods.any { it.isPublic && it.isApi && !it.isDeprecated } || fields(base).isNotEmpty())
         }
+
+    /**
+     * The bases C gets a `_from<Base>` downcast from, so that what the API hands out as a base (a vehicle's controller)
+     * is the class it was made as again. Of the ones it upcasts to: those C++ tells the class of ([dynamic]), which a
+     * wrapper asks; and of the rest those with none above them, which the others are too, and where the caller says.
+     * Not from one C++ could tell the class of but the API leaves out: it hands none out.
+     */
+    fun downcasts(record: CppRecord): List<CppRecord> =
+        upcasts(record).filter { dynamic(it) || (upcasts(it).isEmpty() && !(config.c.rtti && it.polymorphic)) }
+
+    /** A record whose objects' class C can ask C++ for: it has virtual functions, in a library built with RTTI. */
+    fun dynamic(record: CppRecord) = config.c.rtti && record.polymorphic && record.name in bound
+
+    /** The records C downcasts a [dynamic] [base] to, a derived one before its bases: the first an object is, is its class. */
+    fun derived(base: CppRecord): List<CppRecord> = if (!dynamic(base)) emptyList() else
+        api.records.values.filter { it.name in bound && handled(it) && base in downcasts(it) }.sortedWith(compareBy({ -ancestors(it).size }, { it.name }))
 
     fun ancestors(record: CppRecord): List<CppRecord> = record.bases.mapNotNull { api.records[it] }.flatMap { listOf(it) + ancestors(it) }
 

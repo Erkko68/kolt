@@ -15,6 +15,8 @@ void JphPathConstraintSettings_release(const JphPathConstraintSettings* self);
 JphTwoBodyConstraintSettings* JphPathConstraintSettings_asTwoBodyConstraintSettings(JphPathConstraintSettings* self);
 JphConstraintSettings* JphPathConstraintSettings_asConstraintSettings(JphPathConstraintSettings* self);
 JphSerializableObject* JphPathConstraintSettings_asSerializableObject(JphPathConstraintSettings* self);
+JphPathConstraintSettings* JphPathConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base);
+JphPathConstraintSettings* JphPathConstraintSettings_fromConstraintSettings(JphConstraintSettings* base);
 // skipped static void JPH::PathConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 const JphPathConstraintPath* JphPathConstraintSettings_GetPath(const JphPathConstraintSettings* self);
 void JphPathConstraintSettings_SetPath(JphPathConstraintSettings* self, const JphPathConstraintPath* value);

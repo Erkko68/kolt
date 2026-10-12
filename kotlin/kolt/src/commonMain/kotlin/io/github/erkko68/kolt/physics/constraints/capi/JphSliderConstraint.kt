@@ -19,6 +19,12 @@ internal external fun JphSliderConstraint_asTwoBodyConstraint(self: NativePointe
 @ExternalSymbolName("JphSliderConstraint_asConstraint")
 internal external fun JphSliderConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphSliderConstraint_fromTwoBodyConstraint")
+internal external fun JphSliderConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphSliderConstraint_fromConstraint")
+internal external fun JphSliderConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphSliderConstraint_GetCurrentPosition")
 internal external fun JphSliderConstraint_GetCurrentPosition(self: NativePointer): Float
 

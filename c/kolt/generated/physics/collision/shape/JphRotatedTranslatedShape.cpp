@@ -28,6 +28,14 @@ JphShape* JphRotatedTranslatedShape_asShape(JphRotatedTranslatedShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphRotatedTranslatedShape* JphRotatedTranslatedShape_fromDecoratedShape(JphDecoratedShape* base) {
+    return kolt::c(static_cast<JPH::RotatedTranslatedShape*>(kolt::cpp(base)));
+}
+
+JphRotatedTranslatedShape* JphRotatedTranslatedShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::RotatedTranslatedShape*>(kolt::cpp(base)));
+}
+
 void JphRotatedTranslatedShape_GetRotation(const JphRotatedTranslatedShape* self, JphQuat* out) {
     *out = kolt::mirror<JphQuat>(kolt::cpp(self)->GetRotation());
 }

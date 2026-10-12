@@ -58,6 +58,9 @@ open class PhysicsStepListener internal constructor(internal val physicsStepList
     open fun onStep(context: PhysicsStepListenerContext) =
         JphPhysicsStepListener_OnStep(physicsStepListenerHandle, context.physicsStepListenerContextHandle)
 
+    /** This object as the [VehicleConstraint] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asVehicleConstraint() = VehicleConstraint(JphVehicleConstraint_fromPhysicsStepListener(physicsStepListenerHandle))
+
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
             0 -> onStep(PhysicsStepListenerContext(readPointerSlot(args, 0)))

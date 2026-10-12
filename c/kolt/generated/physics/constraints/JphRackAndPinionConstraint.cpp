@@ -24,6 +24,14 @@ JphConstraint* JphRackAndPinionConstraint_asConstraint(JphRackAndPinionConstrain
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphRackAndPinionConstraint* JphRackAndPinionConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::RackAndPinionConstraint*>(kolt::cpp(base)));
+}
+
+JphRackAndPinionConstraint* JphRackAndPinionConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::RackAndPinionConstraint*>(kolt::cpp(base)));
+}
+
 void JphRackAndPinionConstraint_SetConstraints(JphRackAndPinionConstraint* self, const JphConstraint* inPinion, const JphConstraint* inRack) {
     kolt::cpp(self)->SetConstraints(kolt::cpp(inPinion), kolt::cpp(inRack));
 }

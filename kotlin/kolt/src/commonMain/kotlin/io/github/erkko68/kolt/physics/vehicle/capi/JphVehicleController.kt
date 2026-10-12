@@ -7,6 +7,9 @@ import io.github.erkko68.kolt.interop.NativePointer
 @ExternalSymbolName("JphVehicleController_destroy")
 internal external fun JphVehicleController_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphVehicleController_dynamicType")
+internal external fun JphVehicleController_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphVehicleController_GetConstraint")
 internal external fun JphVehicleController_GetConstraint(self: NativePointer): NativePointer
 

@@ -53,7 +53,7 @@ class PathConstraint internal constructor(internal val pathConstraintHandle: Nat
 
     /** Access to the current path */
     val path: PathConstraintPath?
-        get() = JphPathConstraint_GetPath(pathConstraintHandle).takeIf { it != NullPointer }?.let { PathConstraintPath(it) }
+        get() = JphPathConstraint_GetPath(pathConstraintHandle).takeIf { it != NullPointer }?.let { wrapPathConstraintPath(it) }
 
     /** Access to the current fraction along the path e \[0, GetPath()->GetMaxPathFraction()\] */
     val pathFraction: Float

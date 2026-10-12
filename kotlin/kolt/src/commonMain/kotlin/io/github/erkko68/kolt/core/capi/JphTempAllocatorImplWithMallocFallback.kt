@@ -12,3 +12,6 @@ internal external fun JphTempAllocatorImplWithMallocFallback_destroy(self: Nativ
 
 @ExternalSymbolName("JphTempAllocatorImplWithMallocFallback_asTempAllocator")
 internal external fun JphTempAllocatorImplWithMallocFallback_asTempAllocator(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphTempAllocatorImplWithMallocFallback_fromTempAllocator")
+internal external fun JphTempAllocatorImplWithMallocFallback_fromTempAllocator(base: NativePointer): NativePointer

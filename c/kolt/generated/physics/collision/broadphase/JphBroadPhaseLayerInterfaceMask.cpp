@@ -16,6 +16,10 @@ JphBroadPhaseLayerInterface* JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerIn
     return kolt::c(static_cast<JPH::BroadPhaseLayerInterface*>(kolt::cpp(self)));
 }
 
+JphBroadPhaseLayerInterfaceMask* JphBroadPhaseLayerInterfaceMask_fromBroadPhaseLayerInterface(JphBroadPhaseLayerInterface* base) {
+    return kolt::c(static_cast<JPH::BroadPhaseLayerInterfaceMask*>(kolt::cpp(base)));
+}
+
 void JphBroadPhaseLayerInterfaceMask_ConfigureLayer(JphBroadPhaseLayerInterfaceMask* self, uint32_t inBroadPhaseLayer, uint32_t inGroupsToInclude, uint32_t inGroupsToExclude) {
     kolt::cpp(self)->ConfigureLayer(JPH::BroadPhaseLayer(JPH::BroadPhaseLayer::Type(inBroadPhaseLayer)), inGroupsToInclude, inGroupsToExclude);
 }

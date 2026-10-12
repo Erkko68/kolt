@@ -16,6 +16,9 @@ internal external fun JphCharacterSettings_release(self: NativePointer)
 @ExternalSymbolName("JphCharacterSettings_asCharacterBaseSettings")
 internal external fun JphCharacterSettings_asCharacterBaseSettings(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCharacterSettings_fromCharacterBaseSettings")
+internal external fun JphCharacterSettings_fromCharacterBaseSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphCharacterSettings_GetLayer")
 internal external fun JphCharacterSettings_GetLayer(self: NativePointer): Int
 

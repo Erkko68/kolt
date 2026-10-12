@@ -12,6 +12,7 @@ extern "C" {
 JphCharacterBaseSettings* JphCharacterBaseSettings_create(void);
 void JphCharacterBaseSettings_addRef(const JphCharacterBaseSettings* self);
 void JphCharacterBaseSettings_release(const JphCharacterBaseSettings* self);
+int32_t JphCharacterBaseSettings_dynamicType(const JphCharacterBaseSettings* self);
 void JphCharacterBaseSettings_GetUp(const JphCharacterBaseSettings* self, JphVec3* out);
 void JphCharacterBaseSettings_SetUp(JphCharacterBaseSettings* self, const JphVec3* value);
 void JphCharacterBaseSettings_GetSupportingVolume(const JphCharacterBaseSettings* self, JphPlane* out);

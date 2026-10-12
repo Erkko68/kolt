@@ -24,6 +24,14 @@ JphConstraint* JphSwingTwistConstraint_asConstraint(JphSwingTwistConstraint* sel
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphSwingTwistConstraint* JphSwingTwistConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::SwingTwistConstraint*>(kolt::cpp(base)));
+}
+
+JphSwingTwistConstraint* JphSwingTwistConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::SwingTwistConstraint*>(kolt::cpp(base)));
+}
+
 void JphSwingTwistConstraint_GetLocalSpacePosition1(const JphSwingTwistConstraint* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetLocalSpacePosition1());
 }

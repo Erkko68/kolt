@@ -28,6 +28,14 @@ JphShape* JphCylinderShape_asShape(JphCylinderShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphCylinderShape* JphCylinderShape_fromConvexShape(JphConvexShape* base) {
+    return kolt::c(static_cast<JPH::CylinderShape*>(kolt::cpp(base)));
+}
+
+JphCylinderShape* JphCylinderShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::CylinderShape*>(kolt::cpp(base)));
+}
+
 float JphCylinderShape_GetHalfHeight(const JphCylinderShape* self) {
     return kolt::cpp(self)->GetHalfHeight();
 }

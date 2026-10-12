@@ -10,6 +10,7 @@ extern "C" {
 
 // JPH::TempAllocator
 void JphTempAllocator_destroy(JphTempAllocator* self);
+int32_t JphTempAllocator_dynamicType(const JphTempAllocator* self);
 // skipped void * JPH::TempAllocator::Allocate(uint inSize): JPH::TempAllocator::(Allocate|Free)
 // skipped void JPH::TempAllocator::Free(void * inAddress, uint inSize): JPH::TempAllocator::(Allocate|Free)
 

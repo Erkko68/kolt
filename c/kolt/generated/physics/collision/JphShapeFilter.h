@@ -13,6 +13,7 @@ JphShapeFilter* JphShapeFilter_create(void);
 void JphShapeFilter_destroy(JphShapeFilter* self);
 JphShapeFilter* JphShapeFilter_createUpcalls(JphUpcall call);
 void JphShapeFilter_bindUpcalls(JphShapeFilter* self, void* userData);
+int32_t JphShapeFilter_dynamicType(const JphShapeFilter* self);
 bool JphShapeFilter_ShouldCollide(const JphShapeFilter* self, const JphShape* inShape2, uint32_t inSubShapeIDOfShape2);
 bool JphShapeFilter_ShouldCollide_Shape_SubShapeID(const JphShapeFilter* self, const JphShape* inShape1, uint32_t inSubShapeIDOfShape1, const JphShape* inShape2, uint32_t inSubShapeIDOfShape2);
 uint32_t JphShapeFilter_GetBodyID2(const JphShapeFilter* self);

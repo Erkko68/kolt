@@ -13,6 +13,9 @@ internal external fun JphCharacterVsCharacterCollision_createUpcalls(call: Nativ
 @ExternalSymbolName("JphCharacterVsCharacterCollision_bindUpcalls")
 internal external fun JphCharacterVsCharacterCollision_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("JphCharacterVsCharacterCollision_dynamicType")
+internal external fun JphCharacterVsCharacterCollision_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphCharacterVsCharacterCollision_CollideCharacter")
 internal external fun JphCharacterVsCharacterCollision_CollideCharacter(self: NativePointer, inCharacter: NativePointer, inCenterOfMassTransform: NativePointer, inCollideShapeSettings: NativePointer, inBaseOffset: NativePointer, ioCollector: NativePointer)
 

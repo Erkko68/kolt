@@ -14,6 +14,8 @@ void JphConeConstraint_addRef(const JphConeConstraint* self);
 void JphConeConstraint_release(const JphConeConstraint* self);
 JphTwoBodyConstraint* JphConeConstraint_asTwoBodyConstraint(JphConeConstraint* self);
 JphConstraint* JphConeConstraint_asConstraint(JphConeConstraint* self);
+JphConeConstraint* JphConeConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphConeConstraint* JphConeConstraint_fromConstraint(JphConstraint* base);
 void JphConeConstraint_SetHalfConeAngle(JphConeConstraint* self, float inHalfConeAngle);
 float JphConeConstraint_GetCosHalfConeAngle(const JphConeConstraint* self);
 void JphConeConstraint_GetTotalLambdaPosition(const JphConeConstraint* self, JphVec3* out);

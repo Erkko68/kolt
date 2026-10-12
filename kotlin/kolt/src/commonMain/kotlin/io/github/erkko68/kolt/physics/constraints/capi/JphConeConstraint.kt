@@ -19,6 +19,12 @@ internal external fun JphConeConstraint_asTwoBodyConstraint(self: NativePointer)
 @ExternalSymbolName("JphConeConstraint_asConstraint")
 internal external fun JphConeConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphConeConstraint_fromTwoBodyConstraint")
+internal external fun JphConeConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphConeConstraint_fromConstraint")
+internal external fun JphConeConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphConeConstraint_SetHalfConeAngle")
 internal external fun JphConeConstraint_SetHalfConeAngle(self: NativePointer, inHalfConeAngle: Float)
 

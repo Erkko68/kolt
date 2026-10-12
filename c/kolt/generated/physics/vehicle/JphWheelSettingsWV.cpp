@@ -57,6 +57,10 @@ JphSerializableObject* JphWheelSettingsWV_asSerializableObject(JphWheelSettingsW
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphWheelSettingsWV* JphWheelSettingsWV_fromWheelSettings(JphWheelSettings* base) {
+    return kolt::c(static_cast<JPH::WheelSettingsWV*>(kolt::cpp(base)));
+}
+
 float JphWheelSettingsWV_GetInertia(const JphWheelSettingsWV* self) {
     return kolt::cpp(self)->mInertia;
 }

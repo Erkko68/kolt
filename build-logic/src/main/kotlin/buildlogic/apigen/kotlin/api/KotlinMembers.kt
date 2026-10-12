@@ -46,6 +46,8 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
     private val members = HashMap<String, List<Member>>()
     /** The records a class extends. */
     val extended = parents.values.mapNotNullTo(HashSet()) { it?.first }
+    private val downcasts = c.bindings.filter { it.gap == null && it.bound?.role == Role.DOWNCAST && names.type(it.bound.owner) in values.records }
+        .groupBy({ it.bound!!.name }) { names.type(it.bound!!.owner) to it.c }
 
     init {
         // Every class's members first: a derived class's mark the base's they override open.
@@ -68,6 +70,16 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
         val inherited = chain.toSet() + chain.flatMap { upcasts(it).map { (base, _) -> base } }
         return upcasts(cName).filter { (base, _) -> base in values.records && base !in inherited }
     }
+
+    /**
+     * The classes C downcasts [cName] to that its wrapper isn't made as, each with the downcast's C function: all of
+     * them where C++ doesn't tell which one an object is ([KotlinValues.dynamic]), else the ones that aren't its
+     * subclasses, [cName] being their other base. The class has a function returning itself as each.
+     */
+    fun downcasts(cName: String): List<Pair<String, String>> = downcasts[cName].orEmpty().filter { (derived, _) -> cName !in values.dynamic || !extends(derived, cName) }
+
+    /** Whether [cName]'s class is [base]'s or one under it. */
+    fun extends(cName: String, base: String) = generateSequence(cName) { parents[it]?.first }.any { it == base }
 
     /** The member of [cName] or a base wrapping the C++ method of [signature]; true when it's the property's setter. */
     fun wrapping(cName: String, signature: String): Pair<Member, Boolean>? = generateSequence(cName) { parents[it]?.first }.flatMap { of(it) }.firstNotNullOfOrNull { m ->
@@ -122,7 +134,7 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
     /** The Kotlin member wrapping a bound C function, or null when [KotlinValues] doesn't type what it passes. */
     private fun member(binding: Binding): Member? {
         val b = binding.bound!!
-        if (b.role == Role.UPCAST || b.role == Role.UPCALLS || b.role == Role.BIND_UPCALLS) return null
+        if (b.role in setOf(Role.UPCAST, Role.DOWNCAST, Role.DYNAMIC_TYPE, Role.UPCALLS, Role.BIND_UPCALLS)) return null
         val params = b.params.map { (name, bridge) -> values.parameterName(name).let { it to (values.parameter(bridge, it, config.naming.isOut(name)) ?: return null) } }
         val returns = values.result(b.returns) ?: return null
         // What the callee leaves in a parameter is returned after the function's own result.

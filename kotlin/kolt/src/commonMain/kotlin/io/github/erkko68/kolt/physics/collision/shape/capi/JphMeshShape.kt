@@ -16,6 +16,9 @@ internal external fun JphMeshShape_release(self: NativePointer)
 @ExternalSymbolName("JphMeshShape_asShape")
 internal external fun JphMeshShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphMeshShape_fromShape")
+internal external fun JphMeshShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphMeshShape_GetMaterialList")
 internal external fun JphMeshShape_GetMaterialList(self: NativePointer, out: NativePointer, outCapacity: Int): Int
 

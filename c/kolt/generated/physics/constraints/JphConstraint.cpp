@@ -12,6 +12,11 @@ void JphConstraint_release(const JphConstraint* self) {
     kolt::cpp(self)->Release();
 }
 
+int32_t JphConstraint_dynamicType(const JphConstraint* self) {
+    const JPH::Constraint* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::ConeConstraint*>(object) ? 1 : dynamic_cast<const JPH::DistanceConstraint*>(object) ? 2 : dynamic_cast<const JPH::FixedConstraint*>(object) ? 3 : dynamic_cast<const JPH::GearConstraint*>(object) ? 4 : dynamic_cast<const JPH::HingeConstraint*>(object) ? 5 : dynamic_cast<const JPH::PathConstraint*>(object) ? 6 : dynamic_cast<const JPH::PointConstraint*>(object) ? 7 : dynamic_cast<const JPH::PulleyConstraint*>(object) ? 8 : dynamic_cast<const JPH::RackAndPinionConstraint*>(object) ? 9 : dynamic_cast<const JPH::SixDOFConstraint*>(object) ? 10 : dynamic_cast<const JPH::SliderConstraint*>(object) ? 11 : dynamic_cast<const JPH::SwingTwistConstraint*>(object) ? 12 : dynamic_cast<const JPH::VehicleConstraint*>(object) ? 13 : dynamic_cast<const JPH::TwoBodyConstraint*>(object) ? 14 : 0;
+}
+
 JphEConstraintType JphConstraint_GetType(const JphConstraint* self) {
     return static_cast<JphEConstraintType>(kolt::cpp(self)->GetType());
 }

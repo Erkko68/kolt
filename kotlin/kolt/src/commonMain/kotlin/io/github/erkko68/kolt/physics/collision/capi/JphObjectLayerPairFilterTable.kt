@@ -13,6 +13,9 @@ internal external fun JphObjectLayerPairFilterTable_destroy(self: NativePointer)
 @ExternalSymbolName("JphObjectLayerPairFilterTable_asObjectLayerPairFilter")
 internal external fun JphObjectLayerPairFilterTable_asObjectLayerPairFilter(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphObjectLayerPairFilterTable_fromObjectLayerPairFilter")
+internal external fun JphObjectLayerPairFilterTable_fromObjectLayerPairFilter(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphObjectLayerPairFilterTable_GetNumObjectLayers")
 internal external fun JphObjectLayerPairFilterTable_GetNumObjectLayers(self: NativePointer): Int
 

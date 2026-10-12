@@ -10,6 +10,9 @@ internal external fun JphWheel_create(inSettings: NativePointer): NativePointer
 @ExternalSymbolName("JphWheel_destroy")
 internal external fun JphWheel_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphWheel_dynamicType")
+internal external fun JphWheel_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphWheel_GetSettings")
 internal external fun JphWheel_GetSettings(self: NativePointer): NativePointer
 

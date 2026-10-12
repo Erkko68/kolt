@@ -22,5 +22,11 @@ internal external fun JphSphereShape_asConvexShape(self: NativePointer): NativeP
 @ExternalSymbolName("JphSphereShape_asShape")
 internal external fun JphSphereShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphSphereShape_fromConvexShape")
+internal external fun JphSphereShape_fromConvexShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphSphereShape_fromShape")
+internal external fun JphSphereShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphSphereShape_GetRadius")
 internal external fun JphSphereShape_GetRadius(self: NativePointer): Float

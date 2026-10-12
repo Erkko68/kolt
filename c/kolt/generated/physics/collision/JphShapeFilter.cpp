@@ -45,6 +45,11 @@ void JphShapeFilter_bindUpcalls(JphShapeFilter* self, void* userData) {
     static_cast<::JPH::JphShapeFilter_Upcalls*>(kolt::cpp(self))->mUser = userData;
 }
 
+int32_t JphShapeFilter_dynamicType(const JphShapeFilter* self) {
+    const JPH::ShapeFilter* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::ReversedShapeFilter*>(object) ? 1 : 0;
+}
+
 bool JphShapeFilter_ShouldCollide(const JphShapeFilter* self, const JphShape* inShape2, uint32_t inSubShapeIDOfShape2) {
     return kolt::cpp(self)->ShouldCollide(kolt::cpp(inShape2), kolt::subShapeID(inSubShapeIDOfShape2));
 }

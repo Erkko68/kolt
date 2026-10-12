@@ -28,6 +28,14 @@ JphShape* JphSphereShape_asShape(JphSphereShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphSphereShape* JphSphereShape_fromConvexShape(JphConvexShape* base) {
+    return kolt::c(static_cast<JPH::SphereShape*>(kolt::cpp(base)));
+}
+
+JphSphereShape* JphSphereShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::SphereShape*>(kolt::cpp(base)));
+}
+
 float JphSphereShape_GetRadius(const JphSphereShape* self) {
     return kolt::cpp(self)->GetRadius();
 }

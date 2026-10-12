@@ -9,3 +9,6 @@ internal external fun JphBodyLockInterfaceNoLock_destroy(self: NativePointer)
 
 @ExternalSymbolName("JphBodyLockInterfaceNoLock_asBodyLockInterface")
 internal external fun JphBodyLockInterfaceNoLock_asBodyLockInterface(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphBodyLockInterfaceNoLock_fromBodyLockInterface")
+internal external fun JphBodyLockInterfaceNoLock_fromBodyLockInterface(base: NativePointer): NativePointer

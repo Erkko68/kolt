@@ -12,6 +12,7 @@ extern "C" {
 void JphVehicleControllerSettings_addRef(const JphVehicleControllerSettings* self);
 void JphVehicleControllerSettings_release(const JphVehicleControllerSettings* self);
 JphSerializableObject* JphVehicleControllerSettings_asSerializableObject(JphVehicleControllerSettings* self);
+int32_t JphVehicleControllerSettings_dynamicType(const JphVehicleControllerSettings* self);
 // skipped const JPH::RTTI * JPH::VehicleControllerSettings::GetRTTI() const: uses JPH::RTTI
 // skipped const void * JPH::VehicleControllerSettings::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
 // skipped static void JPH::VehicleControllerSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI

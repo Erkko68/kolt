@@ -12,6 +12,7 @@ extern "C" {
 GeoCircle* GeoCircle_create(const GeoPoint* center, float radius);
 void GeoCircle_destroy(GeoCircle* self);
 GeoShape* GeoCircle_asShape(GeoCircle* self);
+GeoCircle* GeoCircle_fromShape(GeoShape* base);
 float GeoCircle_radius(const GeoCircle* self);
 void GeoCircle_scale(GeoCircle* self, float factor);
 void GeoCircle_scale_float(GeoCircle* self, float x, float y);

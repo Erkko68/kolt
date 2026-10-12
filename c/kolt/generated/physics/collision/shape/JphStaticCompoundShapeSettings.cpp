@@ -28,6 +28,14 @@ JphSerializableObject* JphStaticCompoundShapeSettings_asSerializableObject(JphSt
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphStaticCompoundShapeSettings* JphStaticCompoundShapeSettings_fromCompoundShapeSettings(JphCompoundShapeSettings* base) {
+    return kolt::c(static_cast<JPH::StaticCompoundShapeSettings*>(kolt::cpp(base)));
+}
+
+JphStaticCompoundShapeSettings* JphStaticCompoundShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::StaticCompoundShapeSettings*>(kolt::cpp(base)));
+}
+
 JphShape* JphStaticCompoundShapeSettings_Create(const JphStaticCompoundShapeSettings* self, JphTempAllocator* inTempAllocator, char* outError, uint32_t outErrorCapacity) {
     return kolt::result(kolt::cpp(self)->Create(*kolt::cpp(inTempAllocator)), outError, outErrorCapacity, [&](auto& v) { return kolt::c(kolt::retain(v)); });
 }

@@ -47,6 +47,11 @@ void JphStreamIn_bindUpcalls(JphStreamIn* self, void* userData) {
     static_cast<::JPH::JphStreamIn_Upcalls*>(kolt::cpp(self))->mUser = userData;
 }
 
+int32_t JphStreamIn_dynamicType(const JphStreamIn* self) {
+    const JPH::StreamIn* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::StateRecorderImpl*>(object) ? 1 : dynamic_cast<const JPH::StateRecorder*>(object) ? 2 : 0;
+}
+
 void JphStreamIn_ReadBytes(JphStreamIn* self, void* outData, uint32_t inNumBytes) {
     kolt::cpp(self)->ReadBytes(outData, static_cast<size_t>(inNumBytes));
 }

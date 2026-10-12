@@ -8,4 +8,9 @@ void JphTempAllocator_destroy(JphTempAllocator* self) {
     delete kolt::cpp(self);
 }
 
+int32_t JphTempAllocator_dynamicType(const JphTempAllocator* self) {
+    const JPH::TempAllocator* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::TempAllocatorImpl*>(object) ? 1 : dynamic_cast<const JPH::TempAllocatorImplWithMallocFallback*>(object) ? 2 : dynamic_cast<const JPH::TempAllocatorMalloc*>(object) ? 3 : 0;
+}
+
 } // extern "C"

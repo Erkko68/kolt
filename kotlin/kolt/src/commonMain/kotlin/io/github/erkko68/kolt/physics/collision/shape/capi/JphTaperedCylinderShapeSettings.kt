@@ -25,6 +25,12 @@ internal external fun JphTaperedCylinderShapeSettings_asShapeSettings(self: Nati
 @ExternalSymbolName("JphTaperedCylinderShapeSettings_asSerializableObject")
 internal external fun JphTaperedCylinderShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphTaperedCylinderShapeSettings_fromConvexShapeSettings")
+internal external fun JphTaperedCylinderShapeSettings_fromConvexShapeSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphTaperedCylinderShapeSettings_fromShapeSettings")
+internal external fun JphTaperedCylinderShapeSettings_fromShapeSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphTaperedCylinderShapeSettings_GetHalfHeight")
 internal external fun JphTaperedCylinderShapeSettings_GetHalfHeight(self: NativePointer): Float
 

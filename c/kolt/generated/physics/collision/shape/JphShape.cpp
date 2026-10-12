@@ -52,6 +52,11 @@ void JphShape_release(const JphShape* self) {
     kolt::cpp(self)->Release();
 }
 
+int32_t JphShape_dynamicType(const JphShape* self) {
+    const JPH::Shape* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::BoxShape*>(object) ? 1 : dynamic_cast<const JPH::CapsuleShape*>(object) ? 2 : dynamic_cast<const JPH::ConvexHullShape*>(object) ? 3 : dynamic_cast<const JPH::CylinderShape*>(object) ? 4 : dynamic_cast<const JPH::MutableCompoundShape*>(object) ? 5 : dynamic_cast<const JPH::OffsetCenterOfMassShape*>(object) ? 6 : dynamic_cast<const JPH::RotatedTranslatedShape*>(object) ? 7 : dynamic_cast<const JPH::ScaledShape*>(object) ? 8 : dynamic_cast<const JPH::SphereShape*>(object) ? 9 : dynamic_cast<const JPH::StaticCompoundShape*>(object) ? 10 : dynamic_cast<const JPH::TaperedCapsuleShape*>(object) ? 11 : dynamic_cast<const JPH::TaperedCylinderShape*>(object) ? 12 : dynamic_cast<const JPH::TriangleShape*>(object) ? 13 : dynamic_cast<const JPH::CompoundShape*>(object) ? 14 : dynamic_cast<const JPH::ConvexShape*>(object) ? 15 : dynamic_cast<const JPH::DecoratedShape*>(object) ? 16 : dynamic_cast<const JPH::EmptyShape*>(object) ? 17 : dynamic_cast<const JPH::HeightFieldShape*>(object) ? 18 : dynamic_cast<const JPH::MeshShape*>(object) ? 19 : dynamic_cast<const JPH::PlaneShape*>(object) ? 20 : 0;
+}
+
 JphEShapeType JphShape_GetType(const JphShape* self) {
     return static_cast<JphEShapeType>(kolt::cpp(self)->GetType());
 }

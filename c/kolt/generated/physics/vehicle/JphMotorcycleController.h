@@ -13,6 +13,8 @@ JphMotorcycleController* JphMotorcycleController_create(const JphMotorcycleContr
 void JphMotorcycleController_destroy(JphMotorcycleController* self);
 JphWheeledVehicleController* JphMotorcycleController_asWheeledVehicleController(JphMotorcycleController* self);
 JphVehicleController* JphMotorcycleController_asVehicleController(JphMotorcycleController* self);
+JphMotorcycleController* JphMotorcycleController_fromWheeledVehicleController(JphWheeledVehicleController* base);
+JphMotorcycleController* JphMotorcycleController_fromVehicleController(JphVehicleController* base);
 float JphMotorcycleController_GetWheelBase(const JphMotorcycleController* self);
 void JphMotorcycleController_EnableLeanController(JphMotorcycleController* self, bool inEnable);
 bool JphMotorcycleController_IsLeanControllerEnabled(const JphMotorcycleController* self);

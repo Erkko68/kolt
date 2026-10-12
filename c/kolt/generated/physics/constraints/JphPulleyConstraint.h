@@ -14,6 +14,8 @@ void JphPulleyConstraint_addRef(const JphPulleyConstraint* self);
 void JphPulleyConstraint_release(const JphPulleyConstraint* self);
 JphTwoBodyConstraint* JphPulleyConstraint_asTwoBodyConstraint(JphPulleyConstraint* self);
 JphConstraint* JphPulleyConstraint_asConstraint(JphPulleyConstraint* self);
+JphPulleyConstraint* JphPulleyConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphPulleyConstraint* JphPulleyConstraint_fromConstraint(JphConstraint* base);
 void JphPulleyConstraint_SetLength(JphPulleyConstraint* self, float inMinLength, float inMaxLength);
 float JphPulleyConstraint_GetMinLength(const JphPulleyConstraint* self);
 float JphPulleyConstraint_GetMaxLength(const JphPulleyConstraint* self);

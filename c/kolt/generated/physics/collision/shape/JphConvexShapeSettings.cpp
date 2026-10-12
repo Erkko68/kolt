@@ -20,6 +20,15 @@ JphSerializableObject* JphConvexShapeSettings_asSerializableObject(JphConvexShap
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphConvexShapeSettings* JphConvexShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::ConvexShapeSettings*>(kolt::cpp(base)));
+}
+
+int32_t JphConvexShapeSettings_dynamicType(const JphConvexShapeSettings* self) {
+    const JPH::ConvexShapeSettings* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::BoxShapeSettings*>(object) ? 1 : dynamic_cast<const JPH::CapsuleShapeSettings*>(object) ? 2 : dynamic_cast<const JPH::ConvexHullShapeSettings*>(object) ? 3 : dynamic_cast<const JPH::CylinderShapeSettings*>(object) ? 4 : dynamic_cast<const JPH::SphereShapeSettings*>(object) ? 5 : dynamic_cast<const JPH::TaperedCapsuleShapeSettings*>(object) ? 6 : dynamic_cast<const JPH::TaperedCylinderShapeSettings*>(object) ? 7 : dynamic_cast<const JPH::TriangleShapeSettings*>(object) ? 8 : 0;
+}
+
 void JphConvexShapeSettings_SetDensity(JphConvexShapeSettings* self, float inDensity) {
     kolt::cpp(self)->SetDensity(inDensity);
 }

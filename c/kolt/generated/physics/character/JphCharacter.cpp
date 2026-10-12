@@ -20,6 +20,10 @@ JphCharacterBase* JphCharacter_asCharacterBase(JphCharacter* self) {
     return kolt::c(static_cast<JPH::CharacterBase*>(kolt::cpp(self)));
 }
 
+JphCharacter* JphCharacter_fromCharacterBase(JphCharacterBase* base) {
+    return kolt::c(static_cast<JPH::Character*>(kolt::cpp(base)));
+}
+
 void JphCharacter_AddToPhysicsSystem(JphCharacter* self, JphEActivation inActivationMode, bool inLockBodies) {
     kolt::cpp(self)->AddToPhysicsSystem(static_cast<JPH::EActivation>(inActivationMode), inLockBodies);
 }

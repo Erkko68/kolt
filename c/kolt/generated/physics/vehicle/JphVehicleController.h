@@ -10,6 +10,7 @@ extern "C" {
 
 // JPH::VehicleController
 void JphVehicleController_destroy(JphVehicleController* self);
+int32_t JphVehicleController_dynamicType(const JphVehicleController* self);
 JphVehicleConstraint* JphVehicleController_GetConstraint(JphVehicleController* self);
 JphVehicleControllerSettings* JphVehicleController_GetSettings(const JphVehicleController* self);
 

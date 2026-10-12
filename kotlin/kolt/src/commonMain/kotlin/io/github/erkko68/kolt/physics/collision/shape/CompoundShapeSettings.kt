@@ -71,12 +71,12 @@ open class CompoundShapeSettings internal constructor(internal val compoundShape
     
         /** Sub shape (either this or mShapePtr needs to be filled up) */
         var shape: ShapeSettings?
-            get() = JphCompoundShapeSettingsSubShapeSettings_GetShape(compoundShapeSettingsSubShapeSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
+            get() = JphCompoundShapeSettingsSubShapeSettings_GetShape(compoundShapeSettingsSubShapeSettingsHandle).takeIf { it != NullPointer }?.let { wrapShapeSettings(it) }
             set(value) = JphCompoundShapeSettingsSubShapeSettings_SetShape(compoundShapeSettingsSubShapeSettingsHandle, value?.shapeSettingsHandle ?: NullPointer)
     
         /** Sub shape (either this or mShape needs to be filled up) */
         var shapePtr: Shape?
-            get() = JphCompoundShapeSettingsSubShapeSettings_GetShapePtr(compoundShapeSettingsSubShapeSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+            get() = JphCompoundShapeSettingsSubShapeSettings_GetShapePtr(compoundShapeSettingsSubShapeSettingsHandle).takeIf { it != NullPointer }?.let { wrapShape(it) }
             set(value) = JphCompoundShapeSettingsSubShapeSettings_SetShapePtr(compoundShapeSettingsSubShapeSettingsHandle, value?.shapeHandle ?: NullPointer)
     
         /** Position of the sub shape */

@@ -74,4 +74,10 @@ open class CollideSettingsBase internal constructor(internal val collideSettings
             Vec3(returned)
         }
         set(value) = interopScope { JphCollideSettingsBase_SetActiveEdgeMovementDirection(collideSettingsBaseHandle, toInterop(value.toArray())) }
+
+    /** This object as the [CollideShapeSettings] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asCollideShapeSettings() = CollideShapeSettings(JphCollideShapeSettings_fromCollideSettingsBase(collideSettingsBaseHandle))
+
+    /** This object as the [ShapeCastSettings] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asShapeCastSettings() = ShapeCastSettings(JphShapeCastSettings_fromCollideSettingsBase(collideSettingsBaseHandle))
 }

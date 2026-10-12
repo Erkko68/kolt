@@ -24,6 +24,14 @@ JphConstraint* JphSixDOFConstraint_asConstraint(JphSixDOFConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphSixDOFConstraint* JphSixDOFConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::SixDOFConstraint*>(kolt::cpp(base)));
+}
+
+JphSixDOFConstraint* JphSixDOFConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::SixDOFConstraint*>(kolt::cpp(base)));
+}
+
 void JphSixDOFConstraint_SetTranslationLimits(JphSixDOFConstraint* self, const JphVec3* inLimitMin, const JphVec3* inLimitMax) {
     kolt::cpp(self)->SetTranslationLimits(kolt::math<JPH::Vec3>(*inLimitMin), kolt::math<JPH::Vec3>(*inLimitMax));
 }

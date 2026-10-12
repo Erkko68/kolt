@@ -19,6 +19,12 @@ internal external fun JphTaperedCylinderShape_asConvexShape(self: NativePointer)
 @ExternalSymbolName("JphTaperedCylinderShape_asShape")
 internal external fun JphTaperedCylinderShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphTaperedCylinderShape_fromConvexShape")
+internal external fun JphTaperedCylinderShape_fromConvexShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphTaperedCylinderShape_fromShape")
+internal external fun JphTaperedCylinderShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphTaperedCylinderShape_GetTopRadius")
 internal external fun JphTaperedCylinderShape_GetTopRadius(self: NativePointer): Float
 

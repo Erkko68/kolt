@@ -61,6 +61,12 @@ internal external fun JphCompoundShape_release(self: NativePointer)
 @ExternalSymbolName("JphCompoundShape_asShape")
 internal external fun JphCompoundShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCompoundShape_fromShape")
+internal external fun JphCompoundShape_fromShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphCompoundShape_dynamicType")
+internal external fun JphCompoundShape_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphCompoundShape_GetIntersectingSubShapes_AABox_uint_int")
 internal external fun JphCompoundShape_GetIntersectingSubShapes_AABox_uint_int(self: NativePointer, inBox: NativePointer, outSubShapeIndices: NativePointer, inMaxSubShapeIndices: Int): Int
 

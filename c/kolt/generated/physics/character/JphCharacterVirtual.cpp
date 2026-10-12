@@ -80,6 +80,10 @@ JphCharacterBase* JphCharacterVirtual_asCharacterBase(JphCharacterVirtual* self)
     return kolt::c(static_cast<JPH::CharacterBase*>(kolt::cpp(self)));
 }
 
+JphCharacterVirtual* JphCharacterVirtual_fromCharacterBase(JphCharacterBase* base) {
+    return kolt::c(static_cast<JPH::CharacterVirtual*>(kolt::cpp(base)));
+}
+
 void JphCharacterVirtual_GetID(const JphCharacterVirtual* self, JphCharacterID* out) {
     *kolt::cpp(out) = kolt::cpp(self)->GetID();
 }

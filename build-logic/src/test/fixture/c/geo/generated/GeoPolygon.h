@@ -12,6 +12,7 @@ extern "C" {
 GeoPolygon* GeoPolygon_create(const GeoPoint* const* points, uint32_t pointsCount);
 void GeoPolygon_destroy(GeoPolygon* self);
 GeoShape* GeoPolygon_asShape(GeoPolygon* self);
+GeoPolygon* GeoPolygon_fromShape(GeoShape* base);
 uint32_t GeoPolygon_points(const GeoPolygon* self, GeoPoint* const* out, uint32_t outCapacity);
 void GeoPolygon_visit(const GeoPolygon* self, GeoUpcall visitor, void* visitorUser);
 void GeoPolygon_hash(const GeoPolygon* self, uint64_t* out);

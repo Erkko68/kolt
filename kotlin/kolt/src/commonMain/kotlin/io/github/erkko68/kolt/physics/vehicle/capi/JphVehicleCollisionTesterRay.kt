@@ -15,3 +15,6 @@ internal external fun JphVehicleCollisionTesterRay_release(self: NativePointer)
 
 @ExternalSymbolName("JphVehicleCollisionTesterRay_asVehicleCollisionTester")
 internal external fun JphVehicleCollisionTesterRay_asVehicleCollisionTester(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphVehicleCollisionTesterRay_fromVehicleCollisionTester")
+internal external fun JphVehicleCollisionTesterRay_fromVehicleCollisionTester(base: NativePointer): NativePointer

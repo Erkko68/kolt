@@ -78,8 +78,21 @@ public:
     T as() const;
 };
 
+// No virtual functions: C++ can't tell a Pin from a Marker, so the caller does.
+class Marker {
+public:
+    Point at() const;
+};
+
+class Pin : public Marker {
+public:
+    float height() const;
+};
+
 float distance(const Point& a, const Point& b);
+// Config: RTTI. A Circle or a Polygon, which C++ tells.
 Shape* find(Id id);
+Marker* nearest(const Point& to);
 
 } // namespace geo
 

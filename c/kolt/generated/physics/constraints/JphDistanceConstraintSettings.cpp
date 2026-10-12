@@ -28,6 +28,14 @@ JphSerializableObject* JphDistanceConstraintSettings_asSerializableObject(JphDis
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphDistanceConstraintSettings* JphDistanceConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::DistanceConstraintSettings*>(kolt::cpp(base)));
+}
+
+JphDistanceConstraintSettings* JphDistanceConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::DistanceConstraintSettings*>(kolt::cpp(base)));
+}
+
 JphEConstraintSpace JphDistanceConstraintSettings_GetSpace(const JphDistanceConstraintSettings* self) {
     return static_cast<JphEConstraintSpace>(kolt::cpp(self)->mSpace);
 }

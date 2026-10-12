@@ -57,6 +57,10 @@ JphSerializableObject* JphWheelSettingsTV_asSerializableObject(JphWheelSettingsT
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphWheelSettingsTV* JphWheelSettingsTV_fromWheelSettings(JphWheelSettings* base) {
+    return kolt::c(static_cast<JPH::WheelSettingsTV*>(kolt::cpp(base)));
+}
+
 float JphWheelSettingsTV_GetLongitudinalFriction(const JphWheelSettingsTV* self) {
     return kolt::cpp(self)->mLongitudinalFriction;
 }

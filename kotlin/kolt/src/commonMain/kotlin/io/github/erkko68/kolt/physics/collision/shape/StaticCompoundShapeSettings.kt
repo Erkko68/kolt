@@ -55,6 +55,6 @@ class StaticCompoundShapeSettings internal constructor(internal val staticCompou
             val returned = JphStaticCompoundShapeSettings_Create(staticCompoundShapeSettingsHandle, tempAllocator.tempAllocatorHandle, errorPointer, error.size)
             errorPointer.fromInterop(error)
             if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
-            Shape(returned, owned = true)
+            wrapShape(returned, owned = true)
         }
 }

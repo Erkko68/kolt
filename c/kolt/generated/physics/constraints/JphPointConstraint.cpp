@@ -24,6 +24,14 @@ JphConstraint* JphPointConstraint_asConstraint(JphPointConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphPointConstraint* JphPointConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::PointConstraint*>(kolt::cpp(base)));
+}
+
+JphPointConstraint* JphPointConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::PointConstraint*>(kolt::cpp(base)));
+}
+
 void JphPointConstraint_SetPoint1(JphPointConstraint* self, JphEConstraintSpace inSpace, const JphVec3* inPoint1) {
     kolt::cpp(self)->SetPoint1(static_cast<JPH::EConstraintSpace>(inSpace), kolt::math<JPH::Vec3>(*inPoint1));
 }

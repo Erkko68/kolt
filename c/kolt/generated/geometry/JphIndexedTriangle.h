@@ -13,6 +13,7 @@ JphIndexedTriangle* JphIndexedTriangle_create_uint32_uint32_uint32_uint32_uint(u
 JphIndexedTriangle* JphIndexedTriangle_create(void);
 void JphIndexedTriangle_destroy(JphIndexedTriangle* self);
 JphIndexedTriangleNoMaterial* JphIndexedTriangle_asIndexedTriangleNoMaterial(JphIndexedTriangle* self);
+JphIndexedTriangle* JphIndexedTriangle_fromIndexedTriangleNoMaterial(JphIndexedTriangleNoMaterial* base);
 void JphIndexedTriangle_GetLowestIndexFirst(const JphIndexedTriangle* self, JphIndexedTriangle* out);
 void JphIndexedTriangle_GetHash(const JphIndexedTriangle* self, uint64_t* out);
 uint32_t JphIndexedTriangle_GetMaterialIndex(const JphIndexedTriangle* self);

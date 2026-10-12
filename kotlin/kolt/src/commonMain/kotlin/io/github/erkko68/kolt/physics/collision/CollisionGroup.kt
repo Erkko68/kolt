@@ -50,7 +50,7 @@ class CollisionGroup internal constructor(internal val collisionGroupHandle: Nat
 
     /** Get the collision group filter */
     var groupFilter: GroupFilter?
-        get() = JphCollisionGroup_GetGroupFilter(collisionGroupHandle).takeIf { it != NullPointer }?.let { GroupFilter(it) }
+        get() = JphCollisionGroup_GetGroupFilter(collisionGroupHandle).takeIf { it != NullPointer }?.let { wrapGroupFilter(it) }
         set(filter) = JphCollisionGroup_SetGroupFilter(collisionGroupHandle, filter?.groupFilterHandle ?: NullPointer)
 
     /** Set the main group id for this object */

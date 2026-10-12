@@ -19,6 +19,12 @@ internal external fun JphDistanceConstraint_asTwoBodyConstraint(self: NativePoin
 @ExternalSymbolName("JphDistanceConstraint_asConstraint")
 internal external fun JphDistanceConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphDistanceConstraint_fromTwoBodyConstraint")
+internal external fun JphDistanceConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphDistanceConstraint_fromConstraint")
+internal external fun JphDistanceConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphDistanceConstraint_SetDistance")
 internal external fun JphDistanceConstraint_SetDistance(self: NativePointer, inMinDistance: Float, inMaxDistance: Float)
 

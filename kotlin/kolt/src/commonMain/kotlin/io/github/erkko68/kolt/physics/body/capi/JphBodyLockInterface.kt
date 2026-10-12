@@ -7,5 +7,8 @@ import io.github.erkko68.kolt.interop.NativePointer
 @ExternalSymbolName("JphBodyLockInterface_destroy")
 internal external fun JphBodyLockInterface_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphBodyLockInterface_dynamicType")
+internal external fun JphBodyLockInterface_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphBodyLockInterface_TryGetBody")
 internal external fun JphBodyLockInterface_TryGetBody(self: NativePointer, inBodyID: Int): NativePointer

@@ -264,7 +264,7 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
 
     /** Create a two body constraint */
     fun createConstraint(settings: TwoBodyConstraintSettings?, bodyID1: BodyID, bodyID2: BodyID): TwoBodyConstraint? =
-        JphBodyInterface_CreateConstraint(bodyInterfaceHandle, settings?.twoBodyConstraintSettingsHandle ?: NullPointer, bodyID1.value, bodyID2.value).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
+        JphBodyInterface_CreateConstraint(bodyInterfaceHandle, settings?.twoBodyConstraintSettingsHandle ?: NullPointer, bodyID1.value, bodyID2.value).takeIf { it != NullPointer }?.let { wrapTwoBodyConstraint(it) }
 
     /**
      * Activate non-static bodies attached to a constraint.
@@ -275,7 +275,7 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
 
     /** Get the current shape */
     fun getShape(bodyID: BodyID): Shape? =
-        JphBodyInterface_GetShape(bodyInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { Shape(it, owned = true) }
+        JphBodyInterface_GetShape(bodyInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { wrapShape(it, owned = true) }
 
     /**
      * Set a new shape on the body

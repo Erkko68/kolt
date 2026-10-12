@@ -48,5 +48,5 @@ open class VehicleController internal constructor(internal val vehicleController
 
     /** Recreate the settings for this controller */
     val settings: VehicleControllerSettings?
-        get() = JphVehicleController_GetSettings(vehicleControllerHandle).takeIf { it != NullPointer }?.let { VehicleControllerSettings(it, owned = true) }
+        get() = JphVehicleController_GetSettings(vehicleControllerHandle).takeIf { it != NullPointer }?.let { wrapVehicleControllerSettings(it, owned = true) }
 }

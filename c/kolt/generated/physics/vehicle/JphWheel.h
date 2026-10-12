@@ -11,6 +11,7 @@ extern "C" {
 // JPH::Wheel
 JphWheel* JphWheel_create(const JphWheelSettings* inSettings);
 void JphWheel_destroy(JphWheel* self);
+int32_t JphWheel_dynamicType(const JphWheel* self);
 const JphWheelSettings* JphWheel_GetSettings(const JphWheel* self);
 float JphWheel_GetAngularVelocity(const JphWheel* self);
 void JphWheel_SetAngularVelocity(JphWheel* self, float inVel);

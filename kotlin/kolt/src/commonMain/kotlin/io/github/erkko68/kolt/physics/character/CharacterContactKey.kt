@@ -84,4 +84,7 @@ open class CharacterContactKey internal constructor(internal val characterContac
     var subShapeIDB: SubShapeID
         get() = SubShapeID(JphCharacterContactKey_GetSubShapeIDB(characterContactKeyHandle))
         set(value) = JphCharacterContactKey_SetSubShapeIDB(characterContactKeyHandle, value.value)
+
+    /** This object as the [CharacterContact] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asCharacterContact() = CharacterContact(JphCharacterContact_fromCharacterContactKey(characterContactKeyHandle))
 }

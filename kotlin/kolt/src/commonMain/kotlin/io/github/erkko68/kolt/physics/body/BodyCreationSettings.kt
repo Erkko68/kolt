@@ -48,7 +48,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
 
     /** Access to the shape settings object. This contains serializable (non-runtime optimized) information about the Shape. */
     var shapeSettings: ShapeSettings?
-        get() = JphBodyCreationSettings_GetShapeSettings(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
+        get() = JphBodyCreationSettings_GetShapeSettings(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { wrapShapeSettings(it) }
         set(shape) = JphBodyCreationSettings_SetShapeSettings(bodyCreationSettingsHandle, shape?.shapeSettingsHandle ?: NullPointer)
 
     /** Convert ShapeSettings object into a Shape object. This will free the ShapeSettings object and make the object ready for runtime. Serialization is no longer possible after this. */
@@ -59,12 +59,12 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
             val returned = JphBodyCreationSettings_ConvertShapeSettings(bodyCreationSettingsHandle, errorPointer, error.size)
             errorPointer.fromInterop(error)
             if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
-            Shape(returned, owned = true)
+            wrapShape(returned, owned = true)
         }
 
     /** Access to the run-time shape object. Will convert from ShapeSettings object if needed. */
     var shape: Shape?
-        get() = JphBodyCreationSettings_GetShape(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        get() = JphBodyCreationSettings_GetShape(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { wrapShape(it) }
         set(shape) = JphBodyCreationSettings_SetShape(bodyCreationSettingsHandle, shape?.shapeHandle ?: NullPointer)
 
     /** Check if the mass properties of this body will be calculated (only relevant for kinematic or dynamic objects that need a MotionProperties object) */
@@ -269,4 +269,7 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
             returned
         }
         set(value) = JphBodyCreationSettings_SetMassPropertiesOverride(bodyCreationSettingsHandle, value.massPropertiesHandle)
+
+    /** This object as the [RagdollSettings.Part] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asRagdollSettingsPart() = RagdollSettings.Part(JphRagdollSettingsPart_fromBodyCreationSettings(bodyCreationSettingsHandle))
 }

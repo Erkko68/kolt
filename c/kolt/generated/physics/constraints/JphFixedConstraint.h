@@ -14,6 +14,8 @@ void JphFixedConstraint_addRef(const JphFixedConstraint* self);
 void JphFixedConstraint_release(const JphFixedConstraint* self);
 JphTwoBodyConstraint* JphFixedConstraint_asTwoBodyConstraint(JphFixedConstraint* self);
 JphConstraint* JphFixedConstraint_asConstraint(JphFixedConstraint* self);
+JphFixedConstraint* JphFixedConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphFixedConstraint* JphFixedConstraint_fromConstraint(JphConstraint* base);
 void JphFixedConstraint_GetTotalLambdaPosition(const JphFixedConstraint* self, JphVec3* out);
 void JphFixedConstraint_GetTotalLambdaRotation(const JphFixedConstraint* self, JphVec3* out);
 

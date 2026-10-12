@@ -12,3 +12,6 @@ internal external fun JphReversedShapeFilter_destroy(self: NativePointer)
 
 @ExternalSymbolName("JphReversedShapeFilter_asShapeFilter")
 internal external fun JphReversedShapeFilter_asShapeFilter(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphReversedShapeFilter_fromShapeFilter")
+internal external fun JphReversedShapeFilter_fromShapeFilter(base: NativePointer): NativePointer

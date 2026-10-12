@@ -16,6 +16,10 @@ GeoShape* GeoCircle_asShape(GeoCircle* self) {
     return geoc::c(static_cast<geo::Shape*>(geoc::cpp(self)));
 }
 
+GeoCircle* GeoCircle_fromShape(GeoShape* base) {
+    return geoc::c(static_cast<geo::Circle*>(geoc::cpp(base)));
+}
+
 float GeoCircle_radius(const GeoCircle* self) {
     return geoc::cpp(self)->radius();
 }

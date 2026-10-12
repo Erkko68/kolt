@@ -28,6 +28,12 @@ internal external fun JphOffsetCenterOfMassShapeSettings_asShapeSettings(self: N
 @ExternalSymbolName("JphOffsetCenterOfMassShapeSettings_asSerializableObject")
 internal external fun JphOffsetCenterOfMassShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphOffsetCenterOfMassShapeSettings_fromDecoratedShapeSettings")
+internal external fun JphOffsetCenterOfMassShapeSettings_fromDecoratedShapeSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphOffsetCenterOfMassShapeSettings_fromShapeSettings")
+internal external fun JphOffsetCenterOfMassShapeSettings_fromShapeSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphOffsetCenterOfMassShapeSettings_GetOffset")
 internal external fun JphOffsetCenterOfMassShapeSettings_GetOffset(self: NativePointer, out: NativePointer)
 

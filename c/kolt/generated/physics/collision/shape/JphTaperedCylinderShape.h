@@ -15,6 +15,8 @@ void JphTaperedCylinderShape_addRef(const JphTaperedCylinderShape* self);
 void JphTaperedCylinderShape_release(const JphTaperedCylinderShape* self);
 JphConvexShape* JphTaperedCylinderShape_asConvexShape(JphTaperedCylinderShape* self);
 JphShape* JphTaperedCylinderShape_asShape(JphTaperedCylinderShape* self);
+JphTaperedCylinderShape* JphTaperedCylinderShape_fromConvexShape(JphConvexShape* base);
+JphTaperedCylinderShape* JphTaperedCylinderShape_fromShape(JphShape* base);
 // skipped static void JPH::TaperedCylinderShape::sRegister(): JPH::.*::sRegister
 float JphTaperedCylinderShape_GetTopRadius(const JphTaperedCylinderShape* self);
 float JphTaperedCylinderShape_GetBottomRadius(const JphTaperedCylinderShape* self);

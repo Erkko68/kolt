@@ -14,6 +14,7 @@ void JphConstraintSettings_release(const JphConstraintSettings* self);
 JphConstraintSettings* JphConstraintSettings_createUpcalls(JphUpcall call);
 void JphConstraintSettings_bindUpcalls(JphConstraintSettings* self, void* userData);
 JphSerializableObject* JphConstraintSettings_asSerializableObject(JphConstraintSettings* self);
+int32_t JphConstraintSettings_dynamicType(const JphConstraintSettings* self);
 // skipped const JPH::RTTI * JPH::ConstraintSettings::GetRTTI() const: uses JPH::RTTI
 // skipped const void * JPH::ConstraintSettings::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
 // skipped static void JPH::ConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI

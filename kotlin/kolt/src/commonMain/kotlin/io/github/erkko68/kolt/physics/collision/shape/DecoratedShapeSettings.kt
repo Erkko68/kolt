@@ -47,11 +47,11 @@ open class DecoratedShapeSettings internal constructor(internal val decoratedSha
 
     /** Sub shape (either this or mShapePtr needs to be filled up) */
     var innerShape: ShapeSettings?
-        get() = JphDecoratedShapeSettings_GetInnerShape(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
+        get() = JphDecoratedShapeSettings_GetInnerShape(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { wrapShapeSettings(it) }
         set(value) = JphDecoratedShapeSettings_SetInnerShape(decoratedShapeSettingsHandle, value?.shapeSettingsHandle ?: NullPointer)
 
     /** Sub shape (either this or mShape needs to be filled up) */
     var innerShapePtr: Shape?
-        get() = JphDecoratedShapeSettings_GetInnerShapePtr(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        get() = JphDecoratedShapeSettings_GetInnerShapePtr(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { wrapShape(it) }
         set(value) = JphDecoratedShapeSettings_SetInnerShapePtr(decoratedShapeSettingsHandle, value?.shapeHandle ?: NullPointer)
 }

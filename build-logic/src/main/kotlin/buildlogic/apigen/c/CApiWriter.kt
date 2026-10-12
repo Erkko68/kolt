@@ -118,6 +118,22 @@ internal class CApiWriter(
                 Forwarder("$baseType* $name($self* self)", "return $h::c(static_cast<$baseCpp*>($h::cpp(self)));", Bound(Bound.Role.UPCAST, record.name, baseType))
             }
         }
+        // Unchecked, as the C++ it stands for. ponytail: no virtual bases, which static_cast can't come down from.
+        records.downcasts(record).forEach { base ->
+            val baseType = names.type(base.name)
+            val name = "${self}_from${baseType.removePrefix(names.prefix)}"
+            emit(name, "${base.name} as ${record.name}", section) {
+                Forwarder("$self* $name($baseType* base)", "return $h::c(static_cast<$cpp*>($h::cpp(base)));", Bound(Bound.Role.DOWNCAST, record.name, baseType))
+            }
+        }
+        records.derived(record).ifEmpty { null }?.let { derived ->
+            val name = "${self}_dynamicType"
+            emit(name, "which class a ${record.name} is", section) {
+                val cases = derived.mapIndexed { i, d -> "dynamic_cast<const ${templates.cpp(d.name)}*>(object) ? ${i + 1} : " }.joinToString("")
+                Forwarder("int32_t $name(const $self* self)", "const $cpp* object = $h::cpp(self);\n    return ${cases}0;",
+                    Bound(Bound.Role.DYNAMIC_TYPE, record.name, "dynamicType", derived = derived.map { names.type(it.name) }))
+            }
+        }
         val (skipped, methods) = records.methods(record).partition { api.skipReason(it, record.name) != null }
         skipped.forEach {
             section.declarations.appendLine("// skipped ${signature(it)}" + reason(api.skipReason(it, record.name), "${record.name}::${it.name}"))

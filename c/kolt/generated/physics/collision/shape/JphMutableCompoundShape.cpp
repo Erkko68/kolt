@@ -24,6 +24,14 @@ JphShape* JphMutableCompoundShape_asShape(JphMutableCompoundShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphMutableCompoundShape* JphMutableCompoundShape_fromCompoundShape(JphCompoundShape* base) {
+    return kolt::c(static_cast<JPH::MutableCompoundShape*>(kolt::cpp(base)));
+}
+
+JphMutableCompoundShape* JphMutableCompoundShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::MutableCompoundShape*>(kolt::cpp(base)));
+}
+
 JphMutableCompoundShape* JphMutableCompoundShape_Clone(const JphMutableCompoundShape* self) {
     return kolt::c(kolt::retain(kolt::cpp(self)->Clone()));
 }

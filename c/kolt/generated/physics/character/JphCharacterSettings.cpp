@@ -20,6 +20,10 @@ JphCharacterBaseSettings* JphCharacterSettings_asCharacterBaseSettings(JphCharac
     return kolt::c(static_cast<JPH::CharacterBaseSettings*>(kolt::cpp(self)));
 }
 
+JphCharacterSettings* JphCharacterSettings_fromCharacterBaseSettings(JphCharacterBaseSettings* base) {
+    return kolt::c(static_cast<JPH::CharacterSettings*>(kolt::cpp(base)));
+}
+
 uint32_t JphCharacterSettings_GetLayer(const JphCharacterSettings* self) {
     return static_cast<uint32_t>(kolt::cpp(self)->mLayer);
 }

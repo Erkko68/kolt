@@ -207,7 +207,7 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
             set(rotation) = interopScope { JphCompoundShapeSubShape_SetRotation(compoundShapeSubShapeHandle, toInterop(rotation.toArray())) }
     
         var shape: Shape?
-            get() = JphCompoundShapeSubShape_GetShape(compoundShapeSubShapeHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+            get() = JphCompoundShapeSubShape_GetShape(compoundShapeSubShapeHandle).takeIf { it != NullPointer }?.let { wrapShape(it) }
             set(value) = JphCompoundShapeSubShape_SetShape(compoundShapeSubShapeHandle, value?.shapeHandle ?: NullPointer)
     
         /** User data value (put here because it falls in padding bytes) */

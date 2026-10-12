@@ -12,4 +12,8 @@ GeoShape* Geo_find(uint32_t id) {
     return geoc::c(geo::find(geo::Id(id)));
 }
 
+GeoMarker* Geo_nearest(const GeoPoint* to) {
+    return geoc::c(geo::nearest(*geoc::cpp(to)));
+}
+
 } // extern "C"

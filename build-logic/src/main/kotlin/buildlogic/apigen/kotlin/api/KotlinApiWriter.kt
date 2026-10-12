@@ -13,7 +13,9 @@ import java.io.File
  * handle ([KotlinMembers] says with what in it), an enum class per enum, and a value class per
  * [TypeTables.scalars] type, each in the package of its group ([KotlinValues]). A class extends the first base C
  * upcasts it to, and keeps a handle per level, as a base's pointer needn't be the derived one's; a base it can't
- * extend besides, it returns itself as (`asPhysicsStepListener()`). One C destroys, or
+ * extend besides, it returns itself as (`asPhysicsStepListener()`). What C++ hands out as a base is wrapped as the
+ * class it is where C++ tells ([KotlinValues.dynamic]: `controller as WheeledVehicleController`); where it doesn't, the
+ * root of a hierarchy returns itself as each class under it, unchecked (`asSoftBodyMotionProperties()`). One C destroys, or
  * releases a reference of, is [AutoCloseable]. A class with no base extends the interop package's `NativeObject`.
  *
  * A class C can create an overridable object of ([buildlogic.apigen.c.Bound.Role.UPCALLS]) is one a Kotlin
@@ -39,6 +41,16 @@ internal class KotlinApiWriter(private val c: CApi, private val config: ApiGenCo
         values.scalars.forEach { (cName, decl) ->
             file(c.api.records[decl]?.header, values.kotlin(cName), kdoc(c.api.records[decl]?.doc, "", "C++ `$decl`.") + "@kotlin.jvm.JvmInline\nvalue class ${values.kotlin(cName)}(val value: Int)\n")
         }
+        // What wraps a pointer as the class C++ says it is, of the ones under its type.
+        if (values.dynamic.isNotEmpty()) file(null, "${config.name}Types", values.dynamic.entries.joinToString("\n") { (cName, dynamic) ->
+            val name = values.kotlin(cName)
+            val cases = dynamic.second.mapIndexedNotNull { i, derived ->
+                derived?.takeIf { members.extends(it.first, cName) }?.let { (d, downcast) -> "    ${i + 1} -> ${values.kotlin(d)}($downcast(handle), owned)\n" }
+            }
+            "/** The [$name] at [handle], as the class extending it that it is. */\n" +
+                "internal fun ${values.wrapper(cName)}(handle: NativePointer, owned: Boolean = false): $name = when (${dynamic.first}(handle)) {\n" +
+                cases.joinToString("") + "    else -> $name(handle, owned)\n}\n"
+        })
         // A namespace's functions, in the module's own package.
         members.functions().ifEmpty { null }?.let { functions -> file(null, config.name, functions.joinToString("\n") { function(it, "") }) }
 
@@ -70,6 +82,9 @@ internal class KotlinApiWriter(private val c: CApi, private val config: ApiGenCo
                 }.orEmpty(),
             (methods.map { function(it, "    ") } + members.otherBases(cName).map { (base, upcast) ->
                 "    /** This object as its other base, borrowed. */\n    fun as${values.kotlin(base).replace(".", "")}() = ${values.kotlin(base)}($upcast($handle))\n"
+            } + members.downcasts(cName).map { (derived, downcast) ->
+                "    /** This object as the [${values.kotlin(derived)}] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */\n" +
+                    "    fun as${values.kotlin(derived).replace(".", "")}() = ${values.kotlin(derived)}($downcast($handle))\n"
             }).joinToString("\n") + upcalls?.let { "\n" + dispatcher(cName, it.second) }.orEmpty(),
             nested.joinToString("\n") { it.prependIndent("    ") },
             if (static.isEmpty()) "" else "    companion object {\n${static.joinToString("\n") { function(it, "        ") }}    }\n",

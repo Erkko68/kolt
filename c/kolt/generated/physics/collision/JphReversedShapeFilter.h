@@ -12,6 +12,7 @@ extern "C" {
 JphReversedShapeFilter* JphReversedShapeFilter_create(const JphShapeFilter* inFilter);
 void JphReversedShapeFilter_destroy(JphReversedShapeFilter* self);
 JphShapeFilter* JphReversedShapeFilter_asShapeFilter(JphReversedShapeFilter* self);
+JphReversedShapeFilter* JphReversedShapeFilter_fromShapeFilter(JphShapeFilter* base);
 
 
 #ifdef __cplusplus

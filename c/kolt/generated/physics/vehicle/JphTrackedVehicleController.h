@@ -12,6 +12,7 @@ extern "C" {
 JphTrackedVehicleController* JphTrackedVehicleController_create(const JphTrackedVehicleControllerSettings* inSettings, JphVehicleConstraint* inConstraint);
 void JphTrackedVehicleController_destroy(JphTrackedVehicleController* self);
 JphVehicleController* JphTrackedVehicleController_asVehicleController(JphTrackedVehicleController* self);
+JphTrackedVehicleController* JphTrackedVehicleController_fromVehicleController(JphVehicleController* base);
 void JphTrackedVehicleController_SetDriverInput(JphTrackedVehicleController* self, float inForward, float inLeftRatio, float inRightRatio, float inBrake);
 void JphTrackedVehicleController_SetForwardInput(JphTrackedVehicleController* self, float inForward);
 float JphTrackedVehicleController_GetForwardInput(const JphTrackedVehicleController* self);

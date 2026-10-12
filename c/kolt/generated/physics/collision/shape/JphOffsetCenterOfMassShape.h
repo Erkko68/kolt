@@ -16,6 +16,8 @@ void JphOffsetCenterOfMassShape_addRef(const JphOffsetCenterOfMassShape* self);
 void JphOffsetCenterOfMassShape_release(const JphOffsetCenterOfMassShape* self);
 JphDecoratedShape* JphOffsetCenterOfMassShape_asDecoratedShape(JphOffsetCenterOfMassShape* self);
 JphShape* JphOffsetCenterOfMassShape_asShape(JphOffsetCenterOfMassShape* self);
+JphOffsetCenterOfMassShape* JphOffsetCenterOfMassShape_fromDecoratedShape(JphDecoratedShape* base);
+JphOffsetCenterOfMassShape* JphOffsetCenterOfMassShape_fromShape(JphShape* base);
 // skipped static void JPH::OffsetCenterOfMassShape::sRegister(): JPH::.*::sRegister
 void JphOffsetCenterOfMassShape_GetOffset(const JphOffsetCenterOfMassShape* self, JphVec3* out);
 

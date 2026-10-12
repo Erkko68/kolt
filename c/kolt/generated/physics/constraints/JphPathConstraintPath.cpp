@@ -63,6 +63,11 @@ JphSerializableObject* JphPathConstraintPath_asSerializableObject(JphPathConstra
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+int32_t JphPathConstraintPath_dynamicType(const JphPathConstraintPath* self) {
+    const JPH::PathConstraintPath* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::PathConstraintPathHermite*>(object) ? 1 : 0;
+}
+
 float JphPathConstraintPath_GetPathMaxFraction(const JphPathConstraintPath* self) {
     return kolt::cpp(self)->GetPathMaxFraction();
 }

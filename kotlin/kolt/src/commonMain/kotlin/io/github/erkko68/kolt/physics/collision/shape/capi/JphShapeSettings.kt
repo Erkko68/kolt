@@ -13,6 +13,9 @@ internal external fun JphShapeSettings_release(self: NativePointer)
 @ExternalSymbolName("JphShapeSettings_asSerializableObject")
 internal external fun JphShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphShapeSettings_dynamicType")
+internal external fun JphShapeSettings_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphShapeSettings_Create")
 internal external fun JphShapeSettings_Create(self: NativePointer, outError: NativePointer, outErrorCapacity: Int): NativePointer
 

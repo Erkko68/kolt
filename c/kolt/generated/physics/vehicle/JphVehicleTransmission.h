@@ -12,6 +12,7 @@ extern "C" {
 JphVehicleTransmission* JphVehicleTransmission_create(void);
 void JphVehicleTransmission_destroy(JphVehicleTransmission* self);
 JphVehicleTransmissionSettings* JphVehicleTransmission_asVehicleTransmissionSettings(JphVehicleTransmission* self);
+JphVehicleTransmission* JphVehicleTransmission_fromVehicleTransmissionSettings(JphVehicleTransmissionSettings* base);
 void JphVehicleTransmission_Set(JphVehicleTransmission* self, int32_t inCurrentGear, float inClutchFriction);
 void JphVehicleTransmission_Update(JphVehicleTransmission* self, float inDeltaTime, float inCurrentRPM, float inForwardInput, bool inCanShiftUp);
 int32_t JphVehicleTransmission_GetCurrentGear(const JphVehicleTransmission* self);

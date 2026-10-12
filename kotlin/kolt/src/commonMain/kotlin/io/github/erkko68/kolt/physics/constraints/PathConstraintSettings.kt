@@ -56,7 +56,7 @@ class PathConstraintSettings internal constructor(internal val pathConstraintSet
 
     /** The path that constrains the two bodies */
     var path: PathConstraintPath?
-        get() = JphPathConstraintSettings_GetPath(pathConstraintSettingsHandle).takeIf { it != NullPointer }?.let { PathConstraintPath(it) }
+        get() = JphPathConstraintSettings_GetPath(pathConstraintSettingsHandle).takeIf { it != NullPointer }?.let { wrapPathConstraintPath(it) }
         set(value) = JphPathConstraintSettings_SetPath(pathConstraintSettingsHandle, value?.pathConstraintPathHandle ?: NullPointer)
 
     /** The position of the path start relative to world transform of body 1 */

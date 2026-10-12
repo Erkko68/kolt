@@ -16,4 +16,8 @@ JphBroadPhaseLayerFilter* JphSpecifiedBroadPhaseLayerFilter_asBroadPhaseLayerFil
     return kolt::c(static_cast<JPH::BroadPhaseLayerFilter*>(kolt::cpp(self)));
 }
 
+JphSpecifiedBroadPhaseLayerFilter* JphSpecifiedBroadPhaseLayerFilter_fromBroadPhaseLayerFilter(JphBroadPhaseLayerFilter* base) {
+    return kolt::c(static_cast<JPH::SpecifiedBroadPhaseLayerFilter*>(kolt::cpp(base)));
+}
+
 } // extern "C"

@@ -15,6 +15,8 @@ void JphMutableCompoundShape_addRef(const JphMutableCompoundShape* self);
 void JphMutableCompoundShape_release(const JphMutableCompoundShape* self);
 JphCompoundShape* JphMutableCompoundShape_asCompoundShape(JphMutableCompoundShape* self);
 JphShape* JphMutableCompoundShape_asShape(JphMutableCompoundShape* self);
+JphMutableCompoundShape* JphMutableCompoundShape_fromCompoundShape(JphCompoundShape* base);
+JphMutableCompoundShape* JphMutableCompoundShape_fromShape(JphShape* base);
 // skipped static void JPH::MutableCompoundShape::sRegister(): JPH::.*::sRegister
 JphMutableCompoundShape* JphMutableCompoundShape_Clone(const JphMutableCompoundShape* self);
 uint32_t JphMutableCompoundShape_AddShape(JphMutableCompoundShape* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShape* inShape, uint32_t inUserData, uint32_t inIndex);

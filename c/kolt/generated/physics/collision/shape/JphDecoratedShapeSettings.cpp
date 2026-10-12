@@ -20,6 +20,15 @@ JphSerializableObject* JphDecoratedShapeSettings_asSerializableObject(JphDecorat
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphDecoratedShapeSettings* JphDecoratedShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::DecoratedShapeSettings*>(kolt::cpp(base)));
+}
+
+int32_t JphDecoratedShapeSettings_dynamicType(const JphDecoratedShapeSettings* self) {
+    const JPH::DecoratedShapeSettings* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::OffsetCenterOfMassShapeSettings*>(object) ? 1 : dynamic_cast<const JPH::RotatedTranslatedShapeSettings*>(object) ? 2 : dynamic_cast<const JPH::ScaledShapeSettings*>(object) ? 3 : 0;
+}
+
 const JphShapeSettings* JphDecoratedShapeSettings_GetInnerShape(const JphDecoratedShapeSettings* self) {
     return kolt::c((kolt::cpp(self)->mInnerShape).GetPtr());
 }

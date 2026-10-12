@@ -12,6 +12,7 @@ extern "C" {
 JphDefaultBroadPhaseLayerFilter* JphDefaultBroadPhaseLayerFilter_create(const JphObjectVsBroadPhaseLayerFilter* inObjectVsBroadPhaseLayerFilter, uint32_t inLayer);
 void JphDefaultBroadPhaseLayerFilter_destroy(JphDefaultBroadPhaseLayerFilter* self);
 JphBroadPhaseLayerFilter* JphDefaultBroadPhaseLayerFilter_asBroadPhaseLayerFilter(JphDefaultBroadPhaseLayerFilter* self);
+JphDefaultBroadPhaseLayerFilter* JphDefaultBroadPhaseLayerFilter_fromBroadPhaseLayerFilter(JphBroadPhaseLayerFilter* base);
 
 
 #ifdef __cplusplus

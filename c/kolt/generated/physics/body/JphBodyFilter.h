@@ -13,6 +13,7 @@ JphBodyFilter* JphBodyFilter_create(void);
 void JphBodyFilter_destroy(JphBodyFilter* self);
 JphBodyFilter* JphBodyFilter_createUpcalls(JphUpcall call);
 void JphBodyFilter_bindUpcalls(JphBodyFilter* self, void* userData);
+int32_t JphBodyFilter_dynamicType(const JphBodyFilter* self);
 bool JphBodyFilter_ShouldCollide(const JphBodyFilter* self, uint32_t inBodyID);
 bool JphBodyFilter_ShouldCollideLocked(const JphBodyFilter* self, const JphBody* inBody);
 

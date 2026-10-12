@@ -12,6 +12,7 @@ extern "C" {
 void JphBroadPhaseLayerInterface_destroy(JphBroadPhaseLayerInterface* self);
 JphBroadPhaseLayerInterface* JphBroadPhaseLayerInterface_createUpcalls(JphUpcall call);
 void JphBroadPhaseLayerInterface_bindUpcalls(JphBroadPhaseLayerInterface* self, void* userData);
+int32_t JphBroadPhaseLayerInterface_dynamicType(const JphBroadPhaseLayerInterface* self);
 uint32_t JphBroadPhaseLayerInterface_GetNumBroadPhaseLayers(const JphBroadPhaseLayerInterface* self);
 uint32_t JphBroadPhaseLayerInterface_GetBroadPhaseLayer(const JphBroadPhaseLayerInterface* self, uint32_t inLayer);
 

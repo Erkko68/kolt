@@ -68,6 +68,15 @@ JphSerializableObject* JphCompoundShapeSettings_asSerializableObject(JphCompound
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphCompoundShapeSettings* JphCompoundShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::CompoundShapeSettings*>(kolt::cpp(base)));
+}
+
+int32_t JphCompoundShapeSettings_dynamicType(const JphCompoundShapeSettings* self) {
+    const JPH::CompoundShapeSettings* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::MutableCompoundShapeSettings*>(object) ? 1 : dynamic_cast<const JPH::StaticCompoundShapeSettings*>(object) ? 2 : 0;
+}
+
 void JphCompoundShapeSettings_AddShape_ShapeSettings_uint32(JphCompoundShapeSettings* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShapeSettings* inShape, uint32_t inUserData) {
     kolt::cpp(self)->AddShape(kolt::math<JPH::Vec3>(*inPosition), kolt::math<JPH::Quat>(*inRotation), kolt::cpp(inShape), inUserData);
 }

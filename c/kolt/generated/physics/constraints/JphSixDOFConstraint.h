@@ -14,6 +14,8 @@ void JphSixDOFConstraint_addRef(const JphSixDOFConstraint* self);
 void JphSixDOFConstraint_release(const JphSixDOFConstraint* self);
 JphTwoBodyConstraint* JphSixDOFConstraint_asTwoBodyConstraint(JphSixDOFConstraint* self);
 JphConstraint* JphSixDOFConstraint_asConstraint(JphSixDOFConstraint* self);
+JphSixDOFConstraint* JphSixDOFConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphSixDOFConstraint* JphSixDOFConstraint_fromConstraint(JphConstraint* base);
 void JphSixDOFConstraint_SetTranslationLimits(JphSixDOFConstraint* self, const JphVec3* inLimitMin, const JphVec3* inLimitMax);
 void JphSixDOFConstraint_SetRotationLimits(JphSixDOFConstraint* self, const JphVec3* inLimitMin, const JphVec3* inLimitMax);
 float JphSixDOFConstraint_GetLimitsMin(const JphSixDOFConstraint* self, JphSixDOFConstraintSettingsEAxis inAxis);

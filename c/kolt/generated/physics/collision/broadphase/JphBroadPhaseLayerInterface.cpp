@@ -41,6 +41,11 @@ void JphBroadPhaseLayerInterface_bindUpcalls(JphBroadPhaseLayerInterface* self, 
     static_cast<::JPH::JphBroadPhaseLayerInterface_Upcalls*>(kolt::cpp(self))->mUser = userData;
 }
 
+int32_t JphBroadPhaseLayerInterface_dynamicType(const JphBroadPhaseLayerInterface* self) {
+    const JPH::BroadPhaseLayerInterface* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::BroadPhaseLayerInterfaceMask*>(object) ? 1 : dynamic_cast<const JPH::BroadPhaseLayerInterfaceTable*>(object) ? 2 : 0;
+}
+
 uint32_t JphBroadPhaseLayerInterface_GetNumBroadPhaseLayers(const JphBroadPhaseLayerInterface* self) {
     return static_cast<uint32_t>(kolt::cpp(self)->GetNumBroadPhaseLayers());
 }

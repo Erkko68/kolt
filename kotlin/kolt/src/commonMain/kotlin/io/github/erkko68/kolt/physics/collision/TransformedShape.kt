@@ -283,7 +283,7 @@ class TransformedShape internal constructor(internal val transformedShapeHandle:
 
     /** The shape itself */
     var shape: Shape?
-        get() = JphTransformedShape_GetShape(transformedShapeHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        get() = JphTransformedShape_GetShape(transformedShapeHandle).takeIf { it != NullPointer }?.let { wrapShape(it) }
         set(value) = JphTransformedShape_SetShape(transformedShapeHandle, value?.shapeHandle ?: NullPointer)
 
     /** Optional body ID from which this shape comes */

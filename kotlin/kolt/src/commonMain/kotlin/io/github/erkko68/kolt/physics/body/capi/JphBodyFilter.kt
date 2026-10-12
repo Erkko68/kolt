@@ -16,6 +16,9 @@ internal external fun JphBodyFilter_createUpcalls(call: NativePointer): NativePo
 @ExternalSymbolName("JphBodyFilter_bindUpcalls")
 internal external fun JphBodyFilter_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("JphBodyFilter_dynamicType")
+internal external fun JphBodyFilter_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphBodyFilter_ShouldCollide")
 internal external fun JphBodyFilter_ShouldCollide(self: NativePointer, inBodyID: Int): Boolean
 

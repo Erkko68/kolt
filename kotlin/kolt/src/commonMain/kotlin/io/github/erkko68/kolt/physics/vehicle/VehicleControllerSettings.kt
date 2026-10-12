@@ -55,5 +55,5 @@ open class VehicleControllerSettings internal constructor(internal val vehicleCo
 
     /** Create an instance of the vehicle controller class */
     fun constructController(constraint: VehicleConstraint): VehicleController? =
-        JphVehicleControllerSettings_ConstructController(vehicleControllerSettingsHandle, constraint.vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleController(it) }
+        JphVehicleControllerSettings_ConstructController(vehicleControllerSettingsHandle, constraint.vehicleConstraintHandle).takeIf { it != NullPointer }?.let { wrapVehicleController(it) }
 }

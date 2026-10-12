@@ -16,4 +16,8 @@ JphObjectVsBroadPhaseLayerFilter* JphObjectVsBroadPhaseLayerFilterMask_asObjectV
     return kolt::c(static_cast<JPH::ObjectVsBroadPhaseLayerFilter*>(kolt::cpp(self)));
 }
 
+JphObjectVsBroadPhaseLayerFilterMask* JphObjectVsBroadPhaseLayerFilterMask_fromObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilter* base) {
+    return kolt::c(static_cast<JPH::ObjectVsBroadPhaseLayerFilterMask*>(kolt::cpp(base)));
+}
+
 } // extern "C"

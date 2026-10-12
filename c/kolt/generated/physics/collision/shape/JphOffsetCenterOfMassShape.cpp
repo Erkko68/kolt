@@ -28,6 +28,14 @@ JphShape* JphOffsetCenterOfMassShape_asShape(JphOffsetCenterOfMassShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphOffsetCenterOfMassShape* JphOffsetCenterOfMassShape_fromDecoratedShape(JphDecoratedShape* base) {
+    return kolt::c(static_cast<JPH::OffsetCenterOfMassShape*>(kolt::cpp(base)));
+}
+
+JphOffsetCenterOfMassShape* JphOffsetCenterOfMassShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::OffsetCenterOfMassShape*>(kolt::cpp(base)));
+}
+
 void JphOffsetCenterOfMassShape_GetOffset(const JphOffsetCenterOfMassShape* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetOffset());
 }

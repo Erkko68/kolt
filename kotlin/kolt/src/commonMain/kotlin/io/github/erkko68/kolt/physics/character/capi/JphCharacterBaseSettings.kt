@@ -13,6 +13,9 @@ internal external fun JphCharacterBaseSettings_addRef(self: NativePointer)
 @ExternalSymbolName("JphCharacterBaseSettings_release")
 internal external fun JphCharacterBaseSettings_release(self: NativePointer)
 
+@ExternalSymbolName("JphCharacterBaseSettings_dynamicType")
+internal external fun JphCharacterBaseSettings_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphCharacterBaseSettings_GetUp")
 internal external fun JphCharacterBaseSettings_GetUp(self: NativePointer, out: NativePointer)
 

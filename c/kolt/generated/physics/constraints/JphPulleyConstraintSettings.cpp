@@ -28,6 +28,14 @@ JphSerializableObject* JphPulleyConstraintSettings_asSerializableObject(JphPulle
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphPulleyConstraintSettings* JphPulleyConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::PulleyConstraintSettings*>(kolt::cpp(base)));
+}
+
+JphPulleyConstraintSettings* JphPulleyConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::PulleyConstraintSettings*>(kolt::cpp(base)));
+}
+
 JphEConstraintSpace JphPulleyConstraintSettings_GetSpace(const JphPulleyConstraintSettings* self) {
     return static_cast<JphEConstraintSpace>(kolt::cpp(self)->mSpace);
 }

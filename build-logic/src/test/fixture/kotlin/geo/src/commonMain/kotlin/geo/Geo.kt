@@ -8,4 +8,7 @@ fun distance(a: Point, b: Point): Float =
     Geo_distance(a.pointHandle, b.pointHandle)
 
 fun find(id: Id): Shape? =
-    Geo_find(id.value).takeIf { it != NullPointer }?.let { Shape(it) }
+    Geo_find(id.value).takeIf { it != NullPointer }?.let { wrapShape(it) }
+
+fun nearest(to: Point): Marker? =
+    Geo_nearest(to.pointHandle).takeIf { it != NullPointer }?.let { Marker(it) }

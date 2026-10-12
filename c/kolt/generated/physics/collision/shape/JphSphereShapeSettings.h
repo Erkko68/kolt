@@ -16,6 +16,8 @@ void JphSphereShapeSettings_release(const JphSphereShapeSettings* self);
 JphConvexShapeSettings* JphSphereShapeSettings_asConvexShapeSettings(JphSphereShapeSettings* self);
 JphShapeSettings* JphSphereShapeSettings_asShapeSettings(JphSphereShapeSettings* self);
 JphSerializableObject* JphSphereShapeSettings_asSerializableObject(JphSphereShapeSettings* self);
+JphSphereShapeSettings* JphSphereShapeSettings_fromConvexShapeSettings(JphConvexShapeSettings* base);
+JphSphereShapeSettings* JphSphereShapeSettings_fromShapeSettings(JphShapeSettings* base);
 // skipped static void JPH::SphereShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 float JphSphereShapeSettings_GetRadius(const JphSphereShapeSettings* self);
 void JphSphereShapeSettings_SetRadius(JphSphereShapeSettings* self, float value);

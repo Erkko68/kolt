@@ -24,6 +24,14 @@ JphShape* JphConvexHullShape_asShape(JphConvexHullShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphConvexHullShape* JphConvexHullShape_fromConvexShape(JphConvexShape* base) {
+    return kolt::c(static_cast<JPH::ConvexHullShape*>(kolt::cpp(base)));
+}
+
+JphConvexHullShape* JphConvexHullShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::ConvexHullShape*>(kolt::cpp(base)));
+}
+
 float JphConvexHullShape_GetConvexRadius(const JphConvexHullShape* self) {
     return kolt::cpp(self)->GetConvexRadius();
 }

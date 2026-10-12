@@ -12,6 +12,7 @@ extern "C" {
 JphCharacterBase* JphCharacterBase_create(const JphCharacterBaseSettings* inSettings, JphPhysicsSystem* inSystem);
 void JphCharacterBase_addRef(const JphCharacterBase* self);
 void JphCharacterBase_release(const JphCharacterBase* self);
+int32_t JphCharacterBase_dynamicType(const JphCharacterBase* self);
 void JphCharacterBase_SetMaxSlopeAngle(JphCharacterBase* self, float inMaxSlopeAngle);
 float JphCharacterBase_GetCosMaxSlopeAngle(const JphCharacterBase* self);
 void JphCharacterBase_SetUp(JphCharacterBase* self, const JphVec3* inUp);

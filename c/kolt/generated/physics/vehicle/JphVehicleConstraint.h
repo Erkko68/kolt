@@ -14,6 +14,8 @@ void JphVehicleConstraint_addRef(const JphVehicleConstraint* self);
 void JphVehicleConstraint_release(const JphVehicleConstraint* self);
 JphConstraint* JphVehicleConstraint_asConstraint(JphVehicleConstraint* self);
 JphPhysicsStepListener* JphVehicleConstraint_asPhysicsStepListener(JphVehicleConstraint* self);
+JphVehicleConstraint* JphVehicleConstraint_fromConstraint(JphConstraint* base);
+JphVehicleConstraint* JphVehicleConstraint_fromPhysicsStepListener(JphPhysicsStepListener* base);
 // skipped const CombineFunction & JPH::VehicleConstraint::GetCombineFriction() const: JPH::(VehicleConstraint|PhysicsSystem)::GetCombine(Friction|Restitution)
 // skipped const StepCallback & JPH::VehicleConstraint::GetPreStepCallback() const: JPH::VehicleConstraint::Get(PreStep|PostCollide|PostStep)Callback
 // skipped const StepCallback & JPH::VehicleConstraint::GetPostCollideCallback() const: JPH::VehicleConstraint::Get(PreStep|PostCollide|PostStep)Callback

@@ -12,6 +12,8 @@ extern "C" {
 void JphDecoratedShape_addRef(const JphDecoratedShape* self);
 void JphDecoratedShape_release(const JphDecoratedShape* self);
 JphShape* JphDecoratedShape_asShape(JphDecoratedShape* self);
+JphDecoratedShape* JphDecoratedShape_fromShape(JphShape* base);
+int32_t JphDecoratedShape_dynamicType(const JphDecoratedShape* self);
 const JphShape* JphDecoratedShape_GetInnerShape(const JphDecoratedShape* self);
 
 

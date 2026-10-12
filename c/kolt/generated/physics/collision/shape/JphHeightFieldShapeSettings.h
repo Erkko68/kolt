@@ -15,6 +15,7 @@ void JphHeightFieldShapeSettings_addRef(const JphHeightFieldShapeSettings* self)
 void JphHeightFieldShapeSettings_release(const JphHeightFieldShapeSettings* self);
 JphShapeSettings* JphHeightFieldShapeSettings_asShapeSettings(JphHeightFieldShapeSettings* self);
 JphSerializableObject* JphHeightFieldShapeSettings_asSerializableObject(JphHeightFieldShapeSettings* self);
+JphHeightFieldShapeSettings* JphHeightFieldShapeSettings_fromShapeSettings(JphShapeSettings* base);
 // skipped static void JPH::HeightFieldShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphHeightFieldShapeSettings_DetermineMinAndMaxSample(const JphHeightFieldShapeSettings* self, float* outMinValue, float* outMaxValue, float* outQuantizationScale);
 uint32_t JphHeightFieldShapeSettings_CalculateBitsPerSampleForError(const JphHeightFieldShapeSettings* self, float inMaxError);

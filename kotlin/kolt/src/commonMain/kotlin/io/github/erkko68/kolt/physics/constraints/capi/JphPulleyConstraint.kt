@@ -19,6 +19,12 @@ internal external fun JphPulleyConstraint_asTwoBodyConstraint(self: NativePointe
 @ExternalSymbolName("JphPulleyConstraint_asConstraint")
 internal external fun JphPulleyConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPulleyConstraint_fromTwoBodyConstraint")
+internal external fun JphPulleyConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphPulleyConstraint_fromConstraint")
+internal external fun JphPulleyConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphPulleyConstraint_SetLength")
 internal external fun JphPulleyConstraint_SetLength(self: NativePointer, inMinLength: Float, inMaxLength: Float)
 

@@ -22,6 +22,12 @@ internal external fun JphSliderConstraintSettings_asConstraintSettings(self: Nat
 @ExternalSymbolName("JphSliderConstraintSettings_asSerializableObject")
 internal external fun JphSliderConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphSliderConstraintSettings_fromTwoBodyConstraintSettings")
+internal external fun JphSliderConstraintSettings_fromTwoBodyConstraintSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphSliderConstraintSettings_fromConstraintSettings")
+internal external fun JphSliderConstraintSettings_fromConstraintSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphSliderConstraintSettings_SetSliderAxis")
 internal external fun JphSliderConstraintSettings_SetSliderAxis(self: NativePointer, inSliderAxis: NativePointer)
 

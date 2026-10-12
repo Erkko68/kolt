@@ -30,6 +30,8 @@ registerApiGenTasks(
             droppedNamespaces = setOf("JPH"),
             groupRoot = "Jolt",
             bridgeHeader = "../manual/JphBridge.hpp",
+            // c/CMakeLists.txt builds Jolt with it.
+            rtti = true,
         ),
         naming = Naming(
             memberPrefix = "^m(?=[A-Z])",

@@ -12,6 +12,8 @@ extern "C" {
 JphWheeledVehicleController* JphWheeledVehicleController_create(const JphWheeledVehicleControllerSettings* inSettings, JphVehicleConstraint* inConstraint);
 void JphWheeledVehicleController_destroy(JphWheeledVehicleController* self);
 JphVehicleController* JphWheeledVehicleController_asVehicleController(JphWheeledVehicleController* self);
+JphWheeledVehicleController* JphWheeledVehicleController_fromVehicleController(JphVehicleController* base);
+int32_t JphWheeledVehicleController_dynamicType(const JphWheeledVehicleController* self);
 // skipped const TireMaxImpulseCallback & JPH::WheeledVehicleController::GetTireMaxImpulseCallback() const
 void JphWheeledVehicleController_SetDriverInput(JphWheeledVehicleController* self, float inForward, float inRight, float inBrake, float inHandBrake);
 void JphWheeledVehicleController_SetForwardInput(JphWheeledVehicleController* self, float inForward);

@@ -19,6 +19,12 @@ internal external fun JphTaperedCapsuleShape_asConvexShape(self: NativePointer):
 @ExternalSymbolName("JphTaperedCapsuleShape_asShape")
 internal external fun JphTaperedCapsuleShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphTaperedCapsuleShape_fromConvexShape")
+internal external fun JphTaperedCapsuleShape_fromConvexShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphTaperedCapsuleShape_fromShape")
+internal external fun JphTaperedCapsuleShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphTaperedCapsuleShape_GetTopRadius")
 internal external fun JphTaperedCapsuleShape_GetTopRadius(self: NativePointer): Float
 

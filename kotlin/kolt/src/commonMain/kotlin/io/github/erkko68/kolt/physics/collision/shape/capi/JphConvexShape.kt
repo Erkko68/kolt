@@ -34,6 +34,12 @@ internal external fun JphConvexShape_release(self: NativePointer)
 @ExternalSymbolName("JphConvexShape_asShape")
 internal external fun JphConvexShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphConvexShape_fromShape")
+internal external fun JphConvexShape_fromShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphConvexShape_dynamicType")
+internal external fun JphConvexShape_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphConvexShape_GetSupportFunction")
 internal external fun JphConvexShape_GetSupportFunction(self: NativePointer, inMode: Int, inBuffer: NativePointer, inScale: NativePointer): NativePointer
 

@@ -14,6 +14,7 @@ JphHeightFieldShape* JphHeightFieldShape_create(void);
 void JphHeightFieldShape_addRef(const JphHeightFieldShape* self);
 void JphHeightFieldShape_release(const JphHeightFieldShape* self);
 JphShape* JphHeightFieldShape_asShape(JphHeightFieldShape* self);
+JphHeightFieldShape* JphHeightFieldShape_fromShape(JphShape* base);
 // skipped static void JPH::HeightFieldShape::sRegister(): JPH::.*::sRegister
 JphHeightFieldShape* JphHeightFieldShape_Clone(const JphHeightFieldShape* self);
 uint32_t JphHeightFieldShape_GetSampleCount(const JphHeightFieldShape* self);

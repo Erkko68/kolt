@@ -16,6 +16,10 @@ JphCharacterContactKey* JphCharacterContact_asCharacterContactKey(JphCharacterCo
     return kolt::c(static_cast<JPH::CharacterContactKey*>(kolt::cpp(self)));
 }
 
+JphCharacterContact* JphCharacterContact_fromCharacterContactKey(JphCharacterContactKey* base) {
+    return kolt::c(static_cast<JPH::CharacterContact*>(kolt::cpp(base)));
+}
+
 void JphCharacterContact_SaveState(const JphCharacterContact* self, JphStateRecorder* inStream) {
     kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
 }

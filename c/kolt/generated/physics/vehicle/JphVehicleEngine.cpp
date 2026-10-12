@@ -16,6 +16,10 @@ JphVehicleEngineSettings* JphVehicleEngine_asVehicleEngineSettings(JphVehicleEng
     return kolt::c(static_cast<JPH::VehicleEngineSettings*>(kolt::cpp(self)));
 }
 
+JphVehicleEngine* JphVehicleEngine_fromVehicleEngineSettings(JphVehicleEngineSettings* base) {
+    return kolt::c(static_cast<JPH::VehicleEngine*>(kolt::cpp(base)));
+}
+
 void JphVehicleEngine_ClampRPM(JphVehicleEngine* self) {
     kolt::cpp(self)->ClampRPM();
 }

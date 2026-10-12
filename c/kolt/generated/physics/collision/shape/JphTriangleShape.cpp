@@ -28,6 +28,14 @@ JphShape* JphTriangleShape_asShape(JphTriangleShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphTriangleShape* JphTriangleShape_fromConvexShape(JphConvexShape* base) {
+    return kolt::c(static_cast<JPH::TriangleShape*>(kolt::cpp(base)));
+}
+
+JphTriangleShape* JphTriangleShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::TriangleShape*>(kolt::cpp(base)));
+}
+
 void JphTriangleShape_GetVertex1(const JphTriangleShape* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetVertex1());
 }

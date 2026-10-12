@@ -14,6 +14,7 @@ void JphGroupFilter_release(const JphGroupFilter* self);
 JphGroupFilter* JphGroupFilter_createUpcalls(JphUpcall call);
 void JphGroupFilter_bindUpcalls(JphGroupFilter* self, void* userData);
 JphSerializableObject* JphGroupFilter_asSerializableObject(JphGroupFilter* self);
+int32_t JphGroupFilter_dynamicType(const JphGroupFilter* self);
 // skipped const JPH::RTTI * JPH::GroupFilter::GetRTTI() const: uses JPH::RTTI
 // skipped const void * JPH::GroupFilter::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
 // skipped static void JPH::GroupFilter::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI

@@ -12,6 +12,11 @@ void JphVehicleCollisionTester_release(const JphVehicleCollisionTester* self) {
     kolt::cpp(self)->Release();
 }
 
+int32_t JphVehicleCollisionTester_dynamicType(const JphVehicleCollisionTester* self) {
+    const JPH::VehicleCollisionTester* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::VehicleCollisionTesterCastCylinder*>(object) ? 1 : dynamic_cast<const JPH::VehicleCollisionTesterCastSphere*>(object) ? 2 : dynamic_cast<const JPH::VehicleCollisionTesterRay*>(object) ? 3 : 0;
+}
+
 uint32_t JphVehicleCollisionTester_GetObjectLayer(const JphVehicleCollisionTester* self) {
     return static_cast<uint32_t>(kolt::cpp(self)->GetObjectLayer());
 }

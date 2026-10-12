@@ -57,6 +57,19 @@ JphStreamOut* JphStateRecorder_asStreamOut(JphStateRecorder* self) {
     return kolt::c(static_cast<JPH::StreamOut*>(kolt::cpp(self)));
 }
 
+JphStateRecorder* JphStateRecorder_fromStreamIn(JphStreamIn* base) {
+    return kolt::c(static_cast<JPH::StateRecorder*>(kolt::cpp(base)));
+}
+
+JphStateRecorder* JphStateRecorder_fromStreamOut(JphStreamOut* base) {
+    return kolt::c(static_cast<JPH::StateRecorder*>(kolt::cpp(base)));
+}
+
+int32_t JphStateRecorder_dynamicType(const JphStateRecorder* self) {
+    const JPH::StateRecorder* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::StateRecorderImpl*>(object) ? 1 : 0;
+}
+
 void JphStateRecorder_SetValidating(JphStateRecorder* self, bool inValidating) {
     kolt::cpp(self)->SetValidating(inValidating);
 }

@@ -25,6 +25,9 @@ internal external fun JphWheelSettingsWV_asWheelSettings(self: NativePointer): N
 @ExternalSymbolName("JphWheelSettingsWV_asSerializableObject")
 internal external fun JphWheelSettingsWV_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphWheelSettingsWV_fromWheelSettings")
+internal external fun JphWheelSettingsWV_fromWheelSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphWheelSettingsWV_GetInertia")
 internal external fun JphWheelSettingsWV_GetInertia(self: NativePointer): Float
 

@@ -12,6 +12,7 @@ extern "C" {
 JphRayCastResult* JphRayCastResult_create(void);
 void JphRayCastResult_destroy(JphRayCastResult* self);
 JphBroadPhaseCastResult* JphRayCastResult_asBroadPhaseCastResult(JphRayCastResult* self);
+JphRayCastResult* JphRayCastResult_fromBroadPhaseCastResult(JphBroadPhaseCastResult* base);
 uint32_t JphRayCastResult_GetSubShapeID2(const JphRayCastResult* self);
 void JphRayCastResult_SetSubShapeID2(JphRayCastResult* self, uint32_t value);
 

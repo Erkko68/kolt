@@ -14,6 +14,8 @@ void JphGearConstraint_addRef(const JphGearConstraint* self);
 void JphGearConstraint_release(const JphGearConstraint* self);
 JphTwoBodyConstraint* JphGearConstraint_asTwoBodyConstraint(JphGearConstraint* self);
 JphConstraint* JphGearConstraint_asConstraint(JphGearConstraint* self);
+JphGearConstraint* JphGearConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphGearConstraint* JphGearConstraint_fromConstraint(JphConstraint* base);
 void JphGearConstraint_SetConstraints(JphGearConstraint* self, const JphConstraint* inGear1, const JphConstraint* inGear2);
 float JphGearConstraint_GetTotalLambda(const JphGearConstraint* self);
 

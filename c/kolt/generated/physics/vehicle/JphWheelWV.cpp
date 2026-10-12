@@ -16,6 +16,10 @@ JphWheel* JphWheelWV_asWheel(JphWheelWV* self) {
     return kolt::c(static_cast<JPH::Wheel*>(kolt::cpp(self)));
 }
 
+JphWheelWV* JphWheelWV_fromWheel(JphWheel* base) {
+    return kolt::c(static_cast<JPH::WheelWV*>(kolt::cpp(base)));
+}
+
 const JphWheelSettingsWV* JphWheelWV_GetSettings(const JphWheelWV* self) {
     return kolt::c(kolt::cpp(self)->GetSettings());
 }

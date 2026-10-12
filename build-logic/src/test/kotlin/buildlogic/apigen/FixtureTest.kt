@@ -13,7 +13,7 @@ class FixtureTest {
     private val config = ApiGenConfig(
         name = "Geo",
         sources = CppSources(includeDir = "include", astFilters = listOf("geo::")),
-        c = CBindings(prefix = "Geo", helpers = "geoc", droppedNamespaces = setOf("geo")),
+        c = CBindings(prefix = "Geo", helpers = "geoc", droppedNamespaces = setOf("geo"), rtti = true),
         naming = Naming(getter = "get", setter = "set"),
         types = TypeTables(
             scalars = mapOf("geo::Id" to Scalar("uint32_t", "geo::Id({})", "({}).value")),

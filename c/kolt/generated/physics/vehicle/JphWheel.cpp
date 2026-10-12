@@ -12,6 +12,11 @@ void JphWheel_destroy(JphWheel* self) {
     delete kolt::cpp(self);
 }
 
+int32_t JphWheel_dynamicType(const JphWheel* self) {
+    const JPH::Wheel* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::WheelTV*>(object) ? 1 : dynamic_cast<const JPH::WheelWV*>(object) ? 2 : 0;
+}
+
 const JphWheelSettings* JphWheel_GetSettings(const JphWheel* self) {
     return kolt::c(kolt::cpp(self)->GetSettings());
 }

@@ -14,6 +14,8 @@ void JphSliderConstraint_addRef(const JphSliderConstraint* self);
 void JphSliderConstraint_release(const JphSliderConstraint* self);
 JphTwoBodyConstraint* JphSliderConstraint_asTwoBodyConstraint(JphSliderConstraint* self);
 JphConstraint* JphSliderConstraint_asConstraint(JphSliderConstraint* self);
+JphSliderConstraint* JphSliderConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphSliderConstraint* JphSliderConstraint_fromConstraint(JphConstraint* base);
 // skipped Vector<2> JPH::SliderConstraint::GetTotalLambdaPosition() const: JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition|PathConstraint::GetTotalLambda(Position|RotationHinge))
 float JphSliderConstraint_GetCurrentPosition(const JphSliderConstraint* self);
 void JphSliderConstraint_SetMaxFrictionForce(JphSliderConstraint* self, float inFrictionForce);

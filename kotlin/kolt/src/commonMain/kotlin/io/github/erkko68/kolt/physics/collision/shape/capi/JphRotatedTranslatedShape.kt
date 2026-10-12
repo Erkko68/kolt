@@ -22,6 +22,12 @@ internal external fun JphRotatedTranslatedShape_asDecoratedShape(self: NativePoi
 @ExternalSymbolName("JphRotatedTranslatedShape_asShape")
 internal external fun JphRotatedTranslatedShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphRotatedTranslatedShape_fromDecoratedShape")
+internal external fun JphRotatedTranslatedShape_fromDecoratedShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphRotatedTranslatedShape_fromShape")
+internal external fun JphRotatedTranslatedShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphRotatedTranslatedShape_GetRotation")
 internal external fun JphRotatedTranslatedShape_GetRotation(self: NativePointer, out: NativePointer)
 

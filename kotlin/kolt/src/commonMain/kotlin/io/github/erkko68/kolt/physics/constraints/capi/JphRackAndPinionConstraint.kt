@@ -19,6 +19,12 @@ internal external fun JphRackAndPinionConstraint_asTwoBodyConstraint(self: Nativ
 @ExternalSymbolName("JphRackAndPinionConstraint_asConstraint")
 internal external fun JphRackAndPinionConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphRackAndPinionConstraint_fromTwoBodyConstraint")
+internal external fun JphRackAndPinionConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphRackAndPinionConstraint_fromConstraint")
+internal external fun JphRackAndPinionConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphRackAndPinionConstraint_SetConstraints")
 internal external fun JphRackAndPinionConstraint_SetConstraints(self: NativePointer, inPinion: NativePointer, inRack: NativePointer)
 

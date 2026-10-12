@@ -51,6 +51,10 @@ JphSerializableObject* JphVehicleConstraintSettings_asSerializableObject(JphVehi
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphVehicleConstraintSettings* JphVehicleConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::VehicleConstraintSettings*>(kolt::cpp(base)));
+}
+
 void JphVehicleConstraintSettings_GetUp(const JphVehicleConstraintSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mUp);
 }

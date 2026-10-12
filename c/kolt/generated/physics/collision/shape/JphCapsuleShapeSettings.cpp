@@ -32,6 +32,14 @@ JphSerializableObject* JphCapsuleShapeSettings_asSerializableObject(JphCapsuleSh
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphCapsuleShapeSettings* JphCapsuleShapeSettings_fromConvexShapeSettings(JphConvexShapeSettings* base) {
+    return kolt::c(static_cast<JPH::CapsuleShapeSettings*>(kolt::cpp(base)));
+}
+
+JphCapsuleShapeSettings* JphCapsuleShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::CapsuleShapeSettings*>(kolt::cpp(base)));
+}
+
 bool JphCapsuleShapeSettings_IsValid(const JphCapsuleShapeSettings* self) {
     return kolt::cpp(self)->IsValid();
 }

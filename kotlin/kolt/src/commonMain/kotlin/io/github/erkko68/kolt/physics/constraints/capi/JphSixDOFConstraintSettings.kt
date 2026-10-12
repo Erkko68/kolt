@@ -22,6 +22,12 @@ internal external fun JphSixDOFConstraintSettings_asConstraintSettings(self: Nat
 @ExternalSymbolName("JphSixDOFConstraintSettings_asSerializableObject")
 internal external fun JphSixDOFConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphSixDOFConstraintSettings_fromTwoBodyConstraintSettings")
+internal external fun JphSixDOFConstraintSettings_fromTwoBodyConstraintSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphSixDOFConstraintSettings_fromConstraintSettings")
+internal external fun JphSixDOFConstraintSettings_fromConstraintSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphSixDOFConstraintSettings_MakeFreeAxis")
 internal external fun JphSixDOFConstraintSettings_MakeFreeAxis(self: NativePointer, inAxis: Int)
 

@@ -28,6 +28,8 @@ void JphCompoundShapeSettings_addRef(const JphCompoundShapeSettings* self);
 void JphCompoundShapeSettings_release(const JphCompoundShapeSettings* self);
 JphShapeSettings* JphCompoundShapeSettings_asShapeSettings(JphCompoundShapeSettings* self);
 JphSerializableObject* JphCompoundShapeSettings_asSerializableObject(JphCompoundShapeSettings* self);
+JphCompoundShapeSettings* JphCompoundShapeSettings_fromShapeSettings(JphShapeSettings* base);
+int32_t JphCompoundShapeSettings_dynamicType(const JphCompoundShapeSettings* self);
 // skipped static void JPH::CompoundShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphCompoundShapeSettings_AddShape_ShapeSettings_uint32(JphCompoundShapeSettings* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShapeSettings* inShape, uint32_t inUserData);
 void JphCompoundShapeSettings_AddShape_Shape_uint32(JphCompoundShapeSettings* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShape* inShape, uint32_t inUserData);

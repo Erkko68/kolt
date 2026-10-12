@@ -12,6 +12,7 @@ extern "C" {
 JphTempAllocatorImpl* JphTempAllocatorImpl_create(uint32_t inSize);
 void JphTempAllocatorImpl_destroy(JphTempAllocatorImpl* self);
 JphTempAllocator* JphTempAllocatorImpl_asTempAllocator(JphTempAllocatorImpl* self);
+JphTempAllocatorImpl* JphTempAllocatorImpl_fromTempAllocator(JphTempAllocator* base);
 bool JphTempAllocatorImpl_IsEmpty(const JphTempAllocatorImpl* self);
 uint32_t JphTempAllocatorImpl_GetSize(const JphTempAllocatorImpl* self);
 uint32_t JphTempAllocatorImpl_GetUsage(const JphTempAllocatorImpl* self);

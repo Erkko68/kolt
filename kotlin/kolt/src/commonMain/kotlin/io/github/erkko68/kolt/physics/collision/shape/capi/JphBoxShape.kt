@@ -22,6 +22,12 @@ internal external fun JphBoxShape_asConvexShape(self: NativePointer): NativePoin
 @ExternalSymbolName("JphBoxShape_asShape")
 internal external fun JphBoxShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphBoxShape_fromConvexShape")
+internal external fun JphBoxShape_fromConvexShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphBoxShape_fromShape")
+internal external fun JphBoxShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphBoxShape_GetHalfExtent")
 internal external fun JphBoxShape_GetHalfExtent(self: NativePointer, out: NativePointer)
 

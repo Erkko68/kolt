@@ -4,6 +4,8 @@
 
 #include "geo/generated/GeoCircle.h"
 #include "geo/generated/GeoGeo.h"
+#include "geo/generated/GeoMarker.h"
+#include "geo/generated/GeoPin.h"
 #include "geo/generated/GeoPoint.h"
 #include "geo/generated/GeoPolygon.h"
 #include "geo/generated/GeoShape.h"
@@ -14,5 +16,9 @@ JNIEXPORT jfloat JNICALL Java_geo_capi_GeoGeoKt_Geo_1distance(JNIEnv* env, jclas
 
 JNIEXPORT jlong JNICALL Java_geo_capi_GeoGeoKt_Geo_1find(JNIEnv* env, jclass cls, jint id) {
     return (jlong)(intptr_t) Geo_find(id);
+}
+
+JNIEXPORT jlong JNICALL Java_geo_capi_GeoGeoKt_Geo_1nearest(JNIEnv* env, jclass cls, jlong to) {
+    return (jlong)(intptr_t) Geo_nearest((void*)(intptr_t) to);
 }
 

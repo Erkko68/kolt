@@ -16,6 +16,9 @@ internal external fun JphIndexedTriangle_destroy(self: NativePointer)
 @ExternalSymbolName("JphIndexedTriangle_asIndexedTriangleNoMaterial")
 internal external fun JphIndexedTriangle_asIndexedTriangleNoMaterial(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphIndexedTriangle_fromIndexedTriangleNoMaterial")
+internal external fun JphIndexedTriangle_fromIndexedTriangleNoMaterial(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphIndexedTriangle_GetLowestIndexFirst")
 internal external fun JphIndexedTriangle_GetLowestIndexFirst(self: NativePointer, out: NativePointer)
 

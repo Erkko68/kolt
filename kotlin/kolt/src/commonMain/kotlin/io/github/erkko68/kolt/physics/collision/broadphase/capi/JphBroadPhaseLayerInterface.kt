@@ -13,6 +13,9 @@ internal external fun JphBroadPhaseLayerInterface_createUpcalls(call: NativePoin
 @ExternalSymbolName("JphBroadPhaseLayerInterface_bindUpcalls")
 internal external fun JphBroadPhaseLayerInterface_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("JphBroadPhaseLayerInterface_dynamicType")
+internal external fun JphBroadPhaseLayerInterface_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphBroadPhaseLayerInterface_GetNumBroadPhaseLayers")
 internal external fun JphBroadPhaseLayerInterface_GetNumBroadPhaseLayers(self: NativePointer): Int
 

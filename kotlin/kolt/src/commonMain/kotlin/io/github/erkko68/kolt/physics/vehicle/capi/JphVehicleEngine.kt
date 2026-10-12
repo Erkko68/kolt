@@ -13,6 +13,9 @@ internal external fun JphVehicleEngine_destroy(self: NativePointer)
 @ExternalSymbolName("JphVehicleEngine_asVehicleEngineSettings")
 internal external fun JphVehicleEngine_asVehicleEngineSettings(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphVehicleEngine_fromVehicleEngineSettings")
+internal external fun JphVehicleEngine_fromVehicleEngineSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphVehicleEngine_ClampRPM")
 internal external fun JphVehicleEngine_ClampRPM(self: NativePointer)
 

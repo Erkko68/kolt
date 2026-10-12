@@ -25,6 +25,7 @@ void JphShapeStats_SetNumTriangles(JphShapeStats* self, uint32_t value);
 // JPH::Shape
 void JphShape_addRef(const JphShape* self);
 void JphShape_release(const JphShape* self);
+int32_t JphShape_dynamicType(const JphShape* self);
 // skipped void JPH::Shape::CollideSoftBodyVertices(Mat44Arg inCenterOfMassTransform, Vec3Arg inScale, const CollideSoftBodyVertexIterator & inVertices, uint inNumVertices, int inCollidingShapeIndex) const: JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)
 // skipped void JPH::Shape::RestoreMaterialState(const PhysicsMaterialRefC * inMaterials, uint inNumMaterials): JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)
 // skipped void JPH::Shape::RestoreSubShapeState(const ShapeRefC * inSubShapes, uint inNumShapes): JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)

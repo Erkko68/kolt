@@ -19,6 +19,9 @@ internal external fun JphIgnoreMultipleBodiesFilter_bindUpcalls(self: NativePoin
 @ExternalSymbolName("JphIgnoreMultipleBodiesFilter_asBodyFilter")
 internal external fun JphIgnoreMultipleBodiesFilter_asBodyFilter(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphIgnoreMultipleBodiesFilter_fromBodyFilter")
+internal external fun JphIgnoreMultipleBodiesFilter_fromBodyFilter(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphIgnoreMultipleBodiesFilter_Clear")
 internal external fun JphIgnoreMultipleBodiesFilter_Clear(self: NativePointer)
 

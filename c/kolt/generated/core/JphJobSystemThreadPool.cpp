@@ -24,6 +24,14 @@ JphJobSystem* JphJobSystemThreadPool_asJobSystem(JphJobSystemThreadPool* self) {
     return kolt::c(static_cast<JPH::JobSystem*>(kolt::cpp(self)));
 }
 
+JphJobSystemThreadPool* JphJobSystemThreadPool_fromJobSystemWithBarrier(JphJobSystemWithBarrier* base) {
+    return kolt::c(static_cast<JPH::JobSystemThreadPool*>(kolt::cpp(base)));
+}
+
+JphJobSystemThreadPool* JphJobSystemThreadPool_fromJobSystem(JphJobSystem* base) {
+    return kolt::c(static_cast<JPH::JobSystemThreadPool*>(kolt::cpp(base)));
+}
+
 void JphJobSystemThreadPool_SetThreadInitFunction(JphJobSystemThreadPool* self, JphUpcall inInitFunction, void* inInitFunctionUser) {
     kolt::cpp(self)->SetThreadInitFunction(inInitFunctionUser ? JPH::JobSystemThreadPool::InitExitFunction([f = kolt::Callback(inInitFunction, inInitFunctionUser)](auto&& p0) { const uint64_t args[] = {kolt::slot(static_cast<int32_t>(p0))}; uint64_t result = 0; f(args, &result); }) : nullptr);
 }

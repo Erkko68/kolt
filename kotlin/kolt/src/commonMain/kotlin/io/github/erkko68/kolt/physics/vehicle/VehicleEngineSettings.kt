@@ -85,4 +85,7 @@ open class VehicleEngineSettings internal constructor(internal val vehicleEngine
     var angularDamping: Float
         get() = JphVehicleEngineSettings_GetAngularDamping(vehicleEngineSettingsHandle)
         set(value) = JphVehicleEngineSettings_SetAngularDamping(vehicleEngineSettingsHandle, value)
+
+    /** This object as the [VehicleEngine] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asVehicleEngine() = VehicleEngine(JphVehicleEngine_fromVehicleEngineSettings(vehicleEngineSettingsHandle))
 }

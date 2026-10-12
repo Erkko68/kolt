@@ -13,6 +13,7 @@ JphObjectLayerFilter* JphObjectLayerFilter_create(void);
 void JphObjectLayerFilter_destroy(JphObjectLayerFilter* self);
 JphObjectLayerFilter* JphObjectLayerFilter_createUpcalls(JphUpcall call);
 void JphObjectLayerFilter_bindUpcalls(JphObjectLayerFilter* self, void* userData);
+int32_t JphObjectLayerFilter_dynamicType(const JphObjectLayerFilter* self);
 bool JphObjectLayerFilter_ShouldCollide(const JphObjectLayerFilter* self, uint32_t inLayer);
 
 

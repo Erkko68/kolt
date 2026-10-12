@@ -24,6 +24,14 @@ JphShape* JphTaperedCapsuleShape_asShape(JphTaperedCapsuleShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphTaperedCapsuleShape* JphTaperedCapsuleShape_fromConvexShape(JphConvexShape* base) {
+    return kolt::c(static_cast<JPH::TaperedCapsuleShape*>(kolt::cpp(base)));
+}
+
+JphTaperedCapsuleShape* JphTaperedCapsuleShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::TaperedCapsuleShape*>(kolt::cpp(base)));
+}
+
 float JphTaperedCapsuleShape_GetTopRadius(const JphTaperedCapsuleShape* self) {
     return kolt::cpp(self)->GetTopRadius();
 }

@@ -12,3 +12,6 @@ internal external fun JphTempAllocatorMalloc_destroy(self: NativePointer)
 
 @ExternalSymbolName("JphTempAllocatorMalloc_asTempAllocator")
 internal external fun JphTempAllocatorMalloc_asTempAllocator(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphTempAllocatorMalloc_fromTempAllocator")
+internal external fun JphTempAllocatorMalloc_fromTempAllocator(base: NativePointer): NativePointer

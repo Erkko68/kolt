@@ -45,6 +45,11 @@ void JphBodyFilter_bindUpcalls(JphBodyFilter* self, void* userData) {
     static_cast<::JPH::JphBodyFilter_Upcalls*>(kolt::cpp(self))->mUser = userData;
 }
 
+int32_t JphBodyFilter_dynamicType(const JphBodyFilter* self) {
+    const JPH::BodyFilter* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::IgnoreMultipleBodiesFilter*>(object) ? 1 : dynamic_cast<const JPH::IgnoreSingleBodyFilter*>(object) ? 2 : dynamic_cast<const JPH::IgnoreSingleBodyFilterChained*>(object) ? 3 : 0;
+}
+
 bool JphBodyFilter_ShouldCollide(const JphBodyFilter* self, uint32_t inBodyID) {
     return kolt::cpp(self)->ShouldCollide(JPH::BodyID(inBodyID));
 }

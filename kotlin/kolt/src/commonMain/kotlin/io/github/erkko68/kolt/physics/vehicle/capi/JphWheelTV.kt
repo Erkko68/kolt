@@ -13,6 +13,9 @@ internal external fun JphWheelTV_destroy(self: NativePointer)
 @ExternalSymbolName("JphWheelTV_asWheel")
 internal external fun JphWheelTV_asWheel(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphWheelTV_fromWheel")
+internal external fun JphWheelTV_fromWheel(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphWheelTV_GetSettings")
 internal external fun JphWheelTV_GetSettings(self: NativePointer): NativePointer
 

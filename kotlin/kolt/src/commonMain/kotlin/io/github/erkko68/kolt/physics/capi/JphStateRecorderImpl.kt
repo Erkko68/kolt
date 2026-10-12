@@ -19,6 +19,15 @@ internal external fun JphStateRecorderImpl_asStreamIn(self: NativePointer): Nati
 @ExternalSymbolName("JphStateRecorderImpl_asStreamOut")
 internal external fun JphStateRecorderImpl_asStreamOut(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphStateRecorderImpl_fromStateRecorder")
+internal external fun JphStateRecorderImpl_fromStateRecorder(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphStateRecorderImpl_fromStreamIn")
+internal external fun JphStateRecorderImpl_fromStreamIn(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphStateRecorderImpl_fromStreamOut")
+internal external fun JphStateRecorderImpl_fromStreamOut(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphStateRecorderImpl_Rewind")
 internal external fun JphStateRecorderImpl_Rewind(self: NativePointer)
 

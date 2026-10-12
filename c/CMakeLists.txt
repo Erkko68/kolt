@@ -26,6 +26,9 @@ if (ANDROID)
         set(${feature} OFF CACHE BOOL "")
     endforeach()
 endif()
+# With RTTI: the C API asks which class an object is (the generated _dynamicType), for Kotlin to wrap it as that.
+# Forced, as a build dir from before this has it off.
+set(CPP_RTTI_ENABLED ON CACHE BOOL "" FORCE)
 # Every current browser has wasm SIMD.
 set(USE_WASM_SIMD ON CACHE BOOL "")
 add_subdirectory(../jolt/Build jolt)
@@ -35,10 +38,6 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS kolt/generated/*.cpp kolt/manual/*.c
 add_library(kolt-c STATIC ${sources})
 # Jolt's defines and include dir come with the target.
 target_link_libraries(kolt-c PUBLIC Jolt)
-# As Jolt is built: a class deriving from one of its (the generated _Upcalls) would need its type info otherwise.
-if (NOT MSVC)
-    target_compile_options(kolt-c PRIVATE -fno-rtti)
-endif()
 
 # The web's image: the C API exporting what generateBindings lists, which kolt/web/kolt-globals.js installs as the
 # globals the Kotlin externals bind. Single-threaded: Jolt's thread pool runs its jobs on the caller.

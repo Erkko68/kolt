@@ -13,6 +13,9 @@ internal external fun JphVehicleTransmission_destroy(self: NativePointer)
 @ExternalSymbolName("JphVehicleTransmission_asVehicleTransmissionSettings")
 internal external fun JphVehicleTransmission_asVehicleTransmissionSettings(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphVehicleTransmission_fromVehicleTransmissionSettings")
+internal external fun JphVehicleTransmission_fromVehicleTransmissionSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphVehicleTransmission_Set")
 internal external fun JphVehicleTransmission_Set(self: NativePointer, inCurrentGear: Int, inClutchFriction: Float)
 

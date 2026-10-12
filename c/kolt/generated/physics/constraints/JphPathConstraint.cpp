@@ -24,6 +24,14 @@ JphConstraint* JphPathConstraint_asConstraint(JphPathConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphPathConstraint* JphPathConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::PathConstraint*>(kolt::cpp(base)));
+}
+
+JphPathConstraint* JphPathConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::PathConstraint*>(kolt::cpp(base)));
+}
+
 void JphPathConstraint_SetPath(JphPathConstraint* self, const JphPathConstraintPath* inPath, float inPathFraction) {
     kolt::cpp(self)->SetPath(kolt::cpp(inPath), inPathFraction);
 }

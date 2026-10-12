@@ -14,6 +14,8 @@ void JphPathConstraint_addRef(const JphPathConstraint* self);
 void JphPathConstraint_release(const JphPathConstraint* self);
 JphTwoBodyConstraint* JphPathConstraint_asTwoBodyConstraint(JphPathConstraint* self);
 JphConstraint* JphPathConstraint_asConstraint(JphPathConstraint* self);
+JphPathConstraint* JphPathConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphPathConstraint* JphPathConstraint_fromConstraint(JphConstraint* base);
 // skipped Vector<2> JPH::PathConstraint::GetTotalLambdaPosition() const: JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition|PathConstraint::GetTotalLambda(Position|RotationHinge))
 // skipped Vector<2> JPH::PathConstraint::GetTotalLambdaRotationHinge() const: JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition|PathConstraint::GetTotalLambda(Position|RotationHinge))
 void JphPathConstraint_SetPath(JphPathConstraint* self, const JphPathConstraintPath* inPath, float inPathFraction);

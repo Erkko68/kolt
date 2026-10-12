@@ -19,6 +19,9 @@ internal external fun JphGroupFilter_bindUpcalls(self: NativePointer, userData: 
 @ExternalSymbolName("JphGroupFilter_asSerializableObject")
 internal external fun JphGroupFilter_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphGroupFilter_dynamicType")
+internal external fun JphGroupFilter_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphGroupFilter_CanCollide")
 internal external fun JphGroupFilter_CanCollide(self: NativePointer, inGroup1: NativePointer, inGroup2: NativePointer): Boolean
 

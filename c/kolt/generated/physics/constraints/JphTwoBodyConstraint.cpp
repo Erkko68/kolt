@@ -16,6 +16,15 @@ JphConstraint* JphTwoBodyConstraint_asConstraint(JphTwoBodyConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphTwoBodyConstraint* JphTwoBodyConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::TwoBodyConstraint*>(kolt::cpp(base)));
+}
+
+int32_t JphTwoBodyConstraint_dynamicType(const JphTwoBodyConstraint* self) {
+    const JPH::TwoBodyConstraint* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::ConeConstraint*>(object) ? 1 : dynamic_cast<const JPH::DistanceConstraint*>(object) ? 2 : dynamic_cast<const JPH::FixedConstraint*>(object) ? 3 : dynamic_cast<const JPH::GearConstraint*>(object) ? 4 : dynamic_cast<const JPH::HingeConstraint*>(object) ? 5 : dynamic_cast<const JPH::PathConstraint*>(object) ? 6 : dynamic_cast<const JPH::PointConstraint*>(object) ? 7 : dynamic_cast<const JPH::PulleyConstraint*>(object) ? 8 : dynamic_cast<const JPH::RackAndPinionConstraint*>(object) ? 9 : dynamic_cast<const JPH::SixDOFConstraint*>(object) ? 10 : dynamic_cast<const JPH::SliderConstraint*>(object) ? 11 : dynamic_cast<const JPH::SwingTwistConstraint*>(object) ? 12 : 0;
+}
+
 JphBody* JphTwoBodyConstraint_GetBody1(const JphTwoBodyConstraint* self) {
     return kolt::c(kolt::cpp(self)->GetBody1());
 }

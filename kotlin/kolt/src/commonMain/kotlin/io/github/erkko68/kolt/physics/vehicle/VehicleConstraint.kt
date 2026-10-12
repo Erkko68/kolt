@@ -75,7 +75,7 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
 
     /** Set the interface that tests collision between wheel and ground */
     var vehicleCollisionTester: VehicleCollisionTester?
-        get() = JphVehicleConstraint_GetVehicleCollisionTester(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleCollisionTester(it) }
+        get() = JphVehicleConstraint_GetVehicleCollisionTester(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { wrapVehicleCollisionTester(it) }
         set(tester) = JphVehicleConstraint_SetVehicleCollisionTester(vehicleConstraintHandle, tester?.vehicleCollisionTesterHandle ?: NullPointer)
 
     /**
@@ -161,7 +161,7 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
 
     /** Access to the vehicle controller interface (determines acceleration / deceleration) */
     val controller: VehicleController?
-        get() = JphVehicleConstraint_GetController(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleController(it) }
+        get() = JphVehicleConstraint_GetController(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { wrapVehicleController(it) }
 
     /** Get the state of a wheels (writable interface, allows you to make changes to the configuration which will take effect the next time step) */
     val wheels: List<Wheel>
@@ -169,12 +169,12 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
             val count = JphVehicleConstraint_GetWheels(vehicleConstraintHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
             JphVehicleConstraint_GetWheels(vehicleConstraintHandle, returnedPointer, count)
-            readPointers(returnedPointer, count).map { Wheel(it) }
+            readPointers(returnedPointer, count).map { wrapWheel(it) }
         }
 
     /** Get the state of a wheel */
     fun getWheel(idx: Int): Wheel? =
-        JphVehicleConstraint_GetWheel(vehicleConstraintHandle, idx).takeIf { it != NullPointer }?.let { Wheel(it) }
+        JphVehicleConstraint_GetWheel(vehicleConstraintHandle, idx).takeIf { it != NullPointer }?.let { wrapWheel(it) }
 
     /**
      * Get the basis vectors for the wheel in local space to the vehicle body (note: basis does not rotate when the wheel rotates around its axis)

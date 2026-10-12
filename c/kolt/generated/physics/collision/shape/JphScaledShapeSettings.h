@@ -17,6 +17,8 @@ void JphScaledShapeSettings_release(const JphScaledShapeSettings* self);
 JphDecoratedShapeSettings* JphScaledShapeSettings_asDecoratedShapeSettings(JphScaledShapeSettings* self);
 JphShapeSettings* JphScaledShapeSettings_asShapeSettings(JphScaledShapeSettings* self);
 JphSerializableObject* JphScaledShapeSettings_asSerializableObject(JphScaledShapeSettings* self);
+JphScaledShapeSettings* JphScaledShapeSettings_fromDecoratedShapeSettings(JphDecoratedShapeSettings* base);
+JphScaledShapeSettings* JphScaledShapeSettings_fromShapeSettings(JphShapeSettings* base);
 // skipped static void JPH::ScaledShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphScaledShapeSettings_GetScale(const JphScaledShapeSettings* self, JphVec3* out);
 void JphScaledShapeSettings_SetScale(JphScaledShapeSettings* self, const JphVec3* value);

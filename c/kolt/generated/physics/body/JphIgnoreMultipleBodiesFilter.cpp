@@ -49,6 +49,10 @@ JphBodyFilter* JphIgnoreMultipleBodiesFilter_asBodyFilter(JphIgnoreMultipleBodie
     return kolt::c(static_cast<JPH::BodyFilter*>(kolt::cpp(self)));
 }
 
+JphIgnoreMultipleBodiesFilter* JphIgnoreMultipleBodiesFilter_fromBodyFilter(JphBodyFilter* base) {
+    return kolt::c(static_cast<JPH::IgnoreMultipleBodiesFilter*>(kolt::cpp(base)));
+}
+
 void JphIgnoreMultipleBodiesFilter_Clear(JphIgnoreMultipleBodiesFilter* self) {
     kolt::cpp(self)->Clear();
 }

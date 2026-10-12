@@ -15,6 +15,8 @@ void JphSixDOFConstraintSettings_release(const JphSixDOFConstraintSettings* self
 JphTwoBodyConstraintSettings* JphSixDOFConstraintSettings_asTwoBodyConstraintSettings(JphSixDOFConstraintSettings* self);
 JphConstraintSettings* JphSixDOFConstraintSettings_asConstraintSettings(JphSixDOFConstraintSettings* self);
 JphSerializableObject* JphSixDOFConstraintSettings_asSerializableObject(JphSixDOFConstraintSettings* self);
+JphSixDOFConstraintSettings* JphSixDOFConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base);
+JphSixDOFConstraintSettings* JphSixDOFConstraintSettings_fromConstraintSettings(JphConstraintSettings* base);
 // skipped static void JPH::SixDOFConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphSixDOFConstraintSettings_MakeFreeAxis(JphSixDOFConstraintSettings* self, JphSixDOFConstraintSettingsEAxis inAxis);
 bool JphSixDOFConstraintSettings_IsFreeAxis(const JphSixDOFConstraintSettings* self, JphSixDOFConstraintSettingsEAxis inAxis);

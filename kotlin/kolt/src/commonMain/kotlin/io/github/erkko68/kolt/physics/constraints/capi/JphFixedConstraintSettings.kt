@@ -22,6 +22,12 @@ internal external fun JphFixedConstraintSettings_asConstraintSettings(self: Nati
 @ExternalSymbolName("JphFixedConstraintSettings_asSerializableObject")
 internal external fun JphFixedConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphFixedConstraintSettings_fromTwoBodyConstraintSettings")
+internal external fun JphFixedConstraintSettings_fromTwoBodyConstraintSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphFixedConstraintSettings_fromConstraintSettings")
+internal external fun JphFixedConstraintSettings_fromConstraintSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphFixedConstraintSettings_GetSpace")
 internal external fun JphFixedConstraintSettings_GetSpace(self: NativePointer): Int
 

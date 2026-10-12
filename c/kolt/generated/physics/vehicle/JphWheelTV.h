@@ -12,6 +12,7 @@ extern "C" {
 JphWheelTV* JphWheelTV_create(const JphWheelSettingsTV* inWheel);
 void JphWheelTV_destroy(JphWheelTV* self);
 JphWheel* JphWheelTV_asWheel(JphWheelTV* self);
+JphWheelTV* JphWheelTV_fromWheel(JphWheel* base);
 const JphWheelSettingsTV* JphWheelTV_GetSettings(const JphWheelTV* self);
 void JphWheelTV_CalculateAngularVelocity(JphWheelTV* self, const JphVehicleConstraint* inConstraint);
 void JphWheelTV_Update(JphWheelTV* self, uint32_t inWheelIndex, float inDeltaTime, const JphVehicleConstraint* inConstraint);

@@ -32,6 +32,14 @@ JphSerializableObject* JphCylinderShapeSettings_asSerializableObject(JphCylinder
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphCylinderShapeSettings* JphCylinderShapeSettings_fromConvexShapeSettings(JphConvexShapeSettings* base) {
+    return kolt::c(static_cast<JPH::CylinderShapeSettings*>(kolt::cpp(base)));
+}
+
+JphCylinderShapeSettings* JphCylinderShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::CylinderShapeSettings*>(kolt::cpp(base)));
+}
+
 float JphCylinderShapeSettings_GetHalfHeight(const JphCylinderShapeSettings* self) {
     return kolt::cpp(self)->mHalfHeight;
 }

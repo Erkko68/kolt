@@ -12,6 +12,7 @@ extern "C" {
 JphIgnoreSingleBodyFilter* JphIgnoreSingleBodyFilter_create(uint32_t inBodyID);
 void JphIgnoreSingleBodyFilter_destroy(JphIgnoreSingleBodyFilter* self);
 JphBodyFilter* JphIgnoreSingleBodyFilter_asBodyFilter(JphIgnoreSingleBodyFilter* self);
+JphIgnoreSingleBodyFilter* JphIgnoreSingleBodyFilter_fromBodyFilter(JphBodyFilter* base);
 
 
 #ifdef __cplusplus

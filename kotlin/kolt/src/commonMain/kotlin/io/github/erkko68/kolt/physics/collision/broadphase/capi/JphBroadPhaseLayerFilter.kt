@@ -16,5 +16,8 @@ internal external fun JphBroadPhaseLayerFilter_createUpcalls(call: NativePointer
 @ExternalSymbolName("JphBroadPhaseLayerFilter_bindUpcalls")
 internal external fun JphBroadPhaseLayerFilter_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("JphBroadPhaseLayerFilter_dynamicType")
+internal external fun JphBroadPhaseLayerFilter_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphBroadPhaseLayerFilter_ShouldCollide")
 internal external fun JphBroadPhaseLayerFilter_ShouldCollide(self: NativePointer, inLayer: Int): Boolean

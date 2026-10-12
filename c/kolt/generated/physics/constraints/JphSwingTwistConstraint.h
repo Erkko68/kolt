@@ -14,6 +14,8 @@ void JphSwingTwistConstraint_addRef(const JphSwingTwistConstraint* self);
 void JphSwingTwistConstraint_release(const JphSwingTwistConstraint* self);
 JphTwoBodyConstraint* JphSwingTwistConstraint_asTwoBodyConstraint(JphSwingTwistConstraint* self);
 JphConstraint* JphSwingTwistConstraint_asConstraint(JphSwingTwistConstraint* self);
+JphSwingTwistConstraint* JphSwingTwistConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphSwingTwistConstraint* JphSwingTwistConstraint_fromConstraint(JphConstraint* base);
 void JphSwingTwistConstraint_GetLocalSpacePosition1(const JphSwingTwistConstraint* self, JphVec3* out);
 void JphSwingTwistConstraint_GetLocalSpacePosition2(const JphSwingTwistConstraint* self, JphVec3* out);
 void JphSwingTwistConstraint_GetConstraintToBody1(const JphSwingTwistConstraint* self, JphQuat* out);

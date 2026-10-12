@@ -16,6 +16,10 @@ JphBroadPhaseLayerInterface* JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerI
     return kolt::c(static_cast<JPH::BroadPhaseLayerInterface*>(kolt::cpp(self)));
 }
 
+JphBroadPhaseLayerInterfaceTable* JphBroadPhaseLayerInterfaceTable_fromBroadPhaseLayerInterface(JphBroadPhaseLayerInterface* base) {
+    return kolt::c(static_cast<JPH::BroadPhaseLayerInterfaceTable*>(kolt::cpp(base)));
+}
+
 void JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer(JphBroadPhaseLayerInterfaceTable* self, uint32_t inObjectLayer, uint32_t inBroadPhaseLayer) {
     kolt::cpp(self)->MapObjectToBroadPhaseLayer(static_cast<uint16_t>(inObjectLayer), JPH::BroadPhaseLayer(JPH::BroadPhaseLayer::Type(inBroadPhaseLayer)));
 }

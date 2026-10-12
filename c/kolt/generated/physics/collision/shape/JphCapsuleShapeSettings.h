@@ -16,6 +16,8 @@ void JphCapsuleShapeSettings_release(const JphCapsuleShapeSettings* self);
 JphConvexShapeSettings* JphCapsuleShapeSettings_asConvexShapeSettings(JphCapsuleShapeSettings* self);
 JphShapeSettings* JphCapsuleShapeSettings_asShapeSettings(JphCapsuleShapeSettings* self);
 JphSerializableObject* JphCapsuleShapeSettings_asSerializableObject(JphCapsuleShapeSettings* self);
+JphCapsuleShapeSettings* JphCapsuleShapeSettings_fromConvexShapeSettings(JphConvexShapeSettings* base);
+JphCapsuleShapeSettings* JphCapsuleShapeSettings_fromShapeSettings(JphShapeSettings* base);
 // skipped static void JPH::CapsuleShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 bool JphCapsuleShapeSettings_IsValid(const JphCapsuleShapeSettings* self);
 bool JphCapsuleShapeSettings_IsSphere(const JphCapsuleShapeSettings* self);

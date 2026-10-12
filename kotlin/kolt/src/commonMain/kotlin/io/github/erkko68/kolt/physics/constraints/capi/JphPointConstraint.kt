@@ -19,6 +19,12 @@ internal external fun JphPointConstraint_asTwoBodyConstraint(self: NativePointer
 @ExternalSymbolName("JphPointConstraint_asConstraint")
 internal external fun JphPointConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPointConstraint_fromTwoBodyConstraint")
+internal external fun JphPointConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphPointConstraint_fromConstraint")
+internal external fun JphPointConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphPointConstraint_SetPoint1")
 internal external fun JphPointConstraint_SetPoint1(self: NativePointer, inSpace: Int, inPoint1: NativePointer)
 

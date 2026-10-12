@@ -16,6 +16,10 @@ JphCollideSettingsBase* JphShapeCastSettings_asCollideSettingsBase(JphShapeCastS
     return kolt::c(static_cast<JPH::CollideSettingsBase*>(kolt::cpp(self)));
 }
 
+JphShapeCastSettings* JphShapeCastSettings_fromCollideSettingsBase(JphCollideSettingsBase* base) {
+    return kolt::c(static_cast<JPH::ShapeCastSettings*>(kolt::cpp(base)));
+}
+
 void JphShapeCastSettings_SetBackFaceMode(JphShapeCastSettings* self, JphEBackFaceMode inMode) {
     kolt::cpp(self)->SetBackFaceMode(static_cast<JPH::EBackFaceMode>(inMode));
 }

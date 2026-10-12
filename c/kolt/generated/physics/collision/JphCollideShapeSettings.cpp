@@ -16,6 +16,10 @@ JphCollideSettingsBase* JphCollideShapeSettings_asCollideSettingsBase(JphCollide
     return kolt::c(static_cast<JPH::CollideSettingsBase*>(kolt::cpp(self)));
 }
 
+JphCollideShapeSettings* JphCollideShapeSettings_fromCollideSettingsBase(JphCollideSettingsBase* base) {
+    return kolt::c(static_cast<JPH::CollideShapeSettings*>(kolt::cpp(base)));
+}
+
 float JphCollideShapeSettings_GetMaxSeparationDistance(const JphCollideShapeSettings* self) {
     return kolt::cpp(self)->mMaxSeparationDistance;
 }

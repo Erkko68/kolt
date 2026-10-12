@@ -10,6 +10,9 @@ internal external fun JphVehicleCollisionTester_addRef(self: NativePointer)
 @ExternalSymbolName("JphVehicleCollisionTester_release")
 internal external fun JphVehicleCollisionTester_release(self: NativePointer)
 
+@ExternalSymbolName("JphVehicleCollisionTester_dynamicType")
+internal external fun JphVehicleCollisionTester_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphVehicleCollisionTester_GetObjectLayer")
 internal external fun JphVehicleCollisionTester_GetObjectLayer(self: NativePointer): Int
 

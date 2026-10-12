@@ -25,6 +25,12 @@ internal external fun JphCapsuleShapeSettings_asShapeSettings(self: NativePointe
 @ExternalSymbolName("JphCapsuleShapeSettings_asSerializableObject")
 internal external fun JphCapsuleShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCapsuleShapeSettings_fromConvexShapeSettings")
+internal external fun JphCapsuleShapeSettings_fromConvexShapeSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphCapsuleShapeSettings_fromShapeSettings")
+internal external fun JphCapsuleShapeSettings_fromShapeSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphCapsuleShapeSettings_IsValid")
 internal external fun JphCapsuleShapeSettings_IsValid(self: NativePointer): Boolean
 

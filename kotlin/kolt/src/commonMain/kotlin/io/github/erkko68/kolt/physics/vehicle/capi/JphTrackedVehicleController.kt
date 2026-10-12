@@ -13,6 +13,9 @@ internal external fun JphTrackedVehicleController_destroy(self: NativePointer)
 @ExternalSymbolName("JphTrackedVehicleController_asVehicleController")
 internal external fun JphTrackedVehicleController_asVehicleController(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphTrackedVehicleController_fromVehicleController")
+internal external fun JphTrackedVehicleController_fromVehicleController(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphTrackedVehicleController_SetDriverInput")
 internal external fun JphTrackedVehicleController_SetDriverInput(self: NativePointer, inForward: Float, inLeftRatio: Float, inRightRatio: Float, inBrake: Float)
 

@@ -43,6 +43,10 @@ JphObjectLayerPairFilter* JphObjectLayerPairFilterMask_asObjectLayerPairFilter(J
     return kolt::c(static_cast<JPH::ObjectLayerPairFilter*>(kolt::cpp(self)));
 }
 
+JphObjectLayerPairFilterMask* JphObjectLayerPairFilterMask_fromObjectLayerPairFilter(JphObjectLayerPairFilter* base) {
+    return kolt::c(static_cast<JPH::ObjectLayerPairFilterMask*>(kolt::cpp(base)));
+}
+
 uint32_t JphObjectLayerPairFilterMask_sGetObjectLayer(uint32_t inGroup, uint32_t inMask) {
     return static_cast<uint32_t>(JPH::ObjectLayerPairFilterMask::sGetObjectLayer(inGroup, inMask));
 }

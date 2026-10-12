@@ -16,6 +16,10 @@ JphBroadPhaseCastResult* JphRayCastResult_asBroadPhaseCastResult(JphRayCastResul
     return kolt::c(static_cast<JPH::BroadPhaseCastResult*>(kolt::cpp(self)));
 }
 
+JphRayCastResult* JphRayCastResult_fromBroadPhaseCastResult(JphBroadPhaseCastResult* base) {
+    return kolt::c(static_cast<JPH::RayCastResult*>(kolt::cpp(base)));
+}
+
 uint32_t JphRayCastResult_GetSubShapeID2(const JphRayCastResult* self) {
     return (kolt::cpp(self)->mSubShapeID2).GetValue();
 }

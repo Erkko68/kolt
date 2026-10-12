@@ -28,6 +28,14 @@ JphSerializableObject* JphPathConstraintSettings_asSerializableObject(JphPathCon
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphPathConstraintSettings* JphPathConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::PathConstraintSettings*>(kolt::cpp(base)));
+}
+
+JphPathConstraintSettings* JphPathConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::PathConstraintSettings*>(kolt::cpp(base)));
+}
+
 const JphPathConstraintPath* JphPathConstraintSettings_GetPath(const JphPathConstraintSettings* self) {
     return kolt::c((kolt::cpp(self)->mPath).GetPtr());
 }

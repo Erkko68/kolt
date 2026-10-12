@@ -24,6 +24,14 @@ JphConstraint* JphConeConstraint_asConstraint(JphConeConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphConeConstraint* JphConeConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::ConeConstraint*>(kolt::cpp(base)));
+}
+
+JphConeConstraint* JphConeConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::ConeConstraint*>(kolt::cpp(base)));
+}
+
 void JphConeConstraint_SetHalfConeAngle(JphConeConstraint* self, float inHalfConeAngle) {
     kolt::cpp(self)->SetHalfConeAngle(inHalfConeAngle);
 }

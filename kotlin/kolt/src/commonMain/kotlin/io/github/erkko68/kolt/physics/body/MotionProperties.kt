@@ -389,4 +389,7 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
     /** Restoring state for replay */
     open fun restoreState(stream: StateRecorder) =
         JphMotionProperties_RestoreState(motionPropertiesHandle, stream.stateRecorderHandle)
+
+    /** This object as the [SoftBodyMotionProperties] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asSoftBodyMotionProperties() = SoftBodyMotionProperties(JphSoftBodyMotionProperties_fromMotionProperties(motionPropertiesHandle))
 }

@@ -22,6 +22,12 @@ internal external fun JphCylinderShape_asConvexShape(self: NativePointer): Nativ
 @ExternalSymbolName("JphCylinderShape_asShape")
 internal external fun JphCylinderShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCylinderShape_fromConvexShape")
+internal external fun JphCylinderShape_fromConvexShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphCylinderShape_fromShape")
+internal external fun JphCylinderShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphCylinderShape_GetHalfHeight")
 internal external fun JphCylinderShape_GetHalfHeight(self: NativePointer): Float
 

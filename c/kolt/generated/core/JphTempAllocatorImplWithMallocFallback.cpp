@@ -16,4 +16,8 @@ JphTempAllocator* JphTempAllocatorImplWithMallocFallback_asTempAllocator(JphTemp
     return kolt::c(static_cast<JPH::TempAllocator*>(kolt::cpp(self)));
 }
 
+JphTempAllocatorImplWithMallocFallback* JphTempAllocatorImplWithMallocFallback_fromTempAllocator(JphTempAllocator* base) {
+    return kolt::c(static_cast<JPH::TempAllocatorImplWithMallocFallback*>(kolt::cpp(base)));
+}
+
 } // extern "C"

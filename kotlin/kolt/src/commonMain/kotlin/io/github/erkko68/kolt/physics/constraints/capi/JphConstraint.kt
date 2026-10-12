@@ -10,6 +10,9 @@ internal external fun JphConstraint_addRef(self: NativePointer)
 @ExternalSymbolName("JphConstraint_release")
 internal external fun JphConstraint_release(self: NativePointer)
 
+@ExternalSymbolName("JphConstraint_dynamicType")
+internal external fun JphConstraint_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphConstraint_GetType")
 internal external fun JphConstraint_GetType(self: NativePointer): Int
 

@@ -59,6 +59,10 @@ JphCharacterVsCharacterCollision* JphCharacterVsCharacterCollisionSimple_asChara
     return kolt::c(static_cast<JPH::CharacterVsCharacterCollision*>(kolt::cpp(self)));
 }
 
+JphCharacterVsCharacterCollisionSimple* JphCharacterVsCharacterCollisionSimple_fromCharacterVsCharacterCollision(JphCharacterVsCharacterCollision* base) {
+    return kolt::c(static_cast<JPH::CharacterVsCharacterCollisionSimple*>(kolt::cpp(base)));
+}
+
 void JphCharacterVsCharacterCollisionSimple_Add(JphCharacterVsCharacterCollisionSimple* self, JphCharacterVirtual* inCharacter) {
     kolt::cpp(self)->Add(kolt::cpp(inCharacter));
 }

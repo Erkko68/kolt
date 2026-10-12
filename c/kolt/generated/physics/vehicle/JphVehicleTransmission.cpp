@@ -16,6 +16,10 @@ JphVehicleTransmissionSettings* JphVehicleTransmission_asVehicleTransmissionSett
     return kolt::c(static_cast<JPH::VehicleTransmissionSettings*>(kolt::cpp(self)));
 }
 
+JphVehicleTransmission* JphVehicleTransmission_fromVehicleTransmissionSettings(JphVehicleTransmissionSettings* base) {
+    return kolt::c(static_cast<JPH::VehicleTransmission*>(kolt::cpp(base)));
+}
+
 void JphVehicleTransmission_Set(JphVehicleTransmission* self, int32_t inCurrentGear, float inClutchFriction) {
     kolt::cpp(self)->Set(static_cast<int>(inCurrentGear), inClutchFriction);
 }

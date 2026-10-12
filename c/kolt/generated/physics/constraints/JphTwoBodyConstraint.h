@@ -12,6 +12,8 @@ extern "C" {
 void JphTwoBodyConstraint_addRef(const JphTwoBodyConstraint* self);
 void JphTwoBodyConstraint_release(const JphTwoBodyConstraint* self);
 JphConstraint* JphTwoBodyConstraint_asConstraint(JphTwoBodyConstraint* self);
+JphTwoBodyConstraint* JphTwoBodyConstraint_fromConstraint(JphConstraint* base);
+int32_t JphTwoBodyConstraint_dynamicType(const JphTwoBodyConstraint* self);
 JphBody* JphTwoBodyConstraint_GetBody1(const JphTwoBodyConstraint* self);
 JphBody* JphTwoBodyConstraint_GetBody2(const JphTwoBodyConstraint* self);
 void JphTwoBodyConstraint_GetConstraintToBody1Matrix(const JphTwoBodyConstraint* self, JphMat44* out);

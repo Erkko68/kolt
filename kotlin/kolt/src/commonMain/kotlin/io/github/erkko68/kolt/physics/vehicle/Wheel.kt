@@ -46,7 +46,7 @@ open class Wheel internal constructor(internal val wheelHandle: NativePointer, o
 
     /** Get settings for the wheel */
     open val settings: WheelSettings?
-        get() = JphWheel_GetSettings(wheelHandle).takeIf { it != NullPointer }?.let { WheelSettings(it) }
+        get() = JphWheel_GetSettings(wheelHandle).takeIf { it != NullPointer }?.let { wrapWheelSettings(it) }
 
     /** Get the angular velocity (rad/s) for this wheel, note that positive means the wheel is rotating such that the car moves forward */
     var angularVelocity: Float

@@ -32,6 +32,14 @@ JphSerializableObject* JphSphereShapeSettings_asSerializableObject(JphSphereShap
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphSphereShapeSettings* JphSphereShapeSettings_fromConvexShapeSettings(JphConvexShapeSettings* base) {
+    return kolt::c(static_cast<JPH::SphereShapeSettings*>(kolt::cpp(base)));
+}
+
+JphSphereShapeSettings* JphSphereShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::SphereShapeSettings*>(kolt::cpp(base)));
+}
+
 float JphSphereShapeSettings_GetRadius(const JphSphereShapeSettings* self) {
     return kolt::cpp(self)->mRadius;
 }

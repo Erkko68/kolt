@@ -20,6 +20,10 @@ JphCollideShapeResult* JphShapeCastResult_asCollideShapeResult(JphShapeCastResul
     return kolt::c(static_cast<JPH::CollideShapeResult*>(kolt::cpp(self)));
 }
 
+JphShapeCastResult* JphShapeCastResult_fromCollideShapeResult(JphCollideShapeResult* base) {
+    return kolt::c(static_cast<JPH::ShapeCastResult*>(kolt::cpp(base)));
+}
+
 float JphShapeCastResult_GetEarlyOutFraction(const JphShapeCastResult* self) {
     return kolt::cpp(self)->GetEarlyOutFraction();
 }

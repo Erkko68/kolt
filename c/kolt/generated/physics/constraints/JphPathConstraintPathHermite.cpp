@@ -56,6 +56,10 @@ JphSerializableObject* JphPathConstraintPathHermite_asSerializableObject(JphPath
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphPathConstraintPathHermite* JphPathConstraintPathHermite_fromPathConstraintPath(JphPathConstraintPath* base) {
+    return kolt::c(static_cast<JPH::PathConstraintPathHermite*>(kolt::cpp(base)));
+}
+
 void JphPathConstraintPathHermite_AddPoint(JphPathConstraintPathHermite* self, const JphVec3* inPosition, const JphVec3* inTangent, const JphVec3* inNormal) {
     kolt::cpp(self)->AddPoint(kolt::math<JPH::Vec3>(*inPosition), kolt::math<JPH::Vec3>(*inTangent), kolt::math<JPH::Vec3>(*inNormal));
 }

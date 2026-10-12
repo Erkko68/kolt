@@ -12,6 +12,7 @@ extern "C" {
 JphVehicleEngine* JphVehicleEngine_create(void);
 void JphVehicleEngine_destroy(JphVehicleEngine* self);
 JphVehicleEngineSettings* JphVehicleEngine_asVehicleEngineSettings(JphVehicleEngine* self);
+JphVehicleEngine* JphVehicleEngine_fromVehicleEngineSettings(JphVehicleEngineSettings* base);
 void JphVehicleEngine_ClampRPM(JphVehicleEngine* self);
 float JphVehicleEngine_GetCurrentRPM(const JphVehicleEngine* self);
 void JphVehicleEngine_SetCurrentRPM(JphVehicleEngine* self, float inRPM);

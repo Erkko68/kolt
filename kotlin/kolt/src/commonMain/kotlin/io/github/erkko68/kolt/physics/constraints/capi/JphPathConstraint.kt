@@ -19,6 +19,12 @@ internal external fun JphPathConstraint_asTwoBodyConstraint(self: NativePointer)
 @ExternalSymbolName("JphPathConstraint_asConstraint")
 internal external fun JphPathConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPathConstraint_fromTwoBodyConstraint")
+internal external fun JphPathConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphPathConstraint_fromConstraint")
+internal external fun JphPathConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphPathConstraint_SetPath")
 internal external fun JphPathConstraint_SetPath(self: NativePointer, inPath: NativePointer, inPathFraction: Float)
 

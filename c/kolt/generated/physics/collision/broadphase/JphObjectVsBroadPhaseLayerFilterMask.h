@@ -12,6 +12,7 @@ extern "C" {
 JphObjectVsBroadPhaseLayerFilterMask* JphObjectVsBroadPhaseLayerFilterMask_create(const JphBroadPhaseLayerInterfaceMask* inBroadPhaseLayerInterface);
 void JphObjectVsBroadPhaseLayerFilterMask_destroy(JphObjectVsBroadPhaseLayerFilterMask* self);
 JphObjectVsBroadPhaseLayerFilter* JphObjectVsBroadPhaseLayerFilterMask_asObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterMask* self);
+JphObjectVsBroadPhaseLayerFilterMask* JphObjectVsBroadPhaseLayerFilterMask_fromObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilter* base);
 
 
 #ifdef __cplusplus

@@ -22,6 +22,12 @@ internal external fun JphPulleyConstraintSettings_asConstraintSettings(self: Nat
 @ExternalSymbolName("JphPulleyConstraintSettings_asSerializableObject")
 internal external fun JphPulleyConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPulleyConstraintSettings_fromTwoBodyConstraintSettings")
+internal external fun JphPulleyConstraintSettings_fromTwoBodyConstraintSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphPulleyConstraintSettings_fromConstraintSettings")
+internal external fun JphPulleyConstraintSettings_fromConstraintSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphPulleyConstraintSettings_GetSpace")
 internal external fun JphPulleyConstraintSettings_GetSpace(self: NativePointer): Int
 

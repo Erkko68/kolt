@@ -15,6 +15,7 @@ void JphWheelSettings_release(const JphWheelSettings* self);
 JphWheelSettings* JphWheelSettings_createUpcalls(JphUpcall call);
 void JphWheelSettings_bindUpcalls(JphWheelSettings* self, void* userData);
 JphSerializableObject* JphWheelSettings_asSerializableObject(JphWheelSettings* self);
+int32_t JphWheelSettings_dynamicType(const JphWheelSettings* self);
 // skipped const JPH::RTTI * JPH::WheelSettings::GetRTTI() const: uses JPH::RTTI
 // skipped const void * JPH::WheelSettings::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
 // skipped static void JPH::WheelSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI

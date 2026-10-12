@@ -13,6 +13,9 @@ internal external fun JphWheelWV_destroy(self: NativePointer)
 @ExternalSymbolName("JphWheelWV_asWheel")
 internal external fun JphWheelWV_asWheel(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphWheelWV_fromWheel")
+internal external fun JphWheelWV_fromWheel(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphWheelWV_GetSettings")
 internal external fun JphWheelWV_GetSettings(self: NativePointer): NativePointer
 

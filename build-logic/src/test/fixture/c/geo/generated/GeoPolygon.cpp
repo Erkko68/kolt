@@ -16,6 +16,10 @@ GeoShape* GeoPolygon_asShape(GeoPolygon* self) {
     return geoc::c(static_cast<geo::Shape*>(geoc::cpp(self)));
 }
 
+GeoPolygon* GeoPolygon_fromShape(GeoShape* base) {
+    return geoc::c(static_cast<geo::Polygon*>(geoc::cpp(base)));
+}
+
 uint32_t GeoPolygon_points(const GeoPolygon* self, GeoPoint* const* out, uint32_t outCapacity) {
     return geoc::copy(geoc::cpp(self)->points(), outCapacity, [&](auto& x, uint32_t i) { *geoc::cpp(out[i]) = x; });
 }

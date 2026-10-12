@@ -25,6 +25,9 @@ internal external fun JphWheelSettingsTV_asWheelSettings(self: NativePointer): N
 @ExternalSymbolName("JphWheelSettingsTV_asSerializableObject")
 internal external fun JphWheelSettingsTV_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphWheelSettingsTV_fromWheelSettings")
+internal external fun JphWheelSettingsTV_fromWheelSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphWheelSettingsTV_GetLongitudinalFriction")
 internal external fun JphWheelSettingsTV_GetLongitudinalFriction(self: NativePointer): Float
 

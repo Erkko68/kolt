@@ -19,6 +19,12 @@ internal external fun JphSixDOFConstraint_asTwoBodyConstraint(self: NativePointe
 @ExternalSymbolName("JphSixDOFConstraint_asConstraint")
 internal external fun JphSixDOFConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphSixDOFConstraint_fromTwoBodyConstraint")
+internal external fun JphSixDOFConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphSixDOFConstraint_fromConstraint")
+internal external fun JphSixDOFConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphSixDOFConstraint_SetTranslationLimits")
 internal external fun JphSixDOFConstraint_SetTranslationLimits(self: NativePointer, inLimitMin: NativePointer, inLimitMax: NativePointer)
 

@@ -134,7 +134,7 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
         interopScope {
             val remainderArray = IntArray(1)
             val remainderPointer = toInterop(remainderArray)
-            val nativeResult = JphShape_GetLeafShape(shapeHandle, subShapeID.value, remainderPointer).takeIf { it != NullPointer }?.let { Shape(it) }
+            val nativeResult = JphShape_GetLeafShape(shapeHandle, subShapeID.value, remainderPointer).takeIf { it != NullPointer }?.let { wrapShape(it) }
             remainderPointer.fromInterop(remainderArray)
             Pair(nativeResult, SubShapeID(remainderArray[0]))
         }
@@ -274,7 +274,7 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             val returned = JphShape_ScaleShape(shapeHandle, toInterop(scale.toArray()), errorPointer, error.size)
             errorPointer.fromInterop(error)
             if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
-            Shape(returned, owned = true)
+            wrapShape(returned, owned = true)
         }
 
     /**
@@ -330,7 +330,7 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             val count = JphShape_SaveSubShapeState(shapeHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
             JphShape_SaveSubShapeState(shapeHandle, returnedPointer, count)
-            readPointers(returnedPointer, count).map { Shape(it, owned = true) }
+            readPointers(returnedPointer, count).map { wrapShape(it, owned = true) }
         }
 
     /** Get stats of this shape. Use for logging / data collection purposes only. Does not add values from child shapes, use GetStatsRecursive for this. */
@@ -427,7 +427,7 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
                 val returned = JphShape_sRestoreFromBinaryState(stream.streamInHandle, errorPointer, error.size)
                 errorPointer.fromInterop(error)
                 if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
-                Shape(returned, owned = true)
+                wrapShape(returned, owned = true)
             }
     }
 }

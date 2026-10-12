@@ -39,6 +39,11 @@ void JphObjectLayerFilter_bindUpcalls(JphObjectLayerFilter* self, void* userData
     static_cast<::JPH::JphObjectLayerFilter_Upcalls*>(kolt::cpp(self))->mUser = userData;
 }
 
+int32_t JphObjectLayerFilter_dynamicType(const JphObjectLayerFilter* self) {
+    const JPH::ObjectLayerFilter* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::DefaultObjectLayerFilter*>(object) ? 1 : dynamic_cast<const JPH::SpecifiedObjectLayerFilter*>(object) ? 2 : 0;
+}
+
 bool JphObjectLayerFilter_ShouldCollide(const JphObjectLayerFilter* self, uint32_t inLayer) {
     return kolt::cpp(self)->ShouldCollide(static_cast<uint16_t>(inLayer));
 }

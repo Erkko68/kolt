@@ -22,5 +22,11 @@ internal external fun JphScaledShape_asDecoratedShape(self: NativePointer): Nati
 @ExternalSymbolName("JphScaledShape_asShape")
 internal external fun JphScaledShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphScaledShape_fromDecoratedShape")
+internal external fun JphScaledShape_fromDecoratedShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphScaledShape_fromShape")
+internal external fun JphScaledShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphScaledShape_GetScale")
 internal external fun JphScaledShape_GetScale(self: NativePointer, out: NativePointer)

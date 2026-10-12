@@ -15,6 +15,7 @@ JphPlaneShape* JphPlaneShape_create_Plane_PhysicsMaterial_float(const JphPlane* 
 void JphPlaneShape_addRef(const JphPlaneShape* self);
 void JphPlaneShape_release(const JphPlaneShape* self);
 JphShape* JphPlaneShape_asShape(JphPlaneShape* self);
+JphPlaneShape* JphPlaneShape_fromShape(JphShape* base);
 // skipped static void JPH::PlaneShape::sRegister(): JPH::.*::sRegister
 void JphPlaneShape_GetPlane(const JphPlaneShape* self, JphPlane* out);
 float JphPlaneShape_GetHalfExtent(const JphPlaneShape* self);

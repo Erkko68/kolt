@@ -51,6 +51,11 @@ void JphCharacterVsCharacterCollision_bindUpcalls(JphCharacterVsCharacterCollisi
     static_cast<::JPH::JphCharacterVsCharacterCollision_Upcalls*>(kolt::cpp(self))->mUser = userData;
 }
 
+int32_t JphCharacterVsCharacterCollision_dynamicType(const JphCharacterVsCharacterCollision* self) {
+    const JPH::CharacterVsCharacterCollision* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::CharacterVsCharacterCollisionSimple*>(object) ? 1 : 0;
+}
+
 void JphCharacterVsCharacterCollision_CollideCharacter(const JphCharacterVsCharacterCollision* self, const JphCharacterVirtual* inCharacter, const JphMat44* inCenterOfMassTransform, const JphCollideShapeSettings* inCollideShapeSettings, const JphVec3* inBaseOffset, JphCollideShapeCollector* ioCollector) {
     kolt::cpp(self)->CollideCharacter(kolt::cpp(inCharacter), kolt::math<JPH::Mat44>(*inCenterOfMassTransform), *kolt::cpp(inCollideShapeSettings), kolt::math<JPH::Vec3>(*inBaseOffset), *kolt::cpp(ioCollector));
 }

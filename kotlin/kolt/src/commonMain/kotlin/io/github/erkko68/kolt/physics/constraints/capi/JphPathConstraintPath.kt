@@ -19,6 +19,9 @@ internal external fun JphPathConstraintPath_bindUpcalls(self: NativePointer, use
 @ExternalSymbolName("JphPathConstraintPath_asSerializableObject")
 internal external fun JphPathConstraintPath_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPathConstraintPath_dynamicType")
+internal external fun JphPathConstraintPath_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphPathConstraintPath_GetPathMaxFraction")
 internal external fun JphPathConstraintPath_GetPathMaxFraction(self: NativePointer): Float
 

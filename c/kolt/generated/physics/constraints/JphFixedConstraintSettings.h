@@ -15,6 +15,8 @@ void JphFixedConstraintSettings_release(const JphFixedConstraintSettings* self);
 JphTwoBodyConstraintSettings* JphFixedConstraintSettings_asTwoBodyConstraintSettings(JphFixedConstraintSettings* self);
 JphConstraintSettings* JphFixedConstraintSettings_asConstraintSettings(JphFixedConstraintSettings* self);
 JphSerializableObject* JphFixedConstraintSettings_asSerializableObject(JphFixedConstraintSettings* self);
+JphFixedConstraintSettings* JphFixedConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base);
+JphFixedConstraintSettings* JphFixedConstraintSettings_fromConstraintSettings(JphConstraintSettings* base);
 // skipped static void JPH::FixedConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphEConstraintSpace JphFixedConstraintSettings_GetSpace(const JphFixedConstraintSettings* self);
 void JphFixedConstraintSettings_SetSpace(JphFixedConstraintSettings* self, JphEConstraintSpace value);

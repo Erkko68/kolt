@@ -28,6 +28,14 @@ JphShape* JphBoxShape_asShape(JphBoxShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphBoxShape* JphBoxShape_fromConvexShape(JphConvexShape* base) {
+    return kolt::c(static_cast<JPH::BoxShape*>(kolt::cpp(base)));
+}
+
+JphBoxShape* JphBoxShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::BoxShape*>(kolt::cpp(base)));
+}
+
 void JphBoxShape_GetHalfExtent(const JphBoxShape* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetHalfExtent());
 }

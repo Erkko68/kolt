@@ -13,6 +13,12 @@ internal external fun JphWheeledVehicleController_destroy(self: NativePointer)
 @ExternalSymbolName("JphWheeledVehicleController_asVehicleController")
 internal external fun JphWheeledVehicleController_asVehicleController(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphWheeledVehicleController_fromVehicleController")
+internal external fun JphWheeledVehicleController_fromVehicleController(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphWheeledVehicleController_dynamicType")
+internal external fun JphWheeledVehicleController_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphWheeledVehicleController_SetDriverInput")
 internal external fun JphWheeledVehicleController_SetDriverInput(self: NativePointer, inForward: Float, inRight: Float, inBrake: Float, inHandBrake: Float)
 

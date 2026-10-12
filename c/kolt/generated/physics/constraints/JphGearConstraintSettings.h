@@ -15,6 +15,8 @@ void JphGearConstraintSettings_release(const JphGearConstraintSettings* self);
 JphTwoBodyConstraintSettings* JphGearConstraintSettings_asTwoBodyConstraintSettings(JphGearConstraintSettings* self);
 JphConstraintSettings* JphGearConstraintSettings_asConstraintSettings(JphGearConstraintSettings* self);
 JphSerializableObject* JphGearConstraintSettings_asSerializableObject(JphGearConstraintSettings* self);
+JphGearConstraintSettings* JphGearConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base);
+JphGearConstraintSettings* JphGearConstraintSettings_fromConstraintSettings(JphConstraintSettings* base);
 // skipped static void JPH::GearConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphGearConstraintSettings_SetRatio(JphGearConstraintSettings* self, int32_t inNumTeethGear1, int32_t inNumTeethGear2);
 JphEConstraintSpace JphGearConstraintSettings_GetSpace(const JphGearConstraintSettings* self);

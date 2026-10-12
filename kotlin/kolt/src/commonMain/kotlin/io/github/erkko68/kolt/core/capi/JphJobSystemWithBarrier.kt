@@ -10,5 +10,11 @@ internal external fun JphJobSystemWithBarrier_destroy(self: NativePointer)
 @ExternalSymbolName("JphJobSystemWithBarrier_asJobSystem")
 internal external fun JphJobSystemWithBarrier_asJobSystem(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphJobSystemWithBarrier_fromJobSystem")
+internal external fun JphJobSystemWithBarrier_fromJobSystem(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphJobSystemWithBarrier_dynamicType")
+internal external fun JphJobSystemWithBarrier_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphJobSystemWithBarrier_Init")
 internal external fun JphJobSystemWithBarrier_Init(self: NativePointer, inMaxBarriers: Int)

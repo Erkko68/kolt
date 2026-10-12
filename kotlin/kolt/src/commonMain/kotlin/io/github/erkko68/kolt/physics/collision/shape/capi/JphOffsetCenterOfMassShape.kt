@@ -22,5 +22,11 @@ internal external fun JphOffsetCenterOfMassShape_asDecoratedShape(self: NativePo
 @ExternalSymbolName("JphOffsetCenterOfMassShape_asShape")
 internal external fun JphOffsetCenterOfMassShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphOffsetCenterOfMassShape_fromDecoratedShape")
+internal external fun JphOffsetCenterOfMassShape_fromDecoratedShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphOffsetCenterOfMassShape_fromShape")
+internal external fun JphOffsetCenterOfMassShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphOffsetCenterOfMassShape_GetOffset")
 internal external fun JphOffsetCenterOfMassShape_GetOffset(self: NativePointer, out: NativePointer)

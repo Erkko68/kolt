@@ -53,6 +53,11 @@ JphSerializableObject* JphWheelSettings_asSerializableObject(JphWheelSettings* s
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+int32_t JphWheelSettings_dynamicType(const JphWheelSettings* self) {
+    const JPH::WheelSettings* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::WheelSettingsTV*>(object) ? 1 : dynamic_cast<const JPH::WheelSettingsWV*>(object) ? 2 : 0;
+}
+
 void JphWheelSettings_SaveBinaryState(const JphWheelSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

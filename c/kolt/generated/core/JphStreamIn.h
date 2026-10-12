@@ -12,6 +12,7 @@ extern "C" {
 void JphStreamIn_destroy(JphStreamIn* self);
 JphStreamIn* JphStreamIn_createUpcalls(JphUpcall call);
 void JphStreamIn_bindUpcalls(JphStreamIn* self, void* userData);
+int32_t JphStreamIn_dynamicType(const JphStreamIn* self);
 // skipped void JPH::StreamIn::Read(T & outT)
 // skipped void JPH::StreamIn::Read(Array<T, A> & outT)
 // skipped void JPH::StreamIn::Read(std::basic_string<Type, Traits, Allocator> & outString)

@@ -24,6 +24,14 @@ JphPhysicsStepListener* JphVehicleConstraint_asPhysicsStepListener(JphVehicleCon
     return kolt::c(static_cast<JPH::PhysicsStepListener*>(kolt::cpp(self)));
 }
 
+JphVehicleConstraint* JphVehicleConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::VehicleConstraint*>(kolt::cpp(base)));
+}
+
+JphVehicleConstraint* JphVehicleConstraint_fromPhysicsStepListener(JphPhysicsStepListener* base) {
+    return kolt::c(static_cast<JPH::VehicleConstraint*>(kolt::cpp(base)));
+}
+
 void JphVehicleConstraint_SetMaxPitchRollAngle(JphVehicleConstraint* self, float inMaxPitchRollAngle) {
     kolt::cpp(self)->SetMaxPitchRollAngle(inMaxPitchRollAngle);
 }

@@ -52,16 +52,16 @@ open class VehicleCollisionTester internal constructor(internal val vehicleColli
 
     /** Access to the broad phase layer filter, when set this overrides the object layer supplied in the constructor */
     var broadPhaseLayerFilter: BroadPhaseLayerFilter?
-        get() = JphVehicleCollisionTester_GetBroadPhaseLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { BroadPhaseLayerFilter(it) }
+        get() = JphVehicleCollisionTester_GetBroadPhaseLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { wrapBroadPhaseLayerFilter(it) }
         set(filter) = JphVehicleCollisionTester_SetBroadPhaseLayerFilter(vehicleCollisionTesterHandle, filter?.broadPhaseLayerFilterHandle ?: NullPointer)
 
     /** Access to the object layer filter, when set this overrides the object layer supplied in the constructor */
     var objectLayerFilter: ObjectLayerFilter?
-        get() = JphVehicleCollisionTester_GetObjectLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { ObjectLayerFilter(it) }
+        get() = JphVehicleCollisionTester_GetObjectLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { wrapObjectLayerFilter(it) }
         set(filter) = JphVehicleCollisionTester_SetObjectLayerFilter(vehicleCollisionTesterHandle, filter?.objectLayerFilterHandle ?: NullPointer)
 
     /** Access to the body filter, when set this overrides the default filter that filters out the vehicle body */
     var bodyFilter: BodyFilter?
-        get() = JphVehicleCollisionTester_GetBodyFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { BodyFilter(it) }
+        get() = JphVehicleCollisionTester_GetBodyFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { wrapBodyFilter(it) }
         set(filter) = JphVehicleCollisionTester_SetBodyFilter(vehicleCollisionTesterHandle, filter?.bodyFilterHandle ?: NullPointer)
 }

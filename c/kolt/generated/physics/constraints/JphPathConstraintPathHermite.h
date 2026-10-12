@@ -25,6 +25,7 @@ void JphPathConstraintPathHermite_addRef(const JphPathConstraintPathHermite* sel
 void JphPathConstraintPathHermite_release(const JphPathConstraintPathHermite* self);
 JphPathConstraintPath* JphPathConstraintPathHermite_asPathConstraintPath(JphPathConstraintPathHermite* self);
 JphSerializableObject* JphPathConstraintPathHermite_asSerializableObject(JphPathConstraintPathHermite* self);
+JphPathConstraintPathHermite* JphPathConstraintPathHermite_fromPathConstraintPath(JphPathConstraintPath* base);
 // skipped static void JPH::PathConstraintPathHermite::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphPathConstraintPathHermite_AddPoint(JphPathConstraintPathHermite* self, const JphVec3* inPosition, const JphVec3* inTangent, const JphVec3* inNormal);
 

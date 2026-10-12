@@ -19,6 +19,9 @@ internal external fun JphGroupFilterTable_asGroupFilter(self: NativePointer): Na
 @ExternalSymbolName("JphGroupFilterTable_asSerializableObject")
 internal external fun JphGroupFilterTable_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphGroupFilterTable_fromGroupFilter")
+internal external fun JphGroupFilterTable_fromGroupFilter(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphGroupFilterTable_DisableCollision")
 internal external fun JphGroupFilterTable_DisableCollision(self: NativePointer, inSubGroup1: Int, inSubGroup2: Int)
 

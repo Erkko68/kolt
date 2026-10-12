@@ -134,7 +134,7 @@ class CharacterVirtualSettings internal constructor(internal val characterVirtua
      * - Fast moving objects of motion quality LinearCast will not be able to pass through the CharacterVirtual in 1 time step
      */
     var innerBodyShape: Shape?
-        get() = JphCharacterVirtualSettings_GetInnerBodyShape(characterVirtualSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        get() = JphCharacterVirtualSettings_GetInnerBodyShape(characterVirtualSettingsHandle).takeIf { it != NullPointer }?.let { wrapShape(it) }
         set(value) = JphCharacterVirtualSettings_SetInnerBodyShape(characterVirtualSettingsHandle, value?.shapeHandle ?: NullPointer)
 
     /**

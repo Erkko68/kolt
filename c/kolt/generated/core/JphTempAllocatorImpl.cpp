@@ -16,6 +16,10 @@ JphTempAllocator* JphTempAllocatorImpl_asTempAllocator(JphTempAllocatorImpl* sel
     return kolt::c(static_cast<JPH::TempAllocator*>(kolt::cpp(self)));
 }
 
+JphTempAllocatorImpl* JphTempAllocatorImpl_fromTempAllocator(JphTempAllocator* base) {
+    return kolt::c(static_cast<JPH::TempAllocatorImpl*>(kolt::cpp(base)));
+}
+
 bool JphTempAllocatorImpl_IsEmpty(const JphTempAllocatorImpl* self) {
     return kolt::cpp(self)->IsEmpty();
 }

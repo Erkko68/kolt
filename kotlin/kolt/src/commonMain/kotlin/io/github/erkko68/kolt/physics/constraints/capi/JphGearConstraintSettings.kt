@@ -22,6 +22,12 @@ internal external fun JphGearConstraintSettings_asConstraintSettings(self: Nativ
 @ExternalSymbolName("JphGearConstraintSettings_asSerializableObject")
 internal external fun JphGearConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphGearConstraintSettings_fromTwoBodyConstraintSettings")
+internal external fun JphGearConstraintSettings_fromTwoBodyConstraintSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphGearConstraintSettings_fromConstraintSettings")
+internal external fun JphGearConstraintSettings_fromConstraintSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphGearConstraintSettings_SetRatio")
 internal external fun JphGearConstraintSettings_SetRatio(self: NativePointer, inNumTeethGear1: Int, inNumTeethGear2: Int)
 

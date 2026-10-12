@@ -13,6 +13,9 @@ internal external fun JphRayCastResult_destroy(self: NativePointer)
 @ExternalSymbolName("JphRayCastResult_asBroadPhaseCastResult")
 internal external fun JphRayCastResult_asBroadPhaseCastResult(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphRayCastResult_fromBroadPhaseCastResult")
+internal external fun JphRayCastResult_fromBroadPhaseCastResult(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphRayCastResult_GetSubShapeID2")
 internal external fun JphRayCastResult_GetSubShapeID2(self: NativePointer): Int
 

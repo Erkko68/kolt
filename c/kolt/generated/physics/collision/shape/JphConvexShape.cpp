@@ -44,6 +44,15 @@ JphShape* JphConvexShape_asShape(JphConvexShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphConvexShape* JphConvexShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::ConvexShape*>(kolt::cpp(base)));
+}
+
+int32_t JphConvexShape_dynamicType(const JphConvexShape* self) {
+    const JPH::ConvexShape* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::BoxShape*>(object) ? 1 : dynamic_cast<const JPH::CapsuleShape*>(object) ? 2 : dynamic_cast<const JPH::ConvexHullShape*>(object) ? 3 : dynamic_cast<const JPH::CylinderShape*>(object) ? 4 : dynamic_cast<const JPH::SphereShape*>(object) ? 5 : dynamic_cast<const JPH::TaperedCapsuleShape*>(object) ? 6 : dynamic_cast<const JPH::TaperedCylinderShape*>(object) ? 7 : dynamic_cast<const JPH::TriangleShape*>(object) ? 8 : 0;
+}
+
 const JphConvexShapeSupport* JphConvexShape_GetSupportFunction(const JphConvexShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale) {
     return kolt::c(kolt::cpp(self)->GetSupportFunction(static_cast<JPH::ConvexShape::ESupportMode>(inMode), *kolt::cpp(inBuffer), kolt::math<JPH::Vec3>(*inScale)));
 }

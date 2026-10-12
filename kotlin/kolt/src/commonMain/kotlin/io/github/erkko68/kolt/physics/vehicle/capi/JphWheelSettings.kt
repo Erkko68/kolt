@@ -22,6 +22,9 @@ internal external fun JphWheelSettings_bindUpcalls(self: NativePointer, userData
 @ExternalSymbolName("JphWheelSettings_asSerializableObject")
 internal external fun JphWheelSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphWheelSettings_dynamicType")
+internal external fun JphWheelSettings_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphWheelSettings_SaveBinaryState")
 internal external fun JphWheelSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

@@ -16,6 +16,9 @@ internal external fun JphHeightFieldShape_release(self: NativePointer)
 @ExternalSymbolName("JphHeightFieldShape_asShape")
 internal external fun JphHeightFieldShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphHeightFieldShape_fromShape")
+internal external fun JphHeightFieldShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphHeightFieldShape_Clone")
 internal external fun JphHeightFieldShape_Clone(self: NativePointer): NativePointer
 

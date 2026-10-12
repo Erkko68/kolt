@@ -15,6 +15,8 @@ void JphStaticCompoundShapeSettings_release(const JphStaticCompoundShapeSettings
 JphCompoundShapeSettings* JphStaticCompoundShapeSettings_asCompoundShapeSettings(JphStaticCompoundShapeSettings* self);
 JphShapeSettings* JphStaticCompoundShapeSettings_asShapeSettings(JphStaticCompoundShapeSettings* self);
 JphSerializableObject* JphStaticCompoundShapeSettings_asSerializableObject(JphStaticCompoundShapeSettings* self);
+JphStaticCompoundShapeSettings* JphStaticCompoundShapeSettings_fromCompoundShapeSettings(JphCompoundShapeSettings* base);
+JphStaticCompoundShapeSettings* JphStaticCompoundShapeSettings_fromShapeSettings(JphShapeSettings* base);
 // skipped static void JPH::StaticCompoundShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphShape* JphStaticCompoundShapeSettings_Create(const JphStaticCompoundShapeSettings* self, JphTempAllocator* inTempAllocator, char* outError, uint32_t outErrorCapacity);
 

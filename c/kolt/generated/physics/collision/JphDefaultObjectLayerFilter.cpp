@@ -16,4 +16,8 @@ JphObjectLayerFilter* JphDefaultObjectLayerFilter_asObjectLayerFilter(JphDefault
     return kolt::c(static_cast<JPH::ObjectLayerFilter*>(kolt::cpp(self)));
 }
 
+JphDefaultObjectLayerFilter* JphDefaultObjectLayerFilter_fromObjectLayerFilter(JphObjectLayerFilter* base) {
+    return kolt::c(static_cast<JPH::DefaultObjectLayerFilter*>(kolt::cpp(base)));
+}
+
 } // extern "C"

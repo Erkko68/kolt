@@ -16,6 +16,11 @@ JphSerializableObject* JphShapeSettings_asSerializableObject(JphShapeSettings* s
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+int32_t JphShapeSettings_dynamicType(const JphShapeSettings* self) {
+    const JPH::ShapeSettings* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::BoxShapeSettings*>(object) ? 1 : dynamic_cast<const JPH::CapsuleShapeSettings*>(object) ? 2 : dynamic_cast<const JPH::ConvexHullShapeSettings*>(object) ? 3 : dynamic_cast<const JPH::CylinderShapeSettings*>(object) ? 4 : dynamic_cast<const JPH::MutableCompoundShapeSettings*>(object) ? 5 : dynamic_cast<const JPH::OffsetCenterOfMassShapeSettings*>(object) ? 6 : dynamic_cast<const JPH::RotatedTranslatedShapeSettings*>(object) ? 7 : dynamic_cast<const JPH::ScaledShapeSettings*>(object) ? 8 : dynamic_cast<const JPH::SphereShapeSettings*>(object) ? 9 : dynamic_cast<const JPH::StaticCompoundShapeSettings*>(object) ? 10 : dynamic_cast<const JPH::TaperedCapsuleShapeSettings*>(object) ? 11 : dynamic_cast<const JPH::TaperedCylinderShapeSettings*>(object) ? 12 : dynamic_cast<const JPH::TriangleShapeSettings*>(object) ? 13 : dynamic_cast<const JPH::CompoundShapeSettings*>(object) ? 14 : dynamic_cast<const JPH::ConvexShapeSettings*>(object) ? 15 : dynamic_cast<const JPH::DecoratedShapeSettings*>(object) ? 16 : dynamic_cast<const JPH::EmptyShapeSettings*>(object) ? 17 : dynamic_cast<const JPH::HeightFieldShapeSettings*>(object) ? 18 : dynamic_cast<const JPH::MeshShapeSettings*>(object) ? 19 : dynamic_cast<const JPH::PlaneShapeSettings*>(object) ? 20 : 0;
+}
+
 JphShape* JphShapeSettings_Create(const JphShapeSettings* self, char* outError, uint32_t outErrorCapacity) {
     return kolt::result(kolt::cpp(self)->Create(), outError, outErrorCapacity, [&](auto& v) { return kolt::c(kolt::retain(v)); });
 }

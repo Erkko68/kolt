@@ -16,6 +16,9 @@ internal external fun JphCharacterVirtualSettings_release(self: NativePointer)
 @ExternalSymbolName("JphCharacterVirtualSettings_asCharacterBaseSettings")
 internal external fun JphCharacterVirtualSettings_asCharacterBaseSettings(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCharacterVirtualSettings_fromCharacterBaseSettings")
+internal external fun JphCharacterVirtualSettings_fromCharacterBaseSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphCharacterVirtualSettings_GetID")
 internal external fun JphCharacterVirtualSettings_GetID(self: NativePointer, out: NativePointer)
 

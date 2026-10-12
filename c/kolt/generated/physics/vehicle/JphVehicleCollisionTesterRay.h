@@ -13,6 +13,7 @@ JphVehicleCollisionTesterRay* JphVehicleCollisionTesterRay_create(uint32_t inObj
 void JphVehicleCollisionTesterRay_addRef(const JphVehicleCollisionTesterRay* self);
 void JphVehicleCollisionTesterRay_release(const JphVehicleCollisionTesterRay* self);
 JphVehicleCollisionTester* JphVehicleCollisionTesterRay_asVehicleCollisionTester(JphVehicleCollisionTesterRay* self);
+JphVehicleCollisionTesterRay* JphVehicleCollisionTesterRay_fromVehicleCollisionTester(JphVehicleCollisionTester* base);
 
 
 #ifdef __cplusplus

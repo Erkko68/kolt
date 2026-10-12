@@ -12,6 +12,7 @@ extern "C" {
 JphSoftBodyMotionProperties* JphSoftBodyMotionProperties_create(void);
 void JphSoftBodyMotionProperties_destroy(JphSoftBodyMotionProperties* self);
 JphMotionProperties* JphSoftBodyMotionProperties_asMotionProperties(JphSoftBodyMotionProperties* self);
+JphSoftBodyMotionProperties* JphSoftBodyMotionProperties_fromMotionProperties(JphMotionProperties* base);
 // skipped void JPH::SoftBodyMotionProperties::InitializeUpdateContext(float inDeltaTime, Body & inSoftBody, const PhysicsSystem & inSystem, SoftBodyUpdateContext & ioContext): uses JPH::SoftBodyUpdateContext
 // skipped void JPH::SoftBodyMotionProperties::DetermineCollidingShapes(const SoftBodyUpdateContext & inContext, const PhysicsSystem & inSystem, const BodyLockInterface & inBodyLockInterface): uses JPH::SoftBodyUpdateContext
 // skipped EStatus JPH::SoftBodyMotionProperties::ParallelUpdate(SoftBodyUpdateContext & ioContext, const PhysicsSettings & inPhysicsSettings): uses JPH::SoftBodyUpdateContext

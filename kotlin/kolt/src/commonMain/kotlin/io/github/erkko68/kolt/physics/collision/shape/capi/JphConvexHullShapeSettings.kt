@@ -28,6 +28,12 @@ internal external fun JphConvexHullShapeSettings_asShapeSettings(self: NativePoi
 @ExternalSymbolName("JphConvexHullShapeSettings_asSerializableObject")
 internal external fun JphConvexHullShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphConvexHullShapeSettings_fromConvexShapeSettings")
+internal external fun JphConvexHullShapeSettings_fromConvexShapeSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphConvexHullShapeSettings_fromShapeSettings")
+internal external fun JphConvexHullShapeSettings_fromShapeSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphConvexHullShapeSettings_GetPoints")
 internal external fun JphConvexHullShapeSettings_GetPoints(self: NativePointer, out: NativePointer, outCapacity: Int): Int
 

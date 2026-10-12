@@ -20,4 +20,8 @@ JphVehicleCollisionTester* JphVehicleCollisionTesterCastSphere_asVehicleCollisio
     return kolt::c(static_cast<JPH::VehicleCollisionTester*>(kolt::cpp(self)));
 }
 
+JphVehicleCollisionTesterCastSphere* JphVehicleCollisionTesterCastSphere_fromVehicleCollisionTester(JphVehicleCollisionTester* base) {
+    return kolt::c(static_cast<JPH::VehicleCollisionTesterCastSphere*>(kolt::cpp(base)));
+}
+
 } // extern "C"

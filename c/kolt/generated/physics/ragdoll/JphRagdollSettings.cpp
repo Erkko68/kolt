@@ -16,6 +16,10 @@ JphBodyCreationSettings* JphRagdollSettingsPart_asBodyCreationSettings(JphRagdol
     return kolt::c(static_cast<JPH::BodyCreationSettings*>(kolt::cpp(self)));
 }
 
+JphRagdollSettingsPart* JphRagdollSettingsPart_fromBodyCreationSettings(JphBodyCreationSettings* base) {
+    return kolt::c(static_cast<JPH::RagdollSettings::Part*>(kolt::cpp(base)));
+}
+
 JphTwoBodyConstraintSettings* JphRagdollSettingsPart_GetToParent(const JphRagdollSettingsPart* self) {
     return kolt::c((kolt::cpp(self)->mToParent).GetPtr());
 }

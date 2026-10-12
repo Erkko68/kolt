@@ -12,6 +12,7 @@ extern "C" {
 void JphCharacterVsCharacterCollision_destroy(JphCharacterVsCharacterCollision* self);
 JphCharacterVsCharacterCollision* JphCharacterVsCharacterCollision_createUpcalls(JphUpcall call);
 void JphCharacterVsCharacterCollision_bindUpcalls(JphCharacterVsCharacterCollision* self, void* userData);
+int32_t JphCharacterVsCharacterCollision_dynamicType(const JphCharacterVsCharacterCollision* self);
 void JphCharacterVsCharacterCollision_CollideCharacter(const JphCharacterVsCharacterCollision* self, const JphCharacterVirtual* inCharacter, const JphMat44* inCenterOfMassTransform, const JphCollideShapeSettings* inCollideShapeSettings, const JphVec3* inBaseOffset, JphCollideShapeCollector* ioCollector);
 void JphCharacterVsCharacterCollision_CastCharacter(const JphCharacterVsCharacterCollision* self, const JphCharacterVirtual* inCharacter, const JphMat44* inCenterOfMassTransform, const JphVec3* inDirection, const JphShapeCastSettings* inShapeCastSettings, const JphVec3* inBaseOffset, JphCastShapeCollector* ioCollector);
 

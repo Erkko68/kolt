@@ -16,5 +16,8 @@ internal external fun JphObjectLayerPairFilter_createUpcalls(call: NativePointer
 @ExternalSymbolName("JphObjectLayerPairFilter_bindUpcalls")
 internal external fun JphObjectLayerPairFilter_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("JphObjectLayerPairFilter_dynamicType")
+internal external fun JphObjectLayerPairFilter_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphObjectLayerPairFilter_ShouldCollide")
 internal external fun JphObjectLayerPairFilter_ShouldCollide(self: NativePointer, inLayer1: Int, inLayer2: Int): Boolean

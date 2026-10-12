@@ -133,4 +133,7 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
             List(count) { Vec3(returned.copyOfRange(it * 4, it * 4 + 4)) }
         }
         set(value) = interopScope { JphCollideShapeResult_SetShape2Face(collideShapeResultHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
+
+    /** This object as the [ShapeCastResult] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asShapeCastResult() = ShapeCastResult(JphShapeCastResult_fromCollideShapeResult(collideShapeResultHandle))
 }

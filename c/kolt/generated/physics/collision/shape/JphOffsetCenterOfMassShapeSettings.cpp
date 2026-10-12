@@ -36,6 +36,14 @@ JphSerializableObject* JphOffsetCenterOfMassShapeSettings_asSerializableObject(J
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphOffsetCenterOfMassShapeSettings* JphOffsetCenterOfMassShapeSettings_fromDecoratedShapeSettings(JphDecoratedShapeSettings* base) {
+    return kolt::c(static_cast<JPH::OffsetCenterOfMassShapeSettings*>(kolt::cpp(base)));
+}
+
+JphOffsetCenterOfMassShapeSettings* JphOffsetCenterOfMassShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::OffsetCenterOfMassShapeSettings*>(kolt::cpp(base)));
+}
+
 void JphOffsetCenterOfMassShapeSettings_GetOffset(const JphOffsetCenterOfMassShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mOffset);
 }

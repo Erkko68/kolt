@@ -27,6 +27,22 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
     val records = c.handles.associateBy { names.type(it.name) }
     val enums = c.enums.filter { e -> e.constants.all { it.second.bitLength() <= 32 } }.associateBy { names.type(it.name) }
     val scalars = config.types.scalars.filterValues { it.c in INTS }.keys.associateBy { names.type(it) }
+    /**
+     * C record → the C function saying which class an object of it is, and each of those classes by the index it
+     * returns, with the downcast's C function: null for one Kotlin doesn't declare.
+     */
+    val dynamic = c.bindings.filter { it.gap == null && it.bound?.role == Bound.Role.DYNAMIC_TYPE && names.type(it.bound.owner) in records }.associate { b ->
+        val base = names.type(b.bound!!.owner)
+        val downcasts = c.bindings.filter { it.gap == null && it.bound?.role == Bound.Role.DOWNCAST && it.bound.name == base }.associate { names.type(it.bound!!.owner) to it.c }
+        base to (b.c to b.bound.derived.map { d -> downcasts[d]?.takeIf { d in records }?.let { d to it } })
+    }
+
+    /** The wrapper of the [cName] at [pointer]: of the class it is, where C++ tells ([dynamic]). */
+    fun wrap(cName: String, pointer: String, owned: Boolean = false) =
+        "${if (cName in dynamic) wrapper(cName) else kotlin(cName)}($pointer${if (owned) ", owned = true" else ""})"
+
+    /** The function wrapping a [dynamic] record's pointer. */
+    fun wrapper(cName: String) = "wrap${kotlin(cName).replace(".", "")}"
     /** The mirrors with a hand-written class, each with its C++ header. */
     val mirrors by lazy { config.types.mirrors.keys.associate { names.type(it) to c.api.records[it]?.header }.filter { (cName, header) -> kotlinDir.resolve(path(header, kotlin(cName))).isFile } }
 
@@ -148,7 +164,7 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
         val items = items(e, name) ?: return null
         if (e is CValue.Handle) return if (!out) Passed("List<$k>", "toInterop($items)", scoped = true) else Passed(
             "MutableList<$k?>", pointer, scoped = true, before = listOf("val $pointer = toInterop($name.map { it?.${handle(e.c)} ?: NullPointer })"),
-            after = listOf("readPointers($pointer, $name.size).forEachIndexed { i, p -> $name[i] = p.takeIf { it != NullPointer }?.let { $k(it) } }"),
+            after = listOf("readPointers($pointer, $name.size).forEachIndexed { i, p -> $name[i] = p.takeIf { it != NullPointer }?.let { ${wrap(e.c, "it")} } }"),
         )
         val before = listOf("val $array = $items", "val $pointer = toInterop($array)")
         if (value.const) return Passed("List<$k>", pointer, scoped = true, before = before)
@@ -168,7 +184,6 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
         if (value is CValue.Sequence) return sequence(value, type).takeIf { bridge.c == "uint32_t" && bridge.extra.map { it.second } == CBridge.filled("").map { it.second } }
         if (value is CValue.Fallible) return fallible(value.value, type).takeIf { bridge.extra == CBridge.ERROR }
         if (bridge.extra.isNotEmpty()) return null
-        val owned = if ((value as? CValue.Handle)?.owned == true) ", owned = true" else ""
         return when {
             value is CValue.Text -> Returned(type) { "stringFromInterop(${it(null)})" }
             value is CValue.Mirror -> filled("${ARRAYS.getValue(value.element)}(${value.count})", type) { "$type($it)" }
@@ -181,7 +196,7 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
             value is CValue.Enum -> Returned(type) { "$type.of(${it(null)})" }
             value is CValue.Scalar -> Returned(type) { "$type(${it(null)})" }
             value is CValue.Handle -> Returned(type) {
-                if (value.nullable) "${it(null)}.takeIf { it != NullPointer }?.let { ${kotlin(value.c)}(it$owned) }" else "$type(${it(null)}$owned)"
+                if (value.nullable) "${it(null)}.takeIf { it != NullPointer }?.let { ${wrap(value.c, "it", value.owned)} }" else wrap(value.c, it(null), value.owned)
             }
             else -> Returned(type) { it(null) }
         }
@@ -198,7 +213,7 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
         return Returned(type, scoped = true) { call ->
             "val error = ByteArray($ERROR_CAPACITY)\nval errorPointer = toInterop(error)\nval returned = ${call("errorPointer, error.size")}\n" +
                 "errorPointer.fromInterop(error)\nif (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\\u0000'))\n" +
-                "$type(returned${if (value.owned) ", owned = true" else ""})"
+                wrap(value.c, "returned", value.owned)
         }
     }
 
@@ -222,7 +237,7 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
             }
             e is CValue.Handle -> return Returned(type, scoped = true) { call ->
                 "val count = ${call("NullPointer, 0")}\nval returnedPointer = toInterop(List(count) { NullPointer })\n${call("returnedPointer, count")}\n" +
-                    "readPointers(returnedPointer, count).map { $k(it${if (e.owned) ", owned = true" else ""}) }"
+                    "readPointers(returnedPointer, count).map { ${wrap(e.c, "it", e.owned)} }"
             }
             else -> return null
         }
@@ -247,7 +262,7 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
             }
             is CValue.Enum -> "$type.of($slot.toInt())"
             is CValue.Scalar -> "$type($slot.toInt())"
-            is CValue.Handle -> if (value.nullable) "$pointer.takeIf { it != NullPointer }?.let { ${kotlin(value.c)}(it) }" else "$type($pointer)"
+            is CValue.Handle -> if (value.nullable) "$pointer.takeIf { it != NullPointer }?.let { ${wrap(value.c, "it")} }" else wrap(value.c, pointer)
             is CValue.Mirror -> "$type(readFloats($pointer, ${value.count}))".takeIf { value.element == "float" }
             is CValue.Opaque -> pointer
             // The slot points at it.

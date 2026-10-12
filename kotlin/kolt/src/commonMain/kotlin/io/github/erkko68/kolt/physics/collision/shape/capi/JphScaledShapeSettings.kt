@@ -28,6 +28,12 @@ internal external fun JphScaledShapeSettings_asShapeSettings(self: NativePointer
 @ExternalSymbolName("JphScaledShapeSettings_asSerializableObject")
 internal external fun JphScaledShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphScaledShapeSettings_fromDecoratedShapeSettings")
+internal external fun JphScaledShapeSettings_fromDecoratedShapeSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphScaledShapeSettings_fromShapeSettings")
+internal external fun JphScaledShapeSettings_fromShapeSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphScaledShapeSettings_GetScale")
 internal external fun JphScaledShapeSettings_GetScale(self: NativePointer, out: NativePointer)
 

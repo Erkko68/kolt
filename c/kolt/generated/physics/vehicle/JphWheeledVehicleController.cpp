@@ -16,6 +16,15 @@ JphVehicleController* JphWheeledVehicleController_asVehicleController(JphWheeled
     return kolt::c(static_cast<JPH::VehicleController*>(kolt::cpp(self)));
 }
 
+JphWheeledVehicleController* JphWheeledVehicleController_fromVehicleController(JphVehicleController* base) {
+    return kolt::c(static_cast<JPH::WheeledVehicleController*>(kolt::cpp(base)));
+}
+
+int32_t JphWheeledVehicleController_dynamicType(const JphWheeledVehicleController* self) {
+    const JPH::WheeledVehicleController* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::MotorcycleController*>(object) ? 1 : 0;
+}
+
 void JphWheeledVehicleController_SetDriverInput(JphWheeledVehicleController* self, float inForward, float inRight, float inBrake, float inHandBrake) {
     kolt::cpp(self)->SetDriverInput(inForward, inRight, inBrake, inHandBrake);
 }

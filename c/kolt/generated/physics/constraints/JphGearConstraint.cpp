@@ -24,6 +24,14 @@ JphConstraint* JphGearConstraint_asConstraint(JphGearConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphGearConstraint* JphGearConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::GearConstraint*>(kolt::cpp(base)));
+}
+
+JphGearConstraint* JphGearConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::GearConstraint*>(kolt::cpp(base)));
+}
+
 void JphGearConstraint_SetConstraints(JphGearConstraint* self, const JphConstraint* inGear1, const JphConstraint* inGear2) {
     kolt::cpp(self)->SetConstraints(kolt::cpp(inGear1), kolt::cpp(inGear2));
 }

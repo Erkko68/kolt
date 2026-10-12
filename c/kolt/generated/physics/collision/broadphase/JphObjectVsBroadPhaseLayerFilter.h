@@ -13,6 +13,7 @@ JphObjectVsBroadPhaseLayerFilter* JphObjectVsBroadPhaseLayerFilter_create(void);
 void JphObjectVsBroadPhaseLayerFilter_destroy(JphObjectVsBroadPhaseLayerFilter* self);
 JphObjectVsBroadPhaseLayerFilter* JphObjectVsBroadPhaseLayerFilter_createUpcalls(JphUpcall call);
 void JphObjectVsBroadPhaseLayerFilter_bindUpcalls(JphObjectVsBroadPhaseLayerFilter* self, void* userData);
+int32_t JphObjectVsBroadPhaseLayerFilter_dynamicType(const JphObjectVsBroadPhaseLayerFilter* self);
 bool JphObjectVsBroadPhaseLayerFilter_ShouldCollide(const JphObjectVsBroadPhaseLayerFilter* self, uint32_t inLayer1, uint32_t inLayer2);
 
 

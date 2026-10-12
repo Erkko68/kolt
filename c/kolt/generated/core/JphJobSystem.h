@@ -10,6 +10,7 @@ extern "C" {
 
 // JPH::JobSystem
 void JphJobSystem_destroy(JphJobSystem* self);
+int32_t JphJobSystem_dynamicType(const JphJobSystem* self);
 // skipped JobHandle JPH::JobSystem::CreateJob(const char * inName, ColorArg inColor, const JobFunction & inJobFunction, uint32 inNumDependencies): JPH::JobSystem::(JobHandle|Barrier|CreateJob|CreateBarrier|DestroyBarrier|WaitForJobs)
 // skipped Barrier * JPH::JobSystem::CreateBarrier(): JPH::JobSystem::(JobHandle|Barrier|CreateJob|CreateBarrier|DestroyBarrier|WaitForJobs)
 // skipped void JPH::JobSystem::DestroyBarrier(Barrier * inBarrier): JPH::JobSystem::(JobHandle|Barrier|CreateJob|CreateBarrier|DestroyBarrier|WaitForJobs)

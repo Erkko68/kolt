@@ -8,6 +8,11 @@ void JphJobSystem_destroy(JphJobSystem* self) {
     delete kolt::cpp(self);
 }
 
+int32_t JphJobSystem_dynamicType(const JphJobSystem* self) {
+    const JPH::JobSystem* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::JobSystemThreadPool*>(object) ? 1 : dynamic_cast<const JPH::JobSystemWithBarrier*>(object) ? 2 : 0;
+}
+
 int32_t JphJobSystem_GetMaxConcurrency(const JphJobSystem* self) {
     return static_cast<int32_t>(kolt::cpp(self)->GetMaxConcurrency());
 }

@@ -16,6 +16,15 @@ internal external fun JphStateRecorder_asStreamIn(self: NativePointer): NativePo
 @ExternalSymbolName("JphStateRecorder_asStreamOut")
 internal external fun JphStateRecorder_asStreamOut(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphStateRecorder_fromStreamIn")
+internal external fun JphStateRecorder_fromStreamIn(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphStateRecorder_fromStreamOut")
+internal external fun JphStateRecorder_fromStreamOut(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphStateRecorder_dynamicType")
+internal external fun JphStateRecorder_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphStateRecorder_SetValidating")
 internal external fun JphStateRecorder_SetValidating(self: NativePointer, inValidating: Boolean)
 

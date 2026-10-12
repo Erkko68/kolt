@@ -13,6 +13,12 @@ internal external fun JphTwoBodyConstraint_release(self: NativePointer)
 @ExternalSymbolName("JphTwoBodyConstraint_asConstraint")
 internal external fun JphTwoBodyConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphTwoBodyConstraint_fromConstraint")
+internal external fun JphTwoBodyConstraint_fromConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphTwoBodyConstraint_dynamicType")
+internal external fun JphTwoBodyConstraint_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphTwoBodyConstraint_GetBody1")
 internal external fun JphTwoBodyConstraint_GetBody1(self: NativePointer): NativePointer
 

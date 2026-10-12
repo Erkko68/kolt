@@ -13,6 +13,9 @@ internal external fun JphVehicleTrack_destroy(self: NativePointer)
 @ExternalSymbolName("JphVehicleTrack_asVehicleTrackSettings")
 internal external fun JphVehicleTrack_asVehicleTrackSettings(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphVehicleTrack_fromVehicleTrackSettings")
+internal external fun JphVehicleTrack_fromVehicleTrackSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphVehicleTrack_SaveState")
 internal external fun JphVehicleTrack_SaveState(self: NativePointer, inStream: NativePointer)
 

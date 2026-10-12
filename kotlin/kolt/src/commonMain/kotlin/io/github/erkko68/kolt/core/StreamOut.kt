@@ -55,6 +55,12 @@ open class StreamOut internal constructor(internal val streamOutHandle: NativePo
     open val isFailed: Boolean
         get() = JphStreamOut_IsFailed(streamOutHandle)
 
+    /** This object as the [StateRecorder] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asStateRecorder() = StateRecorder(JphStateRecorder_fromStreamOut(streamOutHandle))
+
+    /** This object as the [StateRecorderImpl] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asStateRecorderImpl() = StateRecorderImpl(JphStateRecorderImpl_fromStreamOut(streamOutHandle))
+
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
             0 -> writeBytes(readPointerSlot(args, 0), readSlot(args, 1).toInt())

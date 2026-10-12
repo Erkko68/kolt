@@ -16,6 +16,10 @@ JphVehicleController* JphTrackedVehicleController_asVehicleController(JphTracked
     return kolt::c(static_cast<JPH::VehicleController*>(kolt::cpp(self)));
 }
 
+JphTrackedVehicleController* JphTrackedVehicleController_fromVehicleController(JphVehicleController* base) {
+    return kolt::c(static_cast<JPH::TrackedVehicleController*>(kolt::cpp(base)));
+}
+
 void JphTrackedVehicleController_SetDriverInput(JphTrackedVehicleController* self, float inForward, float inLeftRatio, float inRightRatio, float inBrake) {
     kolt::cpp(self)->SetDriverInput(inForward, inLeftRatio, inRightRatio, inBrake);
 }

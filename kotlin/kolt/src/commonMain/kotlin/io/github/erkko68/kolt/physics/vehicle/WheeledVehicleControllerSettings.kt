@@ -88,8 +88,8 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
 
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
-            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
-            1 -> restoreBinaryState(StreamIn(readPointerSlot(args, 0)))
+            0 -> saveBinaryState(wrapStreamOut(readPointerSlot(args, 0)))
+            1 -> restoreBinaryState(wrapStreamIn(readPointerSlot(args, 0)))
             else -> return false
         }
         return true

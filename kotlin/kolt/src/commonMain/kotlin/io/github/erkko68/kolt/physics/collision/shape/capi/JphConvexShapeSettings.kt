@@ -16,6 +16,12 @@ internal external fun JphConvexShapeSettings_asShapeSettings(self: NativePointer
 @ExternalSymbolName("JphConvexShapeSettings_asSerializableObject")
 internal external fun JphConvexShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphConvexShapeSettings_fromShapeSettings")
+internal external fun JphConvexShapeSettings_fromShapeSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphConvexShapeSettings_dynamicType")
+internal external fun JphConvexShapeSettings_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphConvexShapeSettings_SetDensity")
 internal external fun JphConvexShapeSettings_SetDensity(self: NativePointer, inDensity: Float)
 

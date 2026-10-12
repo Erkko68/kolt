@@ -12,6 +12,7 @@ extern "C" {
 void JphPhysicsStepListener_destroy(JphPhysicsStepListener* self);
 JphPhysicsStepListener* JphPhysicsStepListener_createUpcalls(JphUpcall call);
 void JphPhysicsStepListener_bindUpcalls(JphPhysicsStepListener* self, void* userData);
+int32_t JphPhysicsStepListener_dynamicType(const JphPhysicsStepListener* self);
 void JphPhysicsStepListener_OnStep(JphPhysicsStepListener* self, const JphPhysicsStepListenerContext* inContext);
 
 

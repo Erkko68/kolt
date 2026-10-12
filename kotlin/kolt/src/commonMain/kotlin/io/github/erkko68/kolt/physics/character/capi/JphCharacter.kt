@@ -16,6 +16,9 @@ internal external fun JphCharacter_release(self: NativePointer)
 @ExternalSymbolName("JphCharacter_asCharacterBase")
 internal external fun JphCharacter_asCharacterBase(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCharacter_fromCharacterBase")
+internal external fun JphCharacter_fromCharacterBase(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphCharacter_AddToPhysicsSystem")
 internal external fun JphCharacter_AddToPhysicsSystem(self: NativePointer, inActivationMode: Int, inLockBodies: Boolean)
 

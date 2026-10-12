@@ -24,6 +24,14 @@ JphConstraint* JphDistanceConstraint_asConstraint(JphDistanceConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphDistanceConstraint* JphDistanceConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::DistanceConstraint*>(kolt::cpp(base)));
+}
+
+JphDistanceConstraint* JphDistanceConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::DistanceConstraint*>(kolt::cpp(base)));
+}
+
 void JphDistanceConstraint_SetDistance(JphDistanceConstraint* self, float inMinDistance, float inMaxDistance) {
     kolt::cpp(self)->SetDistance(inMinDistance, inMaxDistance);
 }

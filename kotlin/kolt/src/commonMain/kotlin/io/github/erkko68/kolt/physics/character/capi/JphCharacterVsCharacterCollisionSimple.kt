@@ -19,6 +19,9 @@ internal external fun JphCharacterVsCharacterCollisionSimple_bindUpcalls(self: N
 @ExternalSymbolName("JphCharacterVsCharacterCollisionSimple_asCharacterVsCharacterCollision")
 internal external fun JphCharacterVsCharacterCollisionSimple_asCharacterVsCharacterCollision(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCharacterVsCharacterCollisionSimple_fromCharacterVsCharacterCollision")
+internal external fun JphCharacterVsCharacterCollisionSimple_fromCharacterVsCharacterCollision(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphCharacterVsCharacterCollisionSimple_Add")
 internal external fun JphCharacterVsCharacterCollisionSimple_Add(self: NativePointer, inCharacter: NativePointer)
 

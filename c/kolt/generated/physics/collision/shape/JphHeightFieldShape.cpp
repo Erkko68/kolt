@@ -20,6 +20,10 @@ JphShape* JphHeightFieldShape_asShape(JphHeightFieldShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphHeightFieldShape* JphHeightFieldShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::HeightFieldShape*>(kolt::cpp(base)));
+}
+
 JphHeightFieldShape* JphHeightFieldShape_Clone(const JphHeightFieldShape* self) {
     return kolt::c(kolt::retain(kolt::cpp(self)->Clone()));
 }

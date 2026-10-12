@@ -24,6 +24,18 @@ JphStreamOut* JphStateRecorderImpl_asStreamOut(JphStateRecorderImpl* self) {
     return kolt::c(static_cast<JPH::StreamOut*>(kolt::cpp(self)));
 }
 
+JphStateRecorderImpl* JphStateRecorderImpl_fromStateRecorder(JphStateRecorder* base) {
+    return kolt::c(static_cast<JPH::StateRecorderImpl*>(kolt::cpp(base)));
+}
+
+JphStateRecorderImpl* JphStateRecorderImpl_fromStreamIn(JphStreamIn* base) {
+    return kolt::c(static_cast<JPH::StateRecorderImpl*>(kolt::cpp(base)));
+}
+
+JphStateRecorderImpl* JphStateRecorderImpl_fromStreamOut(JphStreamOut* base) {
+    return kolt::c(static_cast<JPH::StateRecorderImpl*>(kolt::cpp(base)));
+}
+
 void JphStateRecorderImpl_Rewind(JphStateRecorderImpl* self) {
     kolt::cpp(self)->Rewind();
 }

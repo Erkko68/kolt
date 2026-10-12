@@ -4,6 +4,8 @@
 
 #include "geo/generated/GeoCircle.h"
 #include "geo/generated/GeoGeo.h"
+#include "geo/generated/GeoMarker.h"
+#include "geo/generated/GeoPin.h"
 #include "geo/generated/GeoPoint.h"
 #include "geo/generated/GeoPolygon.h"
 #include "geo/generated/GeoShape.h"
@@ -18,6 +20,10 @@ JNIEXPORT void JNICALL Java_geo_capi_GeoCircleKt_GeoCircle_1destroy(JNIEnv* env,
 
 JNIEXPORT jlong JNICALL Java_geo_capi_GeoCircleKt_GeoCircle_1asShape(JNIEnv* env, jclass cls, jlong self) {
     return (jlong)(intptr_t) GeoCircle_asShape((void*)(intptr_t) self);
+}
+
+JNIEXPORT jlong JNICALL Java_geo_capi_GeoCircleKt_GeoCircle_1fromShape(JNIEnv* env, jclass cls, jlong base) {
+    return (jlong)(intptr_t) GeoCircle_fromShape((void*)(intptr_t) base);
 }
 
 JNIEXPORT jfloat JNICALL Java_geo_capi_GeoCircleKt_GeoCircle_1radius(JNIEnv* env, jclass cls, jlong self) {

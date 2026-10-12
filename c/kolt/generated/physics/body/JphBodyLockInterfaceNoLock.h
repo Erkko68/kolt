@@ -12,6 +12,7 @@ extern "C" {
 // skipped JPH::BodyLockInterfaceNoLock(BodyManager &): uses JPH::BodyManager
 void JphBodyLockInterfaceNoLock_destroy(JphBodyLockInterfaceNoLock* self);
 JphBodyLockInterface* JphBodyLockInterfaceNoLock_asBodyLockInterface(JphBodyLockInterfaceNoLock* self);
+JphBodyLockInterfaceNoLock* JphBodyLockInterfaceNoLock_fromBodyLockInterface(JphBodyLockInterface* base);
 
 
 #ifdef __cplusplus

@@ -49,7 +49,7 @@ class CppApi(
                         m.isOverride, m.isVirtual, m.isPure, m.isFinal, m.templateParameters, m.guard, m.doc)
                 },
                 template.fields.map { CppField(it.name, substitute(it.type), it.default, it.isPublic, it.isDeprecated, it.doc) },
-                template.constructors.map(::params), template.destructible, template.allocatable, template.copyable, template.declaredDestructor, template.derivable, template.doc,
+                template.constructors.map(::params), template.destructible, template.allocatable, template.copyable, template.declaredDestructor, template.derivable, template.doc, template.polymorphic,
             )
         }
         return CppApi(records + made.associateBy { it.name }, enums, aliases - instances.keys, constants, publicConstants, functions, skipped)
@@ -185,6 +185,8 @@ class CppRecord(
     val derivable: Boolean = false,
     /** Its documentation comment ([doc]), as every `doc` here. */
     val doc: String? = null,
+    /** It has, or inherits, a virtual function: C++ can tell which class an object of it is. */
+    val polymorphic: Boolean = false,
 ) {
     val defaultConstructible get() = constructors.any { ctor -> ctor.all { it.default != null } }
 }

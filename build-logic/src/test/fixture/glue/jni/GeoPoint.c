@@ -4,6 +4,8 @@
 
 #include "geo/generated/GeoCircle.h"
 #include "geo/generated/GeoGeo.h"
+#include "geo/generated/GeoMarker.h"
+#include "geo/generated/GeoPin.h"
 #include "geo/generated/GeoPoint.h"
 #include "geo/generated/GeoPolygon.h"
 #include "geo/generated/GeoShape.h"

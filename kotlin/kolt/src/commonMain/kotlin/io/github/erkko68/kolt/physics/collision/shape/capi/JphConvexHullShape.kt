@@ -19,6 +19,12 @@ internal external fun JphConvexHullShape_asConvexShape(self: NativePointer): Nat
 @ExternalSymbolName("JphConvexHullShape_asShape")
 internal external fun JphConvexHullShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphConvexHullShape_fromConvexShape")
+internal external fun JphConvexHullShape_fromConvexShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphConvexHullShape_fromShape")
+internal external fun JphConvexHullShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphConvexHullShape_GetConvexRadius")
 internal external fun JphConvexHullShape_GetConvexRadius(self: NativePointer): Float
 

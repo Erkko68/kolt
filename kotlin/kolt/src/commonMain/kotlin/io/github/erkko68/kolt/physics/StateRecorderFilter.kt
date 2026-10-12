@@ -66,7 +66,7 @@ open class StateRecorderFilter internal constructor(internal val stateRecorderFi
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
             0 -> writeSlot(result, if (shouldSaveBody(Body(readPointerSlot(args, 0)))) 1L else 0L)
-            1 -> writeSlot(result, if (shouldSaveConstraint(Constraint(readPointerSlot(args, 0)))) 1L else 0L)
+            1 -> writeSlot(result, if (shouldSaveConstraint(wrapConstraint(readPointerSlot(args, 0)))) 1L else 0L)
             2 -> writeSlot(result, if (shouldSaveContact(BodyID(readSlot(args, 0).toInt()), BodyID(readSlot(args, 1).toInt()))) 1L else 0L)
             3 -> writeSlot(result, if (shouldRestoreContact(BodyID(readSlot(args, 0).toInt()), BodyID(readSlot(args, 1).toInt()))) 1L else 0L)
             else -> return false

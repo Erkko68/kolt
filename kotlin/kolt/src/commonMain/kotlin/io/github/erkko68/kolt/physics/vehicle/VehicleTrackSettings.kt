@@ -88,4 +88,7 @@ open class VehicleTrackSettings internal constructor(internal val vehicleTrackSe
     var differentialRatio: Float
         get() = JphVehicleTrackSettings_GetDifferentialRatio(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetDifferentialRatio(vehicleTrackSettingsHandle, value)
+
+    /** This object as the [VehicleTrack] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asVehicleTrack() = VehicleTrack(JphVehicleTrack_fromVehicleTrackSettings(vehicleTrackSettingsHandle))
 }

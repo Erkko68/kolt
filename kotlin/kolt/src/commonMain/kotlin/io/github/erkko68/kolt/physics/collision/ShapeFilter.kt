@@ -79,8 +79,8 @@ open class ShapeFilter internal constructor(internal val shapeFilterHandle: Nati
 
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
-            0 -> writeSlot(result, if (shouldCollide(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { Shape(it) }, SubShapeID(readSlot(args, 1).toInt()))) 1L else 0L)
-            1 -> writeSlot(result, if (shouldCollide(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { Shape(it) }, SubShapeID(readSlot(args, 1).toInt()), readPointerSlot(args, 2).takeIf { it != NullPointer }?.let { Shape(it) }, SubShapeID(readSlot(args, 3).toInt()))) 1L else 0L)
+            0 -> writeSlot(result, if (shouldCollide(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { wrapShape(it) }, SubShapeID(readSlot(args, 1).toInt()))) 1L else 0L)
+            1 -> writeSlot(result, if (shouldCollide(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { wrapShape(it) }, SubShapeID(readSlot(args, 1).toInt()), readPointerSlot(args, 2).takeIf { it != NullPointer }?.let { wrapShape(it) }, SubShapeID(readSlot(args, 3).toInt()))) 1L else 0L)
             else -> return false
         }
         return true

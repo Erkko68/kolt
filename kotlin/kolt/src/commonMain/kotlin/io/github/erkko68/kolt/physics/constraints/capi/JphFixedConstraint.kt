@@ -19,6 +19,12 @@ internal external fun JphFixedConstraint_asTwoBodyConstraint(self: NativePointer
 @ExternalSymbolName("JphFixedConstraint_asConstraint")
 internal external fun JphFixedConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphFixedConstraint_fromTwoBodyConstraint")
+internal external fun JphFixedConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphFixedConstraint_fromConstraint")
+internal external fun JphFixedConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphFixedConstraint_GetTotalLambdaPosition")
 internal external fun JphFixedConstraint_GetTotalLambdaPosition(self: NativePointer, out: NativePointer)
 

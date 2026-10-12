@@ -43,6 +43,11 @@ JphSerializableObject* JphConstraintSettings_asSerializableObject(JphConstraintS
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+int32_t JphConstraintSettings_dynamicType(const JphConstraintSettings* self) {
+    const JPH::ConstraintSettings* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::ConeConstraintSettings*>(object) ? 1 : dynamic_cast<const JPH::DistanceConstraintSettings*>(object) ? 2 : dynamic_cast<const JPH::FixedConstraintSettings*>(object) ? 3 : dynamic_cast<const JPH::GearConstraintSettings*>(object) ? 4 : dynamic_cast<const JPH::HingeConstraintSettings*>(object) ? 5 : dynamic_cast<const JPH::PathConstraintSettings*>(object) ? 6 : dynamic_cast<const JPH::PointConstraintSettings*>(object) ? 7 : dynamic_cast<const JPH::PulleyConstraintSettings*>(object) ? 8 : dynamic_cast<const JPH::RackAndPinionConstraintSettings*>(object) ? 9 : dynamic_cast<const JPH::SixDOFConstraintSettings*>(object) ? 10 : dynamic_cast<const JPH::SliderConstraintSettings*>(object) ? 11 : dynamic_cast<const JPH::SwingTwistConstraintSettings*>(object) ? 12 : dynamic_cast<const JPH::TwoBodyConstraintSettings*>(object) ? 13 : dynamic_cast<const JPH::VehicleConstraintSettings*>(object) ? 14 : 0;
+}
+
 void JphConstraintSettings_SaveBinaryState(const JphConstraintSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

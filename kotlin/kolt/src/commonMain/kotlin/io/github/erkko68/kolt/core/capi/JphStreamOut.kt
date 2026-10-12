@@ -13,6 +13,9 @@ internal external fun JphStreamOut_createUpcalls(call: NativePointer): NativePoi
 @ExternalSymbolName("JphStreamOut_bindUpcalls")
 internal external fun JphStreamOut_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("JphStreamOut_dynamicType")
+internal external fun JphStreamOut_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphStreamOut_WriteBytes")
 internal external fun JphStreamOut_WriteBytes(self: NativePointer, inData: NativePointer, inNumBytes: Int)
 

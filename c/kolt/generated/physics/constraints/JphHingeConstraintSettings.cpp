@@ -28,6 +28,14 @@ JphSerializableObject* JphHingeConstraintSettings_asSerializableObject(JphHingeC
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphHingeConstraintSettings* JphHingeConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::HingeConstraintSettings*>(kolt::cpp(base)));
+}
+
+JphHingeConstraintSettings* JphHingeConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::HingeConstraintSettings*>(kolt::cpp(base)));
+}
+
 JphEConstraintSpace JphHingeConstraintSettings_GetSpace(const JphHingeConstraintSettings* self) {
     return static_cast<JphEConstraintSpace>(kolt::cpp(self)->mSpace);
 }

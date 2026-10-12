@@ -12,6 +12,7 @@ extern "C" {
 JphBroadPhaseLayerInterfaceMask* JphBroadPhaseLayerInterfaceMask_create(uint32_t inNumBroadPhaseLayers);
 void JphBroadPhaseLayerInterfaceMask_destroy(JphBroadPhaseLayerInterfaceMask* self);
 JphBroadPhaseLayerInterface* JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceMask* self);
+JphBroadPhaseLayerInterfaceMask* JphBroadPhaseLayerInterfaceMask_fromBroadPhaseLayerInterface(JphBroadPhaseLayerInterface* base);
 void JphBroadPhaseLayerInterfaceMask_ConfigureLayer(JphBroadPhaseLayerInterfaceMask* self, uint32_t inBroadPhaseLayer, uint32_t inGroupsToInclude, uint32_t inGroupsToExclude);
 bool JphBroadPhaseLayerInterfaceMask_ShouldCollide(const JphBroadPhaseLayerInterfaceMask* self, uint32_t inLayer1, uint32_t inLayer2);
 

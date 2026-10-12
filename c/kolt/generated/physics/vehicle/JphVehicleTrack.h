@@ -12,6 +12,7 @@ extern "C" {
 JphVehicleTrack* JphVehicleTrack_create(void);
 void JphVehicleTrack_destroy(JphVehicleTrack* self);
 JphVehicleTrackSettings* JphVehicleTrack_asVehicleTrackSettings(JphVehicleTrack* self);
+JphVehicleTrack* JphVehicleTrack_fromVehicleTrackSettings(JphVehicleTrackSettings* base);
 void JphVehicleTrack_SaveState(const JphVehicleTrack* self, JphStateRecorder* inStream);
 void JphVehicleTrack_RestoreState(JphVehicleTrack* self, JphStateRecorder* inStream);
 float JphVehicleTrack_GetAngularVelocity(const JphVehicleTrack* self);

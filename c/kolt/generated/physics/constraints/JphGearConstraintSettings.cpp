@@ -28,6 +28,14 @@ JphSerializableObject* JphGearConstraintSettings_asSerializableObject(JphGearCon
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphGearConstraintSettings* JphGearConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::GearConstraintSettings*>(kolt::cpp(base)));
+}
+
+JphGearConstraintSettings* JphGearConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::GearConstraintSettings*>(kolt::cpp(base)));
+}
+
 void JphGearConstraintSettings_SetRatio(JphGearConstraintSettings* self, int32_t inNumTeethGear1, int32_t inNumTeethGear2) {
     kolt::cpp(self)->SetRatio(static_cast<int>(inNumTeethGear1), static_cast<int>(inNumTeethGear2));
 }

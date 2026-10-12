@@ -13,6 +13,9 @@ internal external fun JphSoftBodyMotionProperties_destroy(self: NativePointer)
 @ExternalSymbolName("JphSoftBodyMotionProperties_asMotionProperties")
 internal external fun JphSoftBodyMotionProperties_asMotionProperties(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphSoftBodyMotionProperties_fromMotionProperties")
+internal external fun JphSoftBodyMotionProperties_fromMotionProperties(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphSoftBodyMotionProperties_Initialize")
 internal external fun JphSoftBodyMotionProperties_Initialize(self: NativePointer, inSettings: NativePointer)
 

@@ -12,6 +12,7 @@ extern "C" {
 void JphStreamOut_destroy(JphStreamOut* self);
 JphStreamOut* JphStreamOut_createUpcalls(JphUpcall call);
 void JphStreamOut_bindUpcalls(JphStreamOut* self, void* userData);
+int32_t JphStreamOut_dynamicType(const JphStreamOut* self);
 // skipped void JPH::StreamOut::Write(const T & inT)
 // skipped void JPH::StreamOut::Write(const Array<T, A> & inT)
 // skipped void JPH::StreamOut::Write(const std::basic_string<Type, Traits, Allocator> & inString)

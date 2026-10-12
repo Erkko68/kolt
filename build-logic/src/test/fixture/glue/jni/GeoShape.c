@@ -4,6 +4,8 @@
 
 #include "geo/generated/GeoCircle.h"
 #include "geo/generated/GeoGeo.h"
+#include "geo/generated/GeoMarker.h"
+#include "geo/generated/GeoPin.h"
 #include "geo/generated/GeoPoint.h"
 #include "geo/generated/GeoPolygon.h"
 #include "geo/generated/GeoShape.h"
@@ -18,6 +20,10 @@ JNIEXPORT jlong JNICALL Java_geo_capi_GeoShapeKt_GeoShape_1createUpcalls(JNIEnv*
 
 JNIEXPORT void JNICALL Java_geo_capi_GeoShapeKt_GeoShape_1bindUpcalls(JNIEnv* env, jclass cls, jlong self, jlong userData) {
     GeoShape_bindUpcalls((void*)(intptr_t) self, (void*)(intptr_t) userData);
+}
+
+JNIEXPORT jint JNICALL Java_geo_capi_GeoShapeKt_GeoShape_1dynamicType(JNIEnv* env, jclass cls, jlong self) {
+    return (jint) GeoShape_dynamicType((void*)(intptr_t) self);
 }
 
 JNIEXPORT jint JNICALL Java_geo_capi_GeoShapeKt_GeoShape_1kind(JNIEnv* env, jclass cls, jlong self) {

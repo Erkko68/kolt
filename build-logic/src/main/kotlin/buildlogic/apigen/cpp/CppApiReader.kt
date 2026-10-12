@@ -160,7 +160,7 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
         records[qualified] = CppRecord(
             qualified, locationOf[node]?.header, public, accessible, template, publicBases, methods, fields, constructors, destructible, allocatable, copyable, declaredDestructor,
             derivable = qualified !in withoutDefault && children.none { it["kind"] == "FinalAttr" },
-            doc = node.doc(),
+            doc = node.doc(), polymorphic = dd?.get("isPolymorphic") == true,
         )
     }
 

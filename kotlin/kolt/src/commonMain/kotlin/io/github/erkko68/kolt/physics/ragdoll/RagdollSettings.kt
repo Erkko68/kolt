@@ -162,7 +162,7 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
             closeOnce { JphRagdollSettingsPart_destroy(ragdollSettingsPartHandle) }
     
         var toParent: TwoBodyConstraintSettings?
-            get() = JphRagdollSettingsPart_GetToParent(ragdollSettingsPartHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraintSettings(it) }
+            get() = JphRagdollSettingsPart_GetToParent(ragdollSettingsPartHandle).takeIf { it != NullPointer }?.let { wrapTwoBodyConstraintSettings(it) }
             set(value) = JphRagdollSettingsPart_SetToParent(ragdollSettingsPartHandle, value?.twoBodyConstraintSettingsHandle ?: NullPointer)
     }
     
@@ -192,7 +192,7 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
     
         /** The constraint that connects these bodies */
         var constraint: TwoBodyConstraintSettings?
-            get() = JphRagdollSettingsAdditionalConstraint_GetConstraint(ragdollSettingsAdditionalConstraintHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraintSettings(it) }
+            get() = JphRagdollSettingsAdditionalConstraint_GetConstraint(ragdollSettingsAdditionalConstraintHandle).takeIf { it != NullPointer }?.let { wrapTwoBodyConstraintSettings(it) }
             set(value) = JphRagdollSettingsAdditionalConstraint_SetConstraint(ragdollSettingsAdditionalConstraintHandle, value?.twoBodyConstraintSettingsHandle ?: NullPointer)
     }
     

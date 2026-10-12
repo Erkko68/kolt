@@ -22,6 +22,12 @@ internal external fun JphHingeConstraintSettings_asConstraintSettings(self: Nati
 @ExternalSymbolName("JphHingeConstraintSettings_asSerializableObject")
 internal external fun JphHingeConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphHingeConstraintSettings_fromTwoBodyConstraintSettings")
+internal external fun JphHingeConstraintSettings_fromTwoBodyConstraintSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphHingeConstraintSettings_fromConstraintSettings")
+internal external fun JphHingeConstraintSettings_fromConstraintSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphHingeConstraintSettings_GetSpace")
 internal external fun JphHingeConstraintSettings_GetSpace(self: NativePointer): Int
 

@@ -16,6 +16,10 @@ JphMotionProperties* JphSoftBodyMotionProperties_asMotionProperties(JphSoftBodyM
     return kolt::c(static_cast<JPH::MotionProperties*>(kolt::cpp(self)));
 }
 
+JphSoftBodyMotionProperties* JphSoftBodyMotionProperties_fromMotionProperties(JphMotionProperties* base) {
+    return kolt::c(static_cast<JPH::SoftBodyMotionProperties*>(kolt::cpp(base)));
+}
+
 void JphSoftBodyMotionProperties_Initialize(JphSoftBodyMotionProperties* self, const JphSoftBodyCreationSettings* inSettings) {
     kolt::cpp(self)->Initialize(*kolt::cpp(inSettings));
 }

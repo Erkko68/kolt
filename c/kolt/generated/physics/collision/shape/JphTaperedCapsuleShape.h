@@ -15,6 +15,8 @@ void JphTaperedCapsuleShape_addRef(const JphTaperedCapsuleShape* self);
 void JphTaperedCapsuleShape_release(const JphTaperedCapsuleShape* self);
 JphConvexShape* JphTaperedCapsuleShape_asConvexShape(JphTaperedCapsuleShape* self);
 JphShape* JphTaperedCapsuleShape_asShape(JphTaperedCapsuleShape* self);
+JphTaperedCapsuleShape* JphTaperedCapsuleShape_fromConvexShape(JphConvexShape* base);
+JphTaperedCapsuleShape* JphTaperedCapsuleShape_fromShape(JphShape* base);
 // skipped static void JPH::TaperedCapsuleShape::sRegister(): JPH::.*::sRegister
 float JphTaperedCapsuleShape_GetTopRadius(const JphTaperedCapsuleShape* self);
 float JphTaperedCapsuleShape_GetBottomRadius(const JphTaperedCapsuleShape* self);

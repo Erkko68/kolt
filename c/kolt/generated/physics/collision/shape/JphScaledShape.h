@@ -16,6 +16,8 @@ void JphScaledShape_addRef(const JphScaledShape* self);
 void JphScaledShape_release(const JphScaledShape* self);
 JphDecoratedShape* JphScaledShape_asDecoratedShape(JphScaledShape* self);
 JphShape* JphScaledShape_asShape(JphScaledShape* self);
+JphScaledShape* JphScaledShape_fromDecoratedShape(JphDecoratedShape* base);
+JphScaledShape* JphScaledShape_fromShape(JphShape* base);
 // skipped static void JPH::ScaledShape::sRegister(): JPH::.*::sRegister
 void JphScaledShape_GetScale(const JphScaledShape* self, JphVec3* out);
 

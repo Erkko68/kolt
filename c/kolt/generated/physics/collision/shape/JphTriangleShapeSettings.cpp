@@ -32,6 +32,14 @@ JphSerializableObject* JphTriangleShapeSettings_asSerializableObject(JphTriangle
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphTriangleShapeSettings* JphTriangleShapeSettings_fromConvexShapeSettings(JphConvexShapeSettings* base) {
+    return kolt::c(static_cast<JPH::TriangleShapeSettings*>(kolt::cpp(base)));
+}
+
+JphTriangleShapeSettings* JphTriangleShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::TriangleShapeSettings*>(kolt::cpp(base)));
+}
+
 void JphTriangleShapeSettings_GetV1(const JphTriangleShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mV1);
 }

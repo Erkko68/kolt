@@ -61,7 +61,7 @@ open class GroupFilter internal constructor(internal val groupFilterHandle: Nati
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
             0 -> writeSlot(result, if (canCollide(CollisionGroup(readPointerSlot(args, 0)), CollisionGroup(readPointerSlot(args, 1)))) 1L else 0L)
-            1 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            1 -> saveBinaryState(wrapStreamOut(readPointerSlot(args, 0)))
             else -> return false
         }
         return true
@@ -76,7 +76,7 @@ open class GroupFilter internal constructor(internal val groupFilterHandle: Nati
                 val returned = JphGroupFilter_sRestoreFromBinaryState(stream.streamInHandle, errorPointer, error.size)
                 errorPointer.fromInterop(error)
                 if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
-                GroupFilter(returned, owned = true)
+                wrapGroupFilter(returned, owned = true)
             }
     }
 }

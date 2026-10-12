@@ -26,7 +26,8 @@ class Gap(val kind: Kind, val reason: String) {
 
 /**
  * What a generated C function does of [owner] (a record, or a namespace for its functions), for the stages wrapping
- * the C API. [name]: the member's, as C names it without an overload's suffix; an upcast's base, as C names the type.
+ * the C API. [name]: the member's, as C names it without an overload's suffix; an upcast's or a downcast's base, as C
+ * names the type.
  */
 class Bound(
     val role: Role, val owner: String, val name: String, val params: List<Pair<String, CBridge>> = emptyList(),
@@ -37,12 +38,14 @@ class Bound(
     val upcalls: List<Upcall> = emptyList(),
     /** The C++ member's documentation comment. */
     val doc: String? = null,
+    /** For [Role.DYNAMIC_TYPE]: the records, as C names their types, by the index it returns less one; 0 is none of them. */
+    val derived: List<String> = emptyList(),
 ) {
     /**
      * [UPCALLS] creates an object of a generated subclass, whose virtual functions call the `Upcall` it's given
      * (Bridge.hpp) with the user data [BIND_UPCALLS] sets; with none set, they're the record's own.
      */
-    enum class Role { CREATE, ADD_REF, RELEASE, DESTROY, UPCAST, METHOD, GETTER, SETTER, UPCALLS, BIND_UPCALLS }
+    enum class Role { CREATE, ADD_REF, RELEASE, DESTROY, UPCAST, DOWNCAST, DYNAMIC_TYPE, METHOD, GETTER, SETTER, UPCALLS, BIND_UPCALLS }
 }
 
 /** A virtual function passed on with [args] in its slots; its result, if any, comes back as [returns]. */

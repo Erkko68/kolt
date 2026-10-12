@@ -19,6 +19,9 @@ internal external fun JphObjectLayerPairFilterMask_bindUpcalls(self: NativePoint
 @ExternalSymbolName("JphObjectLayerPairFilterMask_asObjectLayerPairFilter")
 internal external fun JphObjectLayerPairFilterMask_asObjectLayerPairFilter(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphObjectLayerPairFilterMask_fromObjectLayerPairFilter")
+internal external fun JphObjectLayerPairFilterMask_fromObjectLayerPairFilter(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphObjectLayerPairFilterMask_sGetObjectLayer")
 internal external fun JphObjectLayerPairFilterMask_sGetObjectLayer(inGroup: Int, inMask: Int): Int
 

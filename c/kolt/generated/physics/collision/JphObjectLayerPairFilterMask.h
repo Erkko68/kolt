@@ -14,6 +14,7 @@ void JphObjectLayerPairFilterMask_destroy(JphObjectLayerPairFilterMask* self);
 JphObjectLayerPairFilterMask* JphObjectLayerPairFilterMask_createUpcalls(JphUpcall call);
 void JphObjectLayerPairFilterMask_bindUpcalls(JphObjectLayerPairFilterMask* self, void* userData);
 JphObjectLayerPairFilter* JphObjectLayerPairFilterMask_asObjectLayerPairFilter(JphObjectLayerPairFilterMask* self);
+JphObjectLayerPairFilterMask* JphObjectLayerPairFilterMask_fromObjectLayerPairFilter(JphObjectLayerPairFilter* base);
 uint32_t JphObjectLayerPairFilterMask_sGetObjectLayer(uint32_t inGroup, uint32_t inMask);
 uint32_t JphObjectLayerPairFilterMask_sGetGroup(uint32_t inObjectLayer);
 uint32_t JphObjectLayerPairFilterMask_sGetMask(uint32_t inObjectLayer);

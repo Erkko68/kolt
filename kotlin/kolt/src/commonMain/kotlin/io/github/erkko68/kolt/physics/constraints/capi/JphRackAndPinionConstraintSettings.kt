@@ -22,6 +22,12 @@ internal external fun JphRackAndPinionConstraintSettings_asConstraintSettings(se
 @ExternalSymbolName("JphRackAndPinionConstraintSettings_asSerializableObject")
 internal external fun JphRackAndPinionConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphRackAndPinionConstraintSettings_fromTwoBodyConstraintSettings")
+internal external fun JphRackAndPinionConstraintSettings_fromTwoBodyConstraintSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphRackAndPinionConstraintSettings_fromConstraintSettings")
+internal external fun JphRackAndPinionConstraintSettings_fromConstraintSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphRackAndPinionConstraintSettings_SetRatio")
 internal external fun JphRackAndPinionConstraintSettings_SetRatio(self: NativePointer, inNumTeethRack: Int, inRackLength: Float, inNumTeethPinion: Int)
 

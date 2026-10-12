@@ -15,6 +15,7 @@ JphEmptyShape* JphEmptyShape_create_Vec3Arg(const JphVec3* inCenterOfMass);
 void JphEmptyShape_addRef(const JphEmptyShape* self);
 void JphEmptyShape_release(const JphEmptyShape* self);
 JphShape* JphEmptyShape_asShape(JphEmptyShape* self);
+JphEmptyShape* JphEmptyShape_fromShape(JphShape* base);
 // skipped static void JPH::EmptyShape::sRegister(): JPH::.*::sRegister
 
 

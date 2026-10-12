@@ -16,4 +16,8 @@ JphBodyFilter* JphIgnoreSingleBodyFilter_asBodyFilter(JphIgnoreSingleBodyFilter*
     return kolt::c(static_cast<JPH::BodyFilter*>(kolt::cpp(self)));
 }
 
+JphIgnoreSingleBodyFilter* JphIgnoreSingleBodyFilter_fromBodyFilter(JphBodyFilter* base) {
+    return kolt::c(static_cast<JPH::IgnoreSingleBodyFilter*>(kolt::cpp(base)));
+}
+
 } // extern "C"

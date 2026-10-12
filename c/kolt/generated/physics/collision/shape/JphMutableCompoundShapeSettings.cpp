@@ -28,4 +28,12 @@ JphSerializableObject* JphMutableCompoundShapeSettings_asSerializableObject(JphM
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphMutableCompoundShapeSettings* JphMutableCompoundShapeSettings_fromCompoundShapeSettings(JphCompoundShapeSettings* base) {
+    return kolt::c(static_cast<JPH::MutableCompoundShapeSettings*>(kolt::cpp(base)));
+}
+
+JphMutableCompoundShapeSettings* JphMutableCompoundShapeSettings_fromShapeSettings(JphShapeSettings* base) {
+    return kolt::c(static_cast<JPH::MutableCompoundShapeSettings*>(kolt::cpp(base)));
+}
+
 } // extern "C"

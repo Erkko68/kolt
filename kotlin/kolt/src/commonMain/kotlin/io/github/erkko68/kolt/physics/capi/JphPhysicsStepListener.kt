@@ -13,5 +13,8 @@ internal external fun JphPhysicsStepListener_createUpcalls(call: NativePointer):
 @ExternalSymbolName("JphPhysicsStepListener_bindUpcalls")
 internal external fun JphPhysicsStepListener_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("JphPhysicsStepListener_dynamicType")
+internal external fun JphPhysicsStepListener_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphPhysicsStepListener_OnStep")
 internal external fun JphPhysicsStepListener_OnStep(self: NativePointer, inContext: NativePointer)

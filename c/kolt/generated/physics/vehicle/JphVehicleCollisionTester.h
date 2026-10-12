@@ -11,6 +11,7 @@ extern "C" {
 // JPH::VehicleCollisionTester
 void JphVehicleCollisionTester_addRef(const JphVehicleCollisionTester* self);
 void JphVehicleCollisionTester_release(const JphVehicleCollisionTester* self);
+int32_t JphVehicleCollisionTester_dynamicType(const JphVehicleCollisionTester* self);
 // skipped bool JPH::VehicleCollisionTester::Collide(PhysicsSystem & inPhysicsSystem, const VehicleConstraint & inVehicleConstraint, uint inWheelIndex, RVec3Arg inOrigin, Vec3Arg inDirection, const BodyID & inVehicleBodyID, Body *& outBody, SubShapeID & outSubShapeID, RVec3 & outContactPosition, Vec3 & outContactNormal, float & outSuspensionLength) const: JPH::VehicleCollisionTester::(Collide|PredictContactProperties)
 // skipped void JPH::VehicleCollisionTester::PredictContactProperties(PhysicsSystem & inPhysicsSystem, const VehicleConstraint & inVehicleConstraint, uint inWheelIndex, RVec3Arg inOrigin, Vec3Arg inDirection, const BodyID & inVehicleBodyID, Body *& ioBody, SubShapeID & ioSubShapeID, RVec3 & ioContactPosition, Vec3 & ioContactNormal, float & ioSuspensionLength) const: JPH::VehicleCollisionTester::(Collide|PredictContactProperties)
 uint32_t JphVehicleCollisionTester_GetObjectLayer(const JphVehicleCollisionTester* self);

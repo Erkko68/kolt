@@ -10,6 +10,8 @@ namespace geoc {
 
 GEOC_TYPE(GeoVec2, geo::Vec2)
 GEOC_TYPE(GeoCircle, geo::Circle)
+GEOC_TYPE(GeoMarker, geo::Marker)
+GEOC_TYPE(GeoPin, geo::Pin)
 GEOC_TYPE(GeoPoint, geo::Point)
 GEOC_TYPE(GeoPolygon, geo::Polygon)
 GEOC_TYPE(GeoShape, geo::Shape)

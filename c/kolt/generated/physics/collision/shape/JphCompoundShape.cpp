@@ -80,6 +80,15 @@ JphShape* JphCompoundShape_asShape(JphCompoundShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphCompoundShape* JphCompoundShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::CompoundShape*>(kolt::cpp(base)));
+}
+
+int32_t JphCompoundShape_dynamicType(const JphCompoundShape* self) {
+    const JPH::CompoundShape* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::MutableCompoundShape*>(object) ? 1 : dynamic_cast<const JPH::StaticCompoundShape*>(object) ? 2 : 0;
+}
+
 int32_t JphCompoundShape_GetIntersectingSubShapes_AABox_uint_int(const JphCompoundShape* self, const JphAABox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices) {
     return static_cast<int32_t>(kolt::cpp(self)->GetIntersectingSubShapes(*kolt::cpp(inBox), outSubShapeIndices, static_cast<int>(inMaxSubShapeIndices)));
 }

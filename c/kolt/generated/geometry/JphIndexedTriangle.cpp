@@ -20,6 +20,10 @@ JphIndexedTriangleNoMaterial* JphIndexedTriangle_asIndexedTriangleNoMaterial(Jph
     return kolt::c(static_cast<JPH::IndexedTriangleNoMaterial*>(kolt::cpp(self)));
 }
 
+JphIndexedTriangle* JphIndexedTriangle_fromIndexedTriangleNoMaterial(JphIndexedTriangleNoMaterial* base) {
+    return kolt::c(static_cast<JPH::IndexedTriangle*>(kolt::cpp(base)));
+}
+
 void JphIndexedTriangle_GetLowestIndexFirst(const JphIndexedTriangle* self, JphIndexedTriangle* out) {
     *kolt::cpp(out) = kolt::cpp(self)->GetLowestIndexFirst();
 }

@@ -16,6 +16,11 @@ void JphCharacterBaseSettings_release(const JphCharacterBaseSettings* self) {
     kolt::cpp(self)->Release();
 }
 
+int32_t JphCharacterBaseSettings_dynamicType(const JphCharacterBaseSettings* self) {
+    const JPH::CharacterBaseSettings* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::CharacterSettings*>(object) ? 1 : dynamic_cast<const JPH::CharacterVirtualSettings*>(object) ? 2 : 0;
+}
+
 void JphCharacterBaseSettings_GetUp(const JphCharacterBaseSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mUp);
 }

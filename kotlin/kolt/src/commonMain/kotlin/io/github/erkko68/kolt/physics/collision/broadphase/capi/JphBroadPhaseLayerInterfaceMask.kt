@@ -13,6 +13,9 @@ internal external fun JphBroadPhaseLayerInterfaceMask_destroy(self: NativePointe
 @ExternalSymbolName("JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface")
 internal external fun JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphBroadPhaseLayerInterfaceMask_fromBroadPhaseLayerInterface")
+internal external fun JphBroadPhaseLayerInterfaceMask_fromBroadPhaseLayerInterface(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphBroadPhaseLayerInterfaceMask_ConfigureLayer")
 internal external fun JphBroadPhaseLayerInterfaceMask_ConfigureLayer(self: NativePointer, inBroadPhaseLayer: Int, inGroupsToInclude: Int, inGroupsToExclude: Int)
 

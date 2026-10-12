@@ -12,4 +12,8 @@ JphBodyLockInterface* JphBodyLockInterfaceNoLock_asBodyLockInterface(JphBodyLock
     return kolt::c(static_cast<JPH::BodyLockInterface*>(kolt::cpp(self)));
 }
 
+JphBodyLockInterfaceNoLock* JphBodyLockInterfaceNoLock_fromBodyLockInterface(JphBodyLockInterface* base) {
+    return kolt::c(static_cast<JPH::BodyLockInterfaceNoLock*>(kolt::cpp(base)));
+}
+
 } // extern "C"

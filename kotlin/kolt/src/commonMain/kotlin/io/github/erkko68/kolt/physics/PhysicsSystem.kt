@@ -94,7 +94,7 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
      */
     fun setSimCollideBodyVsBody(bodyVsBody: ((Body, Body, Mat44, Mat44, CollideShapeSettings, CollideShapeCollector, ShapeFilter) -> Unit)?) =
         run {
-            val bodyVsBodyUser = if (bodyVsBody == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> bodyVsBody(Body(readPointerSlot(args, 0)), Body(readPointerSlot(args, 1)), Mat44(readFloats(readPointerSlot(args, 2), 16)), Mat44(readFloats(readPointerSlot(args, 3), 16)), CollideShapeSettings(readPointerSlot(args, 4)), CollideShapeCollector(readPointerSlot(args, 5)), ShapeFilter(readPointerSlot(args, 6))) })
+            val bodyVsBodyUser = if (bodyVsBody == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> bodyVsBody(Body(readPointerSlot(args, 0)), Body(readPointerSlot(args, 1)), Mat44(readFloats(readPointerSlot(args, 2), 16)), Mat44(readFloats(readPointerSlot(args, 3), 16)), CollideShapeSettings(readPointerSlot(args, 4)), CollideShapeCollector(readPointerSlot(args, 5)), wrapShapeFilter(readPointerSlot(args, 6))) })
             JphPhysicsSystem_SetSimCollideBodyVsBody(physicsSystemHandle, Upcalls.function, bodyVsBodyUser)
         }
 
@@ -146,7 +146,7 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
             val count = JphPhysicsSystem_GetConstraints(physicsSystemHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
             JphPhysicsSystem_GetConstraints(physicsSystemHandle, returnedPointer, count)
-            readPointers(returnedPointer, count).map { Constraint(it, owned = true) }
+            readPointers(returnedPointer, count).map { wrapConstraint(it, owned = true) }
         }
 
     /**
@@ -216,15 +216,15 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
 
     /** Return the BroadPhaseLayerInterface that this class has been initialized with */
     val broadPhaseLayerInterface: BroadPhaseLayerInterface
-        get() = BroadPhaseLayerInterface(JphPhysicsSystem_GetBroadPhaseLayerInterface(physicsSystemHandle))
+        get() = wrapBroadPhaseLayerInterface(JphPhysicsSystem_GetBroadPhaseLayerInterface(physicsSystemHandle))
 
     /** Broadphase layer filter that decides if two objects can collide, this was passed to the Init function. */
     val objectVsBroadPhaseLayerFilter: ObjectVsBroadPhaseLayerFilter
-        get() = ObjectVsBroadPhaseLayerFilter(JphPhysicsSystem_GetObjectVsBroadPhaseLayerFilter(physicsSystemHandle))
+        get() = wrapObjectVsBroadPhaseLayerFilter(JphPhysicsSystem_GetObjectVsBroadPhaseLayerFilter(physicsSystemHandle))
 
     /** Object layer filter that decides if two objects can collide, this was passed to the Init function. */
     val objectLayerPairFilter: ObjectLayerPairFilter
-        get() = ObjectLayerPairFilter(JphPhysicsSystem_GetObjectLayerPairFilter(physicsSystemHandle))
+        get() = wrapObjectLayerPairFilter(JphPhysicsSystem_GetObjectLayerPairFilter(physicsSystemHandle))
 
     /** Get an broadphase layer filter that uses the default pair filter and a specified object layer to determine if broadphase layers collide */
     fun getDefaultBroadPhaseLayerFilter(layer: Int): DefaultBroadPhaseLayerFilter =

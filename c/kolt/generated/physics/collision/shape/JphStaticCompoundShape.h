@@ -15,6 +15,8 @@ void JphStaticCompoundShape_addRef(const JphStaticCompoundShape* self);
 void JphStaticCompoundShape_release(const JphStaticCompoundShape* self);
 JphCompoundShape* JphStaticCompoundShape_asCompoundShape(JphStaticCompoundShape* self);
 JphShape* JphStaticCompoundShape_asShape(JphStaticCompoundShape* self);
+JphStaticCompoundShape* JphStaticCompoundShape_fromCompoundShape(JphCompoundShape* base);
+JphStaticCompoundShape* JphStaticCompoundShape_fromShape(JphShape* base);
 // skipped static void JPH::StaticCompoundShape::sRegister(): JPH::.*::sRegister
 
 

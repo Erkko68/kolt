@@ -17,6 +17,8 @@ void JphRotatedTranslatedShapeSettings_release(const JphRotatedTranslatedShapeSe
 JphDecoratedShapeSettings* JphRotatedTranslatedShapeSettings_asDecoratedShapeSettings(JphRotatedTranslatedShapeSettings* self);
 JphShapeSettings* JphRotatedTranslatedShapeSettings_asShapeSettings(JphRotatedTranslatedShapeSettings* self);
 JphSerializableObject* JphRotatedTranslatedShapeSettings_asSerializableObject(JphRotatedTranslatedShapeSettings* self);
+JphRotatedTranslatedShapeSettings* JphRotatedTranslatedShapeSettings_fromDecoratedShapeSettings(JphDecoratedShapeSettings* base);
+JphRotatedTranslatedShapeSettings* JphRotatedTranslatedShapeSettings_fromShapeSettings(JphShapeSettings* base);
 // skipped static void JPH::RotatedTranslatedShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphRotatedTranslatedShapeSettings_GetPosition(const JphRotatedTranslatedShapeSettings* self, JphVec3* out);
 void JphRotatedTranslatedShapeSettings_SetPosition(JphRotatedTranslatedShapeSettings* self, const JphVec3* value);

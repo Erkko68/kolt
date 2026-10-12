@@ -49,6 +49,11 @@ JphSerializableObject* JphGroupFilter_asSerializableObject(JphGroupFilter* self)
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+int32_t JphGroupFilter_dynamicType(const JphGroupFilter* self) {
+    const JPH::GroupFilter* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::GroupFilterTable*>(object) ? 1 : 0;
+}
+
 bool JphGroupFilter_CanCollide(const JphGroupFilter* self, const JphCollisionGroup* inGroup1, const JphCollisionGroup* inGroup2) {
     return kolt::cpp(self)->CanCollide(*kolt::cpp(inGroup1), *kolt::cpp(inGroup2));
 }

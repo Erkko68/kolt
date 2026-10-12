@@ -13,6 +13,7 @@ JphShapeCastResult* JphShapeCastResult_create(void);
 JphShapeCastResult* JphShapeCastResult_create_float_Vec3Arg_Vec3Arg_Vec3Arg_bool_SubShapeID_SubShapeID_BodyID(float inFraction, const JphVec3* inContactPoint1, const JphVec3* inContactPoint2, const JphVec3* inContactNormalOrPenetrationDepth, bool inBackFaceHit, uint32_t inSubShapeID1, uint32_t inSubShapeID2, uint32_t inBodyID2);
 void JphShapeCastResult_destroy(JphShapeCastResult* self);
 JphCollideShapeResult* JphShapeCastResult_asCollideShapeResult(JphShapeCastResult* self);
+JphShapeCastResult* JphShapeCastResult_fromCollideShapeResult(JphCollideShapeResult* base);
 float JphShapeCastResult_GetEarlyOutFraction(const JphShapeCastResult* self);
 void JphShapeCastResult_Reversed(const JphShapeCastResult* self, const JphVec3* inWorldSpaceCastDirection, JphShapeCastResult* out);
 float JphShapeCastResult_GetFraction(const JphShapeCastResult* self);

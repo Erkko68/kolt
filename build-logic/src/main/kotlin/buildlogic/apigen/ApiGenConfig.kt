@@ -61,6 +61,12 @@ data class CBindings(
      * `Bridge.hpp`'s hooks.
      */
     val bridgeHeader: String? = null,
+    /**
+     * The library is built with RTTI, so C can `dynamic_cast`: what C++ hands out as a base with virtual functions is
+     * wrapped as the class it is, of the API's. Without, as for a base with none, the caller says which
+     * ([buildlogic.apigen.c.Records.downcasts]).
+     */
+    val rtti: Boolean = false,
     /** C declarations the first module's `Types.h` opens with: what [TypeTables.scalars] and [TypeTables.custom] bridges name. */
     val typedefs: List<String> = emptyList(),
 ) : Serializable

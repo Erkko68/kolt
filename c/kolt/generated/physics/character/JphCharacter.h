@@ -13,6 +13,7 @@ JphCharacter* JphCharacter_create(const JphCharacterSettings* inSettings, const 
 void JphCharacter_addRef(const JphCharacter* self);
 void JphCharacter_release(const JphCharacter* self);
 JphCharacterBase* JphCharacter_asCharacterBase(JphCharacter* self);
+JphCharacter* JphCharacter_fromCharacterBase(JphCharacterBase* base);
 void JphCharacter_AddToPhysicsSystem(JphCharacter* self, JphEActivation inActivationMode, bool inLockBodies);
 void JphCharacter_RemoveFromPhysicsSystem(JphCharacter* self, bool inLockBodies);
 void JphCharacter_Activate(JphCharacter* self, bool inLockBodies);

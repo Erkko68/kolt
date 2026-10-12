@@ -22,6 +22,12 @@ internal external fun JphTriangleShape_asConvexShape(self: NativePointer): Nativ
 @ExternalSymbolName("JphTriangleShape_asShape")
 internal external fun JphTriangleShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphTriangleShape_fromConvexShape")
+internal external fun JphTriangleShape_fromConvexShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphTriangleShape_fromShape")
+internal external fun JphTriangleShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphTriangleShape_GetVertex1")
 internal external fun JphTriangleShape_GetVertex1(self: NativePointer, out: NativePointer)
 

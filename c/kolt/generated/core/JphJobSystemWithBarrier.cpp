@@ -12,6 +12,15 @@ JphJobSystem* JphJobSystemWithBarrier_asJobSystem(JphJobSystemWithBarrier* self)
     return kolt::c(static_cast<JPH::JobSystem*>(kolt::cpp(self)));
 }
 
+JphJobSystemWithBarrier* JphJobSystemWithBarrier_fromJobSystem(JphJobSystem* base) {
+    return kolt::c(static_cast<JPH::JobSystemWithBarrier*>(kolt::cpp(base)));
+}
+
+int32_t JphJobSystemWithBarrier_dynamicType(const JphJobSystemWithBarrier* self) {
+    const JPH::JobSystemWithBarrier* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::JobSystemThreadPool*>(object) ? 1 : 0;
+}
+
 void JphJobSystemWithBarrier_Init(JphJobSystemWithBarrier* self, uint32_t inMaxBarriers) {
     kolt::cpp(self)->Init(static_cast<unsigned int>(inMaxBarriers));
 }

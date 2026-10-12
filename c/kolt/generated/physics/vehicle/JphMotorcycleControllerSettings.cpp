@@ -61,6 +61,14 @@ JphSerializableObject* JphMotorcycleControllerSettings_asSerializableObject(JphM
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphMotorcycleControllerSettings* JphMotorcycleControllerSettings_fromWheeledVehicleControllerSettings(JphWheeledVehicleControllerSettings* base) {
+    return kolt::c(static_cast<JPH::MotorcycleControllerSettings*>(kolt::cpp(base)));
+}
+
+JphMotorcycleControllerSettings* JphMotorcycleControllerSettings_fromVehicleControllerSettings(JphVehicleControllerSettings* base) {
+    return kolt::c(static_cast<JPH::MotorcycleControllerSettings*>(kolt::cpp(base)));
+}
+
 float JphMotorcycleControllerSettings_GetMaxLeanAngle(const JphMotorcycleControllerSettings* self) {
     return kolt::cpp(self)->mMaxLeanAngle;
 }

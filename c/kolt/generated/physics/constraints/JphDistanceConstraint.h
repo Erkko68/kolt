@@ -14,6 +14,8 @@ void JphDistanceConstraint_addRef(const JphDistanceConstraint* self);
 void JphDistanceConstraint_release(const JphDistanceConstraint* self);
 JphTwoBodyConstraint* JphDistanceConstraint_asTwoBodyConstraint(JphDistanceConstraint* self);
 JphConstraint* JphDistanceConstraint_asConstraint(JphDistanceConstraint* self);
+JphDistanceConstraint* JphDistanceConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphDistanceConstraint* JphDistanceConstraint_fromConstraint(JphConstraint* base);
 void JphDistanceConstraint_SetDistance(JphDistanceConstraint* self, float inMinDistance, float inMaxDistance);
 float JphDistanceConstraint_GetMinDistance(const JphDistanceConstraint* self);
 float JphDistanceConstraint_GetMaxDistance(const JphDistanceConstraint* self);

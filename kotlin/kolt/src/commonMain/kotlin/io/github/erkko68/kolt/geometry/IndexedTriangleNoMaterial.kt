@@ -91,4 +91,7 @@ open class IndexedTriangleNoMaterial internal constructor(internal val indexedTr
             returned
         }
         set(value) = interopScope { JphIndexedTriangleNoMaterial_SetIdx(indexedTriangleNoMaterialHandle, toInterop(value), value.size) }
+
+    /** This object as the [IndexedTriangle] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asIndexedTriangle() = IndexedTriangle(JphIndexedTriangle_fromIndexedTriangleNoMaterial(indexedTriangleNoMaterialHandle))
 }

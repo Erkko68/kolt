@@ -30,6 +30,7 @@ JphCharacterVirtual* JphCharacterVirtual_create_PhysicsSystem(const JphCharacter
 void JphCharacterVirtual_addRef(const JphCharacterVirtual* self);
 void JphCharacterVirtual_release(const JphCharacterVirtual* self);
 JphCharacterBase* JphCharacterVirtual_asCharacterBase(JphCharacterVirtual* self);
+JphCharacterVirtual* JphCharacterVirtual_fromCharacterBase(JphCharacterBase* base);
 void JphCharacterVirtual_GetID(const JphCharacterVirtual* self, JphCharacterID* out);
 void JphCharacterVirtual_SetListener(JphCharacterVirtual* self, JphCharacterContactListener* inListener);
 JphCharacterContactListener* JphCharacterVirtual_GetListener(const JphCharacterVirtual* self);

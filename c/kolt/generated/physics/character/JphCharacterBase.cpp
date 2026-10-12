@@ -16,6 +16,11 @@ void JphCharacterBase_release(const JphCharacterBase* self) {
     kolt::cpp(self)->Release();
 }
 
+int32_t JphCharacterBase_dynamicType(const JphCharacterBase* self) {
+    const JPH::CharacterBase* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::Character*>(object) ? 1 : dynamic_cast<const JPH::CharacterVirtual*>(object) ? 2 : 0;
+}
+
 void JphCharacterBase_SetMaxSlopeAngle(JphCharacterBase* self, float inMaxSlopeAngle) {
     kolt::cpp(self)->SetMaxSlopeAngle(inMaxSlopeAngle);
 }

@@ -19,6 +19,12 @@ internal external fun JphSwingTwistConstraint_asTwoBodyConstraint(self: NativePo
 @ExternalSymbolName("JphSwingTwistConstraint_asConstraint")
 internal external fun JphSwingTwistConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphSwingTwistConstraint_fromTwoBodyConstraint")
+internal external fun JphSwingTwistConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphSwingTwistConstraint_fromConstraint")
+internal external fun JphSwingTwistConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphSwingTwistConstraint_GetLocalSpacePosition1")
 internal external fun JphSwingTwistConstraint_GetLocalSpacePosition1(self: NativePointer, out: NativePointer)
 

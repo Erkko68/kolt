@@ -12,3 +12,6 @@ internal external fun JphObjectVsBroadPhaseLayerFilterMask_destroy(self: NativeP
 
 @ExternalSymbolName("JphObjectVsBroadPhaseLayerFilterMask_asObjectVsBroadPhaseLayerFilter")
 internal external fun JphObjectVsBroadPhaseLayerFilterMask_asObjectVsBroadPhaseLayerFilter(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphObjectVsBroadPhaseLayerFilterMask_fromObjectVsBroadPhaseLayerFilter")
+internal external fun JphObjectVsBroadPhaseLayerFilterMask_fromObjectVsBroadPhaseLayerFilter(base: NativePointer): NativePointer

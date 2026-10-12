@@ -19,6 +19,12 @@ internal external fun JphHingeConstraint_asTwoBodyConstraint(self: NativePointer
 @ExternalSymbolName("JphHingeConstraint_asConstraint")
 internal external fun JphHingeConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphHingeConstraint_fromTwoBodyConstraint")
+internal external fun JphHingeConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphHingeConstraint_fromConstraint")
+internal external fun JphHingeConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphHingeConstraint_GetLocalSpacePoint1")
 internal external fun JphHingeConstraint_GetLocalSpacePoint1(self: NativePointer, out: NativePointer)
 

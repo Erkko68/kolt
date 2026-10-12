@@ -12,6 +12,7 @@ extern "C" {
 JphBroadPhaseLayerInterfaceTable* JphBroadPhaseLayerInterfaceTable_create(uint32_t inNumObjectLayers, uint32_t inNumBroadPhaseLayers);
 void JphBroadPhaseLayerInterfaceTable_destroy(JphBroadPhaseLayerInterfaceTable* self);
 JphBroadPhaseLayerInterface* JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceTable* self);
+JphBroadPhaseLayerInterfaceTable* JphBroadPhaseLayerInterfaceTable_fromBroadPhaseLayerInterface(JphBroadPhaseLayerInterface* base);
 void JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer(JphBroadPhaseLayerInterfaceTable* self, uint32_t inObjectLayer, uint32_t inBroadPhaseLayer);
 
 

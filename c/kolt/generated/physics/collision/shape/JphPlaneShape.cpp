@@ -24,6 +24,10 @@ JphShape* JphPlaneShape_asShape(JphPlaneShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphPlaneShape* JphPlaneShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::PlaneShape*>(kolt::cpp(base)));
+}
+
 void JphPlaneShape_GetPlane(const JphPlaneShape* self, JphPlane* out) {
     *kolt::cpp(out) = kolt::cpp(self)->GetPlane();
 }

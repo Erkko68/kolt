@@ -11,6 +11,8 @@ extern "C" {
 // JPH::JobSystemWithBarrier
 void JphJobSystemWithBarrier_destroy(JphJobSystemWithBarrier* self);
 JphJobSystem* JphJobSystemWithBarrier_asJobSystem(JphJobSystemWithBarrier* self);
+JphJobSystemWithBarrier* JphJobSystemWithBarrier_fromJobSystem(JphJobSystem* base);
+int32_t JphJobSystemWithBarrier_dynamicType(const JphJobSystemWithBarrier* self);
 void JphJobSystemWithBarrier_Init(JphJobSystemWithBarrier* self, uint32_t inMaxBarriers);
 
 

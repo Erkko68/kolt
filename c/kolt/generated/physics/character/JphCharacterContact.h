@@ -12,6 +12,7 @@ extern "C" {
 JphCharacterContact* JphCharacterContact_create(void);
 void JphCharacterContact_destroy(JphCharacterContact* self);
 JphCharacterContactKey* JphCharacterContact_asCharacterContactKey(JphCharacterContact* self);
+JphCharacterContact* JphCharacterContact_fromCharacterContactKey(JphCharacterContactKey* base);
 void JphCharacterContact_SaveState(const JphCharacterContact* self, JphStateRecorder* inStream);
 void JphCharacterContact_RestoreState(JphCharacterContact* self, JphStateRecorder* inStream);
 void JphCharacterContact_GetPosition(const JphCharacterContact* self, JphVec3* out);

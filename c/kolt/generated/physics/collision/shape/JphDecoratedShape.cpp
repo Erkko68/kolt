@@ -16,6 +16,15 @@ JphShape* JphDecoratedShape_asShape(JphDecoratedShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphDecoratedShape* JphDecoratedShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::DecoratedShape*>(kolt::cpp(base)));
+}
+
+int32_t JphDecoratedShape_dynamicType(const JphDecoratedShape* self) {
+    const JPH::DecoratedShape* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::OffsetCenterOfMassShape*>(object) ? 1 : dynamic_cast<const JPH::RotatedTranslatedShape*>(object) ? 2 : dynamic_cast<const JPH::ScaledShape*>(object) ? 3 : 0;
+}
+
 const JphShape* JphDecoratedShape_GetInnerShape(const JphDecoratedShape* self) {
     return kolt::c(kolt::cpp(self)->GetInnerShape());
 }

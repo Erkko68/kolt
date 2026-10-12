@@ -19,6 +19,9 @@ internal external fun JphPlaneShape_release(self: NativePointer)
 @ExternalSymbolName("JphPlaneShape_asShape")
 internal external fun JphPlaneShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPlaneShape_fromShape")
+internal external fun JphPlaneShape_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphPlaneShape_GetPlane")
 internal external fun JphPlaneShape_GetPlane(self: NativePointer, out: NativePointer)
 

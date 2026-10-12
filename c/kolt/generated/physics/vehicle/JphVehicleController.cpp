@@ -8,6 +8,11 @@ void JphVehicleController_destroy(JphVehicleController* self) {
     delete kolt::cpp(self);
 }
 
+int32_t JphVehicleController_dynamicType(const JphVehicleController* self) {
+    const JPH::VehicleController* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::MotorcycleController*>(object) ? 1 : dynamic_cast<const JPH::TrackedVehicleController*>(object) ? 2 : dynamic_cast<const JPH::WheeledVehicleController*>(object) ? 3 : 0;
+}
+
 JphVehicleConstraint* JphVehicleController_GetConstraint(JphVehicleController* self) {
     return kolt::c(&kolt::cpp(self)->GetConstraint());
 }

@@ -65,7 +65,7 @@ open class SimShapeFilter internal constructor(internal val simShapeFilterHandle
 
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
-            0 -> writeSlot(result, if (shouldCollide(Body(readPointerSlot(args, 0)), readPointerSlot(args, 1).takeIf { it != NullPointer }?.let { Shape(it) }, SubShapeID(readSlot(args, 2).toInt()), Body(readPointerSlot(args, 3)), readPointerSlot(args, 4).takeIf { it != NullPointer }?.let { Shape(it) }, SubShapeID(readSlot(args, 5).toInt()))) 1L else 0L)
+            0 -> writeSlot(result, if (shouldCollide(Body(readPointerSlot(args, 0)), readPointerSlot(args, 1).takeIf { it != NullPointer }?.let { wrapShape(it) }, SubShapeID(readSlot(args, 2).toInt()), Body(readPointerSlot(args, 3)), readPointerSlot(args, 4).takeIf { it != NullPointer }?.let { wrapShape(it) }, SubShapeID(readSlot(args, 5).toInt()))) 1L else 0L)
             else -> return false
         }
         return true

@@ -18,3 +18,6 @@ internal external fun JphEmptyShape_release(self: NativePointer)
 
 @ExternalSymbolName("JphEmptyShape_asShape")
 internal external fun JphEmptyShape_asShape(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphEmptyShape_fromShape")
+internal external fun JphEmptyShape_fromShape(base: NativePointer): NativePointer

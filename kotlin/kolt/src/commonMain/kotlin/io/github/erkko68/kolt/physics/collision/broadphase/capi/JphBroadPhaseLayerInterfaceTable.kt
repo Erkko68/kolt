@@ -13,5 +13,8 @@ internal external fun JphBroadPhaseLayerInterfaceTable_destroy(self: NativePoint
 @ExternalSymbolName("JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface")
 internal external fun JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphBroadPhaseLayerInterfaceTable_fromBroadPhaseLayerInterface")
+internal external fun JphBroadPhaseLayerInterfaceTable_fromBroadPhaseLayerInterface(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer")
 internal external fun JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer(self: NativePointer, inObjectLayer: Int, inBroadPhaseLayer: Int)

@@ -13,6 +13,9 @@ internal external fun JphTempAllocatorImpl_destroy(self: NativePointer)
 @ExternalSymbolName("JphTempAllocatorImpl_asTempAllocator")
 internal external fun JphTempAllocatorImpl_asTempAllocator(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphTempAllocatorImpl_fromTempAllocator")
+internal external fun JphTempAllocatorImpl_fromTempAllocator(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphTempAllocatorImpl_IsEmpty")
 internal external fun JphTempAllocatorImpl_IsEmpty(self: NativePointer): Boolean
 

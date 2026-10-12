@@ -185,7 +185,7 @@ class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, ow
 
     /** Access a constraint by index */
     fun getConstraint(constraintIndex: Int): TwoBodyConstraint? =
-        JphRagdoll_GetConstraint(ragdollHandle, constraintIndex).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
+        JphRagdoll_GetConstraint(ragdollHandle, constraintIndex).takeIf { it != NullPointer }?.let { wrapTwoBodyConstraint(it) }
 
     /** Get world space bounding box for all bodies of the ragdoll */
     fun getWorldSpaceBounds(lockBodies: Boolean): AABox =

@@ -13,6 +13,7 @@ JphVehicleCollisionTesterCastSphere* JphVehicleCollisionTesterCastSphere_create(
 void JphVehicleCollisionTesterCastSphere_addRef(const JphVehicleCollisionTesterCastSphere* self);
 void JphVehicleCollisionTesterCastSphere_release(const JphVehicleCollisionTesterCastSphere* self);
 JphVehicleCollisionTester* JphVehicleCollisionTesterCastSphere_asVehicleCollisionTester(JphVehicleCollisionTesterCastSphere* self);
+JphVehicleCollisionTesterCastSphere* JphVehicleCollisionTesterCastSphere_fromVehicleCollisionTester(JphVehicleCollisionTester* base);
 
 
 #ifdef __cplusplus

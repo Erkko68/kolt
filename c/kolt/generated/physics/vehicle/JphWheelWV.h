@@ -12,6 +12,7 @@ extern "C" {
 JphWheelWV* JphWheelWV_create(const JphWheelSettingsWV* inWheel);
 void JphWheelWV_destroy(JphWheelWV* self);
 JphWheel* JphWheelWV_asWheel(JphWheelWV* self);
+JphWheelWV* JphWheelWV_fromWheel(JphWheel* base);
 const JphWheelSettingsWV* JphWheelWV_GetSettings(const JphWheelWV* self);
 void JphWheelWV_ApplyTorque(JphWheelWV* self, float inTorque, float inDeltaTime);
 void JphWheelWV_Update(JphWheelWV* self, uint32_t inWheelIndex, float inDeltaTime, const JphVehicleConstraint* inConstraint);

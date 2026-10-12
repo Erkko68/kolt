@@ -24,6 +24,14 @@ JphShape* JphTaperedCylinderShape_asShape(JphTaperedCylinderShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphTaperedCylinderShape* JphTaperedCylinderShape_fromConvexShape(JphConvexShape* base) {
+    return kolt::c(static_cast<JPH::TaperedCylinderShape*>(kolt::cpp(base)));
+}
+
+JphTaperedCylinderShape* JphTaperedCylinderShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::TaperedCylinderShape*>(kolt::cpp(base)));
+}
+
 float JphTaperedCylinderShape_GetTopRadius(const JphTaperedCylinderShape* self) {
     return kolt::cpp(self)->GetTopRadius();
 }

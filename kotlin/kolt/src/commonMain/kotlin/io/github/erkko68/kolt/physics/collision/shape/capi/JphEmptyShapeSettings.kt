@@ -22,6 +22,9 @@ internal external fun JphEmptyShapeSettings_asShapeSettings(self: NativePointer)
 @ExternalSymbolName("JphEmptyShapeSettings_asSerializableObject")
 internal external fun JphEmptyShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphEmptyShapeSettings_fromShapeSettings")
+internal external fun JphEmptyShapeSettings_fromShapeSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphEmptyShapeSettings_GetCenterOfMass")
 internal external fun JphEmptyShapeSettings_GetCenterOfMass(self: NativePointer, out: NativePointer)
 

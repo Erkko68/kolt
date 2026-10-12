@@ -15,3 +15,6 @@ internal external fun JphVehicleCollisionTesterCastSphere_release(self: NativePo
 
 @ExternalSymbolName("JphVehicleCollisionTesterCastSphere_asVehicleCollisionTester")
 internal external fun JphVehicleCollisionTesterCastSphere_asVehicleCollisionTester(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphVehicleCollisionTesterCastSphere_fromVehicleCollisionTester")
+internal external fun JphVehicleCollisionTesterCastSphere_fromVehicleCollisionTester(base: NativePointer): NativePointer

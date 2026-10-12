@@ -12,3 +12,6 @@ internal external fun JphDefaultBroadPhaseLayerFilter_destroy(self: NativePointe
 
 @ExternalSymbolName("JphDefaultBroadPhaseLayerFilter_asBroadPhaseLayerFilter")
 internal external fun JphDefaultBroadPhaseLayerFilter_asBroadPhaseLayerFilter(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphDefaultBroadPhaseLayerFilter_fromBroadPhaseLayerFilter")
+internal external fun JphDefaultBroadPhaseLayerFilter_fromBroadPhaseLayerFilter(base: NativePointer): NativePointer

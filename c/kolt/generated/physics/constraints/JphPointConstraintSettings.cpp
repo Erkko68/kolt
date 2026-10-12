@@ -28,6 +28,14 @@ JphSerializableObject* JphPointConstraintSettings_asSerializableObject(JphPointC
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphPointConstraintSettings* JphPointConstraintSettings_fromTwoBodyConstraintSettings(JphTwoBodyConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::PointConstraintSettings*>(kolt::cpp(base)));
+}
+
+JphPointConstraintSettings* JphPointConstraintSettings_fromConstraintSettings(JphConstraintSettings* base) {
+    return kolt::c(static_cast<JPH::PointConstraintSettings*>(kolt::cpp(base)));
+}
+
 JphEConstraintSpace JphPointConstraintSettings_GetSpace(const JphPointConstraintSettings* self) {
     return static_cast<JphEConstraintSpace>(kolt::cpp(self)->mSpace);
 }

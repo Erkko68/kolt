@@ -39,6 +39,11 @@ void JphObjectVsBroadPhaseLayerFilter_bindUpcalls(JphObjectVsBroadPhaseLayerFilt
     static_cast<::JPH::JphObjectVsBroadPhaseLayerFilter_Upcalls*>(kolt::cpp(self))->mUser = userData;
 }
 
+int32_t JphObjectVsBroadPhaseLayerFilter_dynamicType(const JphObjectVsBroadPhaseLayerFilter* self) {
+    const JPH::ObjectVsBroadPhaseLayerFilter* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::ObjectVsBroadPhaseLayerFilterMask*>(object) ? 1 : dynamic_cast<const JPH::ObjectVsBroadPhaseLayerFilterTable*>(object) ? 2 : 0;
+}
+
 bool JphObjectVsBroadPhaseLayerFilter_ShouldCollide(const JphObjectVsBroadPhaseLayerFilter* self, uint32_t inLayer1, uint32_t inLayer2) {
     return kolt::cpp(self)->ShouldCollide(static_cast<uint16_t>(inLayer1), JPH::BroadPhaseLayer(JPH::BroadPhaseLayer::Type(inLayer2)));
 }

@@ -16,6 +16,9 @@ internal external fun JphShapeCastResult_destroy(self: NativePointer)
 @ExternalSymbolName("JphShapeCastResult_asCollideShapeResult")
 internal external fun JphShapeCastResult_asCollideShapeResult(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphShapeCastResult_fromCollideShapeResult")
+internal external fun JphShapeCastResult_fromCollideShapeResult(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphShapeCastResult_GetEarlyOutFraction")
 internal external fun JphShapeCastResult_GetEarlyOutFraction(self: NativePointer): Float
 

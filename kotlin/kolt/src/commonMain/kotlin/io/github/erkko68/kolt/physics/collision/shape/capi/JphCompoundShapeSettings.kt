@@ -52,6 +52,12 @@ internal external fun JphCompoundShapeSettings_asShapeSettings(self: NativePoint
 @ExternalSymbolName("JphCompoundShapeSettings_asSerializableObject")
 internal external fun JphCompoundShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphCompoundShapeSettings_fromShapeSettings")
+internal external fun JphCompoundShapeSettings_fromShapeSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphCompoundShapeSettings_dynamicType")
+internal external fun JphCompoundShapeSettings_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphCompoundShapeSettings_AddShape_ShapeSettings_uint32")
 internal external fun JphCompoundShapeSettings_AddShape_ShapeSettings_uint32(self: NativePointer, inPosition: NativePointer, inRotation: NativePointer, inShape: NativePointer, inUserData: Int)
 

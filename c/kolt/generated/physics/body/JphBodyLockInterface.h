@@ -10,6 +10,7 @@ extern "C" {
 
 // JPH::BodyLockInterface
 void JphBodyLockInterface_destroy(JphBodyLockInterface* self);
+int32_t JphBodyLockInterface_dynamicType(const JphBodyLockInterface* self);
 // skipped SharedMutex * JPH::BodyLockInterface::LockRead(const BodyID & inBodyID) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
 // skipped void JPH::BodyLockInterface::UnlockRead(SharedMutex * inMutex) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
 // skipped SharedMutex * JPH::BodyLockInterface::LockWrite(const BodyID & inBodyID) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)

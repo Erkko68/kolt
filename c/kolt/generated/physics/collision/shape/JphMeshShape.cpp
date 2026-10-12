@@ -20,6 +20,10 @@ JphShape* JphMeshShape_asShape(JphMeshShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphMeshShape* JphMeshShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::MeshShape*>(kolt::cpp(base)));
+}
+
 uint32_t JphMeshShape_GetMaterialList(const JphMeshShape* self, const JphPhysicsMaterial** out, uint32_t outCapacity) {
     return kolt::copy(kolt::cpp(self)->GetMaterialList(), outCapacity, [&](auto& x, uint32_t i) { out[i] = kolt::c((x).GetPtr()); });
 }

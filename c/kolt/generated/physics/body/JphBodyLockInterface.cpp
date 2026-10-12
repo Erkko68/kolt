@@ -8,6 +8,11 @@ void JphBodyLockInterface_destroy(JphBodyLockInterface* self) {
     delete kolt::cpp(self);
 }
 
+int32_t JphBodyLockInterface_dynamicType(const JphBodyLockInterface* self) {
+    const JPH::BodyLockInterface* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::BodyLockInterfaceLocking*>(object) ? 1 : dynamic_cast<const JPH::BodyLockInterfaceNoLock*>(object) ? 2 : 0;
+}
+
 JphBody* JphBodyLockInterface_TryGetBody(const JphBodyLockInterface* self, uint32_t inBodyID) {
     return kolt::c(kolt::cpp(self)->TryGetBody(JPH::BodyID(inBodyID)));
 }

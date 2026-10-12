@@ -11,6 +11,7 @@ extern "C" {
 // JPH::Constraint
 void JphConstraint_addRef(const JphConstraint* self);
 void JphConstraint_release(const JphConstraint* self);
+int32_t JphConstraint_dynamicType(const JphConstraint* self);
 // skipped void JPH::Constraint::SetupVelocityConstraint(float inDeltaTime): JPH::\w*Constraint::(SetupVelocity|WarmStartVelocity|SolveVelocity|SolvePosition)Constraint
 // skipped void JPH::Constraint::WarmStartVelocityConstraint(float inWarmStartImpulseRatio): JPH::\w*Constraint::(SetupVelocity|WarmStartVelocity|SolveVelocity|SolvePosition)Constraint
 // skipped bool JPH::Constraint::SolveVelocityConstraint(float inDeltaTime): JPH::\w*Constraint::(SetupVelocity|WarmStartVelocity|SolveVelocity|SolvePosition)Constraint

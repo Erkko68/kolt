@@ -13,6 +13,8 @@ void JphDecoratedShapeSettings_addRef(const JphDecoratedShapeSettings* self);
 void JphDecoratedShapeSettings_release(const JphDecoratedShapeSettings* self);
 JphShapeSettings* JphDecoratedShapeSettings_asShapeSettings(JphDecoratedShapeSettings* self);
 JphSerializableObject* JphDecoratedShapeSettings_asSerializableObject(JphDecoratedShapeSettings* self);
+JphDecoratedShapeSettings* JphDecoratedShapeSettings_fromShapeSettings(JphShapeSettings* base);
+int32_t JphDecoratedShapeSettings_dynamicType(const JphDecoratedShapeSettings* self);
 // skipped static void JPH::DecoratedShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 const JphShapeSettings* JphDecoratedShapeSettings_GetInnerShape(const JphDecoratedShapeSettings* self);
 void JphDecoratedShapeSettings_SetInnerShape(JphDecoratedShapeSettings* self, const JphShapeSettings* value);

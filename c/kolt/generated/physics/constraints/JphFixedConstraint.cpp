@@ -24,6 +24,14 @@ JphConstraint* JphFixedConstraint_asConstraint(JphFixedConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphFixedConstraint* JphFixedConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::FixedConstraint*>(kolt::cpp(base)));
+}
+
+JphFixedConstraint* JphFixedConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::FixedConstraint*>(kolt::cpp(base)));
+}
+
 void JphFixedConstraint_GetTotalLambdaPosition(const JphFixedConstraint* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetTotalLambdaPosition());
 }

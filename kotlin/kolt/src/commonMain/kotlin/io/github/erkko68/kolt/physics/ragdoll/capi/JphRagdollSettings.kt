@@ -13,6 +13,9 @@ internal external fun JphRagdollSettingsPart_destroy(self: NativePointer)
 @ExternalSymbolName("JphRagdollSettingsPart_asBodyCreationSettings")
 internal external fun JphRagdollSettingsPart_asBodyCreationSettings(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphRagdollSettingsPart_fromBodyCreationSettings")
+internal external fun JphRagdollSettingsPart_fromBodyCreationSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphRagdollSettingsPart_GetToParent")
 internal external fun JphRagdollSettingsPart_GetToParent(self: NativePointer): NativePointer
 

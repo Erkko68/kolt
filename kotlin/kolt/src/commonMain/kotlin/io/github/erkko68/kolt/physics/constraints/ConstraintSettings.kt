@@ -95,7 +95,7 @@ open class ConstraintSettings internal constructor(internal val constraintSettin
 
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
-            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            0 -> saveBinaryState(wrapStreamOut(readPointerSlot(args, 0)))
             else -> return false
         }
         return true
@@ -110,7 +110,7 @@ open class ConstraintSettings internal constructor(internal val constraintSettin
                 val returned = JphConstraintSettings_sRestoreFromBinaryState(stream.streamInHandle, errorPointer, error.size)
                 errorPointer.fromInterop(error)
                 if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
-                ConstraintSettings(returned, owned = true)
+                wrapConstraintSettings(returned, owned = true)
             }
     }
 }

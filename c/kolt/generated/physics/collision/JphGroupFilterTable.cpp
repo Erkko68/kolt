@@ -24,6 +24,10 @@ JphSerializableObject* JphGroupFilterTable_asSerializableObject(JphGroupFilterTa
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
+JphGroupFilterTable* JphGroupFilterTable_fromGroupFilter(JphGroupFilter* base) {
+    return kolt::c(static_cast<JPH::GroupFilterTable*>(kolt::cpp(base)));
+}
+
 void JphGroupFilterTable_DisableCollision(JphGroupFilterTable* self, uint32_t inSubGroup1, uint32_t inSubGroup2) {
     kolt::cpp(self)->DisableCollision(inSubGroup1, inSubGroup2);
 }

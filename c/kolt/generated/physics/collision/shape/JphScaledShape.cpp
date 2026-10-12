@@ -28,6 +28,14 @@ JphShape* JphScaledShape_asShape(JphScaledShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphScaledShape* JphScaledShape_fromDecoratedShape(JphDecoratedShape* base) {
+    return kolt::c(static_cast<JPH::ScaledShape*>(kolt::cpp(base)));
+}
+
+JphScaledShape* JphScaledShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::ScaledShape*>(kolt::cpp(base)));
+}
+
 void JphScaledShape_GetScale(const JphScaledShape* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetScale());
 }

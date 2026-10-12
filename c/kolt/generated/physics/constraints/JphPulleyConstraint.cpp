@@ -24,6 +24,14 @@ JphConstraint* JphPulleyConstraint_asConstraint(JphPulleyConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
+JphPulleyConstraint* JphPulleyConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base) {
+    return kolt::c(static_cast<JPH::PulleyConstraint*>(kolt::cpp(base)));
+}
+
+JphPulleyConstraint* JphPulleyConstraint_fromConstraint(JphConstraint* base) {
+    return kolt::c(static_cast<JPH::PulleyConstraint*>(kolt::cpp(base)));
+}
+
 void JphPulleyConstraint_SetLength(JphPulleyConstraint* self, float inMinLength, float inMaxLength) {
     kolt::cpp(self)->SetLength(inMinLength, inMaxLength);
 }

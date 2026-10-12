@@ -32,6 +32,8 @@ void JphCompoundShapeSubShape_SetIsRotationIdentity(JphCompoundShapeSubShape* se
 void JphCompoundShape_addRef(const JphCompoundShape* self);
 void JphCompoundShape_release(const JphCompoundShape* self);
 JphShape* JphCompoundShape_asShape(JphCompoundShape* self);
+JphCompoundShape* JphCompoundShape_fromShape(JphShape* base);
+int32_t JphCompoundShape_dynamicType(const JphCompoundShape* self);
 // skipped static void JPH::CompoundShape::sRegister(): JPH::.*::sRegister
 int32_t JphCompoundShape_GetIntersectingSubShapes_AABox_uint_int(const JphCompoundShape* self, const JphAABox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices);
 int32_t JphCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int(const JphCompoundShape* self, const JphOrientedBox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices);

@@ -22,6 +22,12 @@ internal external fun JphPathConstraintSettings_asConstraintSettings(self: Nativ
 @ExternalSymbolName("JphPathConstraintSettings_asSerializableObject")
 internal external fun JphPathConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPathConstraintSettings_fromTwoBodyConstraintSettings")
+internal external fun JphPathConstraintSettings_fromTwoBodyConstraintSettings(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphPathConstraintSettings_fromConstraintSettings")
+internal external fun JphPathConstraintSettings_fromConstraintSettings(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphPathConstraintSettings_GetPath")
 internal external fun JphPathConstraintSettings_GetPath(self: NativePointer): NativePointer
 

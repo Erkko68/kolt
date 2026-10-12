@@ -79,7 +79,7 @@ open class CharacterBase internal constructor(internal val characterBaseHandle: 
 
     /** Get the current shape that the character is using. */
     val shape: Shape?
-        get() = JphCharacterBase_GetShape(characterBaseHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        get() = JphCharacterBase_GetShape(characterBaseHandle).takeIf { it != NullPointer }?.let { wrapShape(it) }
 
     /** Current ground state */
     val groundState: CharacterBase.EGroundState

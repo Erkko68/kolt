@@ -12,6 +12,7 @@ extern "C" {
 JphTempAllocatorMalloc* JphTempAllocatorMalloc_create(void);
 void JphTempAllocatorMalloc_destroy(JphTempAllocatorMalloc* self);
 JphTempAllocator* JphTempAllocatorMalloc_asTempAllocator(JphTempAllocatorMalloc* self);
+JphTempAllocatorMalloc* JphTempAllocatorMalloc_fromTempAllocator(JphTempAllocator* base);
 
 
 #ifdef __cplusplus

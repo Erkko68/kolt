@@ -12,6 +12,7 @@ extern "C" {
 JphObjectLayerPairFilterTable* JphObjectLayerPairFilterTable_create(uint32_t inNumObjectLayers);
 void JphObjectLayerPairFilterTable_destroy(JphObjectLayerPairFilterTable* self);
 JphObjectLayerPairFilter* JphObjectLayerPairFilterTable_asObjectLayerPairFilter(JphObjectLayerPairFilterTable* self);
+JphObjectLayerPairFilterTable* JphObjectLayerPairFilterTable_fromObjectLayerPairFilter(JphObjectLayerPairFilter* base);
 uint32_t JphObjectLayerPairFilterTable_GetNumObjectLayers(const JphObjectLayerPairFilterTable* self);
 void JphObjectLayerPairFilterTable_DisableCollision(JphObjectLayerPairFilterTable* self, uint32_t inLayer1, uint32_t inLayer2);
 void JphObjectLayerPairFilterTable_EnableCollision(JphObjectLayerPairFilterTable* self, uint32_t inLayer1, uint32_t inLayer2);

@@ -19,6 +19,12 @@ internal external fun JphGearConstraint_asTwoBodyConstraint(self: NativePointer)
 @ExternalSymbolName("JphGearConstraint_asConstraint")
 internal external fun JphGearConstraint_asConstraint(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphGearConstraint_fromTwoBodyConstraint")
+internal external fun JphGearConstraint_fromTwoBodyConstraint(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphGearConstraint_fromConstraint")
+internal external fun JphGearConstraint_fromConstraint(base: NativePointer): NativePointer
+
 @ExternalSymbolName("JphGearConstraint_SetConstraints")
 internal external fun JphGearConstraint_SetConstraints(self: NativePointer, inGear1: NativePointer, inGear2: NativePointer)
 

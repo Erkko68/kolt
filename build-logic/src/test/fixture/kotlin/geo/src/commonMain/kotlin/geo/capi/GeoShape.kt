@@ -13,6 +13,9 @@ internal external fun GeoShape_createUpcalls(call: NativePointer): NativePointer
 @ExternalSymbolName("GeoShape_bindUpcalls")
 internal external fun GeoShape_bindUpcalls(self: NativePointer, userData: NativePointer)
 
+@ExternalSymbolName("GeoShape_dynamicType")
+internal external fun GeoShape_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("GeoShape_kind")
 internal external fun GeoShape_kind(self: NativePointer): Int
 

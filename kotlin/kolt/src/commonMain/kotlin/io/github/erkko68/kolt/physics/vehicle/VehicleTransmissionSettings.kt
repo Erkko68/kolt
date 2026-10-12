@@ -110,4 +110,7 @@ open class VehicleTransmissionSettings internal constructor(internal val vehicle
     var clutchStrength: Float
         get() = JphVehicleTransmissionSettings_GetClutchStrength(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetClutchStrength(vehicleTransmissionSettingsHandle, value)
+
+    /** This object as the [VehicleTransmission] it is, borrowed. Unchecked, as a C++ `static_cast`: it must be one. */
+    fun asVehicleTransmission() = VehicleTransmission(JphVehicleTransmission_fromVehicleTransmissionSettings(vehicleTransmissionSettingsHandle))
 }

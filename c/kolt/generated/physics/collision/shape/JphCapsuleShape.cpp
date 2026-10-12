@@ -28,6 +28,14 @@ JphShape* JphCapsuleShape_asShape(JphCapsuleShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphCapsuleShape* JphCapsuleShape_fromConvexShape(JphConvexShape* base) {
+    return kolt::c(static_cast<JPH::CapsuleShape*>(kolt::cpp(base)));
+}
+
+JphCapsuleShape* JphCapsuleShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::CapsuleShape*>(kolt::cpp(base)));
+}
+
 float JphCapsuleShape_GetRadius(const JphCapsuleShape* self) {
     return kolt::cpp(self)->GetRadius();
 }

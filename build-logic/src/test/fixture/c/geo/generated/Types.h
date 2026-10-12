@@ -13,6 +13,8 @@ extern "C" {
 typedef struct GeoVec2 { float v[2]; } GeoVec2;
 
 typedef struct GeoCircle GeoCircle;
+typedef struct GeoMarker GeoMarker;
+typedef struct GeoPin GeoPin;
 typedef struct GeoPoint GeoPoint;
 typedef struct GeoPolygon GeoPolygon;
 typedef struct GeoShape GeoShape;

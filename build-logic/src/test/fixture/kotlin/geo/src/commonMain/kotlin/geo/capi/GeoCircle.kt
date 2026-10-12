@@ -13,6 +13,9 @@ internal external fun GeoCircle_destroy(self: NativePointer)
 @ExternalSymbolName("GeoCircle_asShape")
 internal external fun GeoCircle_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("GeoCircle_fromShape")
+internal external fun GeoCircle_fromShape(base: NativePointer): NativePointer
+
 @ExternalSymbolName("GeoCircle_radius")
 internal external fun GeoCircle_radius(self: NativePointer): Float
 

@@ -56,6 +56,9 @@ header's directory (`physics.body.BodyInterface`); `GetX`/`SetX` are a property 
   `MutableList`, changed in place. A `void*` is a `NativePointer`.
 - A class Jolt returns by value is a copy the wrapper owns: `shape.stats.use { … }`.
 - A second C++ base is a function: `vehicle.asPhysicsStepListener()`.
+- What Jolt returns as a base is the class it is: `vehicle.controller as WheeledVehicleController`, `shape is BoxShape`.
+  C++ tells which, Jolt being built with RTTI for it (`c/CMakeLists.txt`). It can't for a class with no virtual
+  functions, where a function says so, unchecked: `body.motionProperties!!.asSoftBodyMotionProperties()`.
 - `c/api-coverage.txt` lists what isn't bound yet (the stream save and restore maps, plain function pointers,
   `std::pair`s), and what `c/api-headers.txt` leaves out as Jolt's own machinery.
 
@@ -69,7 +72,7 @@ write; run it after touching the generator, `c/api-headers.txt` or the Jolt subm
 
 `buildlogic.apigen` knows no library. Everything it is told about Jolt is one `ApiGenConfig`, in
 `build-logic/src/main/kotlin/kolt-root.gradle.kts`: `sources` (where the headers are, the clang arguments), `c` (how C
-names and files are built), `naming` (the prefixes Jolt's names carry), `types` (scalars, math mirrors, containers,
+names and files are built, and whether the library has RTTI), `naming` (the prefixes Jolt's names carry), `types` (scalars, math mirrors, containers,
 strings, reference counting, result types) and `templates` (the instantiations bound).
 
 `./gradlew -p build-logic test` runs every stage on a small fixture library (`build-logic/src/test/fixture`) against

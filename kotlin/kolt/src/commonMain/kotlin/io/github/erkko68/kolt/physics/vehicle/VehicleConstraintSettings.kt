@@ -86,7 +86,7 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
             val count = JphVehicleConstraintSettings_GetWheels(vehicleConstraintSettingsHandle, NullPointer, 0)
             val returnedPointer = toInterop(List(count) { NullPointer })
             JphVehicleConstraintSettings_GetWheels(vehicleConstraintSettingsHandle, returnedPointer, count)
-            readPointers(returnedPointer, count).map { WheelSettings(it) }
+            readPointers(returnedPointer, count).map { wrapWheelSettings(it) }
         }
         set(value) = interopScope { JphVehicleConstraintSettings_SetWheels(vehicleConstraintSettingsHandle, toInterop(value.map { it.wheelSettingsHandle }), value.size) }
 
@@ -102,12 +102,12 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
 
     /** Defines how the vehicle can accelerate / decelerate */
     var controller: VehicleControllerSettings?
-        get() = JphVehicleConstraintSettings_GetController(vehicleConstraintSettingsHandle).takeIf { it != NullPointer }?.let { VehicleControllerSettings(it) }
+        get() = JphVehicleConstraintSettings_GetController(vehicleConstraintSettingsHandle).takeIf { it != NullPointer }?.let { wrapVehicleControllerSettings(it) }
         set(value) = JphVehicleConstraintSettings_SetController(vehicleConstraintSettingsHandle, value?.vehicleControllerSettingsHandle ?: NullPointer)
 
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
-            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            0 -> saveBinaryState(wrapStreamOut(readPointerSlot(args, 0)))
             else -> return false
         }
         return true

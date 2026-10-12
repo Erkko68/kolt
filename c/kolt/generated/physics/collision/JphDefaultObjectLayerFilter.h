@@ -12,6 +12,7 @@ extern "C" {
 JphDefaultObjectLayerFilter* JphDefaultObjectLayerFilter_create(const JphObjectLayerPairFilter* inObjectLayerPairFilter, uint32_t inLayer);
 void JphDefaultObjectLayerFilter_destroy(JphDefaultObjectLayerFilter* self);
 JphObjectLayerFilter* JphDefaultObjectLayerFilter_asObjectLayerFilter(JphDefaultObjectLayerFilter* self);
+JphDefaultObjectLayerFilter* JphDefaultObjectLayerFilter_fromObjectLayerFilter(JphObjectLayerFilter* base);
 
 
 #ifdef __cplusplus

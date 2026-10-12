@@ -24,4 +24,12 @@ JphShape* JphStaticCompoundShape_asShape(JphStaticCompoundShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphStaticCompoundShape* JphStaticCompoundShape_fromCompoundShape(JphCompoundShape* base) {
+    return kolt::c(static_cast<JPH::StaticCompoundShape*>(kolt::cpp(base)));
+}
+
+JphStaticCompoundShape* JphStaticCompoundShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::StaticCompoundShape*>(kolt::cpp(base)));
+}
+
 } // extern "C"

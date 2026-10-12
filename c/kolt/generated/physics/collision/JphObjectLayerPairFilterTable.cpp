@@ -16,6 +16,10 @@ JphObjectLayerPairFilter* JphObjectLayerPairFilterTable_asObjectLayerPairFilter(
     return kolt::c(static_cast<JPH::ObjectLayerPairFilter*>(kolt::cpp(self)));
 }
 
+JphObjectLayerPairFilterTable* JphObjectLayerPairFilterTable_fromObjectLayerPairFilter(JphObjectLayerPairFilter* base) {
+    return kolt::c(static_cast<JPH::ObjectLayerPairFilterTable*>(kolt::cpp(base)));
+}
+
 uint32_t JphObjectLayerPairFilterTable_GetNumObjectLayers(const JphObjectLayerPairFilterTable* self) {
     return static_cast<uint32_t>(kolt::cpp(self)->GetNumObjectLayers());
 }

@@ -14,6 +14,8 @@ void JphRackAndPinionConstraint_addRef(const JphRackAndPinionConstraint* self);
 void JphRackAndPinionConstraint_release(const JphRackAndPinionConstraint* self);
 JphTwoBodyConstraint* JphRackAndPinionConstraint_asTwoBodyConstraint(JphRackAndPinionConstraint* self);
 JphConstraint* JphRackAndPinionConstraint_asConstraint(JphRackAndPinionConstraint* self);
+JphRackAndPinionConstraint* JphRackAndPinionConstraint_fromTwoBodyConstraint(JphTwoBodyConstraint* base);
+JphRackAndPinionConstraint* JphRackAndPinionConstraint_fromConstraint(JphConstraint* base);
 void JphRackAndPinionConstraint_SetConstraints(JphRackAndPinionConstraint* self, const JphConstraint* inPinion, const JphConstraint* inRack);
 float JphRackAndPinionConstraint_GetTotalLambda(const JphRackAndPinionConstraint* self);
 

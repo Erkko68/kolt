@@ -13,5 +13,11 @@ internal external fun JphDecoratedShape_release(self: NativePointer)
 @ExternalSymbolName("JphDecoratedShape_asShape")
 internal external fun JphDecoratedShape_asShape(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphDecoratedShape_fromShape")
+internal external fun JphDecoratedShape_fromShape(base: NativePointer): NativePointer
+
+@ExternalSymbolName("JphDecoratedShape_dynamicType")
+internal external fun JphDecoratedShape_dynamicType(self: NativePointer): Int
+
 @ExternalSymbolName("JphDecoratedShape_GetInnerShape")
 internal external fun JphDecoratedShape_GetInnerShape(self: NativePointer): NativePointer

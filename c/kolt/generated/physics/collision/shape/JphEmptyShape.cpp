@@ -24,4 +24,8 @@ JphShape* JphEmptyShape_asShape(JphEmptyShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
+JphEmptyShape* JphEmptyShape_fromShape(JphShape* base) {
+    return kolt::c(static_cast<JPH::EmptyShape*>(kolt::cpp(base)));
+}
+
 } // extern "C"

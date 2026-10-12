@@ -16,6 +16,8 @@ void JphTriangleShape_addRef(const JphTriangleShape* self);
 void JphTriangleShape_release(const JphTriangleShape* self);
 JphConvexShape* JphTriangleShape_asConvexShape(JphTriangleShape* self);
 JphShape* JphTriangleShape_asShape(JphTriangleShape* self);
+JphTriangleShape* JphTriangleShape_fromConvexShape(JphConvexShape* base);
+JphTriangleShape* JphTriangleShape_fromShape(JphShape* base);
 // skipped static void JPH::TriangleShape::sRegister(): JPH::.*::sRegister
 void JphTriangleShape_GetVertex1(const JphTriangleShape* self, JphVec3* out);
 void JphTriangleShape_GetVertex2(const JphTriangleShape* self, JphVec3* out);

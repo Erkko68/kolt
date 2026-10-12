@@ -17,6 +17,8 @@ void JphConvexHullShapeSettings_release(const JphConvexHullShapeSettings* self);
 JphConvexShapeSettings* JphConvexHullShapeSettings_asConvexShapeSettings(JphConvexHullShapeSettings* self);
 JphShapeSettings* JphConvexHullShapeSettings_asShapeSettings(JphConvexHullShapeSettings* self);
 JphSerializableObject* JphConvexHullShapeSettings_asSerializableObject(JphConvexHullShapeSettings* self);
+JphConvexHullShapeSettings* JphConvexHullShapeSettings_fromConvexShapeSettings(JphConvexShapeSettings* base);
+JphConvexHullShapeSettings* JphConvexHullShapeSettings_fromShapeSettings(JphShapeSettings* base);
 // skipped static void JPH::ConvexHullShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphConvexHullShapeSettings_GetPoints(const JphConvexHullShapeSettings* self, JphVec3* out, uint32_t outCapacity);
 void JphConvexHullShapeSettings_SetPoints(JphConvexHullShapeSettings* self, const JphVec3* value, uint32_t valueCount);

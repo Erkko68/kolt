@@ -41,6 +41,11 @@ void JphStreamOut_bindUpcalls(JphStreamOut* self, void* userData) {
     static_cast<::JPH::JphStreamOut_Upcalls*>(kolt::cpp(self))->mUser = userData;
 }
 
+int32_t JphStreamOut_dynamicType(const JphStreamOut* self) {
+    const JPH::StreamOut* object = kolt::cpp(self);
+    return dynamic_cast<const JPH::StateRecorderImpl*>(object) ? 1 : dynamic_cast<const JPH::StateRecorder*>(object) ? 2 : 0;
+}
+
 void JphStreamOut_WriteBytes(JphStreamOut* self, const void* inData, uint32_t inNumBytes) {
     kolt::cpp(self)->WriteBytes(inData, static_cast<size_t>(inNumBytes));
 }
