@@ -3,7 +3,7 @@ import buildlogic.apigen.KotlinBindings
 import buildlogic.apigen.Mirror
 import buildlogic.apigen.RefCounting
 import buildlogic.apigen.Scalar
-import buildlogic.apigen.registerApiGenTasks
+import buildlogic.apigen.gradle.registerApiGenTasks
 import buildlogic.emsdk.SetupEmsdkTask
 
 // Everything the generator is told about Jolt; buildlogic.apigen itself knows no library.

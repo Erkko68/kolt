@@ -9,6 +9,12 @@ import java.nio.file.Paths
  * the `-regex` declarations left out of it ([skipped]).
  */
 internal class ApiHeaders(val modules: Map<String, List<String>>, val skipped: Set<String> = emptySet()) {
+    /** The first module: where what belongs to none of them goes. */
+    val baseModule get() = modules.keys.first()
+
+    /** API headers go to their section's module; the types they use from elsewhere, to the first. */
+    fun moduleFor(header: String?) = header?.let(::moduleOf) ?: baseModule
+
     /** The module whose globs match [header] (relative to the include dir), or null for a non-API header. */
     fun moduleOf(header: String): String? = modules.entries.firstOrNull { (_, globs) -> globs.any { !it.startsWith("!") && matches(it, header) } }?.key
 

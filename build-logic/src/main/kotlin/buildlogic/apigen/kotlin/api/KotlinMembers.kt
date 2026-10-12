@@ -1,8 +1,9 @@
 package buildlogic.apigen.kotlin.api
 
 import buildlogic.apigen.ApiGenConfig
-import buildlogic.apigen.c.CApiWriter
-import buildlogic.apigen.c.CApiWriter.Bound.Role
+import buildlogic.apigen.c.Binding
+import buildlogic.apigen.c.Bound
+import buildlogic.apigen.c.Bound.Role
 import buildlogic.apigen.cpp.CppRecord
 
 /**
@@ -13,7 +14,7 @@ internal class Member(
     val name: String, val params: List<Pair<String, String>>, val returns: String, val body: String,
     val role: Role, val isStatic: Boolean, var overrides: Boolean = false,
     val isProperty: Boolean = false, val setter: Member? = null,
-    /** The C++ method's signature ([CApiWriter.Bound.signature]). */
+    /** The C++ method's signature ([Bound.signature]). */
     val signature: String? = null,
     /** The C++ parameters, by index, whose values it returns after its own result; and of those, the ones it doesn't take. */
     val outs: List<Int> = emptyList(), val untaken: Set<Int> = emptySet(),
@@ -121,7 +122,7 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
     }
 
     /** The Kotlin member wrapping a bound C function, or null when [KotlinValues] doesn't type what it passes. */
-    private fun member(binding: CApiWriter.Binding): Member? {
+    private fun member(binding: Binding): Member? {
         val b = binding.bound!!
         if (b.role == Role.UPCAST || b.role == Role.UPCALLS || b.role == Role.BIND_UPCALLS) return null
         val params = b.params.map { (name, bridge) -> values.parameterName(name).let { it to (values.parameter(bridge, it, outParameter.containsMatchIn(name)) ?: return null) } }

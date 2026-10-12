@@ -1,27 +1,28 @@
 package buildlogic.apigen.kotlin.api
 
 import buildlogic.apigen.ApiGenConfig
-import buildlogic.apigen.c.CApiWriter
-import buildlogic.apigen.c.CApiWriter.Bound.Role
+import buildlogic.apigen.c.Bound.Role
+import buildlogic.apigen.c.CApi
+import buildlogic.apigen.c.Upcall
 import buildlogic.apigen.cpp.CppEnum
 import buildlogic.apigen.cpp.CppRecord
 import java.io.File
 
 /**
- * Writes the typed Kotlin API over the externals, from what [c] generated ([cFiles]): a class per record C holds by a
+ * Writes the typed Kotlin API over the externals, from what the c stage generated ([c]): a class per record C holds by a
  * handle ([KotlinMembers] says with what in it), an enum class per enum, and a value class per
  * [ApiGenConfig.scalars] type, each in the package of its group ([KotlinValues]). A class extends the first base C
  * upcasts it to, and keeps a handle per level, as a base's pointer needn't be the derived one's; a base it can't
  * extend besides, it returns itself as (`asPhysicsStepListener()`). One C destroys, or
  * releases a reference of, is [AutoCloseable]. A class with no base extends the interop package's `NativeObject`.
  *
- * A class C can create an overridable object of ([buildlogic.apigen.c.CApiWriter.Bound.Role.UPCALLS]) is one a Kotlin
+ * A class C can create an overridable object of ([buildlogic.apigen.c.Bound.Role.UPCALLS]) is one a Kotlin
  * class extends: its no-argument constructor creates that object, and C++ then calls the functions the subclass
  * overrides through `nativeUpcall`. The ones it doesn't, and all of a plain instance's, stay C++'s.
  *
  * What it can't wrap stays for hand-written code, which `apiCoverage` lists as `unwrapped`.
  */
-internal class KotlinApiWriter(private val c: CApiWriter, private val config: ApiGenConfig, private val cFiles: Set<String>, kotlinDir: File) {
+internal class KotlinApiWriter(private val c: CApi, private val config: ApiGenConfig, kotlinDir: File) {
     private val bindings = config.kotlin!!
     private val values = KotlinValues(c, config, kotlinDir)
     private val members = KotlinMembers(values, config)
@@ -43,7 +44,7 @@ internal class KotlinApiWriter(private val c: CApiWriter, private val config: Ap
 
         // ponytail: every file imports every package; per-file imports once unused ones bother.
         val packages = (files.values.map { it.first } + values.mirrors.values.map(values::packageOf)).toSortedSet()
-        val externals = cFiles.filter { it.endsWith(".h") && !it.endsWith("/Types.h") }.map(bindings::packageOf).toSortedSet() + bindings.packages.values
+        val externals = c.files.keys.filter { it.endsWith(".h") && !it.endsWith("/Types.h") }.map(c.layout::externalsPackage).toSortedSet() + bindings.packages.values
         return files.mapValues { (_, file) ->
             val (pkg, body) = file
             val imports = (packages - pkg + externals + bindings.interop).map { "$it.*" }
@@ -80,7 +81,7 @@ internal class KotlinApiWriter(private val c: CApiWriter, private val config: Ap
     }
 
     /** `nativeUpcall` for [cName]: runs the member wrapping each of [upcalls], by index. */
-    private fun dispatcher(cName: String, upcalls: List<CApiWriter.Upcall>): String {
+    private fun dispatcher(cName: String, upcalls: List<Upcall>): String {
         val cases = upcalls.mapIndexedNotNull { index, upcall ->
             val (member, sets) = members.wrapping(cName, upcall.signature) ?: return@mapIndexedNotNull null
             val args = upcall.args.mapIndexed { i, value -> values.fromSlot(value, i) ?: return@mapIndexedNotNull null }.filterIndexed { i, _ -> i !in member.untaken }

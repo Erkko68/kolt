@@ -24,6 +24,19 @@ internal class CNames(private val config: ApiGenConfig) {
 
     fun enumConstant(enum: String, constant: String) = "${upperSnake(type(enum))}_${upperSnake(constant)}"
 
+    /** Overloads take the short type names of the parameters after the ones they all share; [overloads]: each one's types. */
+    fun suffixes(overloads: List<List<String>>): List<String> {
+        if (overloads.size <= 1) return overloads.map { "" }
+        val names = overloads.map { types -> types.map(::shortName) }
+        val shared = (0 until names.minOf { it.size }).takeWhile { i -> names.all { it[i] == names[0][i] } }.size
+        val tails = names.map { it.drop(shared).joinToString("_") }
+        return if (tails.toSet().size == tails.size) tails else names.map { it.joinToString("_") }
+    }
+
+    private fun shortName(spelling: String) = shape(spelling).let { s ->
+        s.base.substringBefore('<').substringAfterLast("::").replace(' ', '_') + "Ptr".repeat(maxOf(0, s.indirection.size - 1))
+    }
+
     private fun upperSnake(name: String) = WORD_BREAK.replace(name, "$1_$2").uppercase()
 
     private companion object {

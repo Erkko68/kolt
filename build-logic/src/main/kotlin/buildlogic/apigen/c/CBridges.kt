@@ -4,103 +4,18 @@ import buildlogic.apigen.ApiGenConfig
 import buildlogic.apigen.RefCounting
 import buildlogic.apigen.cpp.CppApi
 import buildlogic.apigen.cpp.CppEnum
-import buildlogic.apigen.cpp.CppMethod
 import buildlogic.apigen.cpp.CppRecord
 import buildlogic.apigen.cpp.CppType
 import buildlogic.apigen.cpp.CppType.Kind
 
-/**
- * How a C++ value crosses into C: its C spelling, and the expression converting it to the other side. [out]: a
- * result C returns through a trailing `out` pointer ([CAbi]), which [store] writes given the value and the pointer.
- */
-class CBridge(
-    val c: String,
-    val convert: (String) -> String,
-    val out: Boolean = false,
-    val store: (String, String) -> String = { v, out -> "*$out = ${convert(v)};" },
-    /** A parameter assigned to a field: the statement given the field and the C argument. */
-    val assign: (String, String) -> String = { field, v -> "$field = ${convert(v)};" },
-    /**
-     * A parameter's C parameters after the first, as (type, name suffix): one C++ argument C passes in pieces. A
-     * result's trailing parameters, as (type, name).
-     */
-    val extra: List<Pair<String, String>> = emptyList(),
-    /** A typedef its C spelling needs, by C name: a callback's function pointer type. */
-    val typedef: Pair<String, String>? = null,
-    /** What the value is, for a stage wrapping the C API in typed code; null when [c] alone doesn't say how to. */
-    val value: CValue? = null,
-)
-
-/** A bridged value a wrapper can type from its C spelling: [c] is the C type, by which the wrapper names its own. */
-sealed interface CValue {
-    val c: String
-
-    /** A number or bool C passes as it is; a result [CBridge.out] returns through a pointer. */
-    data class Builtin(override val c: String) : CValue
-    data class Enum(override val c: String) : CValue
-    /** An [ApiGenConfig.scalars] type, crossing as the integer [scalar]; [c] is the name C would give the type. */
-    data class Scalar(override val c: String, val scalar: String) : CValue
-    /** A NUL-terminated UTF-8 string: `const char*`. */
-    data object Text : CValue {
-        override val c get() = "const char*"
-    }
-    /**
-     * A result that's [value], or NULL with the error's message copied into the trailing `outError`, up to
-     * `outErrorCapacity`.
-     */
-    data class Fallible(val value: CValue) : CValue {
-        override val c get() = value.c
-    }
-    /**
-     * An array of [element]s and its count. A parameter's `Count` follows it. A result returns how many there are, and
-     * fills `out` up to `outCapacity`: with the elements, or, [created], by copying each into the handle at its index.
-     */
-    data class Sequence(val element: CValue, val created: Boolean = false) : CValue {
-        override val c get() = element.c
-    }
-    /** An [ApiGenConfig.mirrors] type by value: C passes a pointer to its [count] [element]s, which a result fills. */
-    data class Mirror(override val c: String, val element: String, val count: Int) : CValue
-    /**
-     * A record's handle; [nullable]: C++ takes or returns a pointer, not a reference. [owned]: a result hands the caller
-     * a reference to release. A result [CBridge.out] is copied into one the caller created.
-     */
-    data class Handle(override val c: String, val nullable: Boolean, val owned: Boolean = false) : CValue
-    /** A pointer to one [value], which C++ takes by non-const reference: the callee reads what's there and writes its own. */
-    data class InOut(val value: CValue) : CValue {
-        override val c get() = value.c
-    }
-    /**
-     * A pointer to [element]s, as many as the callee knows or another argument says. [const]: the callee only reads
-     * them; a pointer to handles doesn't say, so there the parameter's name does ([ApiGenConfig.outParameter]).
-     */
-    data class Pointer(val element: CValue, val const: Boolean) : CValue {
-        override val c get() = element.c
-    }
-    /**
-     * A function written outside C++, which C passes as an `Upcall` and its user data: C++ calls method 0 with [args]
-     * in its slots, as a virtual function's are, and index -1 once it drops the function.
-     */
-    data class Function(override val c: String, val args: List<CValue>, val returns: CValue?) : CValue
-    /** A `void*`, which C passes as it is. */
-    data object Opaque : CValue {
-        override val c get() = "void*"
-    }
-}
-
-private fun isArray(type: CppType) = type.spelling.trim().endsWith("]")
-
-/** Why a declaration stays hand-written; the generator leaves a comment saying so instead of code. */
-class Unsupported(reason: String) : Exception(reason)
-
 /** Maps the model's types onto C, recording the math types the module's mirror structs must cover. */
-internal class CBridges(private val api: CppApi, private val config: ApiGenConfig, private val names: CNames) {
+internal class CBridges(
+    private val api: CppApi, private val config: ApiGenConfig, private val names: CNames, private val templates: Templates,
+    private val records: Records,
+) {
     private val h = config.helpers
     private val refs = config.refs
     val mathTypes = sortedSetOf<String>()
-    /** Whether C gets a `_destroy` for a record ([BindingRules.destroys]), so it can own one a call returns by value. */
-    var destroys: (CppRecord) -> Boolean = { false }
-    /** A function's argument [i] (`p<i>`) for its slot ([CApiWriter]'s, as a virtual function's): the statements before, the value, and what it is. */
-    var slot: (CppType, Int) -> Triple<String, String, CValue> = { type, _ -> throw Unsupported("${type.spelling}: no slot holds it") }
     /** Function pointer typedefs the forwarders use, by C name. */
     val callbackTypes = sortedMapOf<String, String>()
 
@@ -115,78 +30,46 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
     /** [type] as a return value: [CBridge.convert] turns C++'s result into C's. [lvalue]: it outlives the call (a field). */
     fun result(type: CppType, lvalue: Boolean = false) = of(type, result = true, lvalue)
 
-    /**
-     * A record with public fields, or private ones C can create and copy (camutils' Bookmark). C holds it by pointer
-     * like any other, but copies it in and out like a value.
-     */
-    fun isValue(record: String): Boolean = api.records.getValue(record).let { r ->
-        r.fields.any { it.isPublic } || (r.fields.isNotEmpty() && creatable(r) && r.copyable) || twins(r).any { isValue(it.name) }
-    }
-
-    /** A record whose instances count their references (a RefTarget): C adds and releases them, never deletes. */
-    fun refCounted(record: CppRecord): Boolean = record.bases.any { refs?.targets?.contains(it) == true || api.records[it]?.let(::refCounted) == true }
-
-    /** Bases with [record]'s C name: C sees one type, so it gets theirs. */
-    fun twins(record: CppRecord) = record.bases.mapNotNull { api.records[it] }.filter { names.type(it.name) == names.type(record.name) }
-
-    /** A class template C binds, or a record nested in one: C binds the instantiation the library exports. */
-    fun instantiated(name: String) = instantiations(name).isNotEmpty()
-
-    /** A template [record] C doesn't bind. */
-    fun uninstantiated(record: CppRecord) = record.template && !instantiated(record.name)
-
-    /** [ApiGenConfig.functionInstantiations] entries no template matched: stale after an upstream rename. */
-    val unusedFunctionInstantiations = config.functionInstantiations.keys.toMutableSet()
-
-    /**
-     * The instantiations of the function template [method] C binds, each with the template arguments its call spells;
-     * null when the table lists none.
-     */
-    fun functionInstantiations(method: CppMethod): List<Pair<CppMethod, List<String>>>? {
-        val key = "${method.owner}::${method.name}"
-        val instantiations = config.functionInstantiations[key] ?: return null
-        unusedFunctionInstantiations -= key
-        val parameters = method.templateParameters!!
-        return instantiations.map { arguments ->
-            check(parameters.containsAll(arguments.keys)) { "$key has no template parameter ${arguments.keys - parameters.toSet()}" }
-            method.instantiate(arguments.mapValues { (_, a) -> argumentType(a) }) to parameters.takeWhile { it in arguments }.map { arguments.getValue(it) }
-        }
-    }
-
-    /** A template argument as the model would resolve it. */
-    private fun argumentType(spelling: String) = when {
-        CAbi.isBuiltin(spelling) -> CppType(spelling, null, Kind.BUILTIN)
-        spelling in api.records || spelling in api.enums -> CppType(spelling, spelling, Kind.DECLARED)
-        else -> CppType(spelling, spelling, Kind.EXTERNAL)
-    }
-
-    /** [decl] as C++ spells it: an instantiated template takes its arguments. */
-    fun cpp(decl: String): String {
-        var qualified = ""
-        return decl.split("::").joinToString("::") { segment ->
-            qualified = if (qualified.isEmpty()) segment else "$qualified::$segment"
-            config.instantiations[qualified]?.let { "$segment<${it.values.joinToString()}>" } ?: segment
-        }
-    }
-
-    /** [spelling], written in [scope], with the template parameters of the instantiations around it replaced. */
-    private fun substitute(spelling: String, scope: String) = instantiations(scope).flatMap { config.instantiations.getValue(it).entries }
-        .fold(spelling) { s, (parameter, argument) -> s.replace(Regex("\\b$parameter\\b"), argument) }
-
-    private fun instantiations(name: String) = name.split("::").runningReduce { a, b -> "$a::$b" }.filter { it in config.instantiations }
-
-    /** A record C can create, so it has one to copy a result into. */
-    fun creatable(record: CppRecord) = !uninstantiated(record) && record.allocatable && record.destructible && record.constructors.isNotEmpty()
-
-    /** A pointer to plain data (`const char*`, `void*`): a struct keeping it would outlive the caller's buffer. */
-    fun borrowsPointer(type: CppType): Boolean = when {
-        isArray(type) -> borrowsPointer(type.args.single())
-        type.decl in api.aliases -> borrowsPointer(api.aliases.getValue(type.decl!!))
-        else -> (type.kind == Kind.BUILTIN && shape(type.spelling).indirection.isNotEmpty()) || type.decl == "std::string_view" || type.decl in config.views
-    }
-
     /** The integer typedef of an enum too wide for a C enum (whose enumerators are ints), or null. */
     fun wideEnumType(enum: CppEnum) = if (enum.constants.all { it.second.bitLength() < 32 }) null else CAbi.byValue(enum.underlying ?: "uint64_t")
+
+    /**
+     * One argument of a function C++ calls outside itself (a virtual function a subclass overrides, a `std::function`),
+     * in its slot: the statements [before], the [value] `slot` takes, and what it [holds].
+     */
+    class Slot(val before: String, val value: String, val holds: CValue)
+
+    /** Argument [i] (`p<i>`) of such a function, of [type], for its slot. */
+    fun slot(type: CppType, i: Int): Slot {
+        val s = shape(type.spelling)
+        val record = type.decl?.let(api.records::get)
+        // A record by pointer or reference is borrowed for the call, a value struct too.
+        if (record != null && records.handled(record) && record.accessible && s.indirection.size == 1 && s.indirection[0] != "&&")
+            return Slot("", "$h::c(${if (s.indirection[0] == "&") "&" else ""}p$i)", CValue.Handle(names.type(record.name), nullable = s.indirection[0] == "*"))
+        val b = result(type)
+        // What the function may write: the slot points at C++'s own, which lies as C's mirror does. Of floats, for now.
+        if (b.value == null && b.extra.isEmpty()) (try { param(type).value as? CValue.InOut } catch (e: Unsupported) { null })
+            ?.takeIf { v -> v.value.let { it is CValue.Mirror && it.element == "float" || it == CValue.Builtin("float") } }
+            ?.let { return Slot("", b.convert("p$i"), it) }
+        val value = b.value?.takeIf { b.extra.isEmpty() } ?: throw Unsupported("${type.spelling}: no slot holds it")
+        return when {
+            value is CValue.Mirror -> Slot("        ${b.c} a$i;\n        ${b.store("p$i", "&a$i")}\n", "&a$i", value)
+            value is CValue.Builtin || !b.out -> Slot("", b.convert("p$i"), value)
+            else -> throw Unsupported("${type.spelling}: no slot holds it")
+        }
+    }
+
+    /** The statement declaring `args`, the slots a call passes. */
+    fun slotArray(args: List<Slot>) =
+        if (args.isEmpty()) "const uint64_t* args = nullptr;" else "const uint64_t args[] = {${args.joinToString { "$h::slot(${it.value})" }}};"
+
+    /** How such a function's result of [type] comes back in its slot, null for `void`: a number, or it's [unsupported]. */
+    fun slotResult(type: CppType, unsupported: String): CBridge? = if (type.spelling == "void") null else param(type).also {
+        if (it.extra.isNotEmpty() || it.value !is CValue.Builtin && it.value !is CValue.Enum && it.value !is CValue.Scalar) throw Unsupported(unsupported)
+    }
+
+    /** C++'s value of the `result` slot. */
+    fun unslot(returns: CBridge) = returns.convert("$h::unslot<${returns.c}>(result)")
 
     private fun of(type: CppType, result: Boolean, lvalue: Boolean = false): CBridge {
         val shape = shape(type.spelling)
@@ -211,13 +94,10 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         val bridge = DirectBridges(config, names, const, indirection, result, lvalue)
         if (isArray(target)) return sequence(target, bridge)
         if (target.kind == Kind.TEMPLATE_PARAMETER) {
-            val decl = target.decl
-            val argument = config.instantiations[decl!!.substringBeforeLast("::")]?.get(decl.substringAfterLast("::"))
-                ?: throw Unsupported("${type.spelling}: template parameter")
-            return bridge.builtin(argument)
+            return bridge.builtin(templates.argument(target.decl!!) ?: throw Unsupported("${type.spelling}: template parameter"))
         }
         if (target.kind == Kind.FUNCTION && lastAlias != null && indirection != "&") return functionPointer(lastAlias, target, indirection == "*")
-        val decl = target.decl?.let { config.custom.canonical(it, target) { spelling -> substitute(spelling, lastAlias.orEmpty()) } }
+        val decl = target.decl?.let { config.custom.canonical(it, target) { spelling -> templates.substitute(spelling, lastAlias.orEmpty()) } }
         decl?.let { config.custom.bridge(it, target, alias, bridge) }?.let { custom ->
             custom.typedef?.let { callbackTypes += it }
             return custom
@@ -232,12 +112,12 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
             target.kind == Kind.BUILTIN -> bridge.builtin(shape(target.spelling).base)
             target.kind == Kind.FUNCTION -> throw Unsupported("${type.spelling}: function type")
             decl == null -> throw Unsupported("${type.spelling}: ${target.kind.name.lowercase()}")
-            decl in api.enums -> bridge.enum(cpp(decl), wideEnumType(api.enums.getValue(decl)))
+            decl in api.enums -> bridge.enum(templates.cpp(decl), wideEnumType(api.enums.getValue(decl)))
             decl in config.scalars -> bridge.scalar(decl, config.scalars.getValue(decl))
             decl in config.allStrings -> bridge.string(decl)
             decl in config.mirrors -> bridge.math(decl).also { mathTypes += decl }
             decl in api.records -> api.records.getValue(decl).let { r ->
-                bridge.record(cpp(handle(target).name), isValue(decl), creatable(r) && r.defaultConstructible && r.copyable, destroys(r) && (r.copyable || !lvalue))
+                bridge.record(templates.cpp(handle(target).name), records.isValue(decl), records.creatable(r) && r.defaultConstructible && r.copyable, records.owned(r) && (r.copyable || !lvalue))
             }
             else -> throw Unsupported("${type.spelling}: $decl")
         }
@@ -247,7 +127,7 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
     private fun handle(type: CppType): CppRecord {
         val record = type.decl?.let(api.records::get) ?: throw Unsupported("${type.spelling}: ${type.kind.name.lowercase()}")
         if (!record.accessible) throw Unsupported("${type.spelling}: not accessible")
-        if (uninstantiated(record)) throw Unsupported("${type.spelling}: class template")
+        if (templates.uninstantiated(record)) throw Unsupported("${type.spelling}: class template")
         return record
     }
 
@@ -352,11 +232,11 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
             CAbi.checkPointee(shape.base)
             return CBridge(spelling, { it })
         }
-        val record = type.decl?.let(api.records::get)?.takeIf { it.accessible && !uninstantiated(it) }
+        val record = type.decl?.let(api.records::get)?.takeIf { it.accessible && !templates.uninstantiated(it) }
             ?: throw Unsupported("${type.spelling}: pointer to pointer")
         val base = Regex("""(?<![\w:])${Regex.escape(shape.base)}(?![\w:])""")
         val c = base.replaceFirst(spelling, names.type(record.name))
-        val cpp = base.replaceFirst(spelling, cpp(record.name))
+        val cpp = base.replaceFirst(spelling, templates.cpp(record.name))
         return CBridge(c, { "reinterpret_cast<${if (result) c else cpp}>($it)" },
             value = CValue.Pointer(CValue.Handle(names.type(record.name), nullable = true), const = false).takeIf { !result })
     }
@@ -379,19 +259,16 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
      */
     private fun function(alias: String, signature: CppType, bridge: DirectBridges): CBridge {
         if (bridge.result || !bridge.byValue) throw Unsupported("$alias by reference or as a result")
-        val returns = signature.args.first().takeIf { it.spelling != "void" }?.let { type ->
-            param(type).also { if (it.extra.isNotEmpty() || it.value !is CValue.Builtin && it.value !is CValue.Enum && it.value !is CValue.Scalar) throw Unsupported("$alias: returns ${type.spelling}") }
-        }
+        val returns = signature.args.first().let { slotResult(it, "$alias: returns ${it.spelling}") }
         val args = signature.args.drop(1).mapIndexed { i, type -> slot(type, i) }
         val upcall = upcallType()
         // By reference: one may be a class that can't be copied, or a value the function writes.
         val params = args.indices.joinToString { "auto&& p$it" }
-        val before = args.joinToString("") { (statements, _, _) -> statements.lines().joinToString("") { l -> l.trim().let { if (it.isEmpty()) "" else "$it " } } }
-        val slots = if (args.isEmpty()) "const uint64_t* args = nullptr;" else "const uint64_t args[] = {${args.joinToString { "$h::slot(${it.second})" }}};"
-        val result = returns?.let { " return ${it.convert("$h::unslot<${it.c}>(result)")};" }.orEmpty()
+        val before = args.joinToString("") { slot -> slot.before.lines().joinToString("") { l -> l.trim().let { if (it.isEmpty()) "" else "$it " } } }
+        val result = returns?.let { " return ${unslot(it)};" }.orEmpty()
         return CBridge(upcall, { n ->
-            "${n}User ? ${cpp(alias)}([f = $h::Callback($n, ${n}User)]($params) { $before$slots uint64_t result = 0; f(args, &result);$result }) : nullptr"
-        }, extra = listOf("void*" to "User"), value = CValue.Function(upcall, args.map { it.third }, returns?.value))
+            "${n}User ? ${templates.cpp(alias)}([f = $h::Callback($n, ${n}User)]($params) { $before${slotArray(args)} uint64_t result = 0; f(args, &result);$result }) : nullptr"
+        }, extra = listOf("void*" to "User"), value = CValue.Function(upcall, args.map { it.holds }, returns?.value))
     }
 
     /**

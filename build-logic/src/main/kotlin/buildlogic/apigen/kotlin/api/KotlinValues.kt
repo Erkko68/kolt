@@ -1,7 +1,8 @@
 package buildlogic.apigen.kotlin.api
 
 import buildlogic.apigen.ApiGenConfig
-import buildlogic.apigen.c.CApiWriter
+import buildlogic.apigen.c.Bound
+import buildlogic.apigen.c.CApi
 import buildlogic.apigen.c.CBridge
 import buildlogic.apigen.c.CValue
 import buildlogic.apigen.kotlin.KotlinExternalsWriter
@@ -18,7 +19,7 @@ import java.io.File
  * A class's constructor takes its pointer and whether the wrapper owns the object (the interop package's
  * `NativeObject`): what Kotlin creates and the references C hands over are owned, the rest borrowed.
  */
-internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig, private val kotlinDir: File) {
+internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, private val kotlinDir: File) {
     private val bindings = config.kotlin!!
     private val names = c.names
     private val parameterPrefix = Regex(config.parameterPrefix.ifEmpty { "$^" })
@@ -48,7 +49,7 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
     class Returned(val type: String, val scoped: Boolean = false, val body: (call: (String?) -> String) -> String)
 
     /** Records with a C function creating one from nothing, for C to copy a result into. */
-    private val creates = c.bindings.mapNotNull { b -> b.bound?.takeIf { b.gap == null && it.role == CApiWriter.Bound.Role.CREATE && it.params.isEmpty() }?.let { names.type(it.owner) to b.c } }.toMap()
+    private val creates = c.bindings.mapNotNull { b -> b.bound?.takeIf { b.gap == null && it.role == Bound.Role.CREATE && it.params.isEmpty() }?.let { names.type(it.owner) to b.c } }.toMap()
 
     /**
      * How Kotlin passes [name] to [bridge]'s parameter, or null when [CValue] doesn't type it. [out]: the callee only
@@ -329,11 +330,11 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
 
     fun escape(name: String) = if (name in KotlinExternalsWriter.KEYWORDS) "`$name`" else name
 
-    /** The API package of what [header] declares: its externals' ([buildlogic.apigen.KotlinBindings.packageOf]), a level up. */
-    fun packageOf(header: String?) = bindings.packageOf("${c.moduleOf(header)}/generated/${c.groupOf(header).let { if (it.isEmpty()) "" else "$it/" }}x.h").substringBeforeLast('.')
+    /** The API package of what the C++ [header] declares ([buildlogic.apigen.Layout.apiPackage]). */
+    fun packageOf(header: String?) = c.layout.apiPackage(c.apiHeaders.moduleFor(header), c.layout.groupOf(header))
 
     /** The file of the type [name] that [header] declares, under the Kotlin dir. */
-    fun path(header: String?, name: String) = "${c.moduleOf(header)}/src/commonMain/kotlin/${packageOf(header).replace('.', '/')}/$name.kt"
+    fun path(header: String?, name: String) = "${c.layout.sourceDir(c.apiHeaders.moduleFor(header), packageOf(header))}/$name.kt"
 
     private companion object {
         const val ERROR_CAPACITY = 256

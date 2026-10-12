@@ -1,8 +1,8 @@
-package buildlogic.apigen.kotlin
+package buildlogic.apigen.report
 
 import java.io.File
 
-/** The hand-written Kotlin API ([sources], comments aside), searched for what it declares of the C++ one. */
+/** The Kotlin API ([sources], comments aside), searched for what it declares of the C++ one. */
 internal class KotlinDeclarations(private val sources: String) {
     /** The bodies of the Kotlin declarations any of the C++ [names] maps to; null when Kotlin declares none. */
     fun scope(names: Collection<String>): String? = names.mapNotNull(::scope).ifEmpty { null }?.joinToString("\n")
@@ -57,7 +57,10 @@ internal class KotlinDeclarations(private val sources: String) {
 private val MAIN = Regex("""/src/\w*Main/""")
 private val COMMENT = Regex("""//[^\n]*|/\*[\s\S]*?\*/""")
 
-/** The hand-written Kotlin API under [kotlin]: main sources outside capi, comments aside (tests call externals directly). */
-internal fun kotlinApiSources(kotlin: File) =
-    kotlin.walkTopDown().filter { f -> f.extension == "kt" && f.invariantSeparatorsPath.let { MAIN.containsMatchIn(it) && "/capi/" !in it } }
+/**
+ * The Kotlin API under [kotlin], generated and hand-written: main sources outside the [externals] dirs, comments aside
+ * (tests call externals directly).
+ */
+internal fun kotlinApiSources(kotlin: File, externals: Set<String>) =
+    kotlin.walkTopDown().filter { f -> f.extension == "kt" && f.invariantSeparatorsPath.let { path -> MAIN.containsMatchIn(path) && externals.none { "/$it/" in path } } }
         .sortedBy { it.path }.joinToString("\n") { COMMENT.replace(it.readText(), "") }
