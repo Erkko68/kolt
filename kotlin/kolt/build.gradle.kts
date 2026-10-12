@@ -2,6 +2,7 @@ import buildlogic.emsdk.emscriptenToolchain
 import buildlogic.emsdk.emsdkEnvironment
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     kotlin("multiplatform") version "2.4.20"
@@ -29,6 +30,26 @@ val cmakeBuild = tasks.register<Exec>("cmakeBuild") {
             "-DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 -DKOLT_OUTPUT_DIR='${cLibDir.get().asFile}' " +
             "-DKOLT_BINDINGS_DIR='${bindings.get().asFile}' -DJNI_HOME='${System.getProperty("java.home")}' && cmake --build '${cmakeDir.get().asFile}'",
     )
+}
+
+// The static libraries alone for iOS, a device's and an Apple Silicon simulator's, at Kotlin/Native's minimum iOS
+// (minVersion.ios). ponytail: no iosX64; an Intel Mac's simulator is one more entry.
+val iosLibs = mapOf("iosArm64" to "iphoneos", "iosSimulatorArm64" to "iphonesimulator").mapValues { (target, sdk) ->
+    val libDir = rootProject.layout.buildDirectory.dir("kolt-c/$target")
+    libDir to tasks.register<Exec>("cmakeBuild_$target") {
+        val c = rootProject.layout.projectDirectory.dir("c")
+        val dir = rootProject.layout.buildDirectory.dir("cmake/$target").get().asFile
+        inputs.dir(c).withPropertyName("c")
+        inputs.dir(rootProject.layout.projectDirectory.dir("jolt/Jolt")).withPropertyName("jolt")
+        outputs.dir(libDir)
+        mustRunAfter(":generateCApi")
+        commandLine(
+            "sh", "-c",
+            "cmake -S '${c.asFile}' -B '$dir' -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_SYSROOT=$sdk " +
+                "-DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=15.0 -DKOLT_OUTPUT_DIR='${libDir.get().asFile}' && " +
+                "cmake --build '$dir' --target kolt-c",
+        )
+    }
 }
 
 // A build whose [outputDir] holds only what's packaged: libkolt.so under <abi>, as an app's jniLibs are laid out, or kolt.{js,wasm}.
@@ -96,11 +117,11 @@ kotlin {
     // at every use site, commonMain included (as in skiko; KT-46649).
     sourceSets.all { languageSettings.optIn("kotlin.native.SymbolNameIsInternal") }
 
-    macosArm64 {
-        // A header-less cinterop: the externals link by @SymbolName, so it only carries the libraries to the final binary.
-        val def = layout.buildDirectory.file("cinterop/kolt.def")
-        val writeDef = tasks.register("cinteropDef") {
-            val text = "staticLibraries = libkolt-c.a libJolt.a\nlibraryPaths = ${cLibDir.get().asFile.path}\nlinkerOpts = -lc++\n"
+    // A header-less cinterop: the externals link by @SymbolName, so it only carries the libraries to the final binary.
+    fun KotlinNativeTarget.linkCApi(libDir: Provider<Directory>, build: TaskProvider<Exec>) {
+        val def = layout.buildDirectory.file("cinterop/$name/kolt.def")
+        val writeDef = tasks.register("cinteropDef_$name") {
+            val text = "staticLibraries = libkolt-c.a libJolt.a\nlibraryPaths = ${libDir.get().asFile.path}\nlinkerOpts = -lc++\n"
             inputs.property("text", text)
             outputs.file(def)
             doLast { def.get().asFile.writeText(text) }
@@ -110,10 +131,13 @@ kotlin {
             tasks.named(interopProcessingTaskName) {
                 dependsOn(writeDef)
                 // The klib embeds the archives, so a rebuilt C API must re-run cinterop.
-                inputs.files(cmakeBuild).withPropertyName("cApi")
+                inputs.files(build).withPropertyName("cApi")
             }
         }
     }
+    macosArm64 { linkCApi(cLibDir, cmakeBuild) }
+    iosArm64 { iosLibs.getValue(name).let { (libDir, build) -> linkCApi(libDir, build) } }
+    iosSimulatorArm64 { iosLibs.getValue(name).let { (libDir, build) -> linkCApi(libDir, build) } }
 
     // The externals are JNI methods of libkolt (c/kolt/jni), which the tests find next to the static libraries.
     jvm()
