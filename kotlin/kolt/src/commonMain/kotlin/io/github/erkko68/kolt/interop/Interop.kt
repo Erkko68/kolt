@@ -76,6 +76,12 @@ expect fun writeSlot(result: NativePointer, value: Long)
 /** A copy of [count] floats of an array C owns (a math mirror). */
 expect fun readFloats(ptr: NativePointer, count: Int): FloatArray
 
+/**
+ * A float C wrote into this array. Kotlin/JS keeps a Float as a double, so an f32 read back (0.05000000074505806)
+ * wouldn't equal the literal it was set from (0.05f): there, the shortest decimal with the same f32 value.
+ */
+expect fun FloatArray.readF32(index: Int): Float
+
 /** Writes [values] to an array C owns. */
 expect fun writeFloats(ptr: NativePointer, values: FloatArray)
 

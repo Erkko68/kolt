@@ -1,8 +1,10 @@
 package io.github.erkko68.kolt.math
 
+import io.github.erkko68.kolt.interop.readF32
+
 /** C++ `JPH::Mat44`: 4×4, stored by column as Jolt does. */
 class Mat44 internal constructor(private val v: FloatArray) {
-    operator fun get(row: Int, column: Int): Float = v[column * 4 + row]
+    operator fun get(row: Int, column: Int): Float = v.readF32(column * 4 + row)
 
     /** The 16 values, column by column. */
     fun toArray(): FloatArray = v.copyOf()

@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.22)
 
 # The Jph* C API over Jolt, built by :kotlin:kolt's cmakeBuild: libkolt-c.a and the libJolt.a it calls, both into
-# KOLT_OUTPUT_DIR for Kotlin/Native to link; and with KOLT_BINDINGS_DIR, libkolt, the same as a JNI library.
+# KOLT_OUTPUT_DIR for Kotlin/Native to link; and with KOLT_BINDINGS_DIR, libkolt, the same as a JNI library, or with
+# Emscripten kolt.{js,wasm}.
 project(kolt-c C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-# Android's output dir holds only what an app packages: libkolt.so.
-if (NOT ANDROID)
+# Android's and the web's output dirs hold only what an app packages: libkolt.so, kolt.{js,wasm}.
+if (NOT ANDROID AND NOT EMSCRIPTEN)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${KOLT_OUTPUT_DIR}")
 endif()
 
@@ -25,6 +26,8 @@ if (ANDROID)
         set(${feature} OFF CACHE BOOL "")
     endforeach()
 endif()
+# Every current browser has wasm SIMD.
+set(USE_WASM_SIMD ON CACHE BOOL "")
 add_subdirectory(../jolt/Build jolt)
 
 # The generated API (kolt/generated, grouped as Jolt's dirs) plus the hand-written rest (kolt/manual).
@@ -37,8 +40,23 @@ if (NOT MSVC)
     target_compile_options(kolt-c PRIVATE -fno-rtti)
 endif()
 
+# The web's image: the C API exporting what generateBindings lists, which kolt/web/kolt-globals.js installs as the
+# globals the Kotlin externals bind. Single-threaded: Jolt's thread pool runs its jobs on the caller.
+if (EMSCRIPTEN)
+    set(wasm "${KOLT_BINDINGS_DIR}/wasm")
+    set(globals "${CMAKE_CURRENT_SOURCE_DIR}/kolt/web/kolt-globals.js")
+    add_executable(kolt-web $<TARGET_OBJECTS:kolt-c>)
+    set_target_properties(kolt-web PROPERTIES OUTPUT_NAME kolt RUNTIME_OUTPUT_DIRECTORY "${KOLT_OUTPUT_DIR}" LINKER_LANGUAGE CXX
+        LINK_DEPENDS "${wasm}/kolt-exports.txt;${wasm}/kolt-types.js;${globals}")
+    target_link_libraries(kolt-web PRIVATE Jolt)
+    # The stack and memory Jolt asks for (Jolt.cmake).
+    target_link_options(kolt-web PRIVATE
+        "-sMODULARIZE=1" "-sEXPORT_NAME=createKoltModule" "-sEXPORTED_FUNCTIONS=@${wasm}/kolt-exports.txt"
+        "-sEXPORTED_RUNTIME_METHODS=HEAP8,HEAP32,HEAPF32,HEAPF64,addFunction,UTF8ToString"
+        "-sALLOW_MEMORY_GROWTH=1" "-sALLOW_TABLE_GROWTH=1" "-sSTACK_SIZE=1048576" "-sINITIAL_MEMORY=134217728"
+        "--post-js=${wasm}/kolt-types.js" "--post-js=${globals}")
 # The JVM's image: the C API, the JNI runtime (kolt/jni) and the forwarders generateBindings writes, over one Jolt.
-if (KOLT_BINDINGS_DIR)
+elseif (KOLT_BINDINGS_DIR)
     file(GLOB forwarders CONFIGURE_DEPENDS "${KOLT_BINDINGS_DIR}/jni/*.c")
     add_library(kolt-jni SHARED kolt/jni/KoltJni.cpp ${forwarders})
     set_target_properties(kolt-jni PROPERTIES OUTPUT_NAME kolt LIBRARY_OUTPUT_DIRECTORY "${KOLT_OUTPUT_DIR}")

@@ -71,3 +71,6 @@ actual fun writeFloats(ptr: NativePointer, values: FloatArray) {
 
 actual fun readPointers(ptr: NativePointer, count: Int): List<NativePointer> =
     if (count == 0) emptyList() else LongArray(count).also { KoltJni.buffer(ptr, count * 8).asLongBuffer().get(it) }.toList()
+
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun FloatArray.readF32(index: Int): Float = this[index]

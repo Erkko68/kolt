@@ -53,7 +53,7 @@ class VehicleConstraint internal constructor(internal val vehicleConstraintHandl
 
     fun setCombineFriction(combineFriction: ((Int, Float, Float, Body, SubShapeID) -> Pair<Float, Float>)?) =
         run {
-            val combineFrictionUser = if (combineFriction == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> val returned = combineFriction(readSlot(args, 0).toInt(), readFloats(readPointerSlot(args, 1), 1)[0], readFloats(readPointerSlot(args, 2), 1)[0], Body(readPointerSlot(args, 3)), SubShapeID(readSlot(args, 4).toInt())); writeFloats(readPointerSlot(args, 1), floatArrayOf(returned.first)); writeFloats(readPointerSlot(args, 2), floatArrayOf(returned.second)) })
+            val combineFrictionUser = if (combineFriction == null) NullPointer else Upcalls.reference(NativeCallback { args, result -> val returned = combineFriction(readSlot(args, 0).toInt(), readFloats(readPointerSlot(args, 1), 1).readF32(0), readFloats(readPointerSlot(args, 2), 1).readF32(0), Body(readPointerSlot(args, 3)), SubShapeID(readSlot(args, 4).toInt())); writeFloats(readPointerSlot(args, 1), floatArrayOf(returned.first)); writeFloats(readPointerSlot(args, 2), floatArrayOf(returned.second)) })
             JphVehicleConstraint_SetCombineFriction(vehicleConstraintHandle, Upcalls.function, combineFrictionUser)
         }
 

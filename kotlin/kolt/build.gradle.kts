@@ -1,3 +1,5 @@
+import buildlogic.emsdk.emscriptenToolchain
+import buildlogic.emsdk.emsdkEnvironment
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
@@ -29,8 +31,8 @@ val cmakeBuild = tasks.register<Exec>("cmakeBuild") {
     )
 }
 
-// libkolt.so for one Android ABI, into [outputDir]/<abi> as an app's jniLibs are laid out.
-abstract class AndroidCMakeBuild : Exec() {
+// A build whose [outputDir] holds only what's packaged: libkolt.so under <abi>, as an app's jniLibs are laid out, or kolt.{js,wasm}.
+abstract class PackagedCMakeBuild : Exec() {
     @get:OutputDirectory abstract val outputDir: DirectoryProperty
 }
 
@@ -42,7 +44,7 @@ val androidMinSdk = 24
 val androidAbis = listOf("arm64-v8a", "x86_64")
 val sdk = androidComponents.sdkComponents.sdkDirectory
 androidAbis.forEach { abi ->
-    val build = tasks.register<AndroidCMakeBuild>("cmakeBuild_$abi") {
+    val build = tasks.register<PackagedCMakeBuild>("cmakeBuild_$abi") {
         val c = rootProject.layout.projectDirectory.dir("c")
         val bindings = rootProject.layout.buildDirectory.dir("generated/bindings")
         val dir = rootProject.layout.buildDirectory.dir("cmake/android-$abi").get().asFile
@@ -63,7 +65,27 @@ androidAbis.forEach { abi ->
                 "'$cmakeBin/cmake' --build '$dir' --target kolt-jni",
         )
     }
-    androidComponents.onVariants { it.sources.jniLibs?.addGeneratedSourceDirectory(build, AndroidCMakeBuild::outputDir) }
+    androidComponents.onVariants { it.sources.jniLibs?.addGeneratedSourceDirectory(build, PackagedCMakeBuild::outputDir) }
+}
+
+// And for the web, kolt.{js,wasm}, with the Emscripten SDK :setupEmsdk installs into .emsdk/.
+val cmakeBuildWasm = tasks.register<PackagedCMakeBuild>("cmakeBuild_wasm") {
+    val c = rootProject.layout.projectDirectory.dir("c")
+    val bindings = rootProject.layout.buildDirectory.dir("generated/bindings")
+    val dir = rootProject.layout.buildDirectory.dir("cmake/wasm").get().asFile
+    dependsOn(":setupEmsdk", ":generateBindings")
+    mustRunAfter(":generateCApi")
+    inputs.dir(c).withPropertyName("c")
+    inputs.dir(rootProject.layout.projectDirectory.dir("jolt/Jolt")).withPropertyName("jolt")
+    inputs.dir(bindings).withPropertyName("bindings")
+    outputDir.set(layout.buildDirectory.dir("koltWasm"))
+    val emsdk = rootDir.resolve(".emsdk")
+    doFirst { environment(emsdkEnvironment(emsdk)) }
+    commandLine(
+        "sh", "-c",
+        "cmake -S '${c.asFile}' -B '$dir' -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE='${emscriptenToolchain(emsdk)}' " +
+            "-DKOLT_OUTPUT_DIR='${outputDir.get().asFile}' -DKOLT_BINDINGS_DIR='${bindings.get().asFile}' && cmake --build '$dir' --target kolt-web",
+    )
 }
 
 kotlin {
@@ -104,6 +126,13 @@ kotlin {
         compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
         withDeviceTestBuilder { sourceSetTreeName = "test" }.configure { instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
     }
+
+    // The externals are the globals kolt.js installs from kolt.wasm's exports (c/kolt/web), which the page includes:
+    // the tests' is a resource. ponytail: not in the klib; a release asset or an npm package once one is published.
+    js { browser() }
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    wasmJs { browser() }
+    sourceSets.webTest { resources.srcDir(cmakeBuildWasm.flatMap { it.outputDir }) }
 
     // jniMain: shared by jvm and android, which both reach the C API through JNI.
     applyDefaultHierarchyTemplate {

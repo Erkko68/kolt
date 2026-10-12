@@ -56,7 +56,7 @@ class HeightFieldShapeSettings internal constructor(internal val heightFieldShap
             minValuePointer.fromInterop(minValueArray)
             maxValuePointer.fromInterop(maxValueArray)
             quantizationScalePointer.fromInterop(quantizationScaleArray)
-            Triple(minValueArray[0], maxValueArray[0], quantizationScaleArray[0])
+            Triple(minValueArray.readF32(0), maxValueArray.readF32(0), quantizationScaleArray.readF32(0))
         }
 
     fun calculateBitsPerSampleForError(maxError: Float): Int =

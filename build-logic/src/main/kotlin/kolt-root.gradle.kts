@@ -4,6 +4,7 @@ import buildlogic.apigen.Mirror
 import buildlogic.apigen.RefCounting
 import buildlogic.apigen.Scalar
 import buildlogic.apigen.registerApiGenTasks
+import buildlogic.emsdk.SetupEmsdkTask
 
 // Everything the generator is told about Jolt; buildlogic.apigen itself knows no library.
 registerApiGenTasks(
@@ -68,3 +69,10 @@ registerApiGenTasks(
         ),
     ),
 )
+
+tasks.register<SetupEmsdkTask>("setupEmsdk") {
+    group = "build setup"
+    description = "Installs the pinned Emscripten SDK (emsdkVersion in gradle.properties) into .emsdk/."
+    emsdkVersion.set(providers.gradleProperty("emsdkVersion"))
+    installDir.set(layout.projectDirectory.dir(".emsdk"))
+}

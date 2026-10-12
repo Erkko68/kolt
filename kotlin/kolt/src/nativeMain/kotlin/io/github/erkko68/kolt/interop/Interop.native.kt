@@ -83,3 +83,6 @@ actual fun readFloats(ptr: NativePointer, count: Int): FloatArray = ptr.toCPoint
 actual fun writeFloats(ptr: NativePointer, values: FloatArray) {
     ptr.toCPointer<FloatVar>()!!.let { p -> values.forEachIndexed { i, v -> p[i] = v } }
 }
+
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun FloatArray.readF32(index: Int): Float = this[index]

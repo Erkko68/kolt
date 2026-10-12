@@ -47,7 +47,8 @@ class StateTest {
         val listener = object : PhysicsStepListener() {
             override fun onStep(context: PhysicsStepListenerContext) {
                 steps++
-                assertEquals(1f / 60, context.deltaTime)
+                // Kotlin/JS divides as doubles.
+                assertEquals(1f / 60, context.deltaTime, 1e-6f)
             }
         }
         system.addStepListener(listener)

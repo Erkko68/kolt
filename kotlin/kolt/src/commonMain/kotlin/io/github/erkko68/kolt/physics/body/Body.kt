@@ -230,7 +230,7 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
             totalVolumePointer.fromInterop(totalVolumeArray)
             submergedVolumePointer.fromInterop(submergedVolumeArray)
             relativeCenterOfBuoyancyPointer.fromInterop(relativeCenterOfBuoyancyArray)
-            Triple(totalVolumeArray[0], submergedVolumeArray[0], Vec3(relativeCenterOfBuoyancyArray))
+            Triple(totalVolumeArray.readF32(0), submergedVolumeArray.readF32(0), Vec3(relativeCenterOfBuoyancyArray))
         }
 
     fun applyBuoyancyImpulse(surfacePosition: Vec3, surfaceNormal: Vec3, buoyancy: Float, linearDrag: Float, angularDrag: Float, fluidVelocity: Vec3, gravity: Vec3, deltaTime: Float): Boolean =

@@ -55,7 +55,7 @@ class VehicleDifferentialSettings internal constructor(internal val vehicleDiffe
             JphVehicleDifferentialSettings_CalculateTorqueRatio(vehicleDifferentialSettingsHandle, leftAngularVelocity, rightAngularVelocity, leftTorqueFractionPointer, rightTorqueFractionPointer)
             leftTorqueFractionPointer.fromInterop(leftTorqueFractionArray)
             rightTorqueFractionPointer.fromInterop(rightTorqueFractionArray)
-            Pair(leftTorqueFractionArray[0], rightTorqueFractionArray[0])
+            Pair(leftTorqueFractionArray.readF32(0), rightTorqueFractionArray.readF32(0))
         }
 
     var leftWheel: Int

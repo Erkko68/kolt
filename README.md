@@ -10,9 +10,11 @@ c/kolt/generated/     the generated C API, grouped as Jolt's dirs: physics/body/
 c/api-manifest.json   each C function's ABI signature, by header; what the Kotlin stages read
 c/kolt/manual/        hand-written C for what the generator can't map, and the helpers only Jolt can write (JphBridge.hpp)
 c/kolt/jni/           the hand-written half of the JVM's and Android's JNI layer; the forwarders are generated (./gradlew generateBindings)
+c/kolt/web/           what installs the wasm's exports as the globals the js and wasmJs externals bind
 c/api-coverage.txt    each C function the API calls for: wrapped by Kotlin or not yet, or why it isn't bound (./gradlew apiCoverage)
 c/CMakeLists.txt      builds Jolt and the C API as static libraries, and as the JNI library (./gradlew :kotlin:kolt:cmakeBuild;
-                      cmakeBuild_<abi> for Android's, with the SDK's NDK)
+                      cmakeBuild_<abi> for Android's, with the SDK's NDK), or with Emscripten as kolt.{js,wasm}
+                      (cmakeBuild_wasm; ./gradlew setupEmsdk installs the SDK into .emsdk/)
 kotlin/kolt/          the Kotlin module: interop/ and, per group, a package whose capi/ is the generated externals
                       (physics.body.capi; ./gradlew generateKotlinExternals)
                       and the rest the generated classes over them (./gradlew generateKotlinApi); math/ is hand-written
@@ -28,6 +30,10 @@ emulator, whose `libkolt.so` (arm64-v8a, x86_64) is in the library's jniLibs. Th
 filters, a hit collector and a collision callback written in Kotlin, a batch of bodies, a shape's triangles and a
 character on a moving floor through out-parameters and arrays, and a step listener, a state recorder, a stream and a
 skeleton.
+
+`./gradlew :kotlin:kolt:jsBrowserTest :kotlin:kolt:wasmJsBrowserTest` runs them in a headless Chrome, on Jolt compiled to
+wasm. A page includes `kolt.js` with `kolt.wasm` next to it (`kotlin/kolt/build/koltWasm`, not packaged yet) and waits
+for `loadJolt()` before `Jolt.init()`. The wasm is single-threaded: a job system runs its jobs on the caller.
 
 ## The Kotlin API
 

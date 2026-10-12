@@ -122,7 +122,7 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
         val type = type(value) ?: return null
         val (array, pointer) = name.trim('`').let { "${it}Array" to "${it}Pointer" }
         val (made, read) = when (value) {
-            is CValue.Builtin -> (ARRAYS[value.c] ?: return null).let { (if (out) "$it(1)" else "${it.replaceFirstChar(Char::lowercaseChar)}Of($name)") to "$array[0]" }
+            is CValue.Builtin -> (ARRAYS[value.c] ?: return null).let { (if (out) "$it(1)" else "${it.replaceFirstChar(Char::lowercaseChar)}Of($name)") to if (it == "FloatArray") "$array.readF32(0)" else "$array[0]" }
             is CValue.Scalar -> (if (out) "IntArray(1)" else "intArrayOf($name.value)") to "$type($array[0])"
             is CValue.Mirror -> (if (out) "${ARRAYS.getValue(value.element)}(${value.count})" else "$name.toArray()") to "$type($array)"
             else -> return null
@@ -253,7 +253,7 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
             // The slot points at it.
             is CValue.InOut -> when (val v = value.value) {
                 is CValue.Mirror -> fromSlot(v, i)
-                is CValue.Builtin -> "readFloats($pointer, 1)[0]".takeIf { v.c == "float" }
+                is CValue.Builtin -> "readFloats($pointer, 1).readF32(0)".takeIf { v.c == "float" }
                 else -> null
             }
             else -> null

@@ -1,9 +1,11 @@
 package io.github.erkko68.kolt.math
 
+import io.github.erkko68.kolt.interop.readF32
+
 /** C++ `JPH::Vec3`. */
 data class Vec3(val x: Float, val y: Float, val z: Float) {
     /** As C mirrors it: four lanes, of which Jolt keeps the last equal to z. */
-    internal constructor(v: FloatArray) : this(v[0], v[1], v[2])
+    internal constructor(v: FloatArray) : this(v.readF32(0), v.readF32(1), v.readF32(2))
     internal fun toArray() = floatArrayOf(x, y, z, z)
 
     operator fun plus(other: Vec3) = Vec3(x + other.x, y + other.y, z + other.z)

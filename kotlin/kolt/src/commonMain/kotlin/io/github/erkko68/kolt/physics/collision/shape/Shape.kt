@@ -166,7 +166,7 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             totalVolumePointer.fromInterop(totalVolumeArray)
             submergedVolumePointer.fromInterop(submergedVolumeArray)
             centerOfBuoyancyPointer.fromInterop(centerOfBuoyancyArray)
-            Triple(totalVolumeArray[0], submergedVolumeArray[0], Vec3(centerOfBuoyancyArray))
+            Triple(totalVolumeArray.readF32(0), submergedVolumeArray.readF32(0), Vec3(centerOfBuoyancyArray))
         }
 
     fun castRay(ray: RayCast, subShapeIDCreator: SubShapeIDCreator, hit: RayCastResult): Boolean =
