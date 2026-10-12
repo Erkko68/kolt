@@ -75,4 +75,13 @@ class SkeletonPose internal constructor(internal val skeletonPoseHandle: NativeP
 
     fun calculateJointStates() =
         JphSkeletonPose_CalculateJointStates(skeletonPoseHandle)
+
+    fun calculateLocalSpaceJointMatrices(matrices: MutableList<Mat44>) =
+        interopScope {
+            val matricesArray = FloatArray(matrices.size * 16).also { a -> matrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
+            val matricesPointer = toInterop(matricesArray)
+            JphSkeletonPose_CalculateLocalSpaceJointMatrices(skeletonPoseHandle, matricesPointer, matrices.size)
+            matricesPointer.fromInterop(matricesArray)
+            for (i in matrices.indices) matrices[i] = Mat44(matricesArray.copyOfRange(i * 16, i * 16 + 16))
+        }
 }

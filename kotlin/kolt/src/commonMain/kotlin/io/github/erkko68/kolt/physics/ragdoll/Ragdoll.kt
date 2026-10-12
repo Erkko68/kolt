@@ -61,14 +61,41 @@ class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, ow
     fun setPose(pose: SkeletonPose, lockBodies: Boolean) =
         JphRagdoll_SetPose_SkeletonPose_bool(ragdollHandle, pose.skeletonPoseHandle, lockBodies)
 
+    fun setPose(rootOffset: Vec3, jointMatrices: List<Mat44>, lockBodies: Boolean) =
+        interopScope {
+            val jointMatricesArray = FloatArray(jointMatrices.size * 16).also { a -> jointMatrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
+            val jointMatricesPointer = toInterop(jointMatricesArray)
+            JphRagdoll_SetPose_RVec3Arg_Mat44_bool(ragdollHandle, toInterop(rootOffset.toArray()), jointMatricesPointer, jointMatrices.size, lockBodies)
+        }
+
     fun getPose(pose: SkeletonPose, lockBodies: Boolean) =
         JphRagdoll_GetPose_SkeletonPose_bool(ragdollHandle, pose.skeletonPoseHandle, lockBodies)
+
+    fun getPose(jointMatrices: MutableList<Mat44>, lockBodies: Boolean): Vec3 =
+        interopScope {
+            val rootOffsetArray = FloatArray(4)
+            val rootOffsetPointer = toInterop(rootOffsetArray)
+            val jointMatricesArray = FloatArray(jointMatrices.size * 16).also { a -> jointMatrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
+            val jointMatricesPointer = toInterop(jointMatricesArray)
+            JphRagdoll_GetPose_RVec3_Mat44_bool(ragdollHandle, rootOffsetPointer, jointMatricesPointer, jointMatrices.size, lockBodies)
+            rootOffsetPointer.fromInterop(rootOffsetArray)
+            jointMatricesPointer.fromInterop(jointMatricesArray)
+            for (i in jointMatrices.indices) jointMatrices[i] = Mat44(jointMatricesArray.copyOfRange(i * 16, i * 16 + 16))
+            Vec3(rootOffsetArray)
+        }
 
     fun resetWarmStart() =
         JphRagdoll_ResetWarmStart(ragdollHandle)
 
     fun driveToPoseUsingKinematics(pose: SkeletonPose, deltaTime: Float, lockBodies: Boolean) =
         JphRagdoll_DriveToPoseUsingKinematics_SkeletonPose_float_bool(ragdollHandle, pose.skeletonPoseHandle, deltaTime, lockBodies)
+
+    fun driveToPoseUsingKinematics(rootOffset: Vec3, jointMatrices: List<Mat44>, deltaTime: Float, lockBodies: Boolean) =
+        interopScope {
+            val jointMatricesArray = FloatArray(jointMatrices.size * 16).also { a -> jointMatrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
+            val jointMatricesPointer = toInterop(jointMatricesArray)
+            JphRagdoll_DriveToPoseUsingKinematics_RVec3Arg_Mat44_float_bool(ragdollHandle, toInterop(rootOffset.toArray()), jointMatricesPointer, jointMatrices.size, deltaTime, lockBodies)
+        }
 
     fun driveToPoseUsingMotors(pose: SkeletonPose) =
         JphRagdoll_DriveToPoseUsingMotors(ragdollHandle, pose.skeletonPoseHandle)

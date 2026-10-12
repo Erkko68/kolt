@@ -56,4 +56,8 @@ void JphSkeletonPose_CalculateJointStates(JphSkeletonPose* self) {
     kolt::cpp(self)->CalculateJointStates();
 }
 
+void JphSkeletonPose_CalculateLocalSpaceJointMatrices(const JphSkeletonPose* self, JphMat44* outMatrices, uint32_t outMatricesCount) {
+    kolt::cpp(self)->CalculateLocalSpaceJointMatrices(kolt::Aligned<JPH::Mat44, JphMat44>(outMatrices, outMatricesCount));
+}
+
 } // extern "C"

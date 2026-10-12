@@ -40,8 +40,16 @@ void JphRagdoll_SetPose_SkeletonPose_bool(JphRagdoll* self, const JphSkeletonPos
     kolt::cpp(self)->SetPose(*kolt::cpp(inPose), inLockBodies);
 }
 
+void JphRagdoll_SetPose_RVec3Arg_Mat44_bool(JphRagdoll* self, const JphVec3* inRootOffset, const JphMat44* inJointMatrices, uint32_t inJointMatricesCount, bool inLockBodies) {
+    kolt::cpp(self)->SetPose(kolt::math<JPH::Vec3>(*inRootOffset), kolt::Aligned<JPH::Mat44, const JphMat44>(inJointMatrices, inJointMatricesCount), inLockBodies);
+}
+
 void JphRagdoll_GetPose_SkeletonPose_bool(JphRagdoll* self, JphSkeletonPose* outPose, bool inLockBodies) {
     kolt::cpp(self)->GetPose(*kolt::cpp(outPose), inLockBodies);
+}
+
+void JphRagdoll_GetPose_RVec3_Mat44_bool(JphRagdoll* self, JphVec3* outRootOffset, JphMat44* outJointMatrices, uint32_t outJointMatricesCount, bool inLockBodies) {
+    kolt::cpp(self)->GetPose(kolt::InOut<JPH::Vec3, JphVec3>(outRootOffset), kolt::Aligned<JPH::Mat44, JphMat44>(outJointMatrices, outJointMatricesCount), inLockBodies);
 }
 
 void JphRagdoll_ResetWarmStart(JphRagdoll* self) {
@@ -50,6 +58,10 @@ void JphRagdoll_ResetWarmStart(JphRagdoll* self) {
 
 void JphRagdoll_DriveToPoseUsingKinematics_SkeletonPose_float_bool(JphRagdoll* self, const JphSkeletonPose* inPose, float inDeltaTime, bool inLockBodies) {
     kolt::cpp(self)->DriveToPoseUsingKinematics(*kolt::cpp(inPose), inDeltaTime, inLockBodies);
+}
+
+void JphRagdoll_DriveToPoseUsingKinematics_RVec3Arg_Mat44_float_bool(JphRagdoll* self, const JphVec3* inRootOffset, const JphMat44* inJointMatrices, uint32_t inJointMatricesCount, float inDeltaTime, bool inLockBodies) {
+    kolt::cpp(self)->DriveToPoseUsingKinematics(kolt::math<JPH::Vec3>(*inRootOffset), kolt::Aligned<JPH::Mat44, const JphMat44>(inJointMatrices, inJointMatricesCount), inDeltaTime, inLockBodies);
 }
 
 void JphRagdoll_DriveToPoseUsingMotors(JphRagdoll* self, const JphSkeletonPose* inPose) {

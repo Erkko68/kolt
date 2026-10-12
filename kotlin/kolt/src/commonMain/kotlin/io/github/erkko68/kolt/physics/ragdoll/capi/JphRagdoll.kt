@@ -31,14 +31,23 @@ internal external fun JphRagdoll_SetGroupID(self: NativePointer, inGroupID: Int,
 @ExternalSymbolName("JphRagdoll_SetPose_SkeletonPose_bool")
 internal external fun JphRagdoll_SetPose_SkeletonPose_bool(self: NativePointer, inPose: NativePointer, inLockBodies: Boolean)
 
+@ExternalSymbolName("JphRagdoll_SetPose_RVec3Arg_Mat44_bool")
+internal external fun JphRagdoll_SetPose_RVec3Arg_Mat44_bool(self: NativePointer, inRootOffset: NativePointer, inJointMatrices: NativePointer, inJointMatricesCount: Int, inLockBodies: Boolean)
+
 @ExternalSymbolName("JphRagdoll_GetPose_SkeletonPose_bool")
 internal external fun JphRagdoll_GetPose_SkeletonPose_bool(self: NativePointer, outPose: NativePointer, inLockBodies: Boolean)
+
+@ExternalSymbolName("JphRagdoll_GetPose_RVec3_Mat44_bool")
+internal external fun JphRagdoll_GetPose_RVec3_Mat44_bool(self: NativePointer, outRootOffset: NativePointer, outJointMatrices: NativePointer, outJointMatricesCount: Int, inLockBodies: Boolean)
 
 @ExternalSymbolName("JphRagdoll_ResetWarmStart")
 internal external fun JphRagdoll_ResetWarmStart(self: NativePointer)
 
 @ExternalSymbolName("JphRagdoll_DriveToPoseUsingKinematics_SkeletonPose_float_bool")
 internal external fun JphRagdoll_DriveToPoseUsingKinematics_SkeletonPose_float_bool(self: NativePointer, inPose: NativePointer, inDeltaTime: Float, inLockBodies: Boolean)
+
+@ExternalSymbolName("JphRagdoll_DriveToPoseUsingKinematics_RVec3Arg_Mat44_float_bool")
+internal external fun JphRagdoll_DriveToPoseUsingKinematics_RVec3Arg_Mat44_float_bool(self: NativePointer, inRootOffset: NativePointer, inJointMatrices: NativePointer, inJointMatricesCount: Int, inDeltaTime: Float, inLockBodies: Boolean)
 
 @ExternalSymbolName("JphRagdoll_DriveToPoseUsingMotors")
 internal external fun JphRagdoll_DriveToPoseUsingMotors(self: NativePointer, inPose: NativePointer)

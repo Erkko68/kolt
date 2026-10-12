@@ -97,6 +97,9 @@ internal external fun JphSoftBodyMotionProperties_SaveState(self: NativePointer,
 @ExternalSymbolName("JphSoftBodyMotionProperties_RestoreState")
 internal external fun JphSoftBodyMotionProperties_RestoreState(self: NativePointer, inStream: NativePointer)
 
+@ExternalSymbolName("JphSoftBodyMotionProperties_SkinVertices")
+internal external fun JphSoftBodyMotionProperties_SkinVertices(self: NativePointer, inCenterOfMassTransform: NativePointer, inJointMatrices: NativePointer, inJointMatricesCount: Int, inNumJoints: Int, inHardSkinAll: Boolean, ioTempAllocator: NativePointer)
+
 @ExternalSymbolName("JphSoftBodyMotionProperties_CustomUpdate")
 internal external fun JphSoftBodyMotionProperties_CustomUpdate(self: NativePointer, inDeltaTime: Float, ioSoftBody: NativePointer, inSystem: NativePointer)
 

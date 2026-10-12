@@ -58,6 +58,15 @@ class MutableCompoundShape internal constructor(internal val mutableCompoundShap
     fun modifyShape(index: Int, position: Vec3, rotation: Quat, shape: Shape?) =
         interopScope { JphMutableCompoundShape_ModifyShape_Shape(mutableCompoundShapeHandle, index, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) }
 
+    fun modifyShapes(startIndex: Int, number: Int, positions: List<Vec3>, rotations: List<Quat>, positionStride: Int, rotationStride: Int) =
+        interopScope {
+            val positionsArray = FloatArray(positions.size * 4).also { a -> positions.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }
+            val positionsPointer = toInterop(positionsArray)
+            val rotationsArray = FloatArray(rotations.size * 4).also { a -> rotations.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }
+            val rotationsPointer = toInterop(rotationsArray)
+            JphMutableCompoundShape_ModifyShapes(mutableCompoundShapeHandle, startIndex, number, positionsPointer, positions.size, rotationsPointer, rotations.size, positionStride, rotationStride)
+        }
+
     fun adjustCenterOfMass() =
         JphMutableCompoundShape_AdjustCenterOfMass(mutableCompoundShapeHandle)
 }

@@ -42,3 +42,6 @@ internal external fun JphSkeletonPose_CalculateJointMatrices(self: NativePointer
 
 @ExternalSymbolName("JphSkeletonPose_CalculateJointStates")
 internal external fun JphSkeletonPose_CalculateJointStates(self: NativePointer)
+
+@ExternalSymbolName("JphSkeletonPose_CalculateLocalSpaceJointMatrices")
+internal external fun JphSkeletonPose_CalculateLocalSpaceJointMatrices(self: NativePointer, outMatrices: NativePointer, outMatricesCount: Int)

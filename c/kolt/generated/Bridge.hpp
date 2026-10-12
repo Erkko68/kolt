@@ -102,6 +102,23 @@ struct InOut {
     operator T&() { return value; }
 };
 
+// C's array of mirrors as the T* the callee takes: aligned copies, written back when the call ends unless C's are const.
+template<typename T, typename C>
+struct Aligned {
+    C* c;
+    std::vector<T> values;
+
+    Aligned(C* c, uint32_t count) : c(c) {
+        if (!c) return;
+        values.reserve(count);
+        for (uint32_t i = 0; i < count; i++) values.push_back(math<T>(c[i]));
+    }
+    ~Aligned() {
+        if constexpr (!std::is_const_v<C>) for (size_t i = 0; i < values.size(); i++) c[i] = mirror<C>(values[i]);
+    }
+    operator T*() { return c ? values.data() : nullptr; }
+};
+
 // C's array as the container the callee takes: anything with push_back, a std::array, or a view (made from a pointer
 // and a size, like std::span), whose elements live as long as the Items, until the end of the call. element(i) makes
 // each item. Only for a T the elements make, so overloads taking different arrays stay apart.

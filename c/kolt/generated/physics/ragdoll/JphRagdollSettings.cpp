@@ -72,6 +72,10 @@ void JphRagdollSettings_CalculateConstraintPriorities(JphRagdollSettings* self, 
     kolt::cpp(self)->CalculateConstraintPriorities(inBasePriority);
 }
 
+void JphRagdollSettings_DisableParentChildCollisions(JphRagdollSettings* self, const JphMat44* inJointMatrices, uint32_t inJointMatricesCount, float inMinSeparationDistance) {
+    kolt::cpp(self)->DisableParentChildCollisions(kolt::Aligned<JPH::Mat44, const JphMat44>(inJointMatrices, inJointMatricesCount), inMinSeparationDistance);
+}
+
 void JphRagdollSettings_SaveBinaryState(const JphRagdollSettings* self, JphStreamOut* inStream, bool inSaveShapes, bool inSaveGroupFilter) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream), inSaveShapes, inSaveGroupFilter);
 }

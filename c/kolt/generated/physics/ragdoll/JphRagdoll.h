@@ -18,15 +18,12 @@ void JphRagdoll_Activate(JphRagdoll* self, bool inLockBodies);
 bool JphRagdoll_IsActive(const JphRagdoll* self, bool inLockBodies);
 void JphRagdoll_SetGroupID(JphRagdoll* self, uint32_t inGroupID, bool inLockBodies);
 void JphRagdoll_SetPose_SkeletonPose_bool(JphRagdoll* self, const JphSkeletonPose* inPose, bool inLockBodies);
-// TODO(handwritten) JphRagdoll_SetPose_RVec3Arg_Mat44_bool: void JPH::Ragdoll::SetPose(RVec3Arg inRootOffset, const Mat44 * inJointMatrices, bool inLockBodies)
-//     JPH::Mat44 by pointer: C's mirror isn't aligned as the SIMD type is
+void JphRagdoll_SetPose_RVec3Arg_Mat44_bool(JphRagdoll* self, const JphVec3* inRootOffset, const JphMat44* inJointMatrices, uint32_t inJointMatricesCount, bool inLockBodies);
 void JphRagdoll_GetPose_SkeletonPose_bool(JphRagdoll* self, JphSkeletonPose* outPose, bool inLockBodies);
-// TODO(handwritten) JphRagdoll_GetPose_RVec3_Mat44_bool: void JPH::Ragdoll::GetPose(RVec3 & outRootOffset, Mat44 * outJointMatrices, bool inLockBodies)
-//     JPH::Mat44 by pointer: C's mirror isn't aligned as the SIMD type is
+void JphRagdoll_GetPose_RVec3_Mat44_bool(JphRagdoll* self, JphVec3* outRootOffset, JphMat44* outJointMatrices, uint32_t outJointMatricesCount, bool inLockBodies);
 void JphRagdoll_ResetWarmStart(JphRagdoll* self);
 void JphRagdoll_DriveToPoseUsingKinematics_SkeletonPose_float_bool(JphRagdoll* self, const JphSkeletonPose* inPose, float inDeltaTime, bool inLockBodies);
-// TODO(handwritten) JphRagdoll_DriveToPoseUsingKinematics_RVec3Arg_Mat44_float_bool: void JPH::Ragdoll::DriveToPoseUsingKinematics(RVec3Arg inRootOffset, const Mat44 * inJointMatrices, float inDeltaTime, bool inLockBodies)
-//     JPH::Mat44 by pointer: C's mirror isn't aligned as the SIMD type is
+void JphRagdoll_DriveToPoseUsingKinematics_RVec3Arg_Mat44_float_bool(JphRagdoll* self, const JphVec3* inRootOffset, const JphMat44* inJointMatrices, uint32_t inJointMatricesCount, float inDeltaTime, bool inLockBodies);
 void JphRagdoll_DriveToPoseUsingMotors(JphRagdoll* self, const JphSkeletonPose* inPose);
 void JphRagdoll_DriveToPoseUsingMotors_SkeletonPose_float(JphRagdoll* self, const JphSkeletonPose* inPrevPose, const JphSkeletonPose* inPose, float inDeltaTime);
 void JphRagdoll_SetLinearAndAngularVelocity(JphRagdoll* self, const JphVec3* inLinearVelocity, const JphVec3* inAngularVelocity, bool inLockBodies);

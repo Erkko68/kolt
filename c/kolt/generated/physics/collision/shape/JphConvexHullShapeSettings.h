@@ -10,8 +10,7 @@ extern "C" {
 
 // JPH::ConvexHullShapeSettings
 JphConvexHullShapeSettings* JphConvexHullShapeSettings_create(void);
-// TODO(handwritten) JphConvexHullShapeSettings_create_Vec3_int_float_PhysicsMaterial: JPH::ConvexHullShapeSettings(const Vec3 * inPoints, int inNumPoints, float inMaxConvexRadius, const PhysicsMaterial * inMaterial)
-//     JPH::Vec3 by pointer: C's mirror isn't aligned as the SIMD type is
+JphConvexHullShapeSettings* JphConvexHullShapeSettings_create_Vec3_int_float_PhysicsMaterial(const JphVec3* inPoints, uint32_t inPointsCount, int32_t inNumPoints, float inMaxConvexRadius, const JphPhysicsMaterial* inMaterial);
 JphConvexHullShapeSettings* JphConvexHullShapeSettings_create_Array_float_PhysicsMaterial(const JphVec3* inPoints, uint32_t inPointsCount, float inConvexRadius, const JphPhysicsMaterial* inMaterial);
 void JphConvexHullShapeSettings_addRef(const JphConvexHullShapeSettings* self);
 void JphConvexHullShapeSettings_release(const JphConvexHullShapeSettings* self);

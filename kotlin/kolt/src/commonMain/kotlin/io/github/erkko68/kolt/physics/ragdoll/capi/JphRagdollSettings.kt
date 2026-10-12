@@ -55,6 +55,9 @@ internal external fun JphRagdollSettings_Stabilize(self: NativePointer): Boolean
 @ExternalSymbolName("JphRagdollSettings_CalculateConstraintPriorities")
 internal external fun JphRagdollSettings_CalculateConstraintPriorities(self: NativePointer, inBasePriority: Int)
 
+@ExternalSymbolName("JphRagdollSettings_DisableParentChildCollisions")
+internal external fun JphRagdollSettings_DisableParentChildCollisions(self: NativePointer, inJointMatrices: NativePointer, inJointMatricesCount: Int, inMinSeparationDistance: Float)
+
 @ExternalSymbolName("JphRagdollSettings_SaveBinaryState")
 internal external fun JphRagdollSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer, inSaveShapes: Boolean, inSaveGroupFilter: Boolean)
 

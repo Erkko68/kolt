@@ -44,8 +44,7 @@ float JphSoftBodyMotionProperties_GetVolume(const JphSoftBodyMotionProperties* s
 void JphSoftBodyMotionProperties_CalculateMassAndInertia(JphSoftBodyMotionProperties* self);
 void JphSoftBodyMotionProperties_SaveState(const JphSoftBodyMotionProperties* self, JphStateRecorder* inStream);
 void JphSoftBodyMotionProperties_RestoreState(JphSoftBodyMotionProperties* self, JphStateRecorder* inStream);
-// TODO(handwritten) JphSoftBodyMotionProperties_SkinVertices: void JPH::SoftBodyMotionProperties::SkinVertices(RMat44Arg inCenterOfMassTransform, const Mat44 * inJointMatrices, uint inNumJoints, bool inHardSkinAll, TempAllocator & ioTempAllocator)
-//     JPH::Mat44 by pointer: C's mirror isn't aligned as the SIMD type is
+void JphSoftBodyMotionProperties_SkinVertices(JphSoftBodyMotionProperties* self, const JphMat44* inCenterOfMassTransform, const JphMat44* inJointMatrices, uint32_t inJointMatricesCount, uint32_t inNumJoints, bool inHardSkinAll, JphTempAllocator* ioTempAllocator);
 void JphSoftBodyMotionProperties_CustomUpdate(JphSoftBodyMotionProperties* self, float inDeltaTime, JphBody* ioSoftBody, JphPhysicsSystem* inSystem);
 void JphSoftBodyMotionProperties_RequestContactCallback(JphSoftBodyMotionProperties* self);
 

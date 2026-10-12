@@ -1778,6 +1778,7 @@
 ],
 "kolt/generated/physics/collision/shape/JphConvexHullShapeSettings.h": [
 {"name":"JphConvexHullShapeSettings_create","returns":"ptr","params":[]},
+{"name":"JphConvexHullShapeSettings_create_Vec3_int_float_PhysicsMaterial","returns":"ptr","params":[["inPoints","ptr"],["inPointsCount","i32"],["inNumPoints","i32"],["inMaxConvexRadius","f32"],["inMaterial","ptr"]]},
 {"name":"JphConvexHullShapeSettings_create_Array_float_PhysicsMaterial","returns":"ptr","params":[["inPoints","ptr"],["inPointsCount","i32"],["inConvexRadius","f32"],["inMaterial","ptr"]]},
 {"name":"JphConvexHullShapeSettings_addRef","returns":"void","params":[["self","ptr"]]},
 {"name":"JphConvexHullShapeSettings_release","returns":"void","params":[["self","ptr"]]},
@@ -1977,6 +1978,7 @@
 {"name":"JphMutableCompoundShape_RemoveShape","returns":"void","params":[["self","ptr"],["inIndex","i32"]]},
 {"name":"JphMutableCompoundShape_ModifyShape","returns":"void","params":[["self","ptr"],["inIndex","i32"],["inPosition","ptr"],["inRotation","ptr"]]},
 {"name":"JphMutableCompoundShape_ModifyShape_Shape","returns":"void","params":[["self","ptr"],["inIndex","i32"],["inPosition","ptr"],["inRotation","ptr"],["inShape","ptr"]]},
+{"name":"JphMutableCompoundShape_ModifyShapes","returns":"void","params":[["self","ptr"],["inStartIndex","i32"],["inNumber","i32"],["inPositions","ptr"],["inPositionsCount","i32"],["inRotations","ptr"],["inRotationsCount","i32"],["inPositionStride","i32"],["inRotationStride","i32"]]},
 {"name":"JphMutableCompoundShape_AdjustCenterOfMass","returns":"void","params":[["self","ptr"]]}
 ],
 "kolt/generated/physics/collision/shape/JphMutableCompoundShapeSettings.h": [
@@ -2948,9 +2950,12 @@
 {"name":"JphRagdoll_IsActive","returns":"bool","params":[["self","ptr"],["inLockBodies","bool"]]},
 {"name":"JphRagdoll_SetGroupID","returns":"void","params":[["self","ptr"],["inGroupID","i32"],["inLockBodies","bool"]]},
 {"name":"JphRagdoll_SetPose_SkeletonPose_bool","returns":"void","params":[["self","ptr"],["inPose","ptr"],["inLockBodies","bool"]]},
+{"name":"JphRagdoll_SetPose_RVec3Arg_Mat44_bool","returns":"void","params":[["self","ptr"],["inRootOffset","ptr"],["inJointMatrices","ptr"],["inJointMatricesCount","i32"],["inLockBodies","bool"]]},
 {"name":"JphRagdoll_GetPose_SkeletonPose_bool","returns":"void","params":[["self","ptr"],["outPose","ptr"],["inLockBodies","bool"]]},
+{"name":"JphRagdoll_GetPose_RVec3_Mat44_bool","returns":"void","params":[["self","ptr"],["outRootOffset","ptr"],["outJointMatrices","ptr"],["outJointMatricesCount","i32"],["inLockBodies","bool"]]},
 {"name":"JphRagdoll_ResetWarmStart","returns":"void","params":[["self","ptr"]]},
 {"name":"JphRagdoll_DriveToPoseUsingKinematics_SkeletonPose_float_bool","returns":"void","params":[["self","ptr"],["inPose","ptr"],["inDeltaTime","f32"],["inLockBodies","bool"]]},
+{"name":"JphRagdoll_DriveToPoseUsingKinematics_RVec3Arg_Mat44_float_bool","returns":"void","params":[["self","ptr"],["inRootOffset","ptr"],["inJointMatrices","ptr"],["inJointMatricesCount","i32"],["inDeltaTime","f32"],["inLockBodies","bool"]]},
 {"name":"JphRagdoll_DriveToPoseUsingMotors","returns":"void","params":[["self","ptr"],["inPose","ptr"]]},
 {"name":"JphRagdoll_DriveToPoseUsingMotors_SkeletonPose_float","returns":"void","params":[["self","ptr"],["inPrevPose","ptr"],["inPose","ptr"],["inDeltaTime","f32"]]},
 {"name":"JphRagdoll_SetLinearAndAngularVelocity","returns":"void","params":[["self","ptr"],["inLinearVelocity","ptr"],["inAngularVelocity","ptr"],["inLockBodies","bool"]]},
@@ -2984,6 +2989,7 @@
 {"name":"JphRagdollSettings_release","returns":"void","params":[["self","ptr"]]},
 {"name":"JphRagdollSettings_Stabilize","returns":"bool","params":[["self","ptr"]]},
 {"name":"JphRagdollSettings_CalculateConstraintPriorities","returns":"void","params":[["self","ptr"],["inBasePriority","i32"]]},
+{"name":"JphRagdollSettings_DisableParentChildCollisions","returns":"void","params":[["self","ptr"],["inJointMatrices","ptr"],["inJointMatricesCount","i32"],["inMinSeparationDistance","f32"]]},
 {"name":"JphRagdollSettings_SaveBinaryState","returns":"void","params":[["self","ptr"],["inStream","ptr"],["inSaveShapes","bool"],["inSaveGroupFilter","bool"]]},
 {"name":"JphRagdollSettings_sRestoreFromBinaryState","returns":"ptr","params":[["inStream","ptr"],["outError","ptr"],["outErrorCapacity","i32"]]},
 {"name":"JphRagdollSettings_CreateRagdoll","returns":"ptr","params":[["self","ptr"],["inCollisionGroup","i32"],["inUserData","i64"],["inSystem","ptr"]]},
@@ -3102,6 +3108,7 @@
 {"name":"JphSoftBodyMotionProperties_CalculateMassAndInertia","returns":"void","params":[["self","ptr"]]},
 {"name":"JphSoftBodyMotionProperties_SaveState","returns":"void","params":[["self","ptr"],["inStream","ptr"]]},
 {"name":"JphSoftBodyMotionProperties_RestoreState","returns":"void","params":[["self","ptr"],["inStream","ptr"]]},
+{"name":"JphSoftBodyMotionProperties_SkinVertices","returns":"void","params":[["self","ptr"],["inCenterOfMassTransform","ptr"],["inJointMatrices","ptr"],["inJointMatricesCount","i32"],["inNumJoints","i32"],["inHardSkinAll","bool"],["ioTempAllocator","ptr"]]},
 {"name":"JphSoftBodyMotionProperties_CustomUpdate","returns":"void","params":[["self","ptr"],["inDeltaTime","f32"],["ioSoftBody","ptr"],["inSystem","ptr"]]},
 {"name":"JphSoftBodyMotionProperties_RequestContactCallback","returns":"void","params":[["self","ptr"]]}
 ],
@@ -3811,7 +3818,8 @@
 {"name":"JphSkeletonPose_GetJointMatrices","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphSkeletonPose_GetJointMatrix","returns":"ptr","params":[["self","ptr"],["inJoint","i32"]]},
 {"name":"JphSkeletonPose_CalculateJointMatrices","returns":"void","params":[["self","ptr"]]},
-{"name":"JphSkeletonPose_CalculateJointStates","returns":"void","params":[["self","ptr"]]}
+{"name":"JphSkeletonPose_CalculateJointStates","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSkeletonPose_CalculateLocalSpaceJointMatrices","returns":"void","params":[["self","ptr"],["outMatrices","ptr"],["outMatricesCount","i32"]]}
 ],
 "kolt/manual/JphJoltManual.h": [
 {"name":"Jph_RegisterDefaultAllocator","returns":"void","params":[]},

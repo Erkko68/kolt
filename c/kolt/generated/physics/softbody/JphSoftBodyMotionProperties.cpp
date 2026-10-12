@@ -128,6 +128,10 @@ void JphSoftBodyMotionProperties_RestoreState(JphSoftBodyMotionProperties* self,
     kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
 }
 
+void JphSoftBodyMotionProperties_SkinVertices(JphSoftBodyMotionProperties* self, const JphMat44* inCenterOfMassTransform, const JphMat44* inJointMatrices, uint32_t inJointMatricesCount, uint32_t inNumJoints, bool inHardSkinAll, JphTempAllocator* ioTempAllocator) {
+    kolt::cpp(self)->SkinVertices(kolt::math<JPH::Mat44>(*inCenterOfMassTransform), kolt::Aligned<JPH::Mat44, const JphMat44>(inJointMatrices, inJointMatricesCount), static_cast<unsigned int>(inNumJoints), inHardSkinAll, *kolt::cpp(ioTempAllocator));
+}
+
 void JphSoftBodyMotionProperties_CustomUpdate(JphSoftBodyMotionProperties* self, float inDeltaTime, JphBody* ioSoftBody, JphPhysicsSystem* inSystem) {
     kolt::cpp(self)->CustomUpdate(inDeltaTime, *kolt::cpp(ioSoftBody), *kolt::cpp(inSystem));
 }

@@ -8,6 +8,10 @@ JphConvexHullShapeSettings* JphConvexHullShapeSettings_create(void) {
     return kolt::c(kolt::retain(new JPH::ConvexHullShapeSettings()));
 }
 
+JphConvexHullShapeSettings* JphConvexHullShapeSettings_create_Vec3_int_float_PhysicsMaterial(const JphVec3* inPoints, uint32_t inPointsCount, int32_t inNumPoints, float inMaxConvexRadius, const JphPhysicsMaterial* inMaterial) {
+    return kolt::c(kolt::retain(new JPH::ConvexHullShapeSettings(kolt::Aligned<JPH::Vec3, const JphVec3>(inPoints, inPointsCount), static_cast<int>(inNumPoints), inMaxConvexRadius, kolt::cpp(inMaterial))));
+}
+
 JphConvexHullShapeSettings* JphConvexHullShapeSettings_create_Array_float_PhysicsMaterial(const JphVec3* inPoints, uint32_t inPointsCount, float inConvexRadius, const JphPhysicsMaterial* inMaterial) {
     return kolt::c(kolt::retain(new JPH::ConvexHullShapeSettings(kolt::items(inPointsCount, [&](uint32_t i) { return kolt::math<JPH::Vec3>(*(inPoints + i)); }), inConvexRadius, kolt::cpp(inMaterial))));
 }

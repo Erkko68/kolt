@@ -145,6 +145,13 @@ class SoftBodyMotionProperties internal constructor(internal val softBodyMotionP
     override fun restoreState(stream: StateRecorder) =
         JphSoftBodyMotionProperties_RestoreState(softBodyMotionPropertiesHandle, stream.stateRecorderHandle)
 
+    fun skinVertices(centerOfMassTransform: Mat44, jointMatrices: List<Mat44>, numJoints: Int, hardSkinAll: Boolean, tempAllocator: TempAllocator) =
+        interopScope {
+            val jointMatricesArray = FloatArray(jointMatrices.size * 16).also { a -> jointMatrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
+            val jointMatricesPointer = toInterop(jointMatricesArray)
+            JphSoftBodyMotionProperties_SkinVertices(softBodyMotionPropertiesHandle, toInterop(centerOfMassTransform.toArray()), jointMatricesPointer, jointMatrices.size, numJoints, hardSkinAll, tempAllocator.tempAllocatorHandle)
+        }
+
     fun customUpdate(deltaTime: Float, softBody: Body, system: PhysicsSystem) =
         JphSoftBodyMotionProperties_CustomUpdate(softBodyMotionPropertiesHandle, deltaTime, softBody.bodyHandle, system.physicsSystemHandle)
 

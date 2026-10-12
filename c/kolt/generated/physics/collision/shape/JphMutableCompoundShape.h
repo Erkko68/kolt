@@ -21,8 +21,7 @@ uint32_t JphMutableCompoundShape_AddShape(JphMutableCompoundShape* self, const J
 void JphMutableCompoundShape_RemoveShape(JphMutableCompoundShape* self, uint32_t inIndex);
 void JphMutableCompoundShape_ModifyShape(JphMutableCompoundShape* self, uint32_t inIndex, const JphVec3* inPosition, const JphQuat* inRotation);
 void JphMutableCompoundShape_ModifyShape_Shape(JphMutableCompoundShape* self, uint32_t inIndex, const JphVec3* inPosition, const JphQuat* inRotation, const JphShape* inShape);
-// TODO(handwritten) JphMutableCompoundShape_ModifyShapes: void JPH::MutableCompoundShape::ModifyShapes(uint inStartIndex, uint inNumber, const Vec3 * inPositions, const Quat * inRotations, uint inPositionStride, uint inRotationStride)
-//     JPH::Vec3 by pointer: C's mirror isn't aligned as the SIMD type is
+void JphMutableCompoundShape_ModifyShapes(JphMutableCompoundShape* self, uint32_t inStartIndex, uint32_t inNumber, const JphVec3* inPositions, uint32_t inPositionsCount, const JphQuat* inRotations, uint32_t inRotationsCount, uint32_t inPositionStride, uint32_t inRotationStride);
 void JphMutableCompoundShape_AdjustCenterOfMass(JphMutableCompoundShape* self);
 
 

@@ -57,7 +57,12 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
     fun parameter(bridge: CBridge, name: String, out: Boolean = false): Passed? {
         val value = bridge.value ?: return null
         if (value is CValue.InOut) return inOut(value.value, name, out).takeIf { bridge.extra.isEmpty() }
-        if (value is CValue.Pointer) return pointer(value, name, out).takeIf { bridge.extra.isEmpty() }
+        if (value is CValue.Pointer) return when (bridge.extra) {
+            emptyList<Pair<String, String>>() -> pointer(value, name, out)
+            // C copies that many, so it takes the count.
+            listOf("uint32_t" to "Count") -> pointer(value, name, out)?.let { Passed(it.type, "${it.argument}, $name.size", it.scoped, it.before, it.after) }
+            else -> null
+        }
         val type = type(value) ?: return null
         if (value is CValue.Sequence) {
             if (bridge.extra != listOf("uint32_t" to "Count")) return null

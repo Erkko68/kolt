@@ -44,6 +44,10 @@ void JphMutableCompoundShape_ModifyShape_Shape(JphMutableCompoundShape* self, ui
     kolt::cpp(self)->ModifyShape(static_cast<unsigned int>(inIndex), kolt::math<JPH::Vec3>(*inPosition), kolt::math<JPH::Quat>(*inRotation), kolt::cpp(inShape));
 }
 
+void JphMutableCompoundShape_ModifyShapes(JphMutableCompoundShape* self, uint32_t inStartIndex, uint32_t inNumber, const JphVec3* inPositions, uint32_t inPositionsCount, const JphQuat* inRotations, uint32_t inRotationsCount, uint32_t inPositionStride, uint32_t inRotationStride) {
+    kolt::cpp(self)->ModifyShapes(static_cast<unsigned int>(inStartIndex), static_cast<unsigned int>(inNumber), kolt::Aligned<JPH::Vec3, const JphVec3>(inPositions, inPositionsCount), kolt::Aligned<JPH::Quat, const JphQuat>(inRotations, inRotationsCount), static_cast<unsigned int>(inPositionStride), static_cast<unsigned int>(inRotationStride));
+}
+
 void JphMutableCompoundShape_AdjustCenterOfMass(JphMutableCompoundShape* self) {
     kolt::cpp(self)->AdjustCenterOfMass();
 }

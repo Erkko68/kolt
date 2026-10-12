@@ -22,8 +22,7 @@ uint32_t JphSkeletonPose_GetJointMatrices(JphSkeletonPose* self, JphMat44* out, 
 JphMat44* JphSkeletonPose_GetJointMatrix(JphSkeletonPose* self, int32_t inJoint);
 void JphSkeletonPose_CalculateJointMatrices(JphSkeletonPose* self);
 void JphSkeletonPose_CalculateJointStates(JphSkeletonPose* self);
-// TODO(handwritten) JphSkeletonPose_CalculateLocalSpaceJointMatrices: void JPH::SkeletonPose::CalculateLocalSpaceJointMatrices(Mat44 * outMatrices) const
-//     JPH::Mat44 by pointer: C's mirror isn't aligned as the SIMD type is
+void JphSkeletonPose_CalculateLocalSpaceJointMatrices(const JphSkeletonPose* self, JphMat44* outMatrices, uint32_t outMatricesCount);
 
 
 #ifdef __cplusplus

@@ -7,6 +7,9 @@ import io.github.erkko68.kolt.interop.NativePointer
 @ExternalSymbolName("JphConvexHullShapeSettings_create")
 internal external fun JphConvexHullShapeSettings_create(): NativePointer
 
+@ExternalSymbolName("JphConvexHullShapeSettings_create_Vec3_int_float_PhysicsMaterial")
+internal external fun JphConvexHullShapeSettings_create_Vec3_int_float_PhysicsMaterial(inPoints: NativePointer, inPointsCount: Int, inNumPoints: Int, inMaxConvexRadius: Float, inMaterial: NativePointer): NativePointer
+
 @ExternalSymbolName("JphConvexHullShapeSettings_create_Array_float_PhysicsMaterial")
 internal external fun JphConvexHullShapeSettings_create_Array_float_PhysicsMaterial(inPoints: NativePointer, inPointsCount: Int, inConvexRadius: Float, inMaterial: NativePointer): NativePointer
 

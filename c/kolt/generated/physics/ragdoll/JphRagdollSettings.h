@@ -33,8 +33,7 @@ void JphRagdollSettings_release(const JphRagdollSettings* self);
 // skipped static void JPH::RagdollSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 bool JphRagdollSettings_Stabilize(JphRagdollSettings* self);
 void JphRagdollSettings_CalculateConstraintPriorities(JphRagdollSettings* self, uint32_t inBasePriority);
-// TODO(handwritten) JphRagdollSettings_DisableParentChildCollisions: void JPH::RagdollSettings::DisableParentChildCollisions(const Mat44 * inJointMatrices, float inMinSeparationDistance)
-//     JPH::Mat44 by pointer: C's mirror isn't aligned as the SIMD type is
+void JphRagdollSettings_DisableParentChildCollisions(JphRagdollSettings* self, const JphMat44* inJointMatrices, uint32_t inJointMatricesCount, float inMinSeparationDistance);
 void JphRagdollSettings_SaveBinaryState(const JphRagdollSettings* self, JphStreamOut* inStream, bool inSaveShapes, bool inSaveGroupFilter);
 JphRagdollSettings* JphRagdollSettings_sRestoreFromBinaryState(JphStreamIn* inStream, char* outError, uint32_t outErrorCapacity);
 JphRagdoll* JphRagdollSettings_CreateRagdoll(const JphRagdollSettings* self, uint32_t inCollisionGroup, uint64_t inUserData, JphPhysicsSystem* inSystem);

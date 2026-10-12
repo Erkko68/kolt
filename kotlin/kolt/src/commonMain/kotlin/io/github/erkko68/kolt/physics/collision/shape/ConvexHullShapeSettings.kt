@@ -36,6 +36,11 @@ import io.github.erkko68.kolt.skeleton.capi.*
 /** C++ `JPH::ConvexHullShapeSettings`. */
 class ConvexHullShapeSettings internal constructor(internal val convexHullShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphConvexHullShapeSettings_asConvexShapeSettings(convexHullShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphConvexHullShapeSettings_create(), owned = true)
+    constructor(points: List<Vec3>, numPoints: Int, maxConvexRadius: Float, material: PhysicsMaterial?) : this(interopScope {
+    val pointsArray = FloatArray(points.size * 4).also { a -> points.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }
+    val pointsPointer = toInterop(pointsArray)
+    JphConvexHullShapeSettings_create_Vec3_int_float_PhysicsMaterial(pointsPointer, points.size, numPoints, maxConvexRadius, material?.physicsMaterialHandle ?: NullPointer)
+}, owned = true)
     constructor(points: List<Vec3>, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphConvexHullShapeSettings_create_Array_float_PhysicsMaterial(toInterop(FloatArray(points.size * 4).also { a -> points.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), points.size, convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
 
     override fun addRef() =

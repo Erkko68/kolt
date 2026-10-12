@@ -34,5 +34,8 @@ internal external fun JphMutableCompoundShape_ModifyShape(self: NativePointer, i
 @ExternalSymbolName("JphMutableCompoundShape_ModifyShape_Shape")
 internal external fun JphMutableCompoundShape_ModifyShape_Shape(self: NativePointer, inIndex: Int, inPosition: NativePointer, inRotation: NativePointer, inShape: NativePointer)
 
+@ExternalSymbolName("JphMutableCompoundShape_ModifyShapes")
+internal external fun JphMutableCompoundShape_ModifyShapes(self: NativePointer, inStartIndex: Int, inNumber: Int, inPositions: NativePointer, inPositionsCount: Int, inRotations: NativePointer, inRotationsCount: Int, inPositionStride: Int, inRotationStride: Int)
+
 @ExternalSymbolName("JphMutableCompoundShape_AdjustCenterOfMass")
 internal external fun JphMutableCompoundShape_AdjustCenterOfMass(self: NativePointer)

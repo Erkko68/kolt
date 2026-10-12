@@ -49,6 +49,13 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
     fun calculateConstraintPriorities(basePriority: Int) =
         JphRagdollSettings_CalculateConstraintPriorities(ragdollSettingsHandle, basePriority)
 
+    fun disableParentChildCollisions(jointMatrices: List<Mat44>, minSeparationDistance: Float) =
+        interopScope {
+            val jointMatricesArray = FloatArray(jointMatrices.size * 16).also { a -> jointMatrices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 16) } }
+            val jointMatricesPointer = toInterop(jointMatricesArray)
+            JphRagdollSettings_DisableParentChildCollisions(ragdollSettingsHandle, jointMatricesPointer, jointMatrices.size, minSeparationDistance)
+        }
+
     fun saveBinaryState(stream: StreamOut, saveShapes: Boolean, saveGroupFilter: Boolean) =
         JphRagdollSettings_SaveBinaryState(ragdollSettingsHandle, stream.streamOutHandle, saveShapes, saveGroupFilter)
 

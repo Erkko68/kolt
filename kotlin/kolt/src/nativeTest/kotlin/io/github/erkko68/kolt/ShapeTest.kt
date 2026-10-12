@@ -23,6 +23,10 @@ class ShapeTest {
                 assertEquals(8f, shape.volume, 0.5f)
             }
         }
+        // By pointer, as copies aligned for SIMD.
+        ConvexHullShapeSettings(corners, corners.size, 0.05f, null).use { settings ->
+            assertEquals(corners, settings.points)
+        }
         // Two points span no hull.
         ConvexHullShapeSettings(corners.take(2), 0.05f, null).use { settings ->
             assertTrue(assertFailsWith<NativeException> { settings.create() }.message!!.isNotEmpty())

@@ -70,7 +70,8 @@ class DirectBridges internal constructor(
 
     /**
      * Structs never cross by value: parameters come by `const` pointer, results go out through one. C++ can't use
-     * C's storage of a SIMD type in place ([alignedMirror]): one it writes through a reference is copied in and back.
+     * C's storage of a SIMD type in place ([alignedMirror]): one it writes through a reference is copied in and back,
+     * as is an array of them by pointer, which C then passes the count of.
      */
     fun math(decl: String): CBridge {
         val name = names.type(decl)
@@ -80,7 +81,7 @@ class DirectBridges internal constructor(
             byValue -> CBridge("const $name*", { "$h::math<$decl>(*$it)" }, value = value)
             result || !config.mirrors.getValue(decl).aligned -> handle(name, referenced(value))
             indirection == "&" -> CBridge("$name*", { "$h::InOut<$decl, $name>($it)" }, value = referenced(value))
-            else -> throw Unsupported("$decl by pointer: C's mirror isn't aligned as the SIMD type is")
+            else -> CBridge("$c$name*", { "$h::Aligned<$decl, $c$name>($it, ${it}Count)" }, extra = listOf("uint32_t" to "Count"), value = referenced(value))
         }
     }
 
