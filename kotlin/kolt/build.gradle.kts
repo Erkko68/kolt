@@ -9,27 +9,43 @@ plugins {
     id("com.android.kotlin.multiplatform.library") version "9.4.1"
 }
 
-// The C API (c/) and Jolt as static libraries, and as the JVM's JNI library, for the host.
-val cLibDir = rootProject.layout.buildDirectory.dir("kolt-c/macos-arm64")
-val cmakeDir = rootProject.layout.buildDirectory.dir("cmake/macos-arm64")
-val cmakeBuild = tasks.register<Exec>("cmakeBuild") {
-    val c = rootProject.layout.projectDirectory.dir("c")
-    inputs.dir(c).withPropertyName("c")
+// A build whose [outputDir] holds only what's packaged: libkolt.so under <abi>, as an app's jniLibs are laid out, or kolt.{js,wasm}.
+abstract class PackagedCMakeBuild : Exec() {
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+}
+
+val cDir = rootProject.layout.projectDirectory.dir("c")
+val bindings = rootProject.layout.buildDirectory.dir("generated/bindings")
+
+/**
+ * Configures c/ (the C API and Jolt) as a Ninja release build in build/cmake/<[dir]> with [args], and builds [target]
+ * (all of them, for null) into [output]. [glue]: it compiles what :generateBindings writes, the JNI forwarders or the
+ * wasm tables. [cmake]: the binary, where it isn't the PATH's.
+ */
+fun Exec.cmake(dir: String, output: File, args: String, target: String? = null, glue: Boolean = true, cmake: String = "cmake") {
+    val build = rootProject.layout.buildDirectory.dir("cmake/$dir").get().asFile
+    inputs.dir(cDir).withPropertyName("c")
     inputs.dir(rootProject.layout.projectDirectory.dir("jolt/Jolt")).withPropertyName("jolt")
-    outputs.dir(cLibDir)
     // Compiles what it writes, and tasks run in parallel.
     mustRunAfter(":generateCApi")
-    // The JNI forwarders.
-    val bindings = rootProject.layout.buildDirectory.dir("generated/bindings")
-    dependsOn(":generateBindings")
-    inputs.dir(bindings).withPropertyName("bindings")
-    // Kotlin/Native's minimum macOS (konan.properties' minVersion.macos).
+    if (glue) {
+        dependsOn(":generateBindings")
+        inputs.dir(bindings).withPropertyName("bindings")
+    }
     commandLine(
         "sh", "-c",
-        "cmake -S '${c.asFile}' -B '${cmakeDir.get().asFile}' -G Ninja -DCMAKE_BUILD_TYPE=Release " +
-            "-DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 -DKOLT_OUTPUT_DIR='${cLibDir.get().asFile}' " +
-            "-DKOLT_BINDINGS_DIR='${bindings.get().asFile}' -DJNI_HOME='${System.getProperty("java.home")}' && cmake --build '${cmakeDir.get().asFile}'",
+        "'$cmake' -S '${cDir.asFile}' -B '$build' -G Ninja -DCMAKE_BUILD_TYPE=Release $args -DKOLT_OUTPUT_DIR='$output'" +
+            (if (glue) " -DKOLT_BINDINGS_DIR='${bindings.get().asFile}'" else "") +
+            " && '$cmake' --build '$build'" + (target?.let { " --target $it" } ?: ""),
     )
+}
+
+// The static libraries, and the JVM's JNI library, for the host, at Kotlin/Native's minimum macOS (konan.properties'
+// minVersion.macos).
+val cLibDir = rootProject.layout.buildDirectory.dir("kolt-c/macos-arm64")
+val cmakeBuild = tasks.register<Exec>("cmakeBuild") {
+    outputs.dir(cLibDir)
+    cmake("macos-arm64", cLibDir.get().asFile, "-DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 -DJNI_HOME='${System.getProperty("java.home")}'")
 }
 
 // The static libraries alone for iOS, a device's and an Apple Silicon simulator's, at Kotlin/Native's minimum iOS
@@ -37,27 +53,16 @@ val cmakeBuild = tasks.register<Exec>("cmakeBuild") {
 val iosLibs = mapOf("iosArm64" to "iphoneos", "iosSimulatorArm64" to "iphonesimulator").mapValues { (target, sdk) ->
     val libDir = rootProject.layout.buildDirectory.dir("kolt-c/$target")
     libDir to tasks.register<Exec>("cmakeBuild_$target") {
-        val c = rootProject.layout.projectDirectory.dir("c")
-        val dir = rootProject.layout.buildDirectory.dir("cmake/$target").get().asFile
-        inputs.dir(c).withPropertyName("c")
-        inputs.dir(rootProject.layout.projectDirectory.dir("jolt/Jolt")).withPropertyName("jolt")
         outputs.dir(libDir)
-        mustRunAfter(":generateCApi")
-        commandLine(
-            "sh", "-c",
-            "cmake -S '${c.asFile}' -B '$dir' -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_SYSROOT=$sdk " +
-                "-DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=15.0 -DKOLT_OUTPUT_DIR='${libDir.get().asFile}' && " +
-                "cmake --build '$dir' --target kolt-c",
+        cmake(
+            target, libDir.get().asFile,
+            "-DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_SYSROOT=$sdk -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=15.0",
+            target = "kolt-c", glue = false,
         )
     }
 }
 
-// A build whose [outputDir] holds only what's packaged: libkolt.so under <abi>, as an app's jniLibs are laid out, or kolt.{js,wasm}.
-abstract class PackagedCMakeBuild : Exec() {
-    @get:OutputDirectory abstract val outputDir: DirectoryProperty
-}
-
-// The same image for Android, per ABI, with the SDK's NDK and CMake. ponytail: the 64-bit ABIs; the 32-bit ones need
+// The JNI library for Android, per ABI, with the SDK's NDK and CMake. ponytail: the 64-bit ABIs; the 32-bit ones need
 // the interop's pointers sized (Interop.jni.kt).
 val ndkVersion = "29.0.14206865"
 val androidCmakeVersion = "3.22.1"
@@ -66,47 +71,27 @@ val androidAbis = listOf("arm64-v8a", "x86_64")
 val sdk = androidComponents.sdkComponents.sdkDirectory
 androidAbis.forEach { abi ->
     val build = tasks.register<PackagedCMakeBuild>("cmakeBuild_$abi") {
-        val c = rootProject.layout.projectDirectory.dir("c")
-        val bindings = rootProject.layout.buildDirectory.dir("generated/bindings")
-        val dir = rootProject.layout.buildDirectory.dir("cmake/android-$abi").get().asFile
-        dependsOn(":generateBindings")
-        mustRunAfter(":generateCApi")
-        inputs.dir(c).withPropertyName("c")
-        inputs.dir(rootProject.layout.projectDirectory.dir("jolt/Jolt")).withPropertyName("jolt")
-        inputs.dir(bindings).withPropertyName("bindings")
         outputDir.set(layout.buildDirectory.dir("jniLibs/$abi"))
         val cmakeBin = sdk.get().dir("cmake/$androidCmakeVersion/bin").asFile
         val ndk = sdk.get().dir("ndk/$ndkVersion").asFile
         doFirst { check(ndk.isDirectory && cmakeBin.isDirectory) { "Missing NDK/CMake: sdkmanager \"ndk;$ndkVersion\" \"cmake;$androidCmakeVersion\"" } }
-        commandLine(
-            "sh", "-c",
-            "'$cmakeBin/cmake' -S '${c.asFile}' -B '$dir' -G Ninja -DCMAKE_MAKE_PROGRAM='$cmakeBin/ninja' -DCMAKE_BUILD_TYPE=Release " +
-                "-DCMAKE_TOOLCHAIN_FILE='$ndk/build/cmake/android.toolchain.cmake' -DANDROID_ABI=$abi -DANDROID_PLATFORM=android-$androidMinSdk " +
-                "-DANDROID_STL=c++_static -DKOLT_OUTPUT_DIR='${outputDir.get().asFile}/$abi' -DKOLT_BINDINGS_DIR='${bindings.get().asFile}' && " +
-                "'$cmakeBin/cmake' --build '$dir' --target kolt-jni",
+        cmake(
+            "android-$abi", outputDir.get().asFile.resolve(abi),
+            "-DCMAKE_MAKE_PROGRAM='$cmakeBin/ninja' -DCMAKE_TOOLCHAIN_FILE='$ndk/build/cmake/android.toolchain.cmake' -DANDROID_ABI=$abi " +
+                "-DANDROID_PLATFORM=android-$androidMinSdk -DANDROID_STL=c++_static",
+            target = "kolt-jni", cmake = "$cmakeBin/cmake",
         )
     }
     androidComponents.onVariants { it.sources.jniLibs?.addGeneratedSourceDirectory(build, PackagedCMakeBuild::outputDir) }
 }
 
-// And for the web, kolt.{js,wasm}, with the Emscripten SDK :setupEmsdk installs into .emsdk/.
+// And kolt.{js,wasm} for the web, with the Emscripten SDK :setupEmsdk installs into .emsdk/.
 val cmakeBuildWasm = tasks.register<PackagedCMakeBuild>("cmakeBuild_wasm") {
-    val c = rootProject.layout.projectDirectory.dir("c")
-    val bindings = rootProject.layout.buildDirectory.dir("generated/bindings")
-    val dir = rootProject.layout.buildDirectory.dir("cmake/wasm").get().asFile
-    dependsOn(":setupEmsdk", ":generateBindings")
-    mustRunAfter(":generateCApi")
-    inputs.dir(c).withPropertyName("c")
-    inputs.dir(rootProject.layout.projectDirectory.dir("jolt/Jolt")).withPropertyName("jolt")
-    inputs.dir(bindings).withPropertyName("bindings")
     outputDir.set(layout.buildDirectory.dir("koltWasm"))
     val emsdk = rootDir.resolve(".emsdk")
+    dependsOn(":setupEmsdk")
     doFirst { environment(emsdkEnvironment(emsdk)) }
-    commandLine(
-        "sh", "-c",
-        "cmake -S '${c.asFile}' -B '$dir' -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE='${emscriptenToolchain(emsdk)}' " +
-            "-DKOLT_OUTPUT_DIR='${outputDir.get().asFile}' -DKOLT_BINDINGS_DIR='${bindings.get().asFile}' && cmake --build '$dir' --target kolt-web",
-    )
+    cmake("wasm", outputDir.get().asFile, "-DCMAKE_TOOLCHAIN_FILE='${emscriptenToolchain(emsdk)}'", target = "kolt-web")
 }
 
 kotlin {

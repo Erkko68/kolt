@@ -1,7 +1,7 @@
 # kolt
 
 Prototype: Kotlin Multiplatform bindings for [Jolt Physics](https://github.com/jrouwe/JoltPhysics), through a C API
-generated from Jolt's headers (the generator is filament-kmp's `buildlogic.apigen`).
+generated from Jolt's headers (by `buildlogic.apigen`, in `build-logic/`).
 
 ```
 jolt/                 Jolt Physics, pinned (submodule)
@@ -18,9 +18,9 @@ c/CMakeLists.txt      builds Jolt and the C API as static libraries, and as the 
 kotlin/kolt/          the Kotlin module: interop/ and, per group, a package whose capi/ is the generated externals
                       (physics.body.capi; ./gradlew generateKotlinExternals)
                       and the rest the generated classes over them (./gradlew generateKotlinApi); math/ is hand-written
-build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C), kotlin/ (manifest → externals),
-                      kotlin/api/ (what C bound → classes),
-                      externals/ (manifest → JNI and wasm glue), gaps/ (coverage), verify/ (Kotlin enums' values)
+build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C, and what it bound), kotlin/ (manifest →
+                      externals), kotlin/api/ (what C bound → classes), glue/ (manifest → JNI and wasm glue),
+                      report/ (coverage), gradle/ (the tasks); ApiGen.kt runs the stages
 ```
 
 `./gradlew :kotlin:kolt:macosArm64Test :kotlin:kolt:jvmTest` runs Jolt through the generated classes, on Kotlin/Native
@@ -63,8 +63,15 @@ header's directory (`physics.body.BodyInterface`); `GetX`/`SetX` are a property 
 
 ## The generator
 
+`./gradlew generateApi` regenerates everything committed, in order: the C API and its manifest, the Kotlin externals,
+the typed Kotlin API and `c/api-coverage.txt`. `./gradlew apiCheck` fails when what's committed isn't what that would
+write; run it after touching the generator, `c/api-headers.txt` or the Jolt submodule.
+
 `buildlogic.apigen` knows no library. Everything it is told about Jolt is one `ApiGenConfig`, in
-`build-logic/src/main/kotlin/kolt-root.gradle.kts`: where the headers are, the clang arguments, how C names are built,
-and the type tables (scalars, math mirrors, containers, strings, reference counting, result types, template
-instantiations). Pointing it at another library is another config, an `api-headers.txt`, and, only if the library has
+`build-logic/src/main/kotlin/kolt-root.gradle.kts`: `sources` (where the headers are, the clang arguments), `c` (how C
+names and files are built), `naming` (the prefixes Jolt's names carry), `types` (scalars, math mirrors, containers,
+strings, reference counting, result types) and `templates` (the instantiations bound).
+
+`./gradlew -p build-logic test` runs every stage on a small fixture library (`build-logic/src/test/fixture`) against
+its committed output, the options Jolt's config doesn't use among them; `-Papigen.update` rewrites that output. Pointing it at another library is another config, an `api-headers.txt`, and, only if the library has
 smart pointers, result types or math types needing fix-ups, a small bridge header on top of the generated `Bridge.hpp`.
