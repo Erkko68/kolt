@@ -1,9 +1,9 @@
-package io.github.erkko68.kolt
+package io.github.erkko68.kolt.interop
 
+import io.github.erkko68.kolt.Jolt
 import io.github.erkko68.kolt.core.JobSystemThreadPool
 import io.github.erkko68.kolt.core.StreamOut
 import io.github.erkko68.kolt.core.TempAllocatorImpl
-import io.github.erkko68.kolt.interop.NativePointer
 import io.github.erkko68.kolt.math.Quat
 import io.github.erkko68.kolt.math.Vec3
 import io.github.erkko68.kolt.physics.EActivation

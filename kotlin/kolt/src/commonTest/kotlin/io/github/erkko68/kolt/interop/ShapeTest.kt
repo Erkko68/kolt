@@ -1,6 +1,6 @@
-package io.github.erkko68.kolt
+package io.github.erkko68.kolt.interop
 
-import io.github.erkko68.kolt.interop.NativeException
+import io.github.erkko68.kolt.Jolt
 import io.github.erkko68.kolt.math.Vec3
 import io.github.erkko68.kolt.physics.collision.shape.ConvexHullShapeSettings
 import io.github.erkko68.kolt.physics.collision.shape.EShapeSubType

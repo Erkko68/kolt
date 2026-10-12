@@ -26,10 +26,15 @@ build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C
 `./gradlew :kotlin:kolt:macosArm64Test :kotlin:kolt:jvmTest` runs Jolt through the generated classes, on Kotlin/Native
 (an Apple Silicon Mac, which needs no glue) and on the JVM (the host's, through JNI; `libkolt` is found on
 `java.library.path`, not packaged yet); `./gradlew :kotlin:kolt:connectedAndroidDeviceTest` on an Android device or
-emulator, whose `libkolt.so` (arm64-v8a, x86_64) is in the library's jniLibs. They run a falling sphere and a ray cast, a convex hull from points, contact listeners,
-filters, a hit collector and a collision callback written in Kotlin, a batch of bodies, a shape's triangles and a
-character on a moving floor through out-parameters and arrays, and a step listener, a state recorder, a stream and a
-skeleton.
+emulator, whose `libkolt.so` (arm64-v8a, x86_64) is in the library's jniLibs.
+
+The tests (`kotlin/kolt/src/commonTest`) are laid out as the library's packages. `interop/` is how the generated classes
+reach Jolt: a falling sphere and a ray cast, a convex hull from points, contact listeners, filters, a hit collector and a
+collision callback written in Kotlin, a batch of bodies, a shape's triangles and a character on a moving floor through
+out-parameters and arrays, and a step listener, a state recorder, a stream and a skeleton. The rest is what Jolt does
+through them: `math/` (the hand-written types, against Jolt's), `geometry/`, `core/`, and under `physics/` bodies, each
+kind of shape, the broad and narrow phase queries, constraints, characters, vehicles, soft bodies and ragdolls. `World.kt`
+is the system they share: `world { … }` runs between `Jolt.init()` and `Jolt.shutdown()`.
 
 `./gradlew :kotlin:kolt:iosSimulatorArm64Test` runs them on an iOS simulator; `iosArm64` is the device's (iOS 15, as
 Kotlin/Native's).

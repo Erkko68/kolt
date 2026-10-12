@@ -1,5 +1,6 @@
-package io.github.erkko68.kolt
+package io.github.erkko68.kolt.interop
 
+import io.github.erkko68.kolt.Jolt
 import io.github.erkko68.kolt.core.JobSystemThreadPool
 import io.github.erkko68.kolt.core.TempAllocatorImpl
 import io.github.erkko68.kolt.math.Quat
@@ -82,6 +83,8 @@ class FallingSphereTest {
         // The body's shape is the sphere, borrowed: only the wrapper that owns a reference releases one.
         val borrowed = bodies.getShape(body)!!
         assertEquals(EShapeSubType.Sphere, borrowed.subType)
+        // And a SphereShape, as C++ says it is, though getShape returns a Shape.
+        assertEquals(0.5f, (borrowed as SphereShape).radius)
         borrowed.close()
         sphere.close()
         sphere.close()
