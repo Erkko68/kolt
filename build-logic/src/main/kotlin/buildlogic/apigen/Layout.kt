@@ -3,14 +3,14 @@ package buildlogic.apigen
 /**
  * Where the generated code lives, and what package it's in. Under the C dir, `<module>/generated/<group>/<Name>.h`:
  * a module is an `api-headers.txt` section, a group the lowercased dirs of the C++ header under
- * [ApiGenConfig.groupRoot]. Under the Kotlin dir, a module named as the C one.
+ * [CBindings.groupRoot]. Under the Kotlin dir, a module named as the C one.
  */
 internal class Layout(private val config: ApiGenConfig) {
     fun generated(module: String) = "$module/generated"
     fun manual(module: String) = "$module/manual"
 
-    /** The group of what the C++ [header] declares: its dirs under [ApiGenConfig.groupRoot], lowercased, if any. */
-    fun groupOf(header: String?) = config.groupRoot?.let { root ->
+    /** The group of what the C++ [header] declares: its dirs under [CBindings.groupRoot], lowercased, if any. */
+    fun groupOf(header: String?) = config.c.groupRoot?.let { root ->
         header?.takeIf { it.startsWith("$root/") }?.removePrefix("$root/")?.substringBeforeLast('/', "")?.lowercase()
     }.orEmpty()
 

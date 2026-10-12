@@ -13,7 +13,7 @@ import java.io.File
  * named as C names it, less the prefix, and lives in the package of its header's group; one C++ nests in a class
  * Kotlin has is nested there too, under its own name (`CharacterVirtual.Contact`).
  *
- * The [ApiGenConfig.mirrors] types are hand-written: a class at [path] with an `internal constructor` from, and an
+ * The [TypeTables.mirrors] types are hand-written: a class at [path] with an `internal constructor` from, and an
  * `internal fun toArray()` to, the array C mirrors it as. Without one, what passes the type stays unwrapped.
  *
  * A class's constructor takes its pointer and whether the wrapper owns the object (the interop package's
@@ -22,14 +22,13 @@ import java.io.File
 internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, private val kotlinDir: File) {
     private val bindings = config.kotlin!!
     private val names = c.names
-    private val parameterPrefix = Regex(config.parameterPrefix.ifEmpty { "$^" })
 
     /** What Kotlin declares, by C type name, as [CValue] spells them. */
     val records = c.handles.associateBy { names.type(it.name) }
     val enums = c.enums.filter { e -> e.constants.all { it.second.bitLength() <= 32 } }.associateBy { names.type(it.name) }
-    val scalars = config.scalars.filterValues { it.c in INTS }.keys.associateBy { names.type(it) }
+    val scalars = config.types.scalars.filterValues { it.c in INTS }.keys.associateBy { names.type(it) }
     /** The mirrors with a hand-written class, each with its C++ header. */
-    val mirrors by lazy { config.mirrors.keys.associate { names.type(it) to c.api.records[it]?.header }.filter { (cName, header) -> kotlinDir.resolve(path(header, kotlin(cName))).isFile } }
+    val mirrors by lazy { config.types.mirrors.keys.associate { names.type(it) to c.api.records[it]?.header }.filter { (cName, header) -> kotlinDir.resolve(path(header, kotlin(cName))).isFile } }
 
     /** A parameter's Kotlin [type] and the [argument] the external takes; [scoped]: it's only valid inside `interopScope`. */
     class Passed(
@@ -53,21 +52,21 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
 
     /**
      * How Kotlin passes [name] to [bridge]'s parameter, or null when [CValue] doesn't type it. [out]: the callee only
-     * writes it ([ApiGenConfig.outParameter]).
+     * writes it ([Naming.outParameter]).
      */
     fun parameter(bridge: CBridge, name: String, out: Boolean = false): Passed? {
         val value = bridge.value ?: return null
         if (value is CValue.InOut) return inOut(value.value, name, out).takeIf { bridge.extra.isEmpty() }
-        if (value is CValue.Function) return function(value, name).takeIf { bridge.extra == listOf("void*" to "User") }
+        if (value is CValue.Function) return function(value, name).takeIf { bridge.extra == CBridge.USER }
         if (value is CValue.Pointer) return when (bridge.extra) {
             emptyList<Pair<String, String>>() -> pointer(value, name, out)
             // C copies that many, so it takes the count.
-            listOf("uint32_t" to "Count") -> pointer(value, name, out)?.let { Passed(it.type, "${it.argument}, $name.size", it.scoped, it.before, it.after) }
+            CBridge.COUNT -> pointer(value, name, out)?.let { Passed(it.type, "${it.argument}, $name.size", it.scoped, it.before, it.after) }
             else -> null
         }
         val type = type(value) ?: return null
         if (value is CValue.Sequence) {
-            if (bridge.extra != listOf("uint32_t" to "Count")) return null
+            if (bridge.extra != CBridge.COUNT) return null
             return Passed(type, "toInterop(${items(value.element, name) ?: return null}), $name.size", scoped = true)
         }
         if (bridge.extra.isNotEmpty()) return null
@@ -166,8 +165,8 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
         if (bridge == null || bridge.c == "void") return Returned("Unit") { it(null) }
         val value = bridge.value ?: return null
         val type = type(value) ?: return null
-        if (value is CValue.Sequence) return sequence(value, type).takeIf { bridge.c == "uint32_t" && bridge.extra.map { it.second } == listOf("out", "outCapacity") }
-        if (value is CValue.Fallible) return fallible(value.value, type).takeIf { bridge.extra.map { it.second } == listOf("outError", "outErrorCapacity") }
+        if (value is CValue.Sequence) return sequence(value, type).takeIf { bridge.c == "uint32_t" && bridge.extra.map { it.second } == CBridge.filled("").map { it.second } }
+        if (value is CValue.Fallible) return fallible(value.value, type).takeIf { bridge.extra == CBridge.ERROR }
         if (bridge.extra.isNotEmpty()) return null
         val owned = if ((value as? CValue.Handle)?.owned == true) ", owned = true" else ""
         return when {
@@ -320,7 +319,7 @@ internal class KotlinValues(val c: CApi, private val config: ApiGenConfig, priva
     /** The property holding a [cName] class's pointer. */
     fun handle(cName: String) = "${lowerCamel(cName.removePrefix(names.prefix))}Handle"
 
-    fun parameterName(name: String) = escape(lowerCamel(parameterPrefix.replace(name, "").ifEmpty { name }))
+    fun parameterName(name: String) = escape(lowerCamel(config.naming.parameter(name)))
 
     /** [name] starting in lower case, a leading acronym whole: `ID` is `id`, `AABox` is `aaBox`. */
     fun lowerCamel(name: String) = name.takeWhile { it.isUpperCase() }.length.let { caps ->

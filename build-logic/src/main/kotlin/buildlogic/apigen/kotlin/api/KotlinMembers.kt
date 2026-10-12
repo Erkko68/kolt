@@ -33,7 +33,7 @@ internal class Member(
  * The members of each class, from the C functions bound for its record: a function is wrapped when [KotlinValues] types
  * every value it passes. `GetX()` reads a property `x`, which `SetX(x)` makes a `var`; `IsX()` a property `isX`. What
  * a parameter C++ writes through is returned, after the function's own result if it has one, in a `Pair` or `Triple`;
- * the callee is passed its value first unless it only writes it ([ApiGenConfig.outParameter]). What
+ * the callee is passed its value first unless it only writes it ([Naming.outParameter]). What
  * destroys the object, or releases a reference to it, is `close`, which acts once and only on a wrapper that owns it;
  * `addRef` makes a borrowed wrapper own a reference.
  */
@@ -44,8 +44,6 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
     /** C record → the base its class extends, with the upcast's C function. */
     val parents = values.records.mapValues { (cName, record) -> parent(cName, record) }
     private val members = HashMap<String, List<Member>>()
-    private val staticPrefix = Regex(config.staticPrefix.ifEmpty { "$^" })
-    private val outParameter = Regex(config.outParameter.ifEmpty { "$^" })
     /** The records a class extends. */
     val extended = parents.values.mapNotNullTo(HashSet()) { it?.first }
 
@@ -98,8 +96,8 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
 
     /** [members] with each `getX()`, and the `isX()` returning a Boolean, as a property; `setX` of its type is its setter. */
     private fun properties(members: List<Member>): List<Member> {
-        val getter = config.getter.replaceFirstChar(Char::lowercaseChar)
-        val setter = config.setter.replaceFirstChar(Char::lowercaseChar)
+        val getter = config.naming.getter.replaceFirstChar(Char::lowercaseChar)
+        val setter = config.naming.setter.replaceFirstChar(Char::lowercaseChar)
         fun reads(m: Member) = !m.isStatic && m.role != Role.CREATE && !m.closes && m.params.isEmpty() && m.returns != "Unit"
         val properties = members.filter(::reads).mapNotNull { m ->
             val (name, sets) = when {
@@ -125,7 +123,7 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
     private fun member(binding: Binding): Member? {
         val b = binding.bound!!
         if (b.role == Role.UPCAST || b.role == Role.UPCALLS || b.role == Role.BIND_UPCALLS) return null
-        val params = b.params.map { (name, bridge) -> values.parameterName(name).let { it to (values.parameter(bridge, it, outParameter.containsMatchIn(name)) ?: return null) } }
+        val params = b.params.map { (name, bridge) -> values.parameterName(name).let { it to (values.parameter(bridge, it, config.naming.isOut(name)) ?: return null) } }
         val returns = values.result(b.returns) ?: return null
         // What the callee leaves in a parameter is returned after the function's own result.
         val outs = params.mapNotNull { it.second.returned }
@@ -150,7 +148,7 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
         val name = when {
             b.role == Role.DESTROY || b.role == Role.RELEASE -> "close"
             b.name == "operator()" -> "invoke"
-            b.isStatic -> values.escape(values.lowerCamel(staticPrefix.replace(b.name, "").ifEmpty { b.name }))
+            b.isStatic -> values.escape(values.lowerCamel(config.naming.static(b.name)))
             else -> values.escape(values.lowerCamel(b.name))
         }
         // A parameter's comment names it as Kotlin does; that of one only returned describes a result, after the function's own.

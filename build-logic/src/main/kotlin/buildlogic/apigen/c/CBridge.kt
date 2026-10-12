@@ -22,7 +22,19 @@ class CBridge(
     val typedef: Pair<String, String>? = null,
     /** What the value is, for a stage wrapping the C API in typed code; null when [c] alone doesn't say how to. */
     val value: CValue? = null,
-)
+) {
+    /** The [extra] parameters every bridge of a kind takes, by which a wrapper knows what to pass for them. */
+    companion object {
+        /** After an array: how many elements it holds. */
+        val COUNT = listOf("uint32_t" to "Count")
+        /** After an `Upcall`: the user data it's called with. */
+        val USER = listOf("void*" to "User")
+        /** After a fallible result's own: where the error's message goes, and how much fits. */
+        val ERROR = listOf("char*" to "outError", "uint32_t" to "outErrorCapacity")
+        /** For a result C copies out: an array of [element] (a C type) to fill, and how many fit. */
+        fun filled(element: String) = listOf(element to "out", "uint32_t" to "outCapacity")
+    }
+}
 
 /** A bridged value a wrapper can type from its C spelling: [c] is the C type, by which the wrapper names its own. */
 sealed interface CValue {
@@ -31,7 +43,7 @@ sealed interface CValue {
     /** A number or bool C passes as it is; a result [CBridge.out] returns through a pointer. */
     data class Builtin(override val c: String) : CValue
     data class Enum(override val c: String) : CValue
-    /** An [ApiGenConfig.scalars] type, crossing as the integer [scalar]; [c] is the name C would give the type. */
+    /** An [TypeTables.scalars] type, crossing as the integer [scalar]; [c] is the name C would give the type. */
     data class Scalar(override val c: String, val scalar: String) : CValue
     /** A NUL-terminated UTF-8 string: `const char*`. */
     data object Text : CValue {
@@ -51,7 +63,7 @@ sealed interface CValue {
     data class Sequence(val element: CValue, val created: Boolean = false) : CValue {
         override val c get() = element.c
     }
-    /** An [ApiGenConfig.mirrors] type by value: C passes a pointer to its [count] [element]s, which a result fills. */
+    /** An [TypeTables.mirrors] type by value: C passes a pointer to its [count] [element]s, which a result fills. */
     data class Mirror(override val c: String, val element: String, val count: Int) : CValue
     /**
      * A record's handle; [nullable]: C++ takes or returns a pointer, not a reference. [owned]: a result hands the caller
@@ -64,7 +76,7 @@ sealed interface CValue {
     }
     /**
      * A pointer to [element]s, as many as the callee knows or another argument says. [const]: the callee only reads
-     * them; a pointer to handles doesn't say, so there the parameter's name does ([ApiGenConfig.outParameter]).
+     * them; a pointer to handles doesn't say, so there the parameter's name does ([Naming.outParameter]).
      */
     data class Pointer(val element: CValue, val const: Boolean) : CValue {
         override val c get() = element.c

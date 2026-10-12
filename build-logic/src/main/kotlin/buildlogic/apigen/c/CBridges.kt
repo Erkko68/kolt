@@ -13,8 +13,8 @@ internal class CBridges(
     private val api: CppApi, private val config: ApiGenConfig, private val names: CNames, private val templates: Templates,
     private val records: Records,
 ) {
-    private val h = config.helpers
-    private val refs = config.refs
+    private val h = config.c.helpers
+    private val refs = config.types.refs
     val mathTypes = sortedSetOf<String>()
     /** Function pointer typedefs the forwarders use, by C name. */
     val callbackTypes = sortedMapOf<String, String>()
@@ -97,25 +97,25 @@ internal class CBridges(
             return bridge.builtin(templates.argument(target.decl!!) ?: throw Unsupported("${type.spelling}: template parameter"))
         }
         if (target.kind == Kind.FUNCTION && lastAlias != null && indirection != "&") return functionPointer(lastAlias, target, indirection == "*")
-        val decl = target.decl?.let { config.custom.canonical(it, target) { spelling -> templates.substitute(spelling, lastAlias.orEmpty()) } }
-        decl?.let { config.custom.bridge(it, target, alias, bridge) }?.let { custom ->
+        val decl = target.decl?.let { config.types.custom.canonical(it, target) { spelling -> templates.substitute(spelling, lastAlias.orEmpty()) } }
+        decl?.let { config.types.custom.bridge(it, target, alias, bridge) }?.let { custom ->
             custom.typedef?.let { callbackTypes += it }
             return custom
         }
         return when {
-            decl in config.allSequences -> sequence(target, bridge)
+            decl in config.types.allSequences -> sequence(target, bridge)
             decl == "std::optional" -> optional(target, bridge)
             decl == "std::function" && lastAlias != null -> function(lastAlias, target.args.single(), bridge)
             refs != null && decl in refs.pointers -> ref(target, bridge)
-            decl in config.results -> fallible(target, bridge)
+            decl in config.types.results -> fallible(target, bridge)
             indirection == "&&" -> throw Unsupported("${type.spelling}: rvalue reference")
             target.kind == Kind.BUILTIN -> bridge.builtin(shape(target.spelling).base)
             target.kind == Kind.FUNCTION -> throw Unsupported("${type.spelling}: function type")
             decl == null -> throw Unsupported("${type.spelling}: ${target.kind.name.lowercase()}")
             decl in api.enums -> bridge.enum(templates.cpp(decl), wideEnumType(api.enums.getValue(decl)))
-            decl in config.scalars -> bridge.scalar(decl, config.scalars.getValue(decl))
-            decl in config.allStrings -> bridge.string(decl)
-            decl in config.mirrors -> bridge.math(decl).also { mathTypes += decl }
+            decl in config.types.scalars -> bridge.scalar(decl, config.types.scalars.getValue(decl))
+            decl in config.types.allStrings -> bridge.string(decl)
+            decl in config.types.mirrors -> bridge.math(decl).also { mathTypes += decl }
             decl in api.records -> api.records.getValue(decl).let { r ->
                 bridge.record(templates.cpp(handle(target).name), records.isValue(decl), records.creatable(r) && r.defaultConstructible && r.copyable, records.owned(r) && (r.copyable || !lvalue))
             }
@@ -149,23 +149,22 @@ internal class CBridges(
     }
 
     /**
-     * A result type ([ApiGenConfig.results]) is its value, or NULL (false, for a value C copies out) when it holds an error, whose message is
+     * A result type ([TypeTables.results]) is its value, or NULL (false, for a value C copies out) when it holds an error, whose message is
      * then copied into `outError` up to its capacity, NUL-terminated.
      */
     private fun fallible(type: CppType, bridge: DirectBridges): CBridge {
         if (!bridge.result || bridge.indirection != null) throw Unsupported("${type.spelling}: only as a result by value")
         val value = result(type.args.single())
         if (value.extra.isNotEmpty()) throw Unsupported("${type.spelling}: C takes its value in pieces")
-        val error = listOf("char*" to "outError", "uint32_t" to "outErrorCapacity")
         if (value.out) return CBridge("bool", { call -> "$h::result($call, outError, outErrorCapacity, [&](auto& v) { ${value.store("v", "out")} return true; })" },
-            extra = listOf("${value.c}*" to "out") + error)
+            extra = listOf("${value.c}*" to "out") + CBridge.ERROR)
         if (!value.c.endsWith("*")) throw Unsupported("${type.spelling}: no value says it failed")
-        return CBridge(value.c, { call -> "$h::result($call, outError, outErrorCapacity, [&](auto& v) { return ${value.convert("v")}; })" }, extra = error,
+        return CBridge(value.c, { call -> "$h::result($call, outError, outErrorCapacity, [&](auto& v) { return ${value.convert("v")}; })" }, extra = CBridge.ERROR,
             value = value.value?.let { CValue.Fallible(it) })
     }
 
     /**
-     * A sequence ([ApiGenConfig.sequences], std::vector, std::array) or array. C passes an array and its count; `items` converts it to whichever
+     * A sequence ([TypeTables.sequences], std::vector, std::array) or array. C passes an array and its count; `items` converts it to whichever
      * the callee takes. A result fills C's array up to its capacity and returns how many there are. Math elements are
      * contiguous mirrors; value records, the handles C created to copy into.
      */
@@ -176,17 +175,17 @@ internal class CBridges(
         // std::array's second argument is its size.
         val element = type.args.first()
         val resolved = generateSequence(element) { t -> t.decl?.let(api.aliases::get) }.last().decl
-        val mirror = resolved in config.mirrors &&
+        val mirror = resolved in config.types.mirrors &&
             shape(element.spelling).indirection.isEmpty()
         // A view's elements outlive it, as an lvalue's do.
-        val lvalue = bridge.lvalue || bridge.indirection == "&" || type.decl in config.views
+        val lvalue = bridge.lvalue || bridge.indirection == "&" || type.decl in config.types.views
         val e = if (bridge.result) result(element, lvalue) else param(element)
         if (e.extra.isNotEmpty()) throw Unsupported("${type.spelling}: elements C passes in pieces")
         if (!bridge.result) {
             val items = if (mirror || e.c.endsWith("*")) "${e.c}${if (mirror) "" else " const*"}" else "const ${e.c}*"
             val item = { n: String -> if (mirror) "($n + i)" else "$n[i]" }
             val convert = { n: String -> "$h::items(${n}Count, [&](uint32_t i) { return ${e.convert(item(n))}; })" }
-            return CBridge(items, convert, extra = listOf("uint32_t" to "Count"),
+            return CBridge(items, convert, extra = CBridge.COUNT,
                 assign = { field, v -> if (isArray(type)) "$h::assign($field, ${convert(v)});" else "$field = ${convert(v)};" },
                 value = e.value?.let { CValue.Sequence(it) })
         }
@@ -195,7 +194,7 @@ internal class CBridges(
         return CBridge(
             "uint32_t",
             { call -> "$h::copy($call, outCapacity, [&](auto& x, uint32_t i) { $store })" },
-            extra = listOf((if (handles) "${e.c}* const*" else "${e.c}*") to "out", "uint32_t" to "outCapacity"),
+            extra = CBridge.filled(if (handles) "${e.c}* const*" else "${e.c}*"),
             value = e.value?.let { CValue.Sequence(it, created = handles) },
         )
     }
@@ -208,7 +207,7 @@ internal class CBridges(
         val s = shape(type.spelling)
         if (s.const || s.indirection != listOf("&")) return null
         val target = generateSequence(type) { t -> t.decl?.let(api.aliases::get) }.last()
-        if (!isArray(target) && target.decl !in config.allSequences) return null
+        if (!isArray(target) && target.decl !in config.types.allSequences) return null
         return result(CppType(type.spelling.trim().removeSuffix("&").trim(), type.decl, type.kind, type.args))
     }
 
@@ -219,7 +218,7 @@ internal class CBridges(
         if (listOf(p, r).any { it.out || it.extra.isNotEmpty() || it.c.endsWith("*") }) throw Unsupported("${type.spelling}: elements C passes by pointer")
         return CBridge("${p.c}*", { n ->
             "$h::updated(${n}Count, [&](uint32_t i) { return ${p.convert("$n[i]")}; }, [&](auto x, uint32_t i) { $n[i] = ${r.convert("x")}; })"
-        }, extra = listOf("uint32_t" to "Count"))
+        }, extra = CBridge.COUNT)
     }
 
     /**
@@ -268,7 +267,7 @@ internal class CBridges(
         val result = returns?.let { " return ${unslot(it)};" }.orEmpty()
         return CBridge(upcall, { n ->
             "${n}User ? ${templates.cpp(alias)}([f = $h::Callback($n, ${n}User)]($params) { $before${slotArray(args)} uint64_t result = 0; f(args, &result);$result }) : nullptr"
-        }, extra = listOf("void*" to "User"), value = CValue.Function(upcall, args.map { it.holds }, returns?.value))
+        }, extra = CBridge.USER, value = CValue.Function(upcall, args.map { it.holds }, returns?.value))
     }
 
     /**

@@ -12,7 +12,7 @@ class DirectBridges internal constructor(
     private val config: ApiGenConfig, private val names: CNames,
     val const: Boolean, val indirection: String?, val result: Boolean, val lvalue: Boolean,
 ) {
-    private val h = config.helpers
+    private val h = config.c.helpers
     val byValue = indirection == null || (indirection == "&" && const)
     val c = if (const) "const " else ""
 
@@ -29,14 +29,14 @@ class DirectBridges internal constructor(
     fun string(decl: String): CBridge {
         if (!byValue) throw Unsupported("$decl by pointer")
         return when {
-            !result -> CBridge("const char*", { "${config.allStrings.getValue(decl)}($it)" }, value = CValue.Text)
+            !result -> CBridge("const char*", { "${config.types.allStrings.getValue(decl)}($it)" }, value = CValue.Text)
             // ponytail: assumes the view is NUL-terminated (literals, string storage); an out length if one isn't.
             decl == "std::string_view" -> CBridge("const char*", { "($it).data()" }, value = CValue.Text)
             // A temporary: copied into C's buffer, not NUL-terminated; returns its length.
             indirection == null && !lvalue -> CBridge(
                 "uint32_t",
                 { call -> "$h::copy($call, outCapacity, [&](char x, uint32_t i) { out[i] = x; })" },
-                extra = listOf("char*" to "out", "uint32_t" to "outCapacity"),
+                extra = CBridge.filled("char*"),
             )
             else -> CBridge("const char*", { "($it).c_str()" }, value = CValue.Text)
         }
@@ -75,13 +75,13 @@ class DirectBridges internal constructor(
      */
     fun math(decl: String): CBridge {
         val name = names.type(decl)
-        val value = config.mirrors.getValue(decl).let { CValue.Mirror(name, it.element, it.count) }
+        val value = config.types.mirrors.getValue(decl).let { CValue.Mirror(name, it.element, it.count) }
         return when {
             byValue && result -> CBridge(name, { "$h::mirror<$name>($it)" }, out = true, value = value)
             byValue -> CBridge("const $name*", { "$h::math<$decl>(*$it)" }, value = value)
-            result || !config.mirrors.getValue(decl).aligned -> handle(name, referenced(value))
+            result || !config.types.mirrors.getValue(decl).aligned -> handle(name, referenced(value))
             indirection == "&" -> CBridge("$name*", { "$h::InOut<$decl, $name>($it)" }, value = referenced(value))
-            else -> CBridge("$c$name*", { "$h::Aligned<$decl, $c$name>($it, ${it}Count)" }, extra = listOf("uint32_t" to "Count"), value = referenced(value))
+            else -> CBridge("$c$name*", { "$h::Aligned<$decl, $c$name>($it, ${it}Count)" }, extra = CBridge.COUNT, value = referenced(value))
         }
     }
 

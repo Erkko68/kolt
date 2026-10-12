@@ -31,7 +31,7 @@ internal fun glue(manifest: CManifest, config: ApiGenConfig, layout: Layout): Ma
         .mapValues { (_, functions) -> functions.flatten().distinctBy { it.name }.sortedBy { it.name } }
     byRuntime.forEach { (runtime, functions) ->
         out["wasm/$runtime-exports.txt"] = Wasm.exports(functions)
-        out["wasm/$runtime-types.js"] = Wasm.types(functions, config.prefix)
+        out["wasm/$runtime-types.js"] = Wasm.types(functions, config.c.prefix)
     }
     out["webTest/WasmArities.kt"] = Wasm.arities(byRuntime[bindings.wasmRuntime].orEmpty(), bindings.wasmPackage)
     return out

@@ -19,7 +19,7 @@ internal class CApiWriter(
     private val api: CppApi, private val config: ApiGenConfig, private val apiHeaders: ApiHeaders, private val headers: Set<String>,
     private val manual: Set<String> = emptySet(),
 ) {
-    private val h = config.helpers
+    private val h = config.c.helpers
     private val names = CNames(config)
     private val layout = Layout(config)
     private val templates = Templates(api, config)
@@ -32,7 +32,6 @@ internal class CApiWriter(
     private val enums = surface.mapNotNull { api.enums[it] }
     private val moduleFiles = CModuleFiles(config, names, apiHeaders, headers, templates, bridges, handles, enums)
     private val functionNames = HashSet<String>()
-    private val outParameter = Regex(config.outParameter.ifEmpty { "$^" })
     private val bindings = ArrayList<Binding>()
 
     /** A C function's [signature] and the [body] forwarding it. */
@@ -102,8 +101,8 @@ internal class CApiWriter(
         }
         // What `_create` and results by value hand C: a reference to give back, in place of `_destroy`.
         if (counted && !templates.uninstantiated(record)) {
-            emit("${self}_addRef", "${record.name}::${config.refs!!.addRef}()", section) { Forwarder("void ${self}_addRef(const $self* self)", "$h::cpp(self)->${config.refs!!.addRef}();", Bound(Bound.Role.ADD_REF, record.name, "addRef")) }
-            emit("${self}_release", "${record.name}::${config.refs!!.release}()", section) { Forwarder("void ${self}_release(const $self* self)", "$h::cpp(self)->${config.refs!!.release}();", Bound(Bound.Role.RELEASE, record.name, "release")) }
+            emit("${self}_addRef", "${record.name}::${config.types.refs!!.addRef}()", section) { Forwarder("void ${self}_addRef(const $self* self)", "$h::cpp(self)->${config.types.refs!!.addRef}();", Bound(Bound.Role.ADD_REF, record.name, "addRef")) }
+            emit("${self}_release", "${record.name}::${config.types.refs!!.release}()", section) { Forwarder("void ${self}_release(const $self* self)", "$h::cpp(self)->${config.types.refs!!.release}();", Bound(Bound.Role.RELEASE, record.name, "release")) }
         }
         if (records.destroys(record)) {
             emit("${self}_destroy", "~${record.name}()", section) {
@@ -223,7 +222,7 @@ internal class CApiWriter(
     private fun forwarder(method: CppMethod, name: String, templateArguments: List<String> = emptyList()): Forwarder {
         if (api.records[method.owner]?.let(templates::uninstantiated) == true) throw Unsupported("member of a class template")
         // The one sequence a function returning nothing only fills is what C returns.
-        val out = method.params.singleOrNull { outParameter.containsMatchIn(it.name) && shape(it.type.spelling).let { s -> !s.const && s.indirection == listOf("&") } }
+        val out = method.params.singleOrNull { config.naming.isOut(it.name) && shape(it.type.spelling).let { s -> !s.const && s.indirection == listOf("&") } }
             ?.takeIf { method.returns.spelling == "void" }
         val filled = out?.let { bridges.filled(it.type) }
         val returns = filled ?: bridges.result(method.returns)

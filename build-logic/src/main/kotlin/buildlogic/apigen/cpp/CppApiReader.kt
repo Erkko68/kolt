@@ -23,18 +23,18 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
     fun read(includeDir: File, headers: Collection<String>): CppApi {
         guards = PreprocessorGuards(includeDir)
         val unit = workDir.resolve("headers.cpp")
-        unit.writeText((config.prelude + headers.sorted()).joinToString("") { "#include <$it>\n" })
+        unit.writeText((config.sources.prelude + headers.sorted()).joinToString("") { "#include <$it>\n" })
         scopes.namespace("std")
         // Every filter's namespace up front, before any dump runs.
-        config.astFilters.forEach { filter ->
+        config.sources.astFilters.forEach { filter ->
             val namespace = filter.substringBeforeLast("::", "")
             if (filter.endsWith("::")) scopes.namespace(namespace) else if (namespace.isNotEmpty()) scopes.partialNamespace(namespace)
-            config.skippedNamespaces.forEach { scopes.partialNamespace(qualify(namespace, it)) }
+            config.sources.skippedNamespaces.forEach { scopes.partialNamespace(qualify(namespace, it)) }
         }
         // A filter dumps the outermost declarations it matches, so each document sits in the filter's namespace.
-        config.astFilters.forEach { filter ->
+        config.sources.astFilters.forEach { filter ->
             val namespace = filter.substringBeforeLast("::", "")
-            ast.forEachDeclaration(unit, includeDir, filter, config.skippedNamespaces) { document ->
+            ast.forEachDeclaration(unit, includeDir, filter, config.sources.skippedNamespaces) { document ->
                 locationOf = DeclarationFiles.of(document, includeDir)
                 visit(document, namespace, exported = false, accessible = true)
             }

@@ -32,8 +32,8 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     // Absolute: clang reports a declaration's file as the include path spells it.
     private val workDir = workDir.absoluteFile
     val layout = Layout(config)
-    val includeDir: File = projectDir.absoluteFile.resolve(config.includeDir)
-    val cDir: File = projectDir.absoluteFile.resolve(config.cDir)
+    val includeDir: File = projectDir.absoluteFile.resolve(config.sources.includeDir)
+    val cDir: File = projectDir.absoluteFile.resolve(config.c.dir)
     val apiHeadersFile: File = cDir.resolve("api-headers.txt")
     val manifestFile: File = cDir.resolve("api-manifest.json")
     val coverageFile: File = cDir.resolve("api-coverage.txt")
@@ -60,7 +60,7 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     private fun manual(extension: String) = modules.flatMap { cDir.resolve(layout.manual(it)).listFiles { f -> f.extension == extension }.orEmpty().toList() }
 
     /** The C++ API clang sees in the API headers, before `api-headers.txt` leaves anything out. */
-    fun read(): CppApi = CppApiReader(config, workDir.apply { mkdirs() }).read(includeDir, headers).instantiating(config.aliasInstantiations)
+    fun read(): CppApi = CppApiReader(config, workDir.apply { mkdirs() }).read(includeDir, headers).instantiating(config.templates.aliases)
 
     /** The C API of the API headers; [manualHeaders] say which functions are hand-written. */
     fun cApi(): CApi {
@@ -69,7 +69,7 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
             entry + api.overloads(entry.substringBefore("\\(")).ifEmpty { null }?.joinToString(prefix = " (has: ", postfix = ")").orEmpty()
         }
         check(unknown.isEmpty()) { "api-headers.txt skips unknown declarations: ${unknown.joinToString()}" }
-        val function = Regex("""\b(${Regex.escape(config.prefix)}\w+)\s*\(""")
+        val function = Regex("""\b(${Regex.escape(config.c.prefix)}\w+)\s*\(""")
         val manual = manualHeaders().flatMap { function.findAll(it.readText()).map { m -> m.groupValues[1] } }.toSet()
         return CApiWriter(api, config, apiHeaders, headers, manual).write()
     }
@@ -83,7 +83,7 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
         write(cDir, c.files)
         val files = c.files.keys.map(cDir::resolve)
         compile("headers.c", files.filter { it.extension == "h" }, listOf("clang", "-x", "c", "-std=c11"))
-        compile("forwarders.cpp", files.filter { it.extension == "cpp" }, listOf("clang++", "-std=${config.std}") + config.clangArgs + listOf("-I", includeDir.path))
+        compile("forwarders.cpp", files.filter { it.extension == "cpp" }, listOf("clang++", "-std=${config.sources.std}") + config.sources.clangArgs + listOf("-I", includeDir.path))
         manifestFile.writeText(manifest().json())
     }
 
@@ -94,7 +94,7 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     }
 
     /** The functions the C headers on disk declare, generated and hand-written. */
-    fun manifest() = CManifest.read((generatedDirs().flatMap { dir -> dir.walkTopDown().filter { it.extension == "h" } } + manualHeaders()).sortedBy { it.path }, cDir, config.prefix, workDir)
+    fun manifest() = CManifest.read((generatedDirs().flatMap { dir -> dir.walkTopDown().filter { it.extension == "h" } } + manualHeaders()).sortedBy { it.path }, cDir, config.c.prefix, workDir)
 
     /** The manifest as committed: what the stages after C read. */
     fun committedManifest() = CManifest.parse(manifestFile.readText())
@@ -133,7 +133,7 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     /** `api-coverage.txt`, of [c] and the Kotlin API on disk. */
     fun coverage(c: CApi): Coverage {
         val externals = config.kotlin?.packages?.values.orEmpty().mapTo(HashSet()) { it.substringAfterLast('.') }
-        return coverage(c, headers, config.prefix, kotlinDir?.let { kotlinApiSources(it, externals) })
+        return coverage(c, headers, config.c.prefix, kotlinDir?.let { kotlinApiSources(it, externals) })
     }
 
     /** Committed output that isn't what [task] would write now: [paths] changed, missing or left over. */

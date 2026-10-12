@@ -61,7 +61,7 @@ fun Project.registerApiGenTasks(config: ApiGenConfig) {
 
     tasks.register<GenerateCApiTask>("generateCApi") {
         group = "build setup"
-        description = "Generates the ${config.prefix}* C API from ${config.name}'s public headers into ${config.cDir}/<module>/generated."
+        description = "Generates the ${config.c.prefix}* C API from ${config.name}'s public headers into ${config.c.dir}/<module>/generated."
         configure()
         // Its TODOs note the functions the manual headers already write; the forwarders it compiles include the bridge header.
         inputs.files(provider { apiGen.headerFiles() + apiGen.apiHeadersFile + apiGen.manualHeaders() + apiGen.bridgeHeaders() })
@@ -70,7 +70,7 @@ fun Project.registerApiGenTasks(config: ApiGenConfig) {
 
     tasks.register<ApiCoverageTask>("apiCoverage") {
         group = "verification"
-        description = "Writes ${config.cDir}/api-coverage.txt: what of the C++ API the C and Kotlin APIs bind; warns on stale generated code."
+        description = "Writes ${config.c.dir}/api-coverage.txt: what of the C++ API the C and Kotlin APIs bind; warns on stale generated code."
         configure()
         mustRunAfter(stages - name)
     }
@@ -92,7 +92,7 @@ fun Project.registerApiGenTasks(config: ApiGenConfig) {
 
     tasks.register<GenerateKotlinExternalsTask>("generateKotlinExternals") {
         group = "build setup"
-        description = "Generates the common Kotlin externals of the ${config.prefix}* C functions in api-manifest.json."
+        description = "Generates the common Kotlin externals of the ${config.c.prefix}* C functions in api-manifest.json."
         configure()
         mustRunAfter("generateCApi")
     }

@@ -11,7 +11,7 @@ import java.io.File
 /**
  * Writes the typed Kotlin API over the externals, from what the c stage generated ([c]): a class per record C holds by a
  * handle ([KotlinMembers] says with what in it), an enum class per enum, and a value class per
- * [ApiGenConfig.scalars] type, each in the package of its group ([KotlinValues]). A class extends the first base C
+ * [TypeTables.scalars] type, each in the package of its group ([KotlinValues]). A class extends the first base C
  * upcasts it to, and keeps a handle per level, as a base's pointer needn't be the derived one's; a base it can't
  * extend besides, it returns itself as (`asPhysicsStepListener()`). One C destroys, or
  * releases a reference of, is [AutoCloseable]. A class with no base extends the interop package's `NativeObject`.
@@ -116,8 +116,8 @@ internal class KotlinApiWriter(private val c: CApi, private val config: ApiGenCo
 
     private fun parameters(m: Member) = m.params.joinToString { (name, type) -> "$name: $type" }
 
-    /** An enum class; for [ApiGenConfig.flagEnums], a value class of the bits, which `or` combines. */
-    private fun enum(cName: String, enum: CppEnum) = if (enum.name in config.flagEnums) values.simpleName(cName).let { name ->
+    /** An enum class; for [TypeTables.flagEnums], a value class of the bits, which `or` combines. */
+    private fun enum(cName: String, enum: CppEnum) = if (enum.name in config.types.flagEnums) values.simpleName(cName).let { name ->
         kdoc(enum.doc, "", "C++ `${enum.name}`: flags, which [or] combines.") + "@kotlin.jvm.JvmInline\nvalue class $name internal constructor(internal val value: Int) {\n" +
             "    infix fun or(other: $name) = $name(value or other.value)\n    operator fun contains(flags: $name) = value and flags.value == flags.value\n\n" +
             "    companion object {\n" + enum.constants.joinToString("") { (constant, value) -> kdoc(enum.constantDocs[constant], "        ") + "        val ${values.escape(constant)} = $name(${value.toInt()})\n" } +

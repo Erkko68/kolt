@@ -15,8 +15,8 @@ internal class Templates(private val api: CppApi, private val config: ApiGenConf
     /** A template [record] C doesn't bind. */
     fun uninstantiated(record: CppRecord) = record.template && !instantiated(record.name)
 
-    /** [ApiGenConfig.functionInstantiations] entries no template matched: stale after an upstream rename. */
-    val unusedFunctionInstantiations = config.functionInstantiations.keys.toMutableSet()
+    /** [Instantiations.functions] entries no template matched: stale after an upstream rename. */
+    val unusedFunctionInstantiations = config.templates.functions.keys.toMutableSet()
 
     /**
      * The instantiations of the function template [method] C binds, each with the template arguments its call spells;
@@ -24,7 +24,7 @@ internal class Templates(private val api: CppApi, private val config: ApiGenConf
      */
     fun functionInstantiations(method: CppMethod): List<Pair<CppMethod, List<String>>>? {
         val key = "${method.owner}::${method.name}"
-        val instantiations = config.functionInstantiations[key] ?: return null
+        val instantiations = config.templates.functions[key] ?: return null
         unusedFunctionInstantiations -= key
         val parameters = method.templateParameters!!
         return instantiations.map { arguments ->
@@ -45,16 +45,16 @@ internal class Templates(private val api: CppApi, private val config: ApiGenConf
         var qualified = ""
         return decl.split("::").joinToString("::") { segment ->
             qualified = if (qualified.isEmpty()) segment else "$qualified::$segment"
-            config.instantiations[qualified]?.let { "$segment<${it.values.joinToString()}>" } ?: segment
+            config.templates.classes[qualified]?.let { "$segment<${it.values.joinToString()}>" } ?: segment
         }
     }
 
     /** [spelling], written in [scope], with the template parameters of the instantiations around it replaced. */
-    fun substitute(spelling: String, scope: String) = instantiations(scope).flatMap { config.instantiations.getValue(it).entries }
+    fun substitute(spelling: String, scope: String) = instantiations(scope).flatMap { config.templates.classes.getValue(it).entries }
         .fold(spelling) { s, (parameter, argument) -> s.replace(Regex("\\b$parameter\\b"), argument) }
 
-    /** The argument [ApiGenConfig.instantiations] gives the template parameter [decl] (`Template::T`), or null. */
-    fun argument(decl: String) = config.instantiations[decl.substringBeforeLast("::")]?.get(decl.substringAfterLast("::"))
+    /** The argument [Instantiations.classes] gives the template parameter [decl] (`Template::T`), or null. */
+    fun argument(decl: String) = config.templates.classes[decl.substringBeforeLast("::")]?.get(decl.substringAfterLast("::"))
 
-    private fun instantiations(name: String) = name.split("::").runningReduce { a, b -> "$a::$b" }.filter { it in config.instantiations }
+    private fun instantiations(name: String) = name.split("::").runningReduce { a, b -> "$a::$b" }.filter { it in config.templates.classes }
 }

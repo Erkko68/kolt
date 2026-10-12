@@ -18,7 +18,7 @@ internal class Records(
     private val bound: Set<String>,
 ) {
     /** A record C holds by a handle: not a class template, nor what crosses as a mirror or a scalar. */
-    fun handled(record: CppRecord) = !templates.uninstantiated(record) && record.name !in config.mirrors && record.name !in config.scalars
+    fun handled(record: CppRecord) = !templates.uninstantiated(record) && record.name !in config.types.mirrors && record.name !in config.types.scalars
 
     /**
      * A record with public fields, or private ones C can create and copy. C holds it by pointer like any other, but
@@ -30,7 +30,7 @@ internal class Records(
 
     /** A record whose instances count their references (a RefTarget): C adds and releases them, never deletes. */
     fun refCounted(record: CppRecord): Boolean =
-        record.bases.any { config.refs?.targets?.contains(it) == true || api.records[it]?.let(::refCounted) == true }
+        record.bases.any { config.types.refs?.targets?.contains(it) == true || api.records[it]?.let(::refCounted) == true }
 
     /** Bases with [record]'s C name: C sees one type, so it gets theirs. */
     fun twins(record: CppRecord) = record.bases.mapNotNull { api.records[it] }.filter { names.type(it.name) == names.type(record.name) }
@@ -42,7 +42,7 @@ internal class Records(
     fun borrowsPointer(type: CppType): Boolean = when {
         isArray(type) -> borrowsPointer(type.args.single())
         type.decl in api.aliases -> borrowsPointer(api.aliases.getValue(type.decl!!))
-        else -> (type.kind == Kind.BUILTIN && shape(type.spelling).indirection.isNotEmpty()) || type.decl == "std::string_view" || type.decl in config.views
+        else -> (type.kind == Kind.BUILTIN && shape(type.spelling).indirection.isNotEmpty()) || type.decl == "std::string_view" || type.decl in config.types.views
     }
 
     /** Records the API's functions and constructors take. */
@@ -95,7 +95,7 @@ internal class Records(
      */
     fun methods(record: CppRecord): List<CppMethod> {
         val all = (record.methods + twins(record).flatMap { it.methods })
-            .filter { m -> m.isPublic && m.isApi && !m.isDeprecated && m.params.none { it.type.decl in config.literalOnly } }
+            .filter { m -> m.isPublic && m.isApi && !m.isDeprecated && m.params.none { it.type.decl in config.types.literalOnly } }
         val bases = upcasts(record).filter { it.name in bound }
         val signatures = all.mapTo(HashSet()) { m -> m.name to m.params.map { passed(it.type.spelling) } }
         return all.filterNot { m -> m.isOverride && bases.any { b -> b.methods.any { it.name == m.name } } || lengthOverload(m, signatures) }

@@ -16,7 +16,7 @@ internal fun clang(command: List<String>, workDir: File, stdout: File? = null): 
 /** clang's JSON AST dump of the library's headers. */
 internal class ClangAstDump(private val config: ApiGenConfig, private val workDir: File) {
     fun forEachDeclaration(unit: File, includeDir: File, filter: String, skip: Set<String>, action: (Map<*, *>) -> Unit) =
-        forEachAstDocument(listOf("clang++", "-std=${config.std}") + config.clangArgs + listOf("-I", includeDir.path), unit, filter, workDir, skip, action)
+        forEachAstDocument(listOf("clang++", "-std=${config.sources.std}") + config.sources.clangArgs + listOf("-I", includeDir.path), unit, filter, workDir, skip, action)
 }
 
 /**
