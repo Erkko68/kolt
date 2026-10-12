@@ -182,6 +182,10 @@ uint32_t JphShape_SaveSubShapeState(const JphShape* self, const JphShape** out, 
     return filled.finish();
 }
 
+JphShapeStats* JphShape_GetStats(const JphShape* self) {
+    return kolt::c(new JPH::Shape::Stats(kolt::cpp(self)->GetStats()));
+}
+
 float JphShape_GetVolume(const JphShape* self) {
     return kolt::cpp(self)->GetVolume();
 }

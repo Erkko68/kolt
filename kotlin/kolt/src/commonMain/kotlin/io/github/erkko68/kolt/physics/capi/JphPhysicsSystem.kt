@@ -121,6 +121,12 @@ internal external fun JphPhysicsSystem_GetObjectVsBroadPhaseLayerFilter(self: Na
 @ExternalSymbolName("JphPhysicsSystem_GetObjectLayerPairFilter")
 internal external fun JphPhysicsSystem_GetObjectLayerPairFilter(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPhysicsSystem_GetDefaultBroadPhaseLayerFilter")
+internal external fun JphPhysicsSystem_GetDefaultBroadPhaseLayerFilter(self: NativePointer, inLayer: Int): NativePointer
+
+@ExternalSymbolName("JphPhysicsSystem_GetDefaultLayerFilter")
+internal external fun JphPhysicsSystem_GetDefaultLayerFilter(self: NativePointer, inLayer: Int): NativePointer
+
 @ExternalSymbolName("JphPhysicsSystem_GetNumBodies")
 internal external fun JphPhysicsSystem_GetNumBodies(self: NativePointer): Int
 

@@ -161,6 +161,7 @@ Jolt/Skeleton/SkeletonPose.h
 -JPH::PhysicsSystem::GetSimCollideBodyVsBody
 -JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition|PathConstraint::GetTotalLambda(Position|RotationHinge))
 -JPH::AABox::GetSupportingFace
+-JPH::Shape::GetStatsRecursive
 -JPH::Color::operator\(\)
 # A stream is the bytes it reads and writes: ReadBytes, WriteBytes.
 -JPH::StreamIn::Read

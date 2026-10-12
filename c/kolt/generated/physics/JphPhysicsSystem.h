@@ -59,10 +59,8 @@ const JphBodyLockInterfaceLocking* JphPhysicsSystem_GetBodyLockInterface(const J
 const JphBroadPhaseLayerInterface* JphPhysicsSystem_GetBroadPhaseLayerInterface(const JphPhysicsSystem* self);
 const JphObjectVsBroadPhaseLayerFilter* JphPhysicsSystem_GetObjectVsBroadPhaseLayerFilter(const JphPhysicsSystem* self);
 const JphObjectLayerPairFilter* JphPhysicsSystem_GetObjectLayerPairFilter(const JphPhysicsSystem* self);
-// TODO(handwritten) JphPhysicsSystem_GetDefaultBroadPhaseLayerFilter: DefaultBroadPhaseLayerFilter JPH::PhysicsSystem::GetDefaultBroadPhaseLayerFilter(ObjectLayer inLayer) const
-//     JPH::DefaultBroadPhaseLayerFilter by value
-// TODO(handwritten) JphPhysicsSystem_GetDefaultLayerFilter: DefaultObjectLayerFilter JPH::PhysicsSystem::GetDefaultLayerFilter(ObjectLayer inLayer) const
-//     JPH::DefaultObjectLayerFilter by value
+JphDefaultBroadPhaseLayerFilter* JphPhysicsSystem_GetDefaultBroadPhaseLayerFilter(const JphPhysicsSystem* self, uint32_t inLayer);
+JphDefaultObjectLayerFilter* JphPhysicsSystem_GetDefaultLayerFilter(const JphPhysicsSystem* self, uint32_t inLayer);
 uint32_t JphPhysicsSystem_GetNumBodies(const JphPhysicsSystem* self);
 uint32_t JphPhysicsSystem_GetNumActiveBodies(const JphPhysicsSystem* self, JphEBodyType inType);
 uint32_t JphPhysicsSystem_GetMaxBodies(const JphPhysicsSystem* self);

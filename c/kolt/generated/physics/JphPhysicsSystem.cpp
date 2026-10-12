@@ -160,6 +160,14 @@ const JphObjectLayerPairFilter* JphPhysicsSystem_GetObjectLayerPairFilter(const 
     return kolt::c(&kolt::cpp(self)->GetObjectLayerPairFilter());
 }
 
+JphDefaultBroadPhaseLayerFilter* JphPhysicsSystem_GetDefaultBroadPhaseLayerFilter(const JphPhysicsSystem* self, uint32_t inLayer) {
+    return kolt::c(new JPH::DefaultBroadPhaseLayerFilter(kolt::cpp(self)->GetDefaultBroadPhaseLayerFilter(static_cast<uint16_t>(inLayer))));
+}
+
+JphDefaultObjectLayerFilter* JphPhysicsSystem_GetDefaultLayerFilter(const JphPhysicsSystem* self, uint32_t inLayer) {
+    return kolt::c(new JPH::DefaultObjectLayerFilter(kolt::cpp(self)->GetDefaultLayerFilter(static_cast<uint16_t>(inLayer))));
+}
+
 uint32_t JphPhysicsSystem_GetNumBodies(const JphPhysicsSystem* self) {
     return static_cast<uint32_t>(kolt::cpp(self)->GetNumBodies());
 }

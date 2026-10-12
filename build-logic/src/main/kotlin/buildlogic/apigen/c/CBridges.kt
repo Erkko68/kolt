@@ -92,6 +92,8 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
     private val h = config.helpers
     private val refs = config.refs
     val mathTypes = sortedSetOf<String>()
+    /** Whether C gets a `_destroy` for a record ([BindingRules.destroys]), so it can own one a call returns by value. */
+    var destroys: (CppRecord) -> Boolean = { false }
     /** Function pointer typedefs the forwarders use, by C name. */
     val callbackTypes = sortedMapOf<String, String>()
 
@@ -222,7 +224,9 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
             decl in config.scalars -> bridge.scalar(decl, config.scalars.getValue(decl))
             decl in config.allStrings -> bridge.string(decl)
             decl in config.mirrors -> bridge.math(decl).also { mathTypes += decl }
-            decl in api.records -> bridge.record(cpp(handle(target).name), isValue(decl), api.records.getValue(decl).let { creatable(it) && it.defaultConstructible && it.copyable })
+            decl in api.records -> api.records.getValue(decl).let { r ->
+                bridge.record(cpp(handle(target).name), isValue(decl), creatable(r) && r.defaultConstructible && r.copyable, destroys(r) && (r.copyable || !lvalue))
+            }
             else -> throw Unsupported("${type.spelling}: $decl")
         }
     }

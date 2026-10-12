@@ -228,6 +228,9 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer, o
             readPointers(returnedPointer, count).map { Shape(it, owned = true) }
         }
 
+    val stats: Shape.Stats
+        get() = Shape.Stats(JphShape_GetStats(shapeHandle), owned = true)
+
     val volume: Float
         get() = JphShape_GetVolume(shapeHandle)
 

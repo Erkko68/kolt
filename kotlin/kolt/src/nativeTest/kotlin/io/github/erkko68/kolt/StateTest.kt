@@ -73,6 +73,10 @@ class StateTest {
         sphere.saveBinaryState(stream)
         assertTrue(written > 0)
 
+        // A result by value is a copy Kotlin owns.
+        sphere.stats.use { assertTrue(it.sizeBytes > 0) }
+        system.getDefaultLayerFilter(0).use { assertTrue(it.shouldCollide(0)) }
+
         val skeleton = Skeleton()
         assertEquals(0, skeleton.addJoint("root", -1))
         assertEquals(1, skeleton.addJoint("spine", "root"))

@@ -22,7 +22,8 @@ internal class CApiWriter(
     private val h = config.helpers
     val names = CNames(config)
     private val bridges = CBridges(api, config, names)
-    private val rules = BindingRules(api, config, bridges, api.apiRecords(headers).mapTo(HashSet()) { it.name })
+    private val bound = api.apiRecords(headers).mapTo(HashSet()) { it.name }
+    private val rules = BindingRules(api, config, bridges, bound).also { rules -> bridges.destroys = { it.name in bound && rules.destroys(it) } }
     private val surface = api.surface(headers)
     private val baseModule = apiHeaders.modules.keys.first()
     private val functionNames = HashSet<String>()

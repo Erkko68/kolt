@@ -133,6 +133,9 @@ internal external fun JphShape_SaveMaterialState(self: NativePointer, out: Nativ
 @ExternalSymbolName("JphShape_SaveSubShapeState")
 internal external fun JphShape_SaveSubShapeState(self: NativePointer, out: NativePointer, outCapacity: Int): Int
 
+@ExternalSymbolName("JphShape_GetStats")
+internal external fun JphShape_GetStats(self: NativePointer): NativePointer
+
 @ExternalSymbolName("JphShape_GetVolume")
 internal external fun JphShape_GetVolume(self: NativePointer): Float
 

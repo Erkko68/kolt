@@ -151,6 +151,12 @@ class PhysicsSystem internal constructor(internal val physicsSystemHandle: Nativ
     val objectLayerPairFilter: ObjectLayerPairFilter
         get() = ObjectLayerPairFilter(JphPhysicsSystem_GetObjectLayerPairFilter(physicsSystemHandle))
 
+    fun getDefaultBroadPhaseLayerFilter(layer: Int): DefaultBroadPhaseLayerFilter =
+        DefaultBroadPhaseLayerFilter(JphPhysicsSystem_GetDefaultBroadPhaseLayerFilter(physicsSystemHandle, layer), owned = true)
+
+    fun getDefaultLayerFilter(layer: Int): DefaultObjectLayerFilter =
+        DefaultObjectLayerFilter(JphPhysicsSystem_GetDefaultLayerFilter(physicsSystemHandle, layer), owned = true)
+
     val numBodies: Int
         get() = JphPhysicsSystem_GetNumBodies(physicsSystemHandle)
 

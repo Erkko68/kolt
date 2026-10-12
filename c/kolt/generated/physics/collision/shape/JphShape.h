@@ -28,6 +28,7 @@ void JphShape_release(const JphShape* self);
 // skipped void JPH::Shape::CollideSoftBodyVertices(Mat44Arg inCenterOfMassTransform, Vec3Arg inScale, const CollideSoftBodyVertexIterator & inVertices, uint inNumVertices, int inCollidingShapeIndex) const: JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)
 // skipped void JPH::Shape::RestoreMaterialState(const PhysicsMaterialRefC * inMaterials, uint inNumMaterials): JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)
 // skipped void JPH::Shape::RestoreSubShapeState(const ShapeRefC * inSubShapes, uint inNumShapes): JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)
+// skipped Stats JPH::Shape::GetStatsRecursive(VisitedShapes & ioVisitedShapes) const
 JphEShapeType JphShape_GetType(const JphShape* self);
 JphEShapeSubType JphShape_GetSubType(const JphShape* self);
 void JphShape_GetUserData(const JphShape* self, uint64_t* out);
@@ -63,10 +64,7 @@ uint32_t JphShape_SaveSubShapeState(const JphShape* self, const JphShape** out, 
 //     ShapeToIDMap &: JPH::StreamUtils::ObjectToIDMap
 // TODO(handwritten) JphShape_sRestoreWithChildren: static ShapeResult JPH::Shape::sRestoreWithChildren(StreamIn & inStream, IDToShapeMap & ioShapeMap, IDToMaterialMap & ioMaterialMap)
 //     IDToShapeMap &: JPH::StreamUtils::IDToObjectMap
-// TODO(handwritten) JphShape_GetStats: Stats JPH::Shape::GetStats() const
-//     JPH::Shape::Stats result: C can't create one to copy it into
-// TODO(handwritten) JphShape_GetStatsRecursive: Stats JPH::Shape::GetStatsRecursive(VisitedShapes & ioVisitedShapes) const
-//     JPH::Shape::Stats result: C can't create one to copy it into
+JphShapeStats* JphShape_GetStats(const JphShape* self);
 float JphShape_GetVolume(const JphShape* self);
 bool JphShape_IsValidScale(const JphShape* self, const JphVec3* inScale);
 void JphShape_MakeScaleValid(const JphShape* self, const JphVec3* inScale, JphVec3* out);
