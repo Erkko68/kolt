@@ -2,7 +2,7 @@ package io.github.erkko68.kolt.interop
 
 import java.nio.ByteBuffer
 
-// JVM: externals are JNI methods, whose forwarders generateBindings writes; arrays are copied to native memory and back.
+// JVM and Android: externals are JNI methods, whose forwarders generateBindings writes; arrays are copied to native memory and back.
 
 actual typealias NativePointer = Long
 
@@ -30,7 +30,7 @@ actual class InteropScope actual constructor() {
     actual fun toInterop(array: FloatArray?): NativePointer = copyIn(array?.size ?: 0, 4) { it.asFloatBuffer().put(array!!) }
     actual fun toInterop(array: DoubleArray?): NativePointer = copyIn(array?.size ?: 0, 8) { it.asDoubleBuffer().put(array!!) }
 
-    // ponytail: 8-byte pointers; Android's 32-bit ABIs need the pointer size.
+    // ponytail: 8-byte pointers; Android's 32-bit ABIs, which aren't built, need the pointer size.
     actual fun toInterop(pointers: List<NativePointer>): NativePointer = toInterop(pointers.toLongArray())
 
     private inline fun NativePointer.copyOut(count: Int, width: Int, get: (ByteBuffer) -> Unit) {

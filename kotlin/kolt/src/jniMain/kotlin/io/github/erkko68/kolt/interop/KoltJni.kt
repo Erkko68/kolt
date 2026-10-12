@@ -6,7 +6,8 @@ import java.nio.ByteOrder
 /**
  * The hand-written half of the JNI layer (native side: c/kolt/jni/KoltJni.cpp): native memory, strings, and the
  * function C++ calls a Kotlin class's overrides through. Loads libkolt, the C API and its JNI forwarders.
- * ponytail: found on java.library.path; a loader extracting it from the jar once one is published.
+ * Android finds it in the app's native libraries. ponytail: the desktop JVM, on java.library.path; a loader extracting
+ * it from the jar once one is published.
  */
 internal object KoltJni {
     init {

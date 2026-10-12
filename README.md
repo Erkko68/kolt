@@ -9,9 +9,10 @@ c/api-headers.txt     which Jolt headers are API
 c/kolt/generated/     the generated C API, grouped as Jolt's dirs: physics/body/JphBody.h (./gradlew generateCApi)
 c/api-manifest.json   each C function's ABI signature, by header; what the Kotlin stages read
 c/kolt/manual/        hand-written C for what the generator can't map, and the helpers only Jolt can write (JphBridge.hpp)
-c/kolt/jni/           the hand-written half of the JVM's JNI layer; the forwarders are generated (./gradlew generateBindings)
+c/kolt/jni/           the hand-written half of the JVM's and Android's JNI layer; the forwarders are generated (./gradlew generateBindings)
 c/api-coverage.txt    each C function the API calls for: wrapped by Kotlin or not yet, or why it isn't bound (./gradlew apiCoverage)
-c/CMakeLists.txt      builds Jolt and the C API as static libraries, and as the JNI library (./gradlew :kotlin:kolt:cmakeBuild)
+c/CMakeLists.txt      builds Jolt and the C API as static libraries, and as the JNI library (./gradlew :kotlin:kolt:cmakeBuild;
+                      cmakeBuild_<abi> for Android's, with the SDK's NDK)
 kotlin/kolt/          the Kotlin module: interop/ and, per group, a package whose capi/ is the generated externals
                       (physics.body.capi; ./gradlew generateKotlinExternals)
                       and the rest the generated classes over them (./gradlew generateKotlinApi); math/ is hand-written
@@ -22,7 +23,8 @@ build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C
 
 `./gradlew :kotlin:kolt:macosArm64Test :kotlin:kolt:jvmTest` runs Jolt through the generated classes, on Kotlin/Native
 (an Apple Silicon Mac, which needs no glue) and on the JVM (the host's, through JNI; `libkolt` is found on
-`java.library.path`, not packaged yet): a falling sphere and a ray cast, a convex hull from points, contact listeners,
+`java.library.path`, not packaged yet); `./gradlew :kotlin:kolt:connectedAndroidDeviceTest` on an Android device or
+emulator, whose `libkolt.so` (arm64-v8a, x86_64) is in the library's jniLibs. They run a falling sphere and a ray cast, a convex hull from points, contact listeners,
 filters, a hit collector and a collision callback written in Kotlin, a batch of bodies, a shape's triangles and a
 character on a moving floor through out-parameters and arrays, and a step listener, a state recorder, a stream and a
 skeleton.
