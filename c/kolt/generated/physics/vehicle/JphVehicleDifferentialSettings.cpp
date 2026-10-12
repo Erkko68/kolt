@@ -12,10 +12,6 @@ void JphVehicleDifferentialSettings_destroy(JphVehicleDifferentialSettings* self
     delete kolt::cpp(self);
 }
 
-void JphVehicleDifferentialSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::VehicleDifferentialSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphVehicleDifferentialSettings_SaveBinaryState(const JphVehicleDifferentialSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

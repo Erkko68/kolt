@@ -1,6 +1,7 @@
 # The Jolt headers the C API is generated from (generateCApi), and that apiModel reports on.
 # Paths or globs relative to jolt/, grouped by the C module (c/<module>) their declarations are generated into.
-# `!glob` excludes headers; `-regex` leaves out the C++ declarations whose qualified name it matches.
+# `!glob` excludes headers; `-regex` leaves out the C++ declarations whose qualified name it matches: a class and all
+# that uses it, a member, one overload (`Class::Method(Types)`) or one constructor (`Class(Types)`).
 #
 # Seed: the headers at least two of joltc, SecondHalfGames/JoltC and JoltPhysics.js include, and what the first slice
 # needs besides: Body.h, BodyInterface.h and Shape.h.
@@ -118,3 +119,35 @@ Jolt/Physics/Vehicle/VehicleTransmission.h
 Jolt/Physics/Vehicle/Wheel.h
 Jolt/Physics/Vehicle/WheeledVehicleController.h
 Jolt/RegisterTypes.h
+
+# Jolt's own machinery: the classes only it creates, and what only it calls.
+-JPH::RTTI
+-JPH::.*::sRegister
+-JPH::.*Internal
+-JPH::BodyManager
+-JPH::BroadPhase
+-JPH::IslandBuilder
+-JPH::LargeIslandSplitter
+-JPH::SoftBodyUpdateContext
+-JPH::SharedMutex
+-JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
+-JPH::BodyLockInterface::Get(AllBodies)?MutexMask
+-JPH::\w*Constraint::(SetupVelocity|WarmStartVelocity|SolveVelocity|SolvePosition)Constraint
+-JPH::ShapeFunctions
+-JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)
+-JPH::MotionProperties::ResetSleepTestSpheres
+-JPH::PhysicsSystem::GetActiveBodiesUnsafe
+-JPH::VehicleCollisionTester::(Collide|PredictContactProperties)
+# A shape is made by its settings' Create(), which is what these are for.
+-JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
+# Jobs are Jolt's to schedule, and its allocations its own.
+-JPH::JobSystem::(JobHandle|Barrier|CreateJob|CreateBarrier|DestroyBarrier|WaitForJobs)
+-JPH::TempAllocator::(Allocate|Free)
+# Set from Kotlin, never read back; debugging values; a template of no use outside.
+-JPH::VehicleConstraint::Get(PreStep|PostCollide|PostStep)Callback
+-JPH::(VehicleConstraint|PhysicsSystem)::GetCombine(Friction|Restitution)
+-JPH::WheeledVehicleController::GetTireMaxImpulseCallback
+-JPH::PhysicsSystem::GetSimCollideBodyVsBody
+-JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition)
+-JPH::AABox::GetSupportingFace
+-JPH::Color::operator\(\)

@@ -11,7 +11,7 @@ extern "C" {
 // JPH::VehicleEngineSettings
 JphVehicleEngineSettings* JphVehicleEngineSettings_create(void);
 void JphVehicleEngineSettings_destroy(JphVehicleEngineSettings* self);
-void JphVehicleEngineSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::VehicleEngineSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphVehicleEngineSettings_SaveBinaryState(const JphVehicleEngineSettings* self, JphStreamOut* inStream);
 void JphVehicleEngineSettings_RestoreBinaryState(JphVehicleEngineSettings* self, JphStreamIn* inStream);
 float JphVehicleEngineSettings_GetMaxTorque(const JphVehicleEngineSettings* self);

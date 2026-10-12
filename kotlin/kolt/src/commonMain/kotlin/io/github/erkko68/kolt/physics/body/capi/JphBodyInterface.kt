@@ -10,9 +10,6 @@ internal external fun JphBodyInterface_create(): NativePointer
 @ExternalSymbolName("JphBodyInterface_destroy")
 internal external fun JphBodyInterface_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphBodyInterface_Init")
-internal external fun JphBodyInterface_Init(self: NativePointer, inBodyLockInterface: NativePointer, inBodyManager: NativePointer, inBroadPhase: NativePointer)
-
 @ExternalSymbolName("JphBodyInterface_CreateBody")
 internal external fun JphBodyInterface_CreateBody(self: NativePointer, inSettings: NativePointer): NativePointer
 

@@ -75,9 +75,4 @@ open class VehicleTrackSettings internal constructor(internal val vehicleTrackSe
     var differentialRatio: Float
         get() = JphVehicleTrackSettings_GetDifferentialRatio(vehicleTrackSettingsHandle)
         set(value) = JphVehicleTrackSettings_SetDifferentialRatio(vehicleTrackSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphVehicleTrackSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

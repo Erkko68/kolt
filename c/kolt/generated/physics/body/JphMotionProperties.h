@@ -11,6 +11,12 @@ extern "C" {
 // JPH::MotionProperties
 JphMotionProperties* JphMotionProperties_create(void);
 void JphMotionProperties_destroy(JphMotionProperties* self);
+// skipped void JPH::MotionProperties::ApplyGyroscopicForceInternal(QuatArg inBodyRotation, float inDeltaTime): JPH::.*Internal
+// skipped void JPH::MotionProperties::ApplyForceTorqueAndDragInternal(QuatArg inBodyRotation, Vec3Arg inGravity, float inDeltaTime): JPH::.*Internal
+// skipped uint32 JPH::MotionProperties::GetIslandIndexInternal() const: JPH::.*Internal
+// skipped void JPH::MotionProperties::SetIslandIndexInternal(uint32 inIndex): JPH::.*Internal
+// skipped uint32 JPH::MotionProperties::GetIndexInActiveBodiesInternal() const: JPH::.*Internal
+// skipped void JPH::MotionProperties::ResetSleepTestSpheres(const RVec3 * inPoints)
 JphEMotionQuality JphMotionProperties_GetMotionQuality(const JphMotionProperties* self);
 JphEAllowedDOFs JphMotionProperties_GetAllowedDOFs(const JphMotionProperties* self);
 bool JphMotionProperties_GetAllowSleeping(const JphMotionProperties* self);
@@ -65,13 +71,6 @@ void JphMotionProperties_SubLinearVelocityStep(JphMotionProperties* self, const 
 void JphMotionProperties_ApplyAngularVelocityStep(JphMotionProperties* self, const JphVec3* inAngularVelocity);
 void JphMotionProperties_AddAngularVelocityStep(JphMotionProperties* self, const JphVec3* inAngularVelocityChange);
 void JphMotionProperties_SubAngularVelocityStep(JphMotionProperties* self, const JphVec3* inAngularVelocityChange);
-void JphMotionProperties_ApplyGyroscopicForceInternal(JphMotionProperties* self, const JphQuat* inBodyRotation, float inDeltaTime);
-void JphMotionProperties_ApplyForceTorqueAndDragInternal(JphMotionProperties* self, const JphQuat* inBodyRotation, const JphVec3* inGravity, float inDeltaTime);
-uint32_t JphMotionProperties_GetIslandIndexInternal(const JphMotionProperties* self);
-void JphMotionProperties_SetIslandIndexInternal(JphMotionProperties* self, uint32_t inIndex);
-uint32_t JphMotionProperties_GetIndexInActiveBodiesInternal(const JphMotionProperties* self);
-// TODO(handwritten) JphMotionProperties_ResetSleepTestSpheres: void JPH::MotionProperties::ResetSleepTestSpheres(const RVec3 * inPoints)
-//     JPH::Vec3 by pointer: C's mirror isn't aligned as the SIMD type is
 void JphMotionProperties_ResetSleepTestTimer(JphMotionProperties* self);
 JphECanSleep JphMotionProperties_AccumulateSleepTime(JphMotionProperties* self, float inDeltaTime, float inTimeBeforeSleep);
 void JphMotionProperties_SaveState(const JphMotionProperties* self, JphStateRecorder* inStream);

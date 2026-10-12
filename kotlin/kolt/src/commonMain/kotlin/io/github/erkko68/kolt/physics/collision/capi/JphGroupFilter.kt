@@ -19,15 +19,6 @@ internal external fun JphGroupFilter_bindUpcalls(self: NativePointer, userData: 
 @ExternalSymbolName("JphGroupFilter_asSerializableObject")
 internal external fun JphGroupFilter_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphGroupFilter_GetRTTI")
-internal external fun JphGroupFilter_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphGroupFilter_CastTo")
-internal external fun JphGroupFilter_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
-@ExternalSymbolName("JphGroupFilter_sCreateRTTI")
-internal external fun JphGroupFilter_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphGroupFilter_CanCollide")
 internal external fun JphGroupFilter_CanCollide(self: NativePointer, inGroup1: NativePointer, inGroup2: NativePointer): Boolean
 

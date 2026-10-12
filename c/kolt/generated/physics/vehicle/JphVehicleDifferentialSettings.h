@@ -11,7 +11,7 @@ extern "C" {
 // JPH::VehicleDifferentialSettings
 JphVehicleDifferentialSettings* JphVehicleDifferentialSettings_create(void);
 void JphVehicleDifferentialSettings_destroy(JphVehicleDifferentialSettings* self);
-void JphVehicleDifferentialSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::VehicleDifferentialSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphVehicleDifferentialSettings_SaveBinaryState(const JphVehicleDifferentialSettings* self, JphStreamOut* inStream);
 void JphVehicleDifferentialSettings_RestoreBinaryState(JphVehicleDifferentialSettings* self, JphStreamIn* inStream);
 void JphVehicleDifferentialSettings_CalculateTorqueRatio(const JphVehicleDifferentialSettings* self, float inLeftAngularVelocity, float inRightAngularVelocity, float* outLeftTorqueFraction, float* outRightTorqueFraction);

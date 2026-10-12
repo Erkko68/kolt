@@ -16,7 +16,7 @@ void JphTriangleShapeSettings_release(const JphTriangleShapeSettings* self);
 JphConvexShapeSettings* JphTriangleShapeSettings_asConvexShapeSettings(JphTriangleShapeSettings* self);
 JphShapeSettings* JphTriangleShapeSettings_asShapeSettings(JphTriangleShapeSettings* self);
 JphSerializableObject* JphTriangleShapeSettings_asSerializableObject(JphTriangleShapeSettings* self);
-void JphTriangleShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::TriangleShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphTriangleShapeSettings_GetV1(const JphTriangleShapeSettings* self, JphVec3* out);
 void JphTriangleShapeSettings_SetV1(JphTriangleShapeSettings* self, const JphVec3* value);
 void JphTriangleShapeSettings_GetV2(const JphTriangleShapeSettings* self, JphVec3* out);

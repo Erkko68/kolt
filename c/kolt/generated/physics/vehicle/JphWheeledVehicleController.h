@@ -12,6 +12,7 @@ extern "C" {
 JphWheeledVehicleController* JphWheeledVehicleController_create(const JphWheeledVehicleControllerSettings* inSettings, JphVehicleConstraint* inConstraint);
 void JphWheeledVehicleController_destroy(JphWheeledVehicleController* self);
 JphVehicleController* JphWheeledVehicleController_asVehicleController(JphWheeledVehicleController* self);
+// skipped const TireMaxImpulseCallback & JPH::WheeledVehicleController::GetTireMaxImpulseCallback() const
 void JphWheeledVehicleController_SetDriverInput(JphWheeledVehicleController* self, float inForward, float inRight, float inBrake, float inHandBrake);
 void JphWheeledVehicleController_SetForwardInput(JphWheeledVehicleController* self, float inForward);
 float JphWheeledVehicleController_GetForwardInput(const JphWheeledVehicleController* self);
@@ -27,8 +28,6 @@ uint32_t JphWheeledVehicleController_GetDifferentials(JphWheeledVehicleControlle
 float JphWheeledVehicleController_GetDifferentialLimitedSlipRatio(const JphWheeledVehicleController* self);
 void JphWheeledVehicleController_SetDifferentialLimitedSlipRatio(JphWheeledVehicleController* self, float inV);
 float JphWheeledVehicleController_GetWheelSpeedAtClutch(const JphWheeledVehicleController* self);
-// TODO(handwritten) JphWheeledVehicleController_GetTireMaxImpulseCallback: const TireMaxImpulseCallback & JPH::WheeledVehicleController::GetTireMaxImpulseCallback() const
-//     const TireMaxImpulseCallback &: unresolved
 // TODO(handwritten) JphWheeledVehicleController_SetTireMaxImpulseCallback: void JPH::WheeledVehicleController::SetTireMaxImpulseCallback(const TireMaxImpulseCallback & inTireMaxImpulseCallback)
 //     const TireMaxImpulseCallback &: unresolved
 

@@ -24,6 +24,3 @@ internal external fun JphOffsetCenterOfMassShape_asShape(self: NativePointer): N
 
 @ExternalSymbolName("JphOffsetCenterOfMassShape_GetOffset")
 internal external fun JphOffsetCenterOfMassShape_GetOffset(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphOffsetCenterOfMassShape_sRegister")
-internal external fun JphOffsetCenterOfMassShape_sRegister()

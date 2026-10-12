@@ -14,6 +14,7 @@ void JphHingeConstraint_addRef(const JphHingeConstraint* self);
 void JphHingeConstraint_release(const JphHingeConstraint* self);
 JphTwoBodyConstraint* JphHingeConstraint_asTwoBodyConstraint(JphHingeConstraint* self);
 JphConstraint* JphHingeConstraint_asConstraint(JphHingeConstraint* self);
+// skipped Vector<2> JPH::HingeConstraint::GetTotalLambdaRotation() const: JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition)
 void JphHingeConstraint_GetLocalSpacePoint1(const JphHingeConstraint* self, JphVec3* out);
 void JphHingeConstraint_GetLocalSpacePoint2(const JphHingeConstraint* self, JphVec3* out);
 void JphHingeConstraint_GetLocalSpaceHingeAxis1(const JphHingeConstraint* self, JphVec3* out);
@@ -38,8 +39,6 @@ bool JphHingeConstraint_HasLimits(const JphHingeConstraint* self);
 JphSpringSettings* JphHingeConstraint_GetLimitsSpringSettings(JphHingeConstraint* self);
 void JphHingeConstraint_SetLimitsSpringSettings(JphHingeConstraint* self, const JphSpringSettings* inLimitsSpringSettings);
 void JphHingeConstraint_GetTotalLambdaPosition(const JphHingeConstraint* self, JphVec3* out);
-// TODO(handwritten) JphHingeConstraint_GetTotalLambdaRotation: Vector<2> JPH::HingeConstraint::GetTotalLambdaRotation() const
-//     Vector<2>: class template
 float JphHingeConstraint_GetTotalLambdaRotationLimits(const JphHingeConstraint* self);
 float JphHingeConstraint_GetTotalLambdaMotor(const JphHingeConstraint* self);
 

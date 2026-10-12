@@ -9,13 +9,13 @@ extern "C" {
 #endif
 
 // JPH::MutableCompoundShape
+// skipped JPH::MutableCompoundShape(const MutableCompoundShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphMutableCompoundShape* JphMutableCompoundShape_create(void);
-// TODO(handwritten) JphMutableCompoundShape_create_MutableCompoundShapeSettings_ShapeResult: JPH::MutableCompoundShape(const MutableCompoundShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 void JphMutableCompoundShape_addRef(const JphMutableCompoundShape* self);
 void JphMutableCompoundShape_release(const JphMutableCompoundShape* self);
 JphCompoundShape* JphMutableCompoundShape_asCompoundShape(JphMutableCompoundShape* self);
 JphShape* JphMutableCompoundShape_asShape(JphMutableCompoundShape* self);
+// skipped static void JPH::MutableCompoundShape::sRegister(): JPH::.*::sRegister
 JphMutableCompoundShape* JphMutableCompoundShape_Clone(const JphMutableCompoundShape* self);
 uint32_t JphMutableCompoundShape_AddShape(JphMutableCompoundShape* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShape* inShape, uint32_t inUserData, uint32_t inIndex);
 void JphMutableCompoundShape_RemoveShape(JphMutableCompoundShape* self, uint32_t inIndex);
@@ -24,7 +24,6 @@ void JphMutableCompoundShape_ModifyShape_Shape(JphMutableCompoundShape* self, ui
 // TODO(handwritten) JphMutableCompoundShape_ModifyShapes: void JPH::MutableCompoundShape::ModifyShapes(uint inStartIndex, uint inNumber, const Vec3 * inPositions, const Quat * inRotations, uint inPositionStride, uint inRotationStride)
 //     JPH::Vec3 by pointer: C's mirror isn't aligned as the SIMD type is
 void JphMutableCompoundShape_AdjustCenterOfMass(JphMutableCompoundShape* self);
-void JphMutableCompoundShape_sRegister(void);
 
 
 #ifdef __cplusplus

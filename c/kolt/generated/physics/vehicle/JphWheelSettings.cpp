@@ -53,18 +53,6 @@ JphSerializableObject* JphWheelSettings_asSerializableObject(JphWheelSettings* s
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphWheelSettings_GetRTTI(const JphWheelSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphWheelSettings_CastTo(const JphWheelSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
-void JphWheelSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::WheelSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphWheelSettings_SaveBinaryState(const JphWheelSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

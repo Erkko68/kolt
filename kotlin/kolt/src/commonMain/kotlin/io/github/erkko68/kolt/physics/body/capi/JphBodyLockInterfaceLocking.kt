@@ -4,9 +4,6 @@ package io.github.erkko68.kolt.physics.body.capi
 import io.github.erkko68.kolt.interop.ExternalSymbolName
 import io.github.erkko68.kolt.interop.NativePointer
 
-@ExternalSymbolName("JphBodyLockInterfaceLocking_create")
-internal external fun JphBodyLockInterfaceLocking_create(arg0: NativePointer): NativePointer
-
 @ExternalSymbolName("JphBodyLockInterfaceLocking_destroy")
 internal external fun JphBodyLockInterfaceLocking_destroy(self: NativePointer)
 

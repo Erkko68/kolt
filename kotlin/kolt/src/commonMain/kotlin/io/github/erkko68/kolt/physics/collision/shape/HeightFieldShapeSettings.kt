@@ -139,9 +139,4 @@ class HeightFieldShapeSettings internal constructor(internal val heightFieldShap
     var activeEdgeCosThresholdAngle: Float
         get() = JphHeightFieldShapeSettings_GetActiveEdgeCosThresholdAngle(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetActiveEdgeCosThresholdAngle(heightFieldShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphHeightFieldShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

@@ -10,16 +10,16 @@ extern "C" {
 
 // JPH::BodyLockInterface
 void JphBodyLockInterface_destroy(JphBodyLockInterface* self);
-JphSharedMutex* JphBodyLockInterface_LockRead_BodyID(const JphBodyLockInterface* self, uint32_t inBodyID);
-void JphBodyLockInterface_LockRead_MutexMask(const JphBodyLockInterface* self, uint64_t inMutexMask);
-void JphBodyLockInterface_UnlockRead_SharedMutex(const JphBodyLockInterface* self, JphSharedMutex* inMutex);
-void JphBodyLockInterface_UnlockRead_MutexMask(const JphBodyLockInterface* self, uint64_t inMutexMask);
-JphSharedMutex* JphBodyLockInterface_LockWrite_BodyID(const JphBodyLockInterface* self, uint32_t inBodyID);
-void JphBodyLockInterface_LockWrite_MutexMask(const JphBodyLockInterface* self, uint64_t inMutexMask);
-void JphBodyLockInterface_UnlockWrite_SharedMutex(const JphBodyLockInterface* self, JphSharedMutex* inMutex);
-void JphBodyLockInterface_UnlockWrite_MutexMask(const JphBodyLockInterface* self, uint64_t inMutexMask);
-void JphBodyLockInterface_GetAllBodiesMutexMask(const JphBodyLockInterface* self, uint64_t* out);
-void JphBodyLockInterface_GetMutexMask(const JphBodyLockInterface* self, const uint32_t* inBodies, int32_t inNumber, uint64_t* out);
+// skipped SharedMutex * JPH::BodyLockInterface::LockRead(const BodyID & inBodyID) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
+// skipped void JPH::BodyLockInterface::UnlockRead(SharedMutex * inMutex) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
+// skipped SharedMutex * JPH::BodyLockInterface::LockWrite(const BodyID & inBodyID) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
+// skipped void JPH::BodyLockInterface::UnlockWrite(SharedMutex * inMutex) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
+// skipped MutexMask JPH::BodyLockInterface::GetAllBodiesMutexMask() const: JPH::BodyLockInterface::Get(AllBodies)?MutexMask
+// skipped MutexMask JPH::BodyLockInterface::GetMutexMask(const BodyID * inBodies, int inNumber) const: JPH::BodyLockInterface::Get(AllBodies)?MutexMask
+// skipped void JPH::BodyLockInterface::LockRead(MutexMask inMutexMask) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
+// skipped void JPH::BodyLockInterface::UnlockRead(MutexMask inMutexMask) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
+// skipped void JPH::BodyLockInterface::LockWrite(MutexMask inMutexMask) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
+// skipped void JPH::BodyLockInterface::UnlockWrite(MutexMask inMutexMask) const: JPH::BodyLockInterface::(Lock|Unlock)(Read|Write)
 JphBody* JphBodyLockInterface_TryGetBody(const JphBodyLockInterface* self, uint32_t inBodyID);
 
 

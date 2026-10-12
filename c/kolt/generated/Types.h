@@ -33,13 +33,8 @@ typedef struct JphBodyLockMultiRead JphBodyLockMultiRead;
 typedef struct JphBodyLockMultiWrite JphBodyLockMultiWrite;
 typedef struct JphBodyLockRead JphBodyLockRead;
 typedef struct JphBodyLockWrite JphBodyLockWrite;
-typedef struct JphBodyManager JphBodyManager;
-typedef struct JphBodyManagerBodyStats JphBodyManagerBodyStats;
-typedef struct JphBodyPair JphBodyPair;
 typedef struct JphBoxShape JphBoxShape;
 typedef struct JphBoxShapeSettings JphBoxShapeSettings;
-typedef struct JphBroadPhase JphBroadPhase;
-typedef struct JphBroadPhaseUpdateState JphBroadPhaseUpdateState;
 typedef struct JphBroadPhaseCastResult JphBroadPhaseCastResult;
 typedef struct JphBroadPhaseLayerFilter JphBroadPhaseLayerFilter;
 typedef struct JphBroadPhaseLayerInterface JphBroadPhaseLayerInterface;
@@ -86,8 +81,6 @@ typedef struct JphConeConstraint JphConeConstraint;
 typedef struct JphConeConstraintSettings JphConeConstraintSettings;
 typedef struct JphConstraint JphConstraint;
 typedef struct JphConstraintSettings JphConstraintSettings;
-typedef struct JphContactConstraintManager JphContactConstraintManager;
-typedef struct JphContactConstraintManagerContactAllocator JphContactConstraintManagerContactAllocator;
 typedef struct JphContactListener JphContactListener;
 typedef struct JphContactManifold JphContactManifold;
 typedef struct JphContactSettings JphContactSettings;
@@ -124,14 +117,9 @@ typedef struct JphIgnoreSingleBodyFilter JphIgnoreSingleBodyFilter;
 typedef struct JphIgnoreSingleBodyFilterChained JphIgnoreSingleBodyFilterChained;
 typedef struct JphIndexedTriangle JphIndexedTriangle;
 typedef struct JphIndexedTriangleNoMaterial JphIndexedTriangleNoMaterial;
-typedef struct JphIslandBuilder JphIslandBuilder;
 typedef struct JphJobSystem JphJobSystem;
-typedef struct JphJobSystemBarrier JphJobSystemBarrier;
-typedef struct JphJobSystemJobHandle JphJobSystemJobHandle;
 typedef struct JphJobSystemThreadPool JphJobSystemThreadPool;
 typedef struct JphJobSystemWithBarrier JphJobSystemWithBarrier;
-typedef struct JphLFHMAllocatorContext JphLFHMAllocatorContext;
-typedef struct JphLargeIslandSplitter JphLargeIslandSplitter;
 typedef struct JphLinearCurve JphLinearCurve;
 typedef struct JphLinearCurvePoint JphLinearCurvePoint;
 typedef struct JphMassProperties JphMassProperties;
@@ -160,10 +148,6 @@ typedef struct JphPhysicsSettings JphPhysicsSettings;
 typedef struct JphPhysicsStepListener JphPhysicsStepListener;
 typedef struct JphPhysicsStepListenerContext JphPhysicsStepListenerContext;
 typedef struct JphPhysicsSystem JphPhysicsSystem;
-typedef struct JphPhysicsUpdateContext JphPhysicsUpdateContext;
-typedef struct JphPhysicsUpdateContextBodyPairQueue JphPhysicsUpdateContextBodyPairQueue;
-typedef struct JphPhysicsUpdateContextStep JphPhysicsUpdateContextStep;
-typedef struct JphPhysicsUpdateContextStepCCDBody JphPhysicsUpdateContextStepCCDBody;
 typedef struct JphPlane JphPlane;
 typedef struct JphPlaneShape JphPlaneShape;
 typedef struct JphPlaneShapeSettings JphPlaneShapeSettings;
@@ -173,7 +157,6 @@ typedef struct JphPulleyConstraint JphPulleyConstraint;
 typedef struct JphPulleyConstraintSettings JphPulleyConstraintSettings;
 typedef struct JphRRayCast JphRRayCast;
 typedef struct JphRShapeCast JphRShapeCast;
-typedef struct JphRTTI JphRTTI;
 typedef struct JphRagdoll JphRagdoll;
 typedef struct JphRagdollSettings JphRagdollSettings;
 typedef struct JphRagdollSettingsAdditionalConstraint JphRagdollSettingsAdditionalConstraint;
@@ -195,9 +178,7 @@ typedef struct JphShapeCast JphShapeCast;
 typedef struct JphShapeCastResult JphShapeCastResult;
 typedef struct JphShapeCastSettings JphShapeCastSettings;
 typedef struct JphShapeFilter JphShapeFilter;
-typedef struct JphShapeFunctions JphShapeFunctions;
 typedef struct JphShapeSettings JphShapeSettings;
-typedef struct JphSharedMutex JphSharedMutex;
 typedef struct JphSimShapeFilter JphSimShapeFilter;
 typedef struct JphSixDOFConstraint JphSixDOFConstraint;
 typedef struct JphSixDOFConstraintSettings JphSixDOFConstraintSettings;
@@ -226,7 +207,6 @@ typedef struct JphSoftBodySharedSettingsSkinned JphSoftBodySharedSettingsSkinned
 typedef struct JphSoftBodySharedSettingsVertex JphSoftBodySharedSettingsVertex;
 typedef struct JphSoftBodySharedSettingsVertexAttributes JphSoftBodySharedSettingsVertexAttributes;
 typedef struct JphSoftBodySharedSettingsVolume JphSoftBodySharedSettingsVolume;
-typedef struct JphSoftBodyUpdateContext JphSoftBodyUpdateContext;
 typedef struct JphSoftBodyVertex JphSoftBodyVertex;
 typedef struct JphSpecifiedBroadPhaseLayerFilter JphSpecifiedBroadPhaseLayerFilter;
 typedef struct JphSpecifiedObjectLayerFilter JphSpecifiedObjectLayerFilter;
@@ -501,13 +481,6 @@ typedef enum JphETransmissionMode {
     JPH_ETRANSMISSION_MODE_MANUAL = 1,
 } JphETransmissionMode;
 
-// JPH::LargeIslandSplitter::EStatus
-typedef enum JphLargeIslandSplitterEStatus {
-    JPH_LARGE_ISLAND_SPLITTER_ESTATUS_WAITING_FOR_BATCH = 0,
-    JPH_LARGE_ISLAND_SPLITTER_ESTATUS_BATCH_RETRIEVED = 1,
-    JPH_LARGE_ISLAND_SPLITTER_ESTATUS_ALL_BATCHES_DONE = 2,
-} JphLargeIslandSplitterEStatus;
-
 // JPH::MeshShapeSettings::EBuildQuality
 typedef enum JphMeshShapeSettingsEBuildQuality {
     JPH_MESH_SHAPE_SETTINGS_EBUILD_QUALITY_FAVOR_RUNTIME_PERFORMANCE = 0,
@@ -525,13 +498,6 @@ typedef enum JphSixDOFConstraintSettingsEAxis {
     JPH_SIX_DOFCONSTRAINT_SETTINGS_EAXIS_NUM = 6,
     JPH_SIX_DOFCONSTRAINT_SETTINGS_EAXIS_NUM_TRANSLATION = 7,
 } JphSixDOFConstraintSettingsEAxis;
-
-// JPH::SoftBodyMotionProperties::EStatus
-typedef enum JphSoftBodyMotionPropertiesEStatus {
-    JPH_SOFT_BODY_MOTION_PROPERTIES_ESTATUS_NO_WORK = 1,
-    JPH_SOFT_BODY_MOTION_PROPERTIES_ESTATUS_DID_WORK = 2,
-    JPH_SOFT_BODY_MOTION_PROPERTIES_ESTATUS_DONE = 4,
-} JphSoftBodyMotionPropertiesEStatus;
 
 // JPH::SoftBodySharedSettings::EBendType
 typedef enum JphSoftBodySharedSettingsEBendType {

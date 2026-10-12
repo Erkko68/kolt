@@ -32,8 +32,4 @@ void JphScaledShape_GetScale(const JphScaledShape* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetScale());
 }
 
-void JphScaledShape_sRegister(void) {
-    JPH::ScaledShape::sRegister();
-}
-
 } // extern "C"

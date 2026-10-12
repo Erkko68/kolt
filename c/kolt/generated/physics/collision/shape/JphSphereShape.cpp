@@ -32,8 +32,4 @@ float JphSphereShape_GetRadius(const JphSphereShape* self) {
     return kolt::cpp(self)->GetRadius();
 }
 
-void JphSphereShape_sRegister(void) {
-    JPH::SphereShape::sRegister();
-}
-
 } // extern "C"

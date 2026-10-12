@@ -25,9 +25,6 @@ internal external fun JphVehicleConstraintSettings_asConstraintSettings(self: Na
 @ExternalSymbolName("JphVehicleConstraintSettings_asSerializableObject")
 internal external fun JphVehicleConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphVehicleConstraintSettings_sCreateRTTI")
-internal external fun JphVehicleConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphVehicleConstraintSettings_GetUp")
 internal external fun JphVehicleConstraintSettings_GetUp(self: NativePointer, out: NativePointer)
 

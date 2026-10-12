@@ -11,7 +11,7 @@ extern "C" {
 // JPH::VehicleTransmissionSettings
 JphVehicleTransmissionSettings* JphVehicleTransmissionSettings_create(void);
 void JphVehicleTransmissionSettings_destroy(JphVehicleTransmissionSettings* self);
-void JphVehicleTransmissionSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::VehicleTransmissionSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphVehicleTransmissionSettings_SaveBinaryState(const JphVehicleTransmissionSettings* self, JphStreamOut* inStream);
 void JphVehicleTransmissionSettings_RestoreBinaryState(JphVehicleTransmissionSettings* self, JphStreamIn* inStream);
 JphETransmissionMode JphVehicleTransmissionSettings_GetMode(const JphVehicleTransmissionSettings* self);

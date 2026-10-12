@@ -130,17 +130,11 @@ internal external fun JphPhysicsSystem_GetNumActiveBodies(self: NativePointer, i
 @ExternalSymbolName("JphPhysicsSystem_GetMaxBodies")
 internal external fun JphPhysicsSystem_GetMaxBodies(self: NativePointer): Int
 
-@ExternalSymbolName("JphPhysicsSystem_GetBodyStats")
-internal external fun JphPhysicsSystem_GetBodyStats(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphPhysicsSystem_GetBodies")
 internal external fun JphPhysicsSystem_GetBodies(self: NativePointer, out: NativePointer, outCapacity: Int): Int
 
 @ExternalSymbolName("JphPhysicsSystem_GetActiveBodies")
 internal external fun JphPhysicsSystem_GetActiveBodies(self: NativePointer, inType: Int, out: NativePointer, outCapacity: Int): Int
-
-@ExternalSymbolName("JphPhysicsSystem_GetActiveBodiesUnsafe")
-internal external fun JphPhysicsSystem_GetActiveBodiesUnsafe(self: NativePointer, inType: Int): NativePointer
 
 @ExternalSymbolName("JphPhysicsSystem_WereBodiesInContact")
 internal external fun JphPhysicsSystem_WereBodiesInContact(self: NativePointer, inBody1ID: Int, inBody2ID: Int): Boolean

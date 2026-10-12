@@ -228,26 +228,6 @@ void JphMotionProperties_SubAngularVelocityStep(JphMotionProperties* self, const
     kolt::cpp(self)->SubAngularVelocityStep(kolt::math<JPH::Vec3>(*inAngularVelocityChange));
 }
 
-void JphMotionProperties_ApplyGyroscopicForceInternal(JphMotionProperties* self, const JphQuat* inBodyRotation, float inDeltaTime) {
-    kolt::cpp(self)->ApplyGyroscopicForceInternal(kolt::math<JPH::Quat>(*inBodyRotation), inDeltaTime);
-}
-
-void JphMotionProperties_ApplyForceTorqueAndDragInternal(JphMotionProperties* self, const JphQuat* inBodyRotation, const JphVec3* inGravity, float inDeltaTime) {
-    kolt::cpp(self)->ApplyForceTorqueAndDragInternal(kolt::math<JPH::Quat>(*inBodyRotation), kolt::math<JPH::Vec3>(*inGravity), inDeltaTime);
-}
-
-uint32_t JphMotionProperties_GetIslandIndexInternal(const JphMotionProperties* self) {
-    return kolt::cpp(self)->GetIslandIndexInternal();
-}
-
-void JphMotionProperties_SetIslandIndexInternal(JphMotionProperties* self, uint32_t inIndex) {
-    kolt::cpp(self)->SetIslandIndexInternal(inIndex);
-}
-
-uint32_t JphMotionProperties_GetIndexInActiveBodiesInternal(const JphMotionProperties* self) {
-    return kolt::cpp(self)->GetIndexInActiveBodiesInternal();
-}
-
 void JphMotionProperties_ResetSleepTestTimer(JphMotionProperties* self) {
     kolt::cpp(self)->ResetSleepTestTimer();
 }

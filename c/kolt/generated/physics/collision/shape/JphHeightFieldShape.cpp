@@ -76,8 +76,4 @@ void JphHeightFieldShape_GetMaterials(const JphHeightFieldShape* self, uint32_t 
     kolt::cpp(self)->GetMaterials(static_cast<unsigned int>(inX), static_cast<unsigned int>(inY), static_cast<unsigned int>(inSizeX), static_cast<unsigned int>(inSizeY), outMaterials, static_cast<intptr_t>(inMaterialsStride));
 }
 
-void JphHeightFieldShape_sRegister(void) {
-    JPH::HeightFieldShape::sRegister();
-}
-
 } // extern "C"

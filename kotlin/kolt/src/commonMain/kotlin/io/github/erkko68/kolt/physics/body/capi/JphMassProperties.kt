@@ -10,9 +10,6 @@ internal external fun JphMassProperties_create(): NativePointer
 @ExternalSymbolName("JphMassProperties_destroy")
 internal external fun JphMassProperties_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphMassProperties_sCreateRTTI")
-internal external fun JphMassProperties_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphMassProperties_DecomposePrincipalMomentsOfInertia")
 internal external fun JphMassProperties_DecomposePrincipalMomentsOfInertia(self: NativePointer, outRotation: NativePointer, outDiagonal: NativePointer): Boolean
 

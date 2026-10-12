@@ -53,9 +53,4 @@ class TaperedCylinderShape internal constructor(internal val taperedCylinderShap
 
     val halfHeight: Float
         get() = JphTaperedCylinderShape_GetHalfHeight(taperedCylinderShapeHandle)
-
-    companion object {
-        fun register() =
-            JphTaperedCylinderShape_sRegister()
-    }
 }

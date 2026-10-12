@@ -52,9 +52,4 @@ class EmptyShapeSettings internal constructor(internal val emptyShapeSettingsHan
             Vec3(returned)
         }
         set(value) = interopScope { JphEmptyShapeSettings_SetCenterOfMass(emptyShapeSettingsHandle, toInterop(value.toArray())) }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphEmptyShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

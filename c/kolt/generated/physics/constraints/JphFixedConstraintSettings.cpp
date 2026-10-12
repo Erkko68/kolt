@@ -28,10 +28,6 @@ JphSerializableObject* JphFixedConstraintSettings_asSerializableObject(JphFixedC
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphFixedConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::FixedConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 JphEConstraintSpace JphFixedConstraintSettings_GetSpace(const JphFixedConstraintSettings* self) {
     return static_cast<JphEConstraintSpace>(kolt::cpp(self)->mSpace);
 }

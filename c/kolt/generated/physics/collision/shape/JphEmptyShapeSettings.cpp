@@ -28,10 +28,6 @@ JphSerializableObject* JphEmptyShapeSettings_asSerializableObject(JphEmptyShapeS
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphEmptyShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::EmptyShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphEmptyShapeSettings_GetCenterOfMass(const JphEmptyShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mCenterOfMass);
 }

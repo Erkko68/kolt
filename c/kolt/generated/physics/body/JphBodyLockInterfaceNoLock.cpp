@@ -4,10 +4,6 @@
 
 extern "C" {
 
-JphBodyLockInterfaceNoLock* JphBodyLockInterfaceNoLock_create(JphBodyManager* arg0) {
-    return kolt::c(new JPH::BodyLockInterfaceNoLock(*kolt::cpp(arg0)));
-}
-
 void JphBodyLockInterfaceNoLock_destroy(JphBodyLockInterfaceNoLock* self) {
     delete kolt::cpp(self);
 }

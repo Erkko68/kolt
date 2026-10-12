@@ -61,10 +61,6 @@ JphSerializableObject* JphMotorcycleControllerSettings_asSerializableObject(JphM
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphMotorcycleControllerSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::MotorcycleControllerSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 float JphMotorcycleControllerSettings_GetMaxLeanAngle(const JphMotorcycleControllerSettings* self) {
     return kolt::cpp(self)->mMaxLeanAngle;
 }

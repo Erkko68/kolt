@@ -13,9 +13,6 @@ internal external fun JphCollisionGroup_create_GroupFilter_GroupID_SubGroupID(in
 @ExternalSymbolName("JphCollisionGroup_destroy")
 internal external fun JphCollisionGroup_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphCollisionGroup_sCreateRTTI")
-internal external fun JphCollisionGroup_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphCollisionGroup_SetGroupFilter")
 internal external fun JphCollisionGroup_SetGroupFilter(self: NativePointer, inFilter: NativePointer)
 

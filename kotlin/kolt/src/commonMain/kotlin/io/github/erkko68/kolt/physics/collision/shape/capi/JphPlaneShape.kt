@@ -30,6 +30,3 @@ internal external fun JphPlaneShape_SetMaterial(self: NativePointer, inMaterial:
 
 @ExternalSymbolName("JphPlaneShape_GetMaterial")
 internal external fun JphPlaneShape_GetMaterial(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphPlaneShape_sRegister")
-internal external fun JphPlaneShape_sRegister()

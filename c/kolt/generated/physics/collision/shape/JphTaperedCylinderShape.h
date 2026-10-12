@@ -9,18 +9,17 @@ extern "C" {
 #endif
 
 // JPH::TaperedCylinderShape
+// skipped JPH::TaperedCylinderShape(const TaperedCylinderShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphTaperedCylinderShape* JphTaperedCylinderShape_create(void);
-// TODO(handwritten) JphTaperedCylinderShape_create_TaperedCylinderShapeSettings_ShapeResult: JPH::TaperedCylinderShape(const TaperedCylinderShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 void JphTaperedCylinderShape_addRef(const JphTaperedCylinderShape* self);
 void JphTaperedCylinderShape_release(const JphTaperedCylinderShape* self);
 JphConvexShape* JphTaperedCylinderShape_asConvexShape(JphTaperedCylinderShape* self);
 JphShape* JphTaperedCylinderShape_asShape(JphTaperedCylinderShape* self);
+// skipped static void JPH::TaperedCylinderShape::sRegister(): JPH::.*::sRegister
 float JphTaperedCylinderShape_GetTopRadius(const JphTaperedCylinderShape* self);
 float JphTaperedCylinderShape_GetBottomRadius(const JphTaperedCylinderShape* self);
 float JphTaperedCylinderShape_GetConvexRadius(const JphTaperedCylinderShape* self);
 float JphTaperedCylinderShape_GetHalfHeight(const JphTaperedCylinderShape* self);
-void JphTaperedCylinderShape_sRegister(void);
 
 
 #ifdef __cplusplus

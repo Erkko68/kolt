@@ -45,9 +45,4 @@ class SphereShape internal constructor(internal val sphereShapeHandle: NativePoi
 
     val radius: Float
         get() = JphSphereShape_GetRadius(sphereShapeHandle)
-
-    companion object {
-        fun register() =
-            JphSphereShape_sRegister()
-    }
 }

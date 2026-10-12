@@ -25,9 +25,6 @@ internal external fun JphMeshShapeSettings_asShapeSettings(self: NativePointer):
 @ExternalSymbolName("JphMeshShapeSettings_asSerializableObject")
 internal external fun JphMeshShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphMeshShapeSettings_sCreateRTTI")
-internal external fun JphMeshShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphMeshShapeSettings_Sanitize")
 internal external fun JphMeshShapeSettings_Sanitize(self: NativePointer)
 

@@ -9,14 +9,13 @@ extern "C" {
 #endif
 
 // JPH::EmptyShape
+// skipped JPH::EmptyShape(const EmptyShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphEmptyShape* JphEmptyShape_create(void);
 JphEmptyShape* JphEmptyShape_create_Vec3Arg(const JphVec3* inCenterOfMass);
-// TODO(handwritten) JphEmptyShape_create_EmptyShapeSettings_ShapeResult: JPH::EmptyShape(const EmptyShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 void JphEmptyShape_addRef(const JphEmptyShape* self);
 void JphEmptyShape_release(const JphEmptyShape* self);
 JphShape* JphEmptyShape_asShape(JphEmptyShape* self);
-void JphEmptyShape_sRegister(void);
+// skipped static void JPH::EmptyShape::sRegister(): JPH::.*::sRegister
 
 
 #ifdef __cplusplus

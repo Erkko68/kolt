@@ -13,14 +13,8 @@ internal external fun Jph_IsVelocityMotor(inMotorState: Int): Boolean
 @ExternalSymbolName("Jph_IsPositionMotor")
 internal external fun Jph_IsPositionMotor(inMotorState: Int): Boolean
 
-@ExternalSymbolName("Jph_VerifyJoltVersionIDInternal")
-internal external fun Jph_VerifyJoltVersionIDInternal(inVersionID: Long): Boolean
-
 @ExternalSymbolName("Jph_VerifyJoltVersionID")
 internal external fun Jph_VerifyJoltVersionID(): Boolean
-
-@ExternalSymbolName("Jph_RegisterTypesInternal")
-internal external fun Jph_RegisterTypesInternal(inVersionID: Long)
 
 @ExternalSymbolName("Jph_RegisterTypes")
 internal external fun Jph_RegisterTypes()

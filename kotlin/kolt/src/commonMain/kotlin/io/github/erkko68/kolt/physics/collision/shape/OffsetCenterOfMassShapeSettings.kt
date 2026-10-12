@@ -53,9 +53,4 @@ class OffsetCenterOfMassShapeSettings internal constructor(internal val offsetCe
             Vec3(returned)
         }
         set(value) = interopScope { JphOffsetCenterOfMassShapeSettings_SetOffset(offsetCenterOfMassShapeSettingsHandle, toInterop(value.toArray())) }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphOffsetCenterOfMassShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

@@ -14,23 +14,19 @@ void JphVehicleConstraint_addRef(const JphVehicleConstraint* self);
 void JphVehicleConstraint_release(const JphVehicleConstraint* self);
 JphConstraint* JphVehicleConstraint_asConstraint(JphVehicleConstraint* self);
 JphPhysicsStepListener* JphVehicleConstraint_asPhysicsStepListener(JphVehicleConstraint* self);
+// skipped const CombineFunction & JPH::VehicleConstraint::GetCombineFriction() const: JPH::(VehicleConstraint|PhysicsSystem)::GetCombine(Friction|Restitution)
+// skipped const StepCallback & JPH::VehicleConstraint::GetPreStepCallback() const: JPH::VehicleConstraint::Get(PreStep|PostCollide|PostStep)Callback
+// skipped const StepCallback & JPH::VehicleConstraint::GetPostCollideCallback() const: JPH::VehicleConstraint::Get(PreStep|PostCollide|PostStep)Callback
+// skipped const StepCallback & JPH::VehicleConstraint::GetPostStepCallback() const: JPH::VehicleConstraint::Get(PreStep|PostCollide|PostStep)Callback
 void JphVehicleConstraint_SetMaxPitchRollAngle(JphVehicleConstraint* self, float inMaxPitchRollAngle);
 float JphVehicleConstraint_GetMaxPitchRollAngle(const JphVehicleConstraint* self);
 void JphVehicleConstraint_SetVehicleCollisionTester(JphVehicleConstraint* self, const JphVehicleCollisionTester* inTester);
 const JphVehicleCollisionTester* JphVehicleConstraint_GetVehicleCollisionTester(const JphVehicleConstraint* self);
 // TODO(handwritten) JphVehicleConstraint_SetCombineFriction: void JPH::VehicleConstraint::SetCombineFriction(const CombineFunction & inCombineFriction)
 //     const CombineFunction &: unresolved
-// TODO(handwritten) JphVehicleConstraint_GetCombineFriction: const CombineFunction & JPH::VehicleConstraint::GetCombineFriction() const
-//     const CombineFunction &: unresolved
-// TODO(handwritten) JphVehicleConstraint_GetPreStepCallback: const StepCallback & JPH::VehicleConstraint::GetPreStepCallback() const
-//     const StepCallback &: unresolved
 // TODO(handwritten) JphVehicleConstraint_SetPreStepCallback: void JPH::VehicleConstraint::SetPreStepCallback(const StepCallback & inPreStepCallback)
 //     const StepCallback &: unresolved
-// TODO(handwritten) JphVehicleConstraint_GetPostCollideCallback: const StepCallback & JPH::VehicleConstraint::GetPostCollideCallback() const
-//     const StepCallback &: unresolved
 // TODO(handwritten) JphVehicleConstraint_SetPostCollideCallback: void JPH::VehicleConstraint::SetPostCollideCallback(const StepCallback & inPostCollideCallback)
-//     const StepCallback &: unresolved
-// TODO(handwritten) JphVehicleConstraint_GetPostStepCallback: const StepCallback & JPH::VehicleConstraint::GetPostStepCallback() const
 //     const StepCallback &: unresolved
 // TODO(handwritten) JphVehicleConstraint_SetPostStepCallback: void JPH::VehicleConstraint::SetPostStepCallback(const StepCallback & inPostStepCallback)
 //     const StepCallback &: unresolved

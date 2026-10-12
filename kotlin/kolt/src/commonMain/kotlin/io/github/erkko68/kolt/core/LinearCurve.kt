@@ -89,15 +89,5 @@ class LinearCurve internal constructor(internal val linearCurveHandle: NativePoi
         var y: Float
             get() = JphLinearCurvePoint_GetY(linearCurvePointHandle)
             set(value) = JphLinearCurvePoint_SetY(linearCurvePointHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphLinearCurvePoint_sCreateRTTI(rtti.rttiHandle)
-        }
     }
-    
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphLinearCurve_sCreateRTTI(rtti.rttiHandle)
     }
-}

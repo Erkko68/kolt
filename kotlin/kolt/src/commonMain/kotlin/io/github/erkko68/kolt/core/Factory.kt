@@ -42,26 +42,6 @@ class Factory internal constructor(internal val factoryHandle: NativePointer, ow
     fun createObject(name: String?): NativePointer =
         interopScope { JphFactory_CreateObject(factoryHandle, toInterop(name)) }
 
-    fun find(name: String?): RTTI? =
-        interopScope { JphFactory_Find_char(factoryHandle, toInterop(name)).takeIf { it != NullPointer }?.let { RTTI(it) } }
-
-    fun find(hash: Int): RTTI? =
-        JphFactory_Find_uint32(factoryHandle, hash).takeIf { it != NullPointer }?.let { RTTI(it) }
-
-    fun register(rtti: RTTI?): Boolean =
-        JphFactory_Register_RTTI(factoryHandle, rtti?.rttiHandle ?: NullPointer)
-
-    fun register(rttIs: List<RTTI>, number: Int): Boolean =
-        interopScope { JphFactory_Register_RTTIPtr_uint(factoryHandle, toInterop(rttIs.map { it.rttiHandle }), number) }
-
     fun clear() =
         JphFactory_Clear(factoryHandle)
-
-    val allClasses: List<RTTI>
-        get() = interopScope {
-            val count = JphFactory_GetAllClasses(factoryHandle, NullPointer, 0)
-            val returnedPointer = toInterop(List(count) { NullPointer })
-            JphFactory_GetAllClasses(factoryHandle, returnedPointer, count)
-            readPointers(returnedPointer, count).map { RTTI(it) }
-        }
 }

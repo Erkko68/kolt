@@ -12,9 +12,9 @@ extern "C" {
 void JphShapeSettings_addRef(const JphShapeSettings* self);
 void JphShapeSettings_release(const JphShapeSettings* self);
 JphSerializableObject* JphShapeSettings_asSerializableObject(JphShapeSettings* self);
-const JphRTTI* JphShapeSettings_GetRTTI(const JphShapeSettings* self);
-const void* JphShapeSettings_CastTo(const JphShapeSettings* self, const JphRTTI* inRTTI);
-void JphShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped const JPH::RTTI * JPH::ShapeSettings::GetRTTI() const: uses JPH::RTTI
+// skipped const void * JPH::ShapeSettings::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
+// skipped static void JPH::ShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphShape* JphShapeSettings_Create(const JphShapeSettings* self, char* outError, uint32_t outErrorCapacity);
 void JphShapeSettings_ClearCachedResult(JphShapeSettings* self);
 void JphShapeSettings_GetUserData(const JphShapeSettings* self, uint64_t* out);

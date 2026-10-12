@@ -65,9 +65,4 @@ class PointConstraintSettings internal constructor(internal val pointConstraintS
             Vec3(returned)
         }
         set(value) = interopScope { JphPointConstraintSettings_SetPoint2(pointConstraintSettingsHandle, toInterop(value.toArray())) }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphPointConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

@@ -11,7 +11,7 @@ extern "C" {
 // JPH::BodyInterface
 JphBodyInterface* JphBodyInterface_create(void);
 void JphBodyInterface_destroy(JphBodyInterface* self);
-void JphBodyInterface_Init(JphBodyInterface* self, JphBodyLockInterface* inBodyLockInterface, JphBodyManager* inBodyManager, JphBroadPhase* inBroadPhase);
+// skipped void JPH::BodyInterface::Init(BodyLockInterface & inBodyLockInterface, BodyManager & inBodyManager, BroadPhase & inBroadPhase): uses JPH::BodyManager
 JphBody* JphBodyInterface_CreateBody(JphBodyInterface* self, const JphBodyCreationSettings* inSettings);
 JphBody* JphBodyInterface_CreateSoftBody(JphBodyInterface* self, const JphSoftBodyCreationSettings* inSettings);
 JphBody* JphBodyInterface_CreateBodyWithID(JphBodyInterface* self, uint32_t inBodyID, const JphBodyCreationSettings* inSettings);

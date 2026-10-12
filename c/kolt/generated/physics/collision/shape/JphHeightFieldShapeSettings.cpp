@@ -28,10 +28,6 @@ JphSerializableObject* JphHeightFieldShapeSettings_asSerializableObject(JphHeigh
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphHeightFieldShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::HeightFieldShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphHeightFieldShapeSettings_DetermineMinAndMaxSample(const JphHeightFieldShapeSettings* self, float* outMinValue, float* outMaxValue, float* outQuantizationScale) {
     kolt::cpp(self)->DetermineMinAndMaxSample(*outMinValue, *outMaxValue, *outQuantizationScale);
 }

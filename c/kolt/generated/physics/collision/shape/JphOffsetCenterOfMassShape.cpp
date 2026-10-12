@@ -32,8 +32,4 @@ void JphOffsetCenterOfMassShape_GetOffset(const JphOffsetCenterOfMassShape* self
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetOffset());
 }
 
-void JphOffsetCenterOfMassShape_sRegister(void) {
-    JPH::OffsetCenterOfMassShape::sRegister();
-}
-
 } // extern "C"

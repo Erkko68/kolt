@@ -69,9 +69,4 @@ class RotatedTranslatedShape internal constructor(internal val rotatedTranslated
             returnedPointer.fromInterop(returned)
             Vec3(returned)
         }
-
-    companion object {
-        fun register() =
-            JphRotatedTranslatedShape_sRegister()
-    }
 }

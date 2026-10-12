@@ -30,6 +30,3 @@ internal external fun JphCylinderShape_GetRadius(self: NativePointer): Float
 
 @ExternalSymbolName("JphCylinderShape_GetConvexRadius")
 internal external fun JphCylinderShape_GetConvexRadius(self: NativePointer): Float
-
-@ExternalSymbolName("JphCylinderShape_sRegister")
-internal external fun JphCylinderShape_sRegister()

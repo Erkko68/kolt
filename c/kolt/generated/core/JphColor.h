@@ -14,8 +14,8 @@ JphColor* JphColor_create_uint32(uint32_t inColor);
 JphColor* JphColor_create_uint8_uint8_uint8_uint8(uint32_t inRed, uint32_t inGreen, uint32_t inBlue, uint32_t inAlpha);
 JphColor* JphColor_create_ColorArg_uint8(const JphColor* inRHS, uint32_t inAlpha);
 void JphColor_destroy(JphColor* self);
+// skipped uint8 & JPH::Color::operator()(uint inIdx): JPH::Color::operator\(\)
 uint32_t JphColor_GetUInt32(const JphColor* self);
-uint8_t* JphColor_invoke(JphColor* self, uint32_t inIdx);
 void JphColor_ToVec4(const JphColor* self, JphVec4* out);
 uint32_t JphColor_GetIntensity(const JphColor* self);
 void JphColor_sGetDistinctColor(int32_t inIndex, JphColor* out);

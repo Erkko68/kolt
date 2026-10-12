@@ -22,9 +22,6 @@ internal external fun JphSixDOFConstraintSettings_asConstraintSettings(self: Nat
 @ExternalSymbolName("JphSixDOFConstraintSettings_asSerializableObject")
 internal external fun JphSixDOFConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphSixDOFConstraintSettings_sCreateRTTI")
-internal external fun JphSixDOFConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSixDOFConstraintSettings_MakeFreeAxis")
 internal external fun JphSixDOFConstraintSettings_MakeFreeAxis(self: NativePointer, inAxis: Int)
 

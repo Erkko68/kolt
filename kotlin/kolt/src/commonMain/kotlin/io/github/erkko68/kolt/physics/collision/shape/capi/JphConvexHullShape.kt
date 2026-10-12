@@ -39,6 +39,3 @@ internal external fun JphConvexHullShape_GetNumVerticesInFace(self: NativePointe
 
 @ExternalSymbolName("JphConvexHullShape_GetFaceVertices")
 internal external fun JphConvexHullShape_GetFaceVertices(self: NativePointer, inFaceIndex: Int, inMaxVertices: Int, outVertices: NativePointer): Int
-
-@ExternalSymbolName("JphConvexHullShape_sRegister")
-internal external fun JphConvexHullShape_sRegister()

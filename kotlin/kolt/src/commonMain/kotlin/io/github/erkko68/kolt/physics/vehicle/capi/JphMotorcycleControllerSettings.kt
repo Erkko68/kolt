@@ -28,9 +28,6 @@ internal external fun JphMotorcycleControllerSettings_asVehicleControllerSetting
 @ExternalSymbolName("JphMotorcycleControllerSettings_asSerializableObject")
 internal external fun JphMotorcycleControllerSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphMotorcycleControllerSettings_sCreateRTTI")
-internal external fun JphMotorcycleControllerSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphMotorcycleControllerSettings_GetMaxLeanAngle")
 internal external fun JphMotorcycleControllerSettings_GetMaxLeanAngle(self: NativePointer): Float
 

@@ -13,15 +13,6 @@ internal external fun JphShapeSettings_release(self: NativePointer)
 @ExternalSymbolName("JphShapeSettings_asSerializableObject")
 internal external fun JphShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphShapeSettings_GetRTTI")
-internal external fun JphShapeSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphShapeSettings_CastTo")
-internal external fun JphShapeSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
-@ExternalSymbolName("JphShapeSettings_sCreateRTTI")
-internal external fun JphShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphShapeSettings_Create")
 internal external fun JphShapeSettings_Create(self: NativePointer, outError: NativePointer, outErrorCapacity: Int): NativePointer
 

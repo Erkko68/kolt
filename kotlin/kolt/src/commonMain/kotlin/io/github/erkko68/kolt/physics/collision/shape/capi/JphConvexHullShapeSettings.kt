@@ -25,9 +25,6 @@ internal external fun JphConvexHullShapeSettings_asShapeSettings(self: NativePoi
 @ExternalSymbolName("JphConvexHullShapeSettings_asSerializableObject")
 internal external fun JphConvexHullShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphConvexHullShapeSettings_sCreateRTTI")
-internal external fun JphConvexHullShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphConvexHullShapeSettings_GetPoints")
 internal external fun JphConvexHullShapeSettings_GetPoints(self: NativePointer, out: NativePointer, outCapacity: Int): Int
 

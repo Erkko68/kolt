@@ -101,9 +101,4 @@ class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandl
             fun of(value: Int) = entries.first { it.value == value }
         }
     }
-    
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphMeshShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
-}

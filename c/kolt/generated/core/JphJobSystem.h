@@ -8,31 +8,13 @@
 extern "C" {
 #endif
 
-// JPH::JobSystem::JobHandle
-JphJobSystemJobHandle* JphJobSystemJobHandle_create(void);
-// TODO(handwritten) JphJobSystemJobHandle_create_Job: JPH::JobSystem::JobHandle(Job * inJob)
-//     Job *: not accessible
-void JphJobSystemJobHandle_destroy(JphJobSystemJobHandle* self);
-bool JphJobSystemJobHandle_IsValid(const JphJobSystemJobHandle* self);
-bool JphJobSystemJobHandle_IsDone(const JphJobSystemJobHandle* self);
-void JphJobSystemJobHandle_AddDependency(const JphJobSystemJobHandle* self, int32_t inCount);
-void JphJobSystemJobHandle_RemoveDependency(const JphJobSystemJobHandle* self, int32_t inCount);
-void JphJobSystemJobHandle_sRemoveDependencies(const JphJobSystemJobHandle* inHandles, uint32_t inNumHandles, int32_t inCount);
-// TODO(handwritten) JphJobSystemJobHandle_sRemoveDependencies: template static void JPH::JobSystem::JobHandle::sRemoveDependencies(StaticArray<JobHandle, N> & inHandles, int inCount)
-//     function template: functionInstantiations lists none
-
-// JPH::JobSystem::Barrier
-void JphJobSystemBarrier_AddJob(JphJobSystemBarrier* self, const JphJobSystemJobHandle* inJob);
-void JphJobSystemBarrier_AddJobs(JphJobSystemBarrier* self, const JphJobSystemJobHandle* inHandles, uint32_t inNumHandles);
-
 // JPH::JobSystem
 void JphJobSystem_destroy(JphJobSystem* self);
+// skipped JobHandle JPH::JobSystem::CreateJob(const char * inName, ColorArg inColor, const JobFunction & inJobFunction, uint32 inNumDependencies): JPH::JobSystem::(JobHandle|Barrier|CreateJob|CreateBarrier|DestroyBarrier|WaitForJobs)
+// skipped Barrier * JPH::JobSystem::CreateBarrier(): JPH::JobSystem::(JobHandle|Barrier|CreateJob|CreateBarrier|DestroyBarrier|WaitForJobs)
+// skipped void JPH::JobSystem::DestroyBarrier(Barrier * inBarrier): JPH::JobSystem::(JobHandle|Barrier|CreateJob|CreateBarrier|DestroyBarrier|WaitForJobs)
+// skipped void JPH::JobSystem::WaitForJobs(Barrier * inBarrier): JPH::JobSystem::(JobHandle|Barrier|CreateJob|CreateBarrier|DestroyBarrier|WaitForJobs)
 int32_t JphJobSystem_GetMaxConcurrency(const JphJobSystem* self);
-// TODO(handwritten) JphJobSystem_CreateJob: JobHandle JPH::JobSystem::CreateJob(const char * inName, ColorArg inColor, const JobFunction & inJobFunction, uint32 inNumDependencies)
-//     JPH::JobSystem::JobHandle by value
-JphJobSystemBarrier* JphJobSystem_CreateBarrier(JphJobSystem* self);
-void JphJobSystem_DestroyBarrier(JphJobSystem* self, JphJobSystemBarrier* inBarrier);
-void JphJobSystem_WaitForJobs(JphJobSystem* self, JphJobSystemBarrier* inBarrier);
 
 
 #ifdef __cplusplus

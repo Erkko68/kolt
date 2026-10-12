@@ -109,9 +109,4 @@ class FixedConstraintSettings internal constructor(internal val fixedConstraintS
             Vec3(returned)
         }
         set(value) = interopScope { JphFixedConstraintSettings_SetAxisY2(fixedConstraintSettingsHandle, toInterop(value.toArray())) }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphFixedConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

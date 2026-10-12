@@ -32,10 +32,6 @@ JphSerializableObject* JphTriangleShapeSettings_asSerializableObject(JphTriangle
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphTriangleShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::TriangleShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphTriangleShapeSettings_GetV1(const JphTriangleShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mV1);
 }

@@ -61,9 +61,4 @@ open class WheelSettingsTV internal constructor(internal val wheelSettingsTVHand
         }
         return true
     }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphWheelSettingsTV_sCreateRTTI(rtti.rttiHandle)
-    }
 }

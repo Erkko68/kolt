@@ -13,20 +13,5 @@ internal external fun JphFactory_destroy(self: NativePointer)
 @ExternalSymbolName("JphFactory_CreateObject")
 internal external fun JphFactory_CreateObject(self: NativePointer, inName: NativePointer): NativePointer
 
-@ExternalSymbolName("JphFactory_Find_char")
-internal external fun JphFactory_Find_char(self: NativePointer, inName: NativePointer): NativePointer
-
-@ExternalSymbolName("JphFactory_Find_uint32")
-internal external fun JphFactory_Find_uint32(self: NativePointer, inHash: Int): NativePointer
-
-@ExternalSymbolName("JphFactory_Register_RTTI")
-internal external fun JphFactory_Register_RTTI(self: NativePointer, inRTTI: NativePointer): Boolean
-
-@ExternalSymbolName("JphFactory_Register_RTTIPtr_uint")
-internal external fun JphFactory_Register_RTTIPtr_uint(self: NativePointer, inRTTIs: NativePointer, inNumber: Int): Boolean
-
 @ExternalSymbolName("JphFactory_Clear")
 internal external fun JphFactory_Clear(self: NativePointer)
-
-@ExternalSymbolName("JphFactory_GetAllClasses")
-internal external fun JphFactory_GetAllClasses(self: NativePointer, out: NativePointer, outCapacity: Int): Int

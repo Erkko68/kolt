@@ -9,13 +9,13 @@ extern "C" {
 #endif
 
 // JPH::ConvexHullShape
+// skipped JPH::ConvexHullShape(const ConvexHullShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphConvexHullShape* JphConvexHullShape_create(void);
-// TODO(handwritten) JphConvexHullShape_create_ConvexHullShapeSettings_ShapeResult: JPH::ConvexHullShape(const ConvexHullShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 void JphConvexHullShape_addRef(const JphConvexHullShape* self);
 void JphConvexHullShape_release(const JphConvexHullShape* self);
 JphConvexShape* JphConvexHullShape_asConvexShape(JphConvexHullShape* self);
 JphShape* JphConvexHullShape_asShape(JphConvexHullShape* self);
+// skipped static void JPH::ConvexHullShape::sRegister(): JPH::.*::sRegister
 float JphConvexHullShape_GetConvexRadius(const JphConvexHullShape* self);
 uint32_t JphConvexHullShape_GetPlanes(const JphConvexHullShape* self, JphPlane* const* out, uint32_t outCapacity);
 uint32_t JphConvexHullShape_GetNumPoints(const JphConvexHullShape* self);
@@ -23,7 +23,6 @@ void JphConvexHullShape_GetPoint(const JphConvexHullShape* self, uint32_t inInde
 uint32_t JphConvexHullShape_GetNumFaces(const JphConvexHullShape* self);
 uint32_t JphConvexHullShape_GetNumVerticesInFace(const JphConvexHullShape* self, uint32_t inFaceIndex);
 uint32_t JphConvexHullShape_GetFaceVertices(const JphConvexHullShape* self, uint32_t inFaceIndex, uint32_t inMaxVertices, unsigned int* outVertices);
-void JphConvexHullShape_sRegister(void);
 
 
 #ifdef __cplusplus

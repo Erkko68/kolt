@@ -10,9 +10,6 @@ internal external fun JphLinearCurvePoint_create(): NativePointer
 @ExternalSymbolName("JphLinearCurvePoint_destroy")
 internal external fun JphLinearCurvePoint_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphLinearCurvePoint_sCreateRTTI")
-internal external fun JphLinearCurvePoint_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphLinearCurvePoint_GetX")
 internal external fun JphLinearCurvePoint_GetX(self: NativePointer): Float
 
@@ -30,9 +27,6 @@ internal external fun JphLinearCurve_create(): NativePointer
 
 @ExternalSymbolName("JphLinearCurve_destroy")
 internal external fun JphLinearCurve_destroy(self: NativePointer)
-
-@ExternalSymbolName("JphLinearCurve_sCreateRTTI")
-internal external fun JphLinearCurve_sCreateRTTI(inRTTI: NativePointer)
 
 @ExternalSymbolName("JphLinearCurve_Clear")
 internal external fun JphLinearCurve_Clear(self: NativePointer)

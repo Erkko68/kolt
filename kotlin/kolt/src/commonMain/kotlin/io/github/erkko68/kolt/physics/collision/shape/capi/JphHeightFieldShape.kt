@@ -57,6 +57,3 @@ internal external fun JphHeightFieldShape_GetMaterialList(self: NativePointer, o
 
 @ExternalSymbolName("JphHeightFieldShape_GetMaterials")
 internal external fun JphHeightFieldShape_GetMaterials(self: NativePointer, inX: Int, inY: Int, inSizeX: Int, inSizeY: Int, outMaterials: NativePointer, inMaterialsStride: Long)
-
-@ExternalSymbolName("JphHeightFieldShape_sRegister")
-internal external fun JphHeightFieldShape_sRegister()

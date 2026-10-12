@@ -21,6 +21,3 @@ internal external fun JphMutableCompoundShapeSettings_asShapeSettings(self: Nati
 
 @ExternalSymbolName("JphMutableCompoundShapeSettings_asSerializableObject")
 internal external fun JphMutableCompoundShapeSettings_asSerializableObject(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphMutableCompoundShapeSettings_sCreateRTTI")
-internal external fun JphMutableCompoundShapeSettings_sCreateRTTI(inRTTI: NativePointer)

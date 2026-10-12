@@ -45,12 +45,6 @@ open class PhysicsMaterial internal constructor(internal val physicsMaterialHand
     override fun close() =
         closeOnce { JphPhysicsMaterial_release(physicsMaterialHandle) }
 
-    val rtti: RTTI?
-        get() = JphPhysicsMaterial_GetRTTI(physicsMaterialHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
-
-    fun castTo(rtti: RTTI?): NativePointer =
-        JphPhysicsMaterial_CastTo(physicsMaterialHandle, rtti?.rttiHandle ?: NullPointer)
-
     val debugName: String?
         get() = stringFromInterop(JphPhysicsMaterial_GetDebugName(physicsMaterialHandle))
 
@@ -73,9 +67,6 @@ open class PhysicsMaterial internal constructor(internal val physicsMaterialHand
     }
 
     companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphPhysicsMaterial_sCreateRTTI(rtti.rttiHandle)
-
         fun restoreFromBinaryState(stream: StreamIn): PhysicsMaterial =
             interopScope {
                 val error = ByteArray(256)

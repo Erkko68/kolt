@@ -28,10 +28,6 @@ JphSerializableObject* JphHingeConstraintSettings_asSerializableObject(JphHingeC
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphHingeConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::HingeConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 JphEConstraintSpace JphHingeConstraintSettings_GetSpace(const JphHingeConstraintSettings* self) {
     return static_cast<JphEConstraintSpace>(kolt::cpp(self)->mSpace);
 }

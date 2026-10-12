@@ -45,12 +45,6 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
     override fun close() =
         closeOnce { JphWheelSettings_release(wheelSettingsHandle) }
 
-    val rtti: RTTI?
-        get() = JphWheelSettings_GetRTTI(wheelSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
-
-    fun castTo(rtti: RTTI?): NativePointer =
-        JphWheelSettings_CastTo(wheelSettingsHandle, rtti?.rttiHandle ?: NullPointer)
-
     open fun saveBinaryState(stream: StreamOut) =
         JphWheelSettings_SaveBinaryState(wheelSettingsHandle, stream.streamOutHandle)
 
@@ -156,10 +150,5 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
             else -> return false
         }
         return true
-    }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphWheelSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

@@ -63,9 +63,4 @@ class RotatedTranslatedShapeSettings internal constructor(internal val rotatedTr
             Quat(returned)
         }
         set(value) = interopScope { JphRotatedTranslatedShapeSettings_SetRotation(rotatedTranslatedShapeSettingsHandle, toInterop(value.toArray())) }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphRotatedTranslatedShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

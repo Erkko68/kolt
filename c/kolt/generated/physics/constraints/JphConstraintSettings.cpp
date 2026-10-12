@@ -43,18 +43,6 @@ JphSerializableObject* JphConstraintSettings_asSerializableObject(JphConstraintS
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphConstraintSettings_GetRTTI(const JphConstraintSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphConstraintSettings_CastTo(const JphConstraintSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
-void JphConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::ConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphConstraintSettings_SaveBinaryState(const JphConstraintSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

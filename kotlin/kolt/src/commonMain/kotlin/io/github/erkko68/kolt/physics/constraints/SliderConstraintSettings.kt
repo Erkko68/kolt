@@ -140,9 +140,4 @@ class SliderConstraintSettings internal constructor(internal val sliderConstrain
             returned
         }
         set(value) = JphSliderConstraintSettings_SetMotorSettings(sliderConstraintSettingsHandle, value.motorSettingsHandle)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphSliderConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

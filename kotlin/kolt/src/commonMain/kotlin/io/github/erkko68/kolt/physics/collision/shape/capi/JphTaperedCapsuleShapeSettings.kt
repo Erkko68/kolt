@@ -25,9 +25,6 @@ internal external fun JphTaperedCapsuleShapeSettings_asShapeSettings(self: Nativ
 @ExternalSymbolName("JphTaperedCapsuleShapeSettings_asSerializableObject")
 internal external fun JphTaperedCapsuleShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphTaperedCapsuleShapeSettings_sCreateRTTI")
-internal external fun JphTaperedCapsuleShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphTaperedCapsuleShapeSettings_IsValid")
 internal external fun JphTaperedCapsuleShapeSettings_IsValid(self: NativePointer): Boolean
 

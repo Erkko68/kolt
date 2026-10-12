@@ -16,10 +16,6 @@ void JphSpringSettings_destroy(JphSpringSettings* self) {
     delete kolt::cpp(self);
 }
 
-void JphSpringSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SpringSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphSpringSettings_SaveBinaryState(const JphSpringSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

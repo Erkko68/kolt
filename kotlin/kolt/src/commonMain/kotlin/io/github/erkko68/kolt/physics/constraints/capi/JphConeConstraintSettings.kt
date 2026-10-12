@@ -22,9 +22,6 @@ internal external fun JphConeConstraintSettings_asConstraintSettings(self: Nativ
 @ExternalSymbolName("JphConeConstraintSettings_asSerializableObject")
 internal external fun JphConeConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphConeConstraintSettings_sCreateRTTI")
-internal external fun JphConeConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphConeConstraintSettings_GetSpace")
 internal external fun JphConeConstraintSettings_GetSpace(self: NativePointer): Int
 

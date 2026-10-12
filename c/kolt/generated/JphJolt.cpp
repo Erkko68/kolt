@@ -16,16 +16,8 @@ bool Jph_IsPositionMotor(JphEMotorState inMotorState) {
     return JPH::IsPositionMotor(static_cast<JPH::EMotorState>(inMotorState));
 }
 
-bool Jph_VerifyJoltVersionIDInternal(uint64_t inVersionID) {
-    return JPH::VerifyJoltVersionIDInternal(inVersionID);
-}
-
 bool Jph_VerifyJoltVersionID(void) {
     return JPH::VerifyJoltVersionID();
-}
-
-void Jph_RegisterTypesInternal(uint64_t inVersionID) {
-    JPH::RegisterTypesInternal(inVersionID);
 }
 
 void Jph_RegisterTypes(void) {

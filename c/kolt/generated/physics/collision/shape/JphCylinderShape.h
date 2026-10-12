@@ -9,18 +9,17 @@ extern "C" {
 #endif
 
 // JPH::CylinderShape
+// skipped JPH::CylinderShape(const CylinderShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphCylinderShape* JphCylinderShape_create(void);
-// TODO(handwritten) JphCylinderShape_create_CylinderShapeSettings_ShapeResult: JPH::CylinderShape(const CylinderShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 JphCylinderShape* JphCylinderShape_create_float_float_float_PhysicsMaterial(float inHalfHeight, float inRadius, float inConvexRadius, const JphPhysicsMaterial* inMaterial);
 void JphCylinderShape_addRef(const JphCylinderShape* self);
 void JphCylinderShape_release(const JphCylinderShape* self);
 JphConvexShape* JphCylinderShape_asConvexShape(JphCylinderShape* self);
 JphShape* JphCylinderShape_asShape(JphCylinderShape* self);
+// skipped static void JPH::CylinderShape::sRegister(): JPH::.*::sRegister
 float JphCylinderShape_GetHalfHeight(const JphCylinderShape* self);
 float JphCylinderShape_GetRadius(const JphCylinderShape* self);
 float JphCylinderShape_GetConvexRadius(const JphCylinderShape* self);
-void JphCylinderShape_sRegister(void);
 
 
 #ifdef __cplusplus

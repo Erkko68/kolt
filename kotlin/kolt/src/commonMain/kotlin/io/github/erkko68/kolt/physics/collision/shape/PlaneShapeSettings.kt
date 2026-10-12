@@ -58,9 +58,4 @@ class PlaneShapeSettings internal constructor(internal val planeShapeSettingsHan
     var halfExtent: Float
         get() = JphPlaneShapeSettings_GetHalfExtent(planeShapeSettingsHandle)
         set(value) = JphPlaneShapeSettings_SetHalfExtent(planeShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphPlaneShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

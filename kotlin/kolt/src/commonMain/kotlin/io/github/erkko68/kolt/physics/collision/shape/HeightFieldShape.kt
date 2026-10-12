@@ -123,9 +123,4 @@ class HeightFieldShape internal constructor(internal val heightFieldShapeHandle:
             JphHeightFieldShape_GetMaterials(heightFieldShapeHandle, x, y, sizeX, sizeY, materialsPointer, materialsStride)
             materialsPointer.fromInterop(materials)
         }
-
-    companion object {
-        fun register() =
-            JphHeightFieldShape_sRegister()
-    }
 }

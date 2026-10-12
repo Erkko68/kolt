@@ -60,9 +60,4 @@ class TaperedCapsuleShapeSettings internal constructor(internal val taperedCapsu
     var bottomRadius: Float
         get() = JphTaperedCapsuleShapeSettings_GetBottomRadius(taperedCapsuleShapeSettingsHandle)
         set(value) = JphTaperedCapsuleShapeSettings_SetBottomRadius(taperedCapsuleShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphTaperedCapsuleShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

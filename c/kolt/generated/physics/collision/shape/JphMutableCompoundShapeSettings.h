@@ -15,7 +15,7 @@ void JphMutableCompoundShapeSettings_release(const JphMutableCompoundShapeSettin
 JphCompoundShapeSettings* JphMutableCompoundShapeSettings_asCompoundShapeSettings(JphMutableCompoundShapeSettings* self);
 JphShapeSettings* JphMutableCompoundShapeSettings_asShapeSettings(JphMutableCompoundShapeSettings* self);
 JphSerializableObject* JphMutableCompoundShapeSettings_asSerializableObject(JphMutableCompoundShapeSettings* self);
-void JphMutableCompoundShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::MutableCompoundShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 
 
 #ifdef __cplusplus

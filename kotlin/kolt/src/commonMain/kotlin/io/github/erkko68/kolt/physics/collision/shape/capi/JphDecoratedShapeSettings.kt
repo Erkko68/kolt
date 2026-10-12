@@ -16,9 +16,6 @@ internal external fun JphDecoratedShapeSettings_asShapeSettings(self: NativePoin
 @ExternalSymbolName("JphDecoratedShapeSettings_asSerializableObject")
 internal external fun JphDecoratedShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphDecoratedShapeSettings_sCreateRTTI")
-internal external fun JphDecoratedShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphDecoratedShapeSettings_GetInnerShape")
 internal external fun JphDecoratedShapeSettings_GetInnerShape(self: NativePointer): NativePointer
 

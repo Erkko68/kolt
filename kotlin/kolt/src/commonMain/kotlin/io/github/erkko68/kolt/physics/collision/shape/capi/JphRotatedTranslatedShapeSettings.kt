@@ -28,9 +28,6 @@ internal external fun JphRotatedTranslatedShapeSettings_asShapeSettings(self: Na
 @ExternalSymbolName("JphRotatedTranslatedShapeSettings_asSerializableObject")
 internal external fun JphRotatedTranslatedShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphRotatedTranslatedShapeSettings_sCreateRTTI")
-internal external fun JphRotatedTranslatedShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphRotatedTranslatedShapeSettings_GetPosition")
 internal external fun JphRotatedTranslatedShapeSettings_GetPosition(self: NativePointer, out: NativePointer)
 

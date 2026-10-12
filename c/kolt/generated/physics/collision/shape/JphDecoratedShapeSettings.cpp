@@ -20,10 +20,6 @@ JphSerializableObject* JphDecoratedShapeSettings_asSerializableObject(JphDecorat
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphDecoratedShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::DecoratedShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 const JphShapeSettings* JphDecoratedShapeSettings_GetInnerShape(const JphDecoratedShapeSettings* self) {
     return kolt::c((kolt::cpp(self)->mInnerShape).GetPtr());
 }

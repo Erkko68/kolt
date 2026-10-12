@@ -15,7 +15,7 @@ void JphFixedConstraintSettings_release(const JphFixedConstraintSettings* self);
 JphTwoBodyConstraintSettings* JphFixedConstraintSettings_asTwoBodyConstraintSettings(JphFixedConstraintSettings* self);
 JphConstraintSettings* JphFixedConstraintSettings_asConstraintSettings(JphFixedConstraintSettings* self);
 JphSerializableObject* JphFixedConstraintSettings_asSerializableObject(JphFixedConstraintSettings* self);
-void JphFixedConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::FixedConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphEConstraintSpace JphFixedConstraintSettings_GetSpace(const JphFixedConstraintSettings* self);
 void JphFixedConstraintSettings_SetSpace(JphFixedConstraintSettings* self, JphEConstraintSpace value);
 bool JphFixedConstraintSettings_GetAutoDetectPoint(const JphFixedConstraintSettings* self);

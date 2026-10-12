@@ -271,19 +271,6 @@ open class MotionProperties internal constructor(internal val motionPropertiesHa
     fun subAngularVelocityStep(angularVelocityChange: Vec3) =
         interopScope { JphMotionProperties_SubAngularVelocityStep(motionPropertiesHandle, toInterop(angularVelocityChange.toArray())) }
 
-    fun applyGyroscopicForceInternal(bodyRotation: Quat, deltaTime: Float) =
-        interopScope { JphMotionProperties_ApplyGyroscopicForceInternal(motionPropertiesHandle, toInterop(bodyRotation.toArray()), deltaTime) }
-
-    fun applyForceTorqueAndDragInternal(bodyRotation: Quat, gravity: Vec3, deltaTime: Float) =
-        interopScope { JphMotionProperties_ApplyForceTorqueAndDragInternal(motionPropertiesHandle, toInterop(bodyRotation.toArray()), toInterop(gravity.toArray()), deltaTime) }
-
-    var islandIndexInternal: Int
-        get() = JphMotionProperties_GetIslandIndexInternal(motionPropertiesHandle)
-        set(index) = JphMotionProperties_SetIslandIndexInternal(motionPropertiesHandle, index)
-
-    val indexInActiveBodiesInternal: Int
-        get() = JphMotionProperties_GetIndexInActiveBodiesInternal(motionPropertiesHandle)
-
     fun resetSleepTestTimer() =
         JphMotionProperties_ResetSleepTestTimer(motionPropertiesHandle)
 

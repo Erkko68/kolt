@@ -25,9 +25,6 @@ internal external fun JphTriangleShapeSettings_asShapeSettings(self: NativePoint
 @ExternalSymbolName("JphTriangleShapeSettings_asSerializableObject")
 internal external fun JphTriangleShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphTriangleShapeSettings_sCreateRTTI")
-internal external fun JphTriangleShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphTriangleShapeSettings_GetV1")
 internal external fun JphTriangleShapeSettings_GetV1(self: NativePointer, out: NativePointer)
 

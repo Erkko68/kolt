@@ -56,9 +56,4 @@ class CapsuleShapeSettings internal constructor(internal val capsuleShapeSetting
     var halfHeightOfCylinder: Float
         get() = JphCapsuleShapeSettings_GetHalfHeightOfCylinder(capsuleShapeSettingsHandle)
         set(value) = JphCapsuleShapeSettings_SetHalfHeightOfCylinder(capsuleShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphCapsuleShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

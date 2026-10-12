@@ -28,10 +28,6 @@ JphSerializableObject* JphSixDOFConstraintSettings_asSerializableObject(JphSixDO
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphSixDOFConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SixDOFConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphSixDOFConstraintSettings_MakeFreeAxis(JphSixDOFConstraintSettings* self, JphSixDOFConstraintSettingsEAxis inAxis) {
     kolt::cpp(self)->MakeFreeAxis(static_cast<JPH::SixDOFConstraintSettings::EAxis>(inAxis));
 }

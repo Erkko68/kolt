@@ -36,8 +36,4 @@ float JphCapsuleShape_GetHalfHeightOfCylinder(const JphCapsuleShape* self) {
     return kolt::cpp(self)->GetHalfHeightOfCylinder();
 }
 
-void JphCapsuleShape_sRegister(void) {
-    JPH::CapsuleShape::sRegister();
-}
-
 } // extern "C"

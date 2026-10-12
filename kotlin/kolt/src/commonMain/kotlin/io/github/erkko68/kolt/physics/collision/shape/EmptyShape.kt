@@ -42,9 +42,4 @@ class EmptyShape internal constructor(internal val emptyShapeHandle: NativePoint
 
     override fun close() =
         closeOnce { JphEmptyShape_release(emptyShapeHandle) }
-
-    companion object {
-        fun register() =
-            JphEmptyShape_sRegister()
-    }
 }

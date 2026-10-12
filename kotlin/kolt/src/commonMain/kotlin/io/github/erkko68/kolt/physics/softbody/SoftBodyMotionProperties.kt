@@ -147,29 +147,6 @@ class SoftBodyMotionProperties internal constructor(internal val softBodyMotionP
     fun customUpdate(deltaTime: Float, softBody: Body, system: PhysicsSystem) =
         JphSoftBodyMotionProperties_CustomUpdate(softBodyMotionPropertiesHandle, deltaTime, softBody.bodyHandle, system.physicsSystemHandle)
 
-    fun initializeUpdateContext(deltaTime: Float, softBody: Body, system: PhysicsSystem, context: SoftBodyUpdateContext) =
-        JphSoftBodyMotionProperties_InitializeUpdateContext(softBodyMotionPropertiesHandle, deltaTime, softBody.bodyHandle, system.physicsSystemHandle, context.softBodyUpdateContextHandle)
-
-    fun determineCollidingShapes(context: SoftBodyUpdateContext, system: PhysicsSystem, bodyLockInterface: BodyLockInterface) =
-        JphSoftBodyMotionProperties_DetermineCollidingShapes(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, system.physicsSystemHandle, bodyLockInterface.bodyLockInterfaceHandle)
-
-    fun parallelUpdate(context: SoftBodyUpdateContext, physicsSettings: PhysicsSettings): SoftBodyMotionProperties.EStatus =
-        SoftBodyMotionProperties.EStatus.of(JphSoftBodyMotionProperties_ParallelUpdate(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, physicsSettings.physicsSettingsHandle))
-
-    fun updateRigidBodyVelocities(context: SoftBodyUpdateContext, bodyInterface: BodyInterface) =
-        JphSoftBodyMotionProperties_UpdateRigidBodyVelocities(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, bodyInterface.bodyInterfaceHandle)
-
     fun requestContactCallback() =
         JphSoftBodyMotionProperties_RequestContactCallback(softBodyMotionPropertiesHandle)
-
-    /** C++ `JPH::SoftBodyMotionProperties::EStatus`. */
-    enum class EStatus(internal val value: Int) {
-        NoWork(1),
-        DidWork(2),
-        Done(4);
-    
-        internal companion object {
-            fun of(value: Int) = entries.first { it.value == value }
-        }
-    }
-    }
+}

@@ -9,17 +9,16 @@ extern "C" {
 #endif
 
 // JPH::CapsuleShape
+// skipped JPH::CapsuleShape(const CapsuleShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphCapsuleShape* JphCapsuleShape_create(void);
-// TODO(handwritten) JphCapsuleShape_create_CapsuleShapeSettings_ShapeResult: JPH::CapsuleShape(const CapsuleShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 JphCapsuleShape* JphCapsuleShape_create_float_float_PhysicsMaterial(float inHalfHeightOfCylinder, float inRadius, const JphPhysicsMaterial* inMaterial);
 void JphCapsuleShape_addRef(const JphCapsuleShape* self);
 void JphCapsuleShape_release(const JphCapsuleShape* self);
 JphConvexShape* JphCapsuleShape_asConvexShape(JphCapsuleShape* self);
 JphShape* JphCapsuleShape_asShape(JphCapsuleShape* self);
+// skipped static void JPH::CapsuleShape::sRegister(): JPH::.*::sRegister
 float JphCapsuleShape_GetRadius(const JphCapsuleShape* self);
 float JphCapsuleShape_GetHalfHeightOfCylinder(const JphCapsuleShape* self);
-void JphCapsuleShape_sRegister(void);
 
 
 #ifdef __cplusplus

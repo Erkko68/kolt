@@ -51,9 +51,4 @@ class OffsetCenterOfMassShape internal constructor(internal val offsetCenterOfMa
             returnedPointer.fromInterop(returned)
             Vec3(returned)
         }
-
-    companion object {
-        fun register() =
-            JphOffsetCenterOfMassShape_sRegister()
-    }
 }

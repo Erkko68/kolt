@@ -25,6 +25,9 @@ void JphShapeStats_SetNumTriangles(JphShapeStats* self, uint32_t value);
 // JPH::Shape
 void JphShape_addRef(const JphShape* self);
 void JphShape_release(const JphShape* self);
+// skipped void JPH::Shape::CollideSoftBodyVertices(Mat44Arg inCenterOfMassTransform, Vec3Arg inScale, const CollideSoftBodyVertexIterator & inVertices, uint inNumVertices, int inCollidingShapeIndex) const: JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)
+// skipped void JPH::Shape::RestoreMaterialState(const PhysicsMaterialRefC * inMaterials, uint inNumMaterials): JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)
+// skipped void JPH::Shape::RestoreSubShapeState(const ShapeRefC * inSubShapes, uint inNumShapes): JPH::Shape::(CollideSoftBodyVertices|RestoreMaterialState|RestoreSubShapeState)
 JphEShapeType JphShape_GetType(const JphShape* self);
 JphEShapeSubType JphShape_GetSubType(const JphShape* self);
 void JphShape_GetUserData(const JphShape* self, uint64_t* out);
@@ -47,8 +50,6 @@ void JphShape_GetSubmergedVolume(const JphShape* self, const JphMat44* inCenterO
 bool JphShape_CastRay_SubShapeIDCreator_RayCastResult(const JphShape* self, const JphRayCast* inRay, const JphSubShapeIDCreator* inSubShapeIDCreator, JphRayCastResult* ioHit);
 void JphShape_CastRay_RayCastSettings_SubShapeIDCreator_CastRayCollector_ShapeFilter(const JphShape* self, const JphRayCast* inRay, const JphRayCastSettings* inRayCastSettings, const JphSubShapeIDCreator* inSubShapeIDCreator, JphCastRayCollector* ioCollector, const JphShapeFilter* inShapeFilter);
 void JphShape_CollidePoint(const JphShape* self, const JphVec3* inPoint, const JphSubShapeIDCreator* inSubShapeIDCreator, JphCollidePointCollector* ioCollector, const JphShapeFilter* inShapeFilter);
-// TODO(handwritten) JphShape_CollideSoftBodyVertices: void JPH::Shape::CollideSoftBodyVertices(Mat44Arg inCenterOfMassTransform, Vec3Arg inScale, const CollideSoftBodyVertexIterator & inVertices, uint inNumVertices, int inCollidingShapeIndex) const
-//     const CollideSoftBodyVertexIterator &: JPH::CollideSoftBodyVertexIterator
 void JphShape_CollectTransformedShapes(const JphShape* self, const JphAABox* inBox, const JphVec3* inPositionCOM, const JphQuat* inRotation, const JphVec3* inScale, const JphSubShapeIDCreator* inSubShapeIDCreator, JphTransformedShapeCollector* ioCollector, const JphShapeFilter* inShapeFilter);
 void JphShape_TransformShape(const JphShape* self, const JphMat44* inCenterOfMassTransform, JphTransformedShapeCollector* ioCollector);
 JphShape* JphShape_ScaleShape(const JphShape* self, const JphVec3* inScale, char* outError, uint32_t outErrorCapacity);
@@ -57,11 +58,7 @@ int32_t JphShape_GetTrianglesNext(const JphShape* self, JphShapeGetTrianglesCont
 void JphShape_SaveBinaryState(const JphShape* self, JphStreamOut* inStream);
 JphShape* JphShape_sRestoreFromBinaryState(JphStreamIn* inStream, char* outError, uint32_t outErrorCapacity);
 uint32_t JphShape_SaveMaterialState(const JphShape* self, const JphPhysicsMaterial** out, uint32_t outCapacity);
-// TODO(handwritten) JphShape_RestoreMaterialState: void JPH::Shape::RestoreMaterialState(const PhysicsMaterialRefC * inMaterials, uint inNumMaterials)
-//     RefConst<PhysicsMaterial>: by pointer or non-const reference
 uint32_t JphShape_SaveSubShapeState(const JphShape* self, const JphShape** out, uint32_t outCapacity);
-// TODO(handwritten) JphShape_RestoreSubShapeState: void JPH::Shape::RestoreSubShapeState(const ShapeRefC * inSubShapes, uint inNumShapes)
-//     RefConst<Shape>: by pointer or non-const reference
 // TODO(handwritten) JphShape_SaveWithChildren: void JPH::Shape::SaveWithChildren(StreamOut & inStream, ShapeToIDMap & ioShapeMap, MaterialToIDMap & ioMaterialMap) const
 //     ShapeToIDMap &: JPH::StreamUtils::ObjectToIDMap
 // TODO(handwritten) JphShape_sRestoreWithChildren: static ShapeResult JPH::Shape::sRestoreWithChildren(StreamIn & inStream, IDToShapeMap & ioShapeMap, IDToMaterialMap & ioMaterialMap)

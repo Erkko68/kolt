@@ -56,9 +56,4 @@ class BoxShapeSettings internal constructor(internal val boxShapeSettingsHandle:
     var convexRadius: Float
         get() = JphBoxShapeSettings_GetConvexRadius(boxShapeSettingsHandle)
         set(value) = JphBoxShapeSettings_SetConvexRadius(boxShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphBoxShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

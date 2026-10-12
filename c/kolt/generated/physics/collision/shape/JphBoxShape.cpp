@@ -36,8 +36,4 @@ float JphBoxShape_GetConvexRadius(const JphBoxShape* self) {
     return kolt::cpp(self)->GetConvexRadius();
 }
 
-void JphBoxShape_sRegister(void) {
-    JPH::BoxShape::sRegister();
-}
-
 } // extern "C"

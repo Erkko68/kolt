@@ -132,10 +132,6 @@ void JphSoftBodySharedSettingsVertex_destroy(JphSoftBodySharedSettingsVertex* se
     delete kolt::cpp(self);
 }
 
-void JphSoftBodySharedSettingsVertex_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::Vertex::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphSoftBodySharedSettingsVertex_GetPosition(const JphSoftBodySharedSettingsVertex* self, JphFloat3* out) {
     *out = kolt::mirror<JphFloat3>(kolt::cpp(self)->mPosition);
 }
@@ -172,10 +168,6 @@ void JphSoftBodySharedSettingsFace_destroy(JphSoftBodySharedSettingsFace* self) 
     delete kolt::cpp(self);
 }
 
-void JphSoftBodySharedSettingsFace_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::Face::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 bool JphSoftBodySharedSettingsFace_IsDegenerate(const JphSoftBodySharedSettingsFace* self) {
     return kolt::cpp(self)->IsDegenerate();
 }
@@ -206,10 +198,6 @@ JphSoftBodySharedSettingsEdge* JphSoftBodySharedSettingsEdge_create_uint32_uint3
 
 void JphSoftBodySharedSettingsEdge_destroy(JphSoftBodySharedSettingsEdge* self) {
     delete kolt::cpp(self);
-}
-
-void JphSoftBodySharedSettingsEdge_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::Edge::sCreateRTTI(*kolt::cpp(inRTTI));
 }
 
 uint32_t JphSoftBodySharedSettingsEdge_GetMinVertexIndex(const JphSoftBodySharedSettingsEdge* self) {
@@ -252,10 +240,6 @@ void JphSoftBodySharedSettingsDihedralBend_destroy(JphSoftBodySharedSettingsDihe
     delete kolt::cpp(self);
 }
 
-void JphSoftBodySharedSettingsDihedralBend_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::DihedralBend::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 uint32_t JphSoftBodySharedSettingsDihedralBend_GetMinVertexIndex(const JphSoftBodySharedSettingsDihedralBend* self) {
     return kolt::cpp(self)->GetMinVertexIndex();
 }
@@ -294,10 +278,6 @@ JphSoftBodySharedSettingsVolume* JphSoftBodySharedSettingsVolume_create_uint32_u
 
 void JphSoftBodySharedSettingsVolume_destroy(JphSoftBodySharedSettingsVolume* self) {
     delete kolt::cpp(self);
-}
-
-void JphSoftBodySharedSettingsVolume_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::Volume::sCreateRTTI(*kolt::cpp(inRTTI));
 }
 
 uint32_t JphSoftBodySharedSettingsVolume_GetMinVertexIndex(const JphSoftBodySharedSettingsVolume* self) {
@@ -340,10 +320,6 @@ void JphSoftBodySharedSettingsInvBind_destroy(JphSoftBodySharedSettingsInvBind* 
     delete kolt::cpp(self);
 }
 
-void JphSoftBodySharedSettingsInvBind_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::InvBind::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 uint32_t JphSoftBodySharedSettingsInvBind_GetJointIndex(const JphSoftBodySharedSettingsInvBind* self) {
     return kolt::cpp(self)->mJointIndex;
 }
@@ -372,10 +348,6 @@ void JphSoftBodySharedSettingsSkinWeight_destroy(JphSoftBodySharedSettingsSkinWe
     delete kolt::cpp(self);
 }
 
-void JphSoftBodySharedSettingsSkinWeight_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::SkinWeight::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 uint32_t JphSoftBodySharedSettingsSkinWeight_GetInvBindIndex(const JphSoftBodySharedSettingsSkinWeight* self) {
     return kolt::cpp(self)->mInvBindIndex;
 }
@@ -402,10 +374,6 @@ JphSoftBodySharedSettingsSkinned* JphSoftBodySharedSettingsSkinned_create_uint32
 
 void JphSoftBodySharedSettingsSkinned_destroy(JphSoftBodySharedSettingsSkinned* self) {
     delete kolt::cpp(self);
-}
-
-void JphSoftBodySharedSettingsSkinned_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::Skinned::sCreateRTTI(*kolt::cpp(inRTTI));
 }
 
 void JphSoftBodySharedSettingsSkinned_NormalizeWeights(JphSoftBodySharedSettingsSkinned* self) {
@@ -472,10 +440,6 @@ void JphSoftBodySharedSettingsLRA_destroy(JphSoftBodySharedSettingsLRA* self) {
     delete kolt::cpp(self);
 }
 
-void JphSoftBodySharedSettingsLRA_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::LRA::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 uint32_t JphSoftBodySharedSettingsLRA_GetMinVertexIndex(const JphSoftBodySharedSettingsLRA* self) {
     return kolt::cpp(self)->GetMinVertexIndex();
 }
@@ -506,10 +470,6 @@ JphSoftBodySharedSettingsRodStretchShear* JphSoftBodySharedSettingsRodStretchShe
 
 void JphSoftBodySharedSettingsRodStretchShear_destroy(JphSoftBodySharedSettingsRodStretchShear* self) {
     delete kolt::cpp(self);
-}
-
-void JphSoftBodySharedSettingsRodStretchShear_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::RodStretchShear::sCreateRTTI(*kolt::cpp(inRTTI));
 }
 
 uint32_t JphSoftBodySharedSettingsRodStretchShear_GetMinVertexIndex(const JphSoftBodySharedSettingsRodStretchShear* self) {
@@ -568,10 +528,6 @@ void JphSoftBodySharedSettingsRodBendTwist_destroy(JphSoftBodySharedSettingsRodB
     delete kolt::cpp(self);
 }
 
-void JphSoftBodySharedSettingsRodBendTwist_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::RodBendTwist::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 uint32_t JphSoftBodySharedSettingsRodBendTwist_GetRod(const JphSoftBodySharedSettingsRodBendTwist* self, uint32_t* out, uint32_t outCapacity) {
     return kolt::copy(kolt::cpp(self)->mRod, outCapacity, [&](auto& x, uint32_t i) { out[i] = x; });
 }
@@ -606,10 +562,6 @@ void JphSoftBodySharedSettings_addRef(const JphSoftBodySharedSettings* self) {
 
 void JphSoftBodySharedSettings_release(const JphSoftBodySharedSettings* self) {
     kolt::cpp(self)->Release();
-}
-
-void JphSoftBodySharedSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodySharedSettings::sCreateRTTI(*kolt::cpp(inRTTI));
 }
 
 void JphSoftBodySharedSettings_CreateConstraints(JphSoftBodySharedSettings* self, const JphSoftBodySharedSettingsVertexAttributes* inVertexAttributes, uint32_t inVertexAttributesLength, JphSoftBodySharedSettingsEBendType inBendType, float inAngleTolerance) {

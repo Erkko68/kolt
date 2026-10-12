@@ -12,10 +12,6 @@ void JphMassProperties_destroy(JphMassProperties* self) {
     delete kolt::cpp(self);
 }
 
-void JphMassProperties_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::MassProperties::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 bool JphMassProperties_DecomposePrincipalMomentsOfInertia(const JphMassProperties* self, JphMat44* outRotation, JphVec3* outDiagonal) {
     return kolt::cpp(self)->DecomposePrincipalMomentsOfInertia(kolt::InOut<JPH::Mat44, JphMat44>(outRotation), kolt::InOut<JPH::Vec3, JphVec3>(outDiagonal));
 }

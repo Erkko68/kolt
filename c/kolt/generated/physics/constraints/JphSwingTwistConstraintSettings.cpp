@@ -28,10 +28,6 @@ JphSerializableObject* JphSwingTwistConstraintSettings_asSerializableObject(JphS
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphSwingTwistConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SwingTwistConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 JphEConstraintSpace JphSwingTwistConstraintSettings_GetSpace(const JphSwingTwistConstraintSettings* self) {
     return static_cast<JphEConstraintSpace>(kolt::cpp(self)->mSpace);
 }

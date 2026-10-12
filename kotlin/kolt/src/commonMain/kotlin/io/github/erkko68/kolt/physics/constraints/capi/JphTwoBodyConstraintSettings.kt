@@ -16,8 +16,5 @@ internal external fun JphTwoBodyConstraintSettings_asConstraintSettings(self: Na
 @ExternalSymbolName("JphTwoBodyConstraintSettings_asSerializableObject")
 internal external fun JphTwoBodyConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphTwoBodyConstraintSettings_sCreateRTTI")
-internal external fun JphTwoBodyConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphTwoBodyConstraintSettings_Create")
 internal external fun JphTwoBodyConstraintSettings_Create(self: NativePointer, inBody1: NativePointer, inBody2: NativePointer): NativePointer

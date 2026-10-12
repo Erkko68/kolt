@@ -72,9 +72,4 @@ class TriangleShape internal constructor(internal val triangleShapeHandle: Nativ
 
     val convexRadius: Float
         get() = JphTriangleShape_GetConvexRadius(triangleShapeHandle)
-
-    companion object {
-        fun register() =
-            JphTriangleShape_sRegister()
-    }
 }

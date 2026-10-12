@@ -14,9 +14,9 @@ void JphGroupFilter_release(const JphGroupFilter* self);
 JphGroupFilter* JphGroupFilter_createUpcalls(JphUpcall call);
 void JphGroupFilter_bindUpcalls(JphGroupFilter* self, void* userData);
 JphSerializableObject* JphGroupFilter_asSerializableObject(JphGroupFilter* self);
-const JphRTTI* JphGroupFilter_GetRTTI(const JphGroupFilter* self);
-const void* JphGroupFilter_CastTo(const JphGroupFilter* self, const JphRTTI* inRTTI);
-void JphGroupFilter_sCreateRTTI(JphRTTI* inRTTI);
+// skipped const JPH::RTTI * JPH::GroupFilter::GetRTTI() const: uses JPH::RTTI
+// skipped const void * JPH::GroupFilter::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
+// skipped static void JPH::GroupFilter::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 bool JphGroupFilter_CanCollide(const JphGroupFilter* self, const JphCollisionGroup* inGroup1, const JphCollisionGroup* inGroup2);
 void JphGroupFilter_SaveBinaryState(const JphGroupFilter* self, JphStreamOut* inStream);
 JphGroupFilter* JphGroupFilter_sRestoreFromBinaryState(JphStreamIn* inStream, char* outError, uint32_t outErrorCapacity);

@@ -132,22 +132,6 @@ void JphSoftBodyMotionProperties_CustomUpdate(JphSoftBodyMotionProperties* self,
     kolt::cpp(self)->CustomUpdate(inDeltaTime, *kolt::cpp(ioSoftBody), *kolt::cpp(inSystem));
 }
 
-void JphSoftBodyMotionProperties_InitializeUpdateContext(JphSoftBodyMotionProperties* self, float inDeltaTime, JphBody* inSoftBody, const JphPhysicsSystem* inSystem, JphSoftBodyUpdateContext* ioContext) {
-    kolt::cpp(self)->InitializeUpdateContext(inDeltaTime, *kolt::cpp(inSoftBody), *kolt::cpp(inSystem), *kolt::cpp(ioContext));
-}
-
-void JphSoftBodyMotionProperties_DetermineCollidingShapes(JphSoftBodyMotionProperties* self, const JphSoftBodyUpdateContext* inContext, const JphPhysicsSystem* inSystem, const JphBodyLockInterface* inBodyLockInterface) {
-    kolt::cpp(self)->DetermineCollidingShapes(*kolt::cpp(inContext), *kolt::cpp(inSystem), *kolt::cpp(inBodyLockInterface));
-}
-
-JphSoftBodyMotionPropertiesEStatus JphSoftBodyMotionProperties_ParallelUpdate(JphSoftBodyMotionProperties* self, JphSoftBodyUpdateContext* ioContext, const JphPhysicsSettings* inPhysicsSettings) {
-    return static_cast<JphSoftBodyMotionPropertiesEStatus>(kolt::cpp(self)->ParallelUpdate(*kolt::cpp(ioContext), *kolt::cpp(inPhysicsSettings)));
-}
-
-void JphSoftBodyMotionProperties_UpdateRigidBodyVelocities(JphSoftBodyMotionProperties* self, const JphSoftBodyUpdateContext* inContext, JphBodyInterface* inBodyInterface) {
-    kolt::cpp(self)->UpdateRigidBodyVelocities(*kolt::cpp(inContext), *kolt::cpp(inBodyInterface));
-}
-
 void JphSoftBodyMotionProperties_RequestContactCallback(JphSoftBodyMotionProperties* self) {
     kolt::cpp(self)->RequestContactCallback();
 }

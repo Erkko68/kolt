@@ -36,8 +36,4 @@ float JphTaperedCapsuleShape_GetHalfHeight(const JphTaperedCapsuleShape* self) {
     return kolt::cpp(self)->GetHalfHeight();
 }
 
-void JphTaperedCapsuleShape_sRegister(void) {
-    JPH::TaperedCapsuleShape::sRegister();
-}
-
 } // extern "C"

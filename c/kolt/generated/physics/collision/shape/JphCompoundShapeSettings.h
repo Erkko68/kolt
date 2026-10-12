@@ -11,7 +11,7 @@ extern "C" {
 // JPH::CompoundShapeSettings::SubShapeSettings
 JphCompoundShapeSettingsSubShapeSettings* JphCompoundShapeSettingsSubShapeSettings_create(void);
 void JphCompoundShapeSettingsSubShapeSettings_destroy(JphCompoundShapeSettingsSubShapeSettings* self);
-void JphCompoundShapeSettingsSubShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::CompoundShapeSettings::SubShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 const JphShapeSettings* JphCompoundShapeSettingsSubShapeSettings_GetShape(const JphCompoundShapeSettingsSubShapeSettings* self);
 void JphCompoundShapeSettingsSubShapeSettings_SetShape(JphCompoundShapeSettingsSubShapeSettings* self, const JphShapeSettings* value);
 const JphShape* JphCompoundShapeSettingsSubShapeSettings_GetShapePtr(const JphCompoundShapeSettingsSubShapeSettings* self);
@@ -28,7 +28,7 @@ void JphCompoundShapeSettings_addRef(const JphCompoundShapeSettings* self);
 void JphCompoundShapeSettings_release(const JphCompoundShapeSettings* self);
 JphShapeSettings* JphCompoundShapeSettings_asShapeSettings(JphCompoundShapeSettings* self);
 JphSerializableObject* JphCompoundShapeSettings_asSerializableObject(JphCompoundShapeSettings* self);
-void JphCompoundShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::CompoundShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphCompoundShapeSettings_AddShape_ShapeSettings_uint32(JphCompoundShapeSettings* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShapeSettings* inShape, uint32_t inUserData);
 void JphCompoundShapeSettings_AddShape_Shape_uint32(JphCompoundShapeSettings* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShape* inShape, uint32_t inUserData);
 uint32_t JphCompoundShapeSettings_GetSubShapes(const JphCompoundShapeSettings* self, JphCompoundShapeSettingsSubShapeSettings* const* out, uint32_t outCapacity);

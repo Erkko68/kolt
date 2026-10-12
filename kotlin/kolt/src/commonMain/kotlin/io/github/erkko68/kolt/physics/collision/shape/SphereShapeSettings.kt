@@ -46,9 +46,4 @@ class SphereShapeSettings internal constructor(internal val sphereShapeSettingsH
     var radius: Float
         get() = JphSphereShapeSettings_GetRadius(sphereShapeSettingsHandle)
         set(value) = JphSphereShapeSettings_SetRadius(sphereShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphSphereShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

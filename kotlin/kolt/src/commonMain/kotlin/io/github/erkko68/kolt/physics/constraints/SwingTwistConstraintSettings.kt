@@ -145,9 +145,4 @@ class SwingTwistConstraintSettings internal constructor(internal val swingTwistC
             returned
         }
         set(value) = JphSwingTwistConstraintSettings_SetTwistMotorSettings(swingTwistConstraintSettingsHandle, value.motorSettingsHandle)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphSwingTwistConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

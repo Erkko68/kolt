@@ -51,9 +51,4 @@ class StaticCompoundShapeSettings internal constructor(internal val staticCompou
             if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
             Shape(returned, owned = true)
         }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphStaticCompoundShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

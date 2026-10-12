@@ -41,9 +41,4 @@ class StaticCompoundShape internal constructor(internal val staticCompoundShapeH
 
     override fun close() =
         closeOnce { JphStaticCompoundShape_release(staticCompoundShapeHandle) }
-
-    companion object {
-        fun register() =
-            JphStaticCompoundShape_sRegister()
-    }
 }

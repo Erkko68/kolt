@@ -55,9 +55,4 @@ class MeshShape internal constructor(internal val meshShapeHandle: NativePointer
 
     fun getTriangleUserData(subShapeID: SubShapeID): Int =
         JphMeshShape_GetTriangleUserData(meshShapeHandle, subShapeID.value)
-
-    companion object {
-        fun register() =
-            JphMeshShape_sRegister()
-    }
 }

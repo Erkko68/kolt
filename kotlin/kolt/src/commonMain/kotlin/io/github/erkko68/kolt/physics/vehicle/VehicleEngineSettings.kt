@@ -72,9 +72,4 @@ open class VehicleEngineSettings internal constructor(internal val vehicleEngine
     var angularDamping: Float
         get() = JphVehicleEngineSettings_GetAngularDamping(vehicleEngineSettingsHandle)
         set(value) = JphVehicleEngineSettings_SetAngularDamping(vehicleEngineSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphVehicleEngineSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

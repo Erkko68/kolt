@@ -10,9 +10,6 @@ internal external fun JphVehicleTransmissionSettings_create(): NativePointer
 @ExternalSymbolName("JphVehicleTransmissionSettings_destroy")
 internal external fun JphVehicleTransmissionSettings_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphVehicleTransmissionSettings_sCreateRTTI")
-internal external fun JphVehicleTransmissionSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphVehicleTransmissionSettings_SaveBinaryState")
 internal external fun JphVehicleTransmissionSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

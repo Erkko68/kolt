@@ -97,9 +97,4 @@ class PulleyConstraintSettings internal constructor(internal val pulleyConstrain
     var maxLength: Float
         get() = JphPulleyConstraintSettings_GetMaxLength(pulleyConstraintSettingsHandle)
         set(value) = JphPulleyConstraintSettings_SetMaxLength(pulleyConstraintSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphPulleyConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

@@ -16,18 +16,6 @@ JphSerializableObject* JphShapeSettings_asSerializableObject(JphShapeSettings* s
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphShapeSettings_GetRTTI(const JphShapeSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphShapeSettings_CastTo(const JphShapeSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
-void JphShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::ShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 JphShape* JphShapeSettings_Create(const JphShapeSettings* self, char* outError, uint32_t outErrorCapacity) {
     return kolt::result(kolt::cpp(self)->Create(), outError, outErrorCapacity, [&](auto& v) { return kolt::c(kolt::retain(v)); });
 }

@@ -32,10 +32,6 @@ JphSerializableObject* JphBoxShapeSettings_asSerializableObject(JphBoxShapeSetti
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphBoxShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::BoxShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphBoxShapeSettings_GetHalfExtent(const JphBoxShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mHalfExtent);
 }

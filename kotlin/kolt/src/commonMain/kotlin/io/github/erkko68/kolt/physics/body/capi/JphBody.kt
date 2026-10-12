@@ -259,36 +259,6 @@ internal external fun JphBody_AddRotationStep(self: NativePointer, inAngularVelo
 @ExternalSymbolName("JphBody_SubRotationStep")
 internal external fun JphBody_SubRotationStep(self: NativePointer, inAngularVelocityTimesDeltaTime: NativePointer)
 
-@ExternalSymbolName("JphBody_SetObjectLayerInternal")
-internal external fun JphBody_SetObjectLayerInternal(self: NativePointer, inLayer: Int, inBPLInterface: NativePointer)
-
-@ExternalSymbolName("JphBody_SetInBroadPhaseInternal")
-internal external fun JphBody_SetInBroadPhaseInternal(self: NativePointer, inInBroadPhase: Boolean)
-
-@ExternalSymbolName("JphBody_InvalidateContactCacheInternal")
-internal external fun JphBody_InvalidateContactCacheInternal(self: NativePointer): Boolean
-
-@ExternalSymbolName("JphBody_ValidateContactCacheInternal")
-internal external fun JphBody_ValidateContactCacheInternal(self: NativePointer)
-
-@ExternalSymbolName("JphBody_CalculateWorldSpaceBoundsInternal")
-internal external fun JphBody_CalculateWorldSpaceBoundsInternal(self: NativePointer)
-
-@ExternalSymbolName("JphBody_SetPositionAndRotationInternal")
-internal external fun JphBody_SetPositionAndRotationInternal(self: NativePointer, inPosition: NativePointer, inRotation: NativePointer, inResetSleepTimer: Boolean)
-
-@ExternalSymbolName("JphBody_UpdateCenterOfMassInternal")
-internal external fun JphBody_UpdateCenterOfMassInternal(self: NativePointer, inPreviousCenterOfMass: NativePointer, inUpdateMassProperties: Boolean)
-
-@ExternalSymbolName("JphBody_SetShapeInternal")
-internal external fun JphBody_SetShapeInternal(self: NativePointer, inShape: NativePointer, inUpdateMassProperties: Boolean)
-
-@ExternalSymbolName("JphBody_GetIndexInActiveBodiesInternal")
-internal external fun JphBody_GetIndexInActiveBodiesInternal(self: NativePointer): Int
-
-@ExternalSymbolName("JphBody_UpdateSleepStateInternal")
-internal external fun JphBody_UpdateSleepStateInternal(self: NativePointer, inDeltaTime: Float, inMaxMovement: Float, inTimeBeforeSleep: Float): Int
-
 @ExternalSymbolName("JphBody_SaveState")
 internal external fun JphBody_SaveState(self: NativePointer, inStream: NativePointer)
 

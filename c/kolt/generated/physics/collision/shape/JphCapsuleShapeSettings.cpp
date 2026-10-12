@@ -32,10 +32,6 @@ JphSerializableObject* JphCapsuleShapeSettings_asSerializableObject(JphCapsuleSh
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphCapsuleShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::CapsuleShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 bool JphCapsuleShapeSettings_IsValid(const JphCapsuleShapeSettings* self) {
     return kolt::cpp(self)->IsValid();
 }

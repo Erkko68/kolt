@@ -16,9 +16,6 @@ internal external fun JphBodyCreationSettings_create_Shape_RVec3Arg_QuatArg_EMot
 @ExternalSymbolName("JphBodyCreationSettings_destroy")
 internal external fun JphBodyCreationSettings_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphBodyCreationSettings_sCreateRTTI")
-internal external fun JphBodyCreationSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphBodyCreationSettings_GetShapeSettings")
 internal external fun JphBodyCreationSettings_GetShapeSettings(self: NativePointer): NativePointer
 

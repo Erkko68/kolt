@@ -139,9 +139,4 @@ class SoftBodyCreationSettings internal constructor(internal val softBodyCreatio
     var facesDoubleSided: Boolean
         get() = JphSoftBodyCreationSettings_GetFacesDoubleSided(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetFacesDoubleSided(softBodyCreationSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphSoftBodyCreationSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

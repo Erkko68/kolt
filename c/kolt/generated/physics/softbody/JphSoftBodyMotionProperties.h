@@ -12,6 +12,10 @@ extern "C" {
 JphSoftBodyMotionProperties* JphSoftBodyMotionProperties_create(void);
 void JphSoftBodyMotionProperties_destroy(JphSoftBodyMotionProperties* self);
 JphMotionProperties* JphSoftBodyMotionProperties_asMotionProperties(JphSoftBodyMotionProperties* self);
+// skipped void JPH::SoftBodyMotionProperties::InitializeUpdateContext(float inDeltaTime, Body & inSoftBody, const PhysicsSystem & inSystem, SoftBodyUpdateContext & ioContext): uses JPH::SoftBodyUpdateContext
+// skipped void JPH::SoftBodyMotionProperties::DetermineCollidingShapes(const SoftBodyUpdateContext & inContext, const PhysicsSystem & inSystem, const BodyLockInterface & inBodyLockInterface): uses JPH::SoftBodyUpdateContext
+// skipped EStatus JPH::SoftBodyMotionProperties::ParallelUpdate(SoftBodyUpdateContext & ioContext, const PhysicsSettings & inPhysicsSettings): uses JPH::SoftBodyUpdateContext
+// skipped void JPH::SoftBodyMotionProperties::UpdateRigidBodyVelocities(const SoftBodyUpdateContext & inContext, BodyInterface & inBodyInterface): uses JPH::SoftBodyUpdateContext
 void JphSoftBodyMotionProperties_Initialize(JphSoftBodyMotionProperties* self, const JphSoftBodyCreationSettings* inSettings);
 const JphSoftBodySharedSettings* JphSoftBodyMotionProperties_GetSettings(const JphSoftBodyMotionProperties* self);
 uint32_t JphSoftBodyMotionProperties_GetVertices(JphSoftBodyMotionProperties* self, JphSoftBodyVertex* const* out, uint32_t outCapacity);
@@ -43,10 +47,6 @@ void JphSoftBodyMotionProperties_RestoreState(JphSoftBodyMotionProperties* self,
 // TODO(handwritten) JphSoftBodyMotionProperties_SkinVertices: void JPH::SoftBodyMotionProperties::SkinVertices(RMat44Arg inCenterOfMassTransform, const Mat44 * inJointMatrices, uint inNumJoints, bool inHardSkinAll, TempAllocator & ioTempAllocator)
 //     JPH::Mat44 by pointer: C's mirror isn't aligned as the SIMD type is
 void JphSoftBodyMotionProperties_CustomUpdate(JphSoftBodyMotionProperties* self, float inDeltaTime, JphBody* ioSoftBody, JphPhysicsSystem* inSystem);
-void JphSoftBodyMotionProperties_InitializeUpdateContext(JphSoftBodyMotionProperties* self, float inDeltaTime, JphBody* inSoftBody, const JphPhysicsSystem* inSystem, JphSoftBodyUpdateContext* ioContext);
-void JphSoftBodyMotionProperties_DetermineCollidingShapes(JphSoftBodyMotionProperties* self, const JphSoftBodyUpdateContext* inContext, const JphPhysicsSystem* inSystem, const JphBodyLockInterface* inBodyLockInterface);
-JphSoftBodyMotionPropertiesEStatus JphSoftBodyMotionProperties_ParallelUpdate(JphSoftBodyMotionProperties* self, JphSoftBodyUpdateContext* ioContext, const JphPhysicsSettings* inPhysicsSettings);
-void JphSoftBodyMotionProperties_UpdateRigidBodyVelocities(JphSoftBodyMotionProperties* self, const JphSoftBodyUpdateContext* inContext, JphBodyInterface* inBodyInterface);
 void JphSoftBodyMotionProperties_RequestContactCallback(JphSoftBodyMotionProperties* self);
 
 

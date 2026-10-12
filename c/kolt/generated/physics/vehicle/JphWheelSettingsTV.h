@@ -16,7 +16,7 @@ JphWheelSettingsTV* JphWheelSettingsTV_createUpcalls(JphUpcall call);
 void JphWheelSettingsTV_bindUpcalls(JphWheelSettingsTV* self, void* userData);
 JphWheelSettings* JphWheelSettingsTV_asWheelSettings(JphWheelSettingsTV* self);
 JphSerializableObject* JphWheelSettingsTV_asSerializableObject(JphWheelSettingsTV* self);
-void JphWheelSettingsTV_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::WheelSettingsTV::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 float JphWheelSettingsTV_GetLongitudinalFriction(const JphWheelSettingsTV* self);
 void JphWheelSettingsTV_SetLongitudinalFriction(JphWheelSettingsTV* self, float value);
 float JphWheelSettingsTV_GetLateralFriction(const JphWheelSettingsTV* self);

@@ -36,6 +36,3 @@ internal external fun JphMutableCompoundShape_ModifyShape_Shape(self: NativePoin
 
 @ExternalSymbolName("JphMutableCompoundShape_AdjustCenterOfMass")
 internal external fun JphMutableCompoundShape_AdjustCenterOfMass(self: NativePointer)
-
-@ExternalSymbolName("JphMutableCompoundShape_sRegister")
-internal external fun JphMutableCompoundShape_sRegister()

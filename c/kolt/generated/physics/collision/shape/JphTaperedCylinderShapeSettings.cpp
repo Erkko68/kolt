@@ -32,10 +32,6 @@ JphSerializableObject* JphTaperedCylinderShapeSettings_asSerializableObject(JphT
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphTaperedCylinderShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::TaperedCylinderShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 float JphTaperedCylinderShapeSettings_GetHalfHeight(const JphTaperedCylinderShapeSettings* self) {
     return kolt::cpp(self)->mHalfHeight;
 }

@@ -90,6 +90,3 @@ internal external fun JphCompoundShape_GetSubShapeIndexFromID(self: NativePointe
 
 @ExternalSymbolName("JphCompoundShape_GetSubShapeIDFromIndex")
 internal external fun JphCompoundShape_GetSubShapeIDFromIndex(self: NativePointer, inIdx: Int, inParentSubShapeID: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphCompoundShape_sRegister")
-internal external fun JphCompoundShape_sRegister()

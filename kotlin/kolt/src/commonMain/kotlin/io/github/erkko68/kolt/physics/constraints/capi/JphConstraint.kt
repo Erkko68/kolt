@@ -55,24 +55,6 @@ internal external fun JphConstraint_ResetWarmStart(self: NativePointer)
 @ExternalSymbolName("JphConstraint_IsActive")
 internal external fun JphConstraint_IsActive(self: NativePointer): Boolean
 
-@ExternalSymbolName("JphConstraint_SetupVelocityConstraint")
-internal external fun JphConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphConstraint_WarmStartVelocityConstraint")
-internal external fun JphConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphConstraint_SolveVelocityConstraint")
-internal external fun JphConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphConstraint_SolvePositionConstraint")
-internal external fun JphConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphConstraint_BuildIslands")
-internal external fun JphConstraint_BuildIslands(self: NativePointer, inConstraintIndex: Int, ioBuilder: NativePointer, inBodyManager: NativePointer)
-
-@ExternalSymbolName("JphConstraint_BuildIslandSplits")
-internal external fun JphConstraint_BuildIslandSplits(self: NativePointer, ioSplitter: NativePointer): Int
-
 @ExternalSymbolName("JphConstraint_SaveState")
 internal external fun JphConstraint_SaveState(self: NativePointer, inStream: NativePointer)
 

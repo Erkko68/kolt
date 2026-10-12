@@ -13,15 +13,6 @@ internal external fun JphVehicleControllerSettings_release(self: NativePointer)
 @ExternalSymbolName("JphVehicleControllerSettings_asSerializableObject")
 internal external fun JphVehicleControllerSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphVehicleControllerSettings_GetRTTI")
-internal external fun JphVehicleControllerSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphVehicleControllerSettings_CastTo")
-internal external fun JphVehicleControllerSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
-@ExternalSymbolName("JphVehicleControllerSettings_sCreateRTTI")
-internal external fun JphVehicleControllerSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphVehicleControllerSettings_SaveBinaryState")
 internal external fun JphVehicleControllerSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

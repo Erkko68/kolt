@@ -22,8 +22,5 @@ internal external fun JphStaticCompoundShapeSettings_asShapeSettings(self: Nativ
 @ExternalSymbolName("JphStaticCompoundShapeSettings_asSerializableObject")
 internal external fun JphStaticCompoundShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphStaticCompoundShapeSettings_sCreateRTTI")
-internal external fun JphStaticCompoundShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphStaticCompoundShapeSettings_Create")
 internal external fun JphStaticCompoundShapeSettings_Create(self: NativePointer, inTempAllocator: NativePointer, outError: NativePointer, outErrorCapacity: Int): NativePointer

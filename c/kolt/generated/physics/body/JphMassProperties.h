@@ -11,7 +11,7 @@ extern "C" {
 // JPH::MassProperties
 JphMassProperties* JphMassProperties_create(void);
 void JphMassProperties_destroy(JphMassProperties* self);
-void JphMassProperties_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::MassProperties::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 bool JphMassProperties_DecomposePrincipalMomentsOfInertia(const JphMassProperties* self, JphMat44* outRotation, JphVec3* outDiagonal);
 void JphMassProperties_SetMassAndInertiaOfSolidBox(JphMassProperties* self, const JphVec3* inBoxSize, float inDensity);
 void JphMassProperties_ScaleToMass(JphMassProperties* self, float inMass);

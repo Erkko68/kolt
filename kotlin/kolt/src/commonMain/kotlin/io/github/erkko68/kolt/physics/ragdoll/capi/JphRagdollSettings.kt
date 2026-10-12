@@ -13,9 +13,6 @@ internal external fun JphRagdollSettingsPart_destroy(self: NativePointer)
 @ExternalSymbolName("JphRagdollSettingsPart_asBodyCreationSettings")
 internal external fun JphRagdollSettingsPart_asBodyCreationSettings(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphRagdollSettingsPart_sCreateRTTI")
-internal external fun JphRagdollSettingsPart_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphRagdollSettingsPart_GetToParent")
 internal external fun JphRagdollSettingsPart_GetToParent(self: NativePointer): NativePointer
 
@@ -30,9 +27,6 @@ internal external fun JphRagdollSettingsAdditionalConstraint_create_int_int_TwoB
 
 @ExternalSymbolName("JphRagdollSettingsAdditionalConstraint_destroy")
 internal external fun JphRagdollSettingsAdditionalConstraint_destroy(self: NativePointer)
-
-@ExternalSymbolName("JphRagdollSettingsAdditionalConstraint_sCreateRTTI")
-internal external fun JphRagdollSettingsAdditionalConstraint_sCreateRTTI(inRTTI: NativePointer)
 
 @ExternalSymbolName("JphRagdollSettingsAdditionalConstraint_GetBodyIdx")
 internal external fun JphRagdollSettingsAdditionalConstraint_GetBodyIdx(self: NativePointer, out: NativePointer, outCapacity: Int): Int
@@ -54,9 +48,6 @@ internal external fun JphRagdollSettings_addRef(self: NativePointer)
 
 @ExternalSymbolName("JphRagdollSettings_release")
 internal external fun JphRagdollSettings_release(self: NativePointer)
-
-@ExternalSymbolName("JphRagdollSettings_sCreateRTTI")
-internal external fun JphRagdollSettings_sCreateRTTI(inRTTI: NativePointer)
 
 @ExternalSymbolName("JphRagdollSettings_Stabilize")
 internal external fun JphRagdollSettings_Stabilize(self: NativePointer): Boolean

@@ -41,9 +41,4 @@ class MutableCompoundShapeSettings internal constructor(internal val mutableComp
 
     override fun close() =
         closeOnce { JphMutableCompoundShapeSettings_release(mutableCompoundShapeSettingsHandle) }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphMutableCompoundShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

@@ -17,7 +17,7 @@ void JphMotorcycleControllerSettings_bindUpcalls(JphMotorcycleControllerSettings
 JphWheeledVehicleControllerSettings* JphMotorcycleControllerSettings_asWheeledVehicleControllerSettings(JphMotorcycleControllerSettings* self);
 JphVehicleControllerSettings* JphMotorcycleControllerSettings_asVehicleControllerSettings(JphMotorcycleControllerSettings* self);
 JphSerializableObject* JphMotorcycleControllerSettings_asSerializableObject(JphMotorcycleControllerSettings* self);
-void JphMotorcycleControllerSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::MotorcycleControllerSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 float JphMotorcycleControllerSettings_GetMaxLeanAngle(const JphMotorcycleControllerSettings* self);
 void JphMotorcycleControllerSettings_SetMaxLeanAngle(JphMotorcycleControllerSettings* self, float value);
 float JphMotorcycleControllerSettings_GetLeanSpringConstant(const JphMotorcycleControllerSettings* self);

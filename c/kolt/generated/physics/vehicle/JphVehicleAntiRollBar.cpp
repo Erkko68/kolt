@@ -12,10 +12,6 @@ void JphVehicleAntiRollBar_destroy(JphVehicleAntiRollBar* self) {
     delete kolt::cpp(self);
 }
 
-void JphVehicleAntiRollBar_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::VehicleAntiRollBar::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphVehicleAntiRollBar_SaveBinaryState(const JphVehicleAntiRollBar* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

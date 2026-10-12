@@ -22,15 +22,6 @@ internal external fun JphWheelSettings_bindUpcalls(self: NativePointer, userData
 @ExternalSymbolName("JphWheelSettings_asSerializableObject")
 internal external fun JphWheelSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphWheelSettings_GetRTTI")
-internal external fun JphWheelSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphWheelSettings_CastTo")
-internal external fun JphWheelSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
-@ExternalSymbolName("JphWheelSettings_sCreateRTTI")
-internal external fun JphWheelSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphWheelSettings_SaveBinaryState")
 internal external fun JphWheelSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

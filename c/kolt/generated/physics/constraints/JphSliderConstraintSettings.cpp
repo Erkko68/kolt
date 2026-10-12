@@ -28,10 +28,6 @@ JphSerializableObject* JphSliderConstraintSettings_asSerializableObject(JphSlide
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphSliderConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SliderConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphSliderConstraintSettings_SetSliderAxis(JphSliderConstraintSettings* self, const JphVec3* inSliderAxis) {
     kolt::cpp(self)->SetSliderAxis(kolt::math<JPH::Vec3>(*inSliderAxis));
 }

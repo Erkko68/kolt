@@ -71,9 +71,4 @@ class GearConstraintSettings internal constructor(internal val gearConstraintSet
 
     val ratio: Float
         get() = JphGearConstraintSettings_GetRatio(gearConstraintSettingsHandle)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphGearConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

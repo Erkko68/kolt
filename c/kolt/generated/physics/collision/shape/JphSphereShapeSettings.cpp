@@ -32,10 +32,6 @@ JphSerializableObject* JphSphereShapeSettings_asSerializableObject(JphSphereShap
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphSphereShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SphereShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 float JphSphereShapeSettings_GetRadius(const JphSphereShapeSettings* self) {
     return kolt::cpp(self)->mRadius;
 }

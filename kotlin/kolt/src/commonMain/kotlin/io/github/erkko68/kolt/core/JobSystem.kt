@@ -39,47 +39,4 @@ open class JobSystem internal constructor(internal val jobSystemHandle: NativePo
 
     val maxConcurrency: Int
         get() = JphJobSystem_GetMaxConcurrency(jobSystemHandle)
-
-    fun createBarrier(): JobSystem.Barrier? =
-        JphJobSystem_CreateBarrier(jobSystemHandle).takeIf { it != NullPointer }?.let { JobSystem.Barrier(it) }
-
-    fun destroyBarrier(barrier: JobSystem.Barrier?) =
-        JphJobSystem_DestroyBarrier(jobSystemHandle, barrier?.jobSystemBarrierHandle ?: NullPointer)
-
-    fun waitForJobs(barrier: JobSystem.Barrier?) =
-        JphJobSystem_WaitForJobs(jobSystemHandle, barrier?.jobSystemBarrierHandle ?: NullPointer)
-
-    /** C++ `JPH::JobSystem::JobHandle`. */
-    class JobHandle internal constructor(internal val jobSystemJobHandleHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
-        constructor() : this(JphJobSystemJobHandle_create(), owned = true)
-    
-        override fun close() =
-            closeOnce { JphJobSystemJobHandle_destroy(jobSystemJobHandleHandle) }
-    
-        val isValid: Boolean
-            get() = JphJobSystemJobHandle_IsValid(jobSystemJobHandleHandle)
-    
-        val isDone: Boolean
-            get() = JphJobSystemJobHandle_IsDone(jobSystemJobHandleHandle)
-    
-        fun addDependency(count: Int) =
-            JphJobSystemJobHandle_AddDependency(jobSystemJobHandleHandle, count)
-    
-        fun removeDependency(count: Int) =
-            JphJobSystemJobHandle_RemoveDependency(jobSystemJobHandleHandle, count)
-    
-        companion object {
-            fun removeDependencies(handles: JobSystem.JobHandle?, numHandles: Int, count: Int) =
-                JphJobSystemJobHandle_sRemoveDependencies(handles?.jobSystemJobHandleHandle ?: NullPointer, numHandles, count)
-        }
-    }
-    
-    /** C++ `JPH::JobSystem::Barrier`. */
-    class Barrier internal constructor(internal val jobSystemBarrierHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
-        fun addJob(job: JobSystem.JobHandle) =
-            JphJobSystemBarrier_AddJob(jobSystemBarrierHandle, job.jobSystemJobHandleHandle)
-    
-        fun addJobs(handles: JobSystem.JobHandle?, numHandles: Int) =
-            JphJobSystemBarrier_AddJobs(jobSystemBarrierHandle, handles?.jobSystemJobHandleHandle ?: NullPointer, numHandles)
-    }
-    }
+}

@@ -378,36 +378,6 @@ class Body internal constructor(internal val bodyHandle: NativePointer, owned: B
     fun subRotationStep(angularVelocityTimesDeltaTime: Vec3) =
         interopScope { JphBody_SubRotationStep(bodyHandle, toInterop(angularVelocityTimesDeltaTime.toArray())) }
 
-    fun setObjectLayerInternal(layer: Int, bplInterface: BroadPhaseLayerInterface) =
-        JphBody_SetObjectLayerInternal(bodyHandle, layer, bplInterface.broadPhaseLayerInterfaceHandle)
-
-    fun setInBroadPhaseInternal(inBroadPhase: Boolean) =
-        JphBody_SetInBroadPhaseInternal(bodyHandle, inBroadPhase)
-
-    fun invalidateContactCacheInternal(): Boolean =
-        JphBody_InvalidateContactCacheInternal(bodyHandle)
-
-    fun validateContactCacheInternal() =
-        JphBody_ValidateContactCacheInternal(bodyHandle)
-
-    fun calculateWorldSpaceBoundsInternal() =
-        JphBody_CalculateWorldSpaceBoundsInternal(bodyHandle)
-
-    fun setPositionAndRotationInternal(position: Vec3, rotation: Quat, resetSleepTimer: Boolean) =
-        interopScope { JphBody_SetPositionAndRotationInternal(bodyHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), resetSleepTimer) }
-
-    fun updateCenterOfMassInternal(previousCenterOfMass: Vec3, updateMassProperties: Boolean) =
-        interopScope { JphBody_UpdateCenterOfMassInternal(bodyHandle, toInterop(previousCenterOfMass.toArray()), updateMassProperties) }
-
-    fun setShapeInternal(shape: Shape?, updateMassProperties: Boolean) =
-        JphBody_SetShapeInternal(bodyHandle, shape?.shapeHandle ?: NullPointer, updateMassProperties)
-
-    val indexInActiveBodiesInternal: Int
-        get() = JphBody_GetIndexInActiveBodiesInternal(bodyHandle)
-
-    fun updateSleepStateInternal(deltaTime: Float, maxMovement: Float, timeBeforeSleep: Float): ECanSleep =
-        ECanSleep.of(JphBody_UpdateSleepStateInternal(bodyHandle, deltaTime, maxMovement, timeBeforeSleep))
-
     fun saveState(stream: StateRecorder) =
         JphBody_SaveState(bodyHandle, stream.stateRecorderHandle)
 

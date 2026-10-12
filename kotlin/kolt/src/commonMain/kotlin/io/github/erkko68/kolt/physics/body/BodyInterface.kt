@@ -39,9 +39,6 @@ class BodyInterface internal constructor(internal val bodyInterfaceHandle: Nativ
     override fun close() =
         closeOnce { JphBodyInterface_destroy(bodyInterfaceHandle) }
 
-    fun init(bodyLockInterface: BodyLockInterface, bodyManager: BodyManager, broadPhase: BroadPhase) =
-        JphBodyInterface_Init(bodyInterfaceHandle, bodyLockInterface.bodyLockInterfaceHandle, bodyManager.bodyManagerHandle, broadPhase.broadPhaseHandle)
-
     fun createBody(settings: BodyCreationSettings): Body? =
         JphBodyInterface_CreateBody(bodyInterfaceHandle, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 

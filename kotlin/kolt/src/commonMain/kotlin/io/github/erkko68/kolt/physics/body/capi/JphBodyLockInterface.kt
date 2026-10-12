@@ -7,35 +7,5 @@ import io.github.erkko68.kolt.interop.NativePointer
 @ExternalSymbolName("JphBodyLockInterface_destroy")
 internal external fun JphBodyLockInterface_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphBodyLockInterface_LockRead_BodyID")
-internal external fun JphBodyLockInterface_LockRead_BodyID(self: NativePointer, inBodyID: Int): NativePointer
-
-@ExternalSymbolName("JphBodyLockInterface_LockRead_MutexMask")
-internal external fun JphBodyLockInterface_LockRead_MutexMask(self: NativePointer, inMutexMask: Long)
-
-@ExternalSymbolName("JphBodyLockInterface_UnlockRead_SharedMutex")
-internal external fun JphBodyLockInterface_UnlockRead_SharedMutex(self: NativePointer, inMutex: NativePointer)
-
-@ExternalSymbolName("JphBodyLockInterface_UnlockRead_MutexMask")
-internal external fun JphBodyLockInterface_UnlockRead_MutexMask(self: NativePointer, inMutexMask: Long)
-
-@ExternalSymbolName("JphBodyLockInterface_LockWrite_BodyID")
-internal external fun JphBodyLockInterface_LockWrite_BodyID(self: NativePointer, inBodyID: Int): NativePointer
-
-@ExternalSymbolName("JphBodyLockInterface_LockWrite_MutexMask")
-internal external fun JphBodyLockInterface_LockWrite_MutexMask(self: NativePointer, inMutexMask: Long)
-
-@ExternalSymbolName("JphBodyLockInterface_UnlockWrite_SharedMutex")
-internal external fun JphBodyLockInterface_UnlockWrite_SharedMutex(self: NativePointer, inMutex: NativePointer)
-
-@ExternalSymbolName("JphBodyLockInterface_UnlockWrite_MutexMask")
-internal external fun JphBodyLockInterface_UnlockWrite_MutexMask(self: NativePointer, inMutexMask: Long)
-
-@ExternalSymbolName("JphBodyLockInterface_GetAllBodiesMutexMask")
-internal external fun JphBodyLockInterface_GetAllBodiesMutexMask(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphBodyLockInterface_GetMutexMask")
-internal external fun JphBodyLockInterface_GetMutexMask(self: NativePointer, inBodies: NativePointer, inNumber: Int, out: NativePointer)
-
 @ExternalSymbolName("JphBodyLockInterface_TryGetBody")
 internal external fun JphBodyLockInterface_TryGetBody(self: NativePointer, inBodyID: Int): NativePointer

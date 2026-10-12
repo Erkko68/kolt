@@ -11,7 +11,7 @@ extern "C" {
 // JPH::VehicleAntiRollBar
 JphVehicleAntiRollBar* JphVehicleAntiRollBar_create(void);
 void JphVehicleAntiRollBar_destroy(JphVehicleAntiRollBar* self);
-void JphVehicleAntiRollBar_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::VehicleAntiRollBar::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphVehicleAntiRollBar_SaveBinaryState(const JphVehicleAntiRollBar* self, JphStreamOut* inStream);
 void JphVehicleAntiRollBar_RestoreBinaryState(JphVehicleAntiRollBar* self, JphStreamIn* inStream);
 int32_t JphVehicleAntiRollBar_GetLeftWheel(const JphVehicleAntiRollBar* self);

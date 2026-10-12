@@ -10,9 +10,6 @@ internal external fun JphCompoundShapeSettingsSubShapeSettings_create(): NativeP
 @ExternalSymbolName("JphCompoundShapeSettingsSubShapeSettings_destroy")
 internal external fun JphCompoundShapeSettingsSubShapeSettings_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphCompoundShapeSettingsSubShapeSettings_sCreateRTTI")
-internal external fun JphCompoundShapeSettingsSubShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphCompoundShapeSettingsSubShapeSettings_GetShape")
 internal external fun JphCompoundShapeSettingsSubShapeSettings_GetShape(self: NativePointer): NativePointer
 
@@ -54,9 +51,6 @@ internal external fun JphCompoundShapeSettings_asShapeSettings(self: NativePoint
 
 @ExternalSymbolName("JphCompoundShapeSettings_asSerializableObject")
 internal external fun JphCompoundShapeSettings_asSerializableObject(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphCompoundShapeSettings_sCreateRTTI")
-internal external fun JphCompoundShapeSettings_sCreateRTTI(inRTTI: NativePointer)
 
 @ExternalSymbolName("JphCompoundShapeSettings_AddShape_ShapeSettings_uint32")
 internal external fun JphCompoundShapeSettings_AddShape_ShapeSettings_uint32(self: NativePointer, inPosition: NativePointer, inRotation: NativePointer, inShape: NativePointer, inUserData: Int)

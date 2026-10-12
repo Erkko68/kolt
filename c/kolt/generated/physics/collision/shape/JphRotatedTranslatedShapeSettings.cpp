@@ -36,10 +36,6 @@ JphSerializableObject* JphRotatedTranslatedShapeSettings_asSerializableObject(Jp
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphRotatedTranslatedShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::RotatedTranslatedShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphRotatedTranslatedShapeSettings_GetPosition(const JphRotatedTranslatedShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mPosition);
 }

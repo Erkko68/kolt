@@ -60,9 +60,4 @@ class CollisionGroup internal constructor(internal val collisionGroupHandle: Nat
 
     fun restoreBinaryState(stream: StreamIn) =
         JphCollisionGroup_RestoreBinaryState(collisionGroupHandle, stream.streamInHandle)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphCollisionGroup_sCreateRTTI(rtti.rttiHandle)
-    }
 }

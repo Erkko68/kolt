@@ -20,10 +20,6 @@ JphSerializableObject* JphConvexShapeSettings_asSerializableObject(JphConvexShap
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphConvexShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::ConvexShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphConvexShapeSettings_SetDensity(JphConvexShapeSettings* self, float inDensity) {
     kolt::cpp(self)->SetDensity(inDensity);
 }

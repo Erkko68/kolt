@@ -42,9 +42,4 @@ open class TwoBodyConstraintSettings internal constructor(internal val twoBodyCo
 
     fun create(body1: Body, body2: Body): TwoBodyConstraint? =
         JphTwoBodyConstraintSettings_Create(twoBodyConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphTwoBodyConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

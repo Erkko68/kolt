@@ -94,9 +94,4 @@ open class VehicleTransmissionSettings internal constructor(internal val vehicle
     var clutchStrength: Float
         get() = JphVehicleTransmissionSettings_GetClutchStrength(vehicleTransmissionSettingsHandle)
         set(value) = JphVehicleTransmissionSettings_SetClutchStrength(vehicleTransmissionSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphVehicleTransmissionSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

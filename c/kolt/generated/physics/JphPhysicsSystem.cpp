@@ -172,10 +172,6 @@ uint32_t JphPhysicsSystem_GetMaxBodies(const JphPhysicsSystem* self) {
     return static_cast<uint32_t>(kolt::cpp(self)->GetMaxBodies());
 }
 
-void JphPhysicsSystem_GetBodyStats(const JphPhysicsSystem* self, JphBodyManagerBodyStats* out) {
-    *kolt::cpp(out) = kolt::cpp(self)->GetBodyStats();
-}
-
 uint32_t JphPhysicsSystem_GetBodies(const JphPhysicsSystem* self, uint32_t* out, uint32_t outCapacity) {
     auto filled = kolt::copy(kolt::Pending(), outCapacity, [&](auto& x, uint32_t i) { out[i] = (x).GetIndexAndSequenceNumber(); });
     kolt::cpp(self)->GetBodies(filled);
@@ -186,10 +182,6 @@ uint32_t JphPhysicsSystem_GetActiveBodies(const JphPhysicsSystem* self, JphEBody
     auto filled = kolt::copy(kolt::Pending(), outCapacity, [&](auto& x, uint32_t i) { out[i] = (x).GetIndexAndSequenceNumber(); });
     kolt::cpp(self)->GetActiveBodies(static_cast<JPH::EBodyType>(inType), filled);
     return filled.finish();
-}
-
-const uint32_t* JphPhysicsSystem_GetActiveBodiesUnsafe(const JphPhysicsSystem* self, JphEBodyType inType) {
-    return reinterpret_cast<const uint32_t*>(kolt::cpp(self)->GetActiveBodiesUnsafe(static_cast<JPH::EBodyType>(inType)));
 }
 
 bool JphPhysicsSystem_WereBodiesInContact(const JphPhysicsSystem* self, uint32_t inBody1ID, uint32_t inBody2ID) {

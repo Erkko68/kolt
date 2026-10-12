@@ -17,7 +17,7 @@ void JphOffsetCenterOfMassShapeSettings_release(const JphOffsetCenterOfMassShape
 JphDecoratedShapeSettings* JphOffsetCenterOfMassShapeSettings_asDecoratedShapeSettings(JphOffsetCenterOfMassShapeSettings* self);
 JphShapeSettings* JphOffsetCenterOfMassShapeSettings_asShapeSettings(JphOffsetCenterOfMassShapeSettings* self);
 JphSerializableObject* JphOffsetCenterOfMassShapeSettings_asSerializableObject(JphOffsetCenterOfMassShapeSettings* self);
-void JphOffsetCenterOfMassShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::OffsetCenterOfMassShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphOffsetCenterOfMassShapeSettings_GetOffset(const JphOffsetCenterOfMassShapeSettings* self, JphVec3* out);
 void JphOffsetCenterOfMassShapeSettings_SetOffset(JphOffsetCenterOfMassShapeSettings* self, const JphVec3* value);
 

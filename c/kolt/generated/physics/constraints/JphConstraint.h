@@ -11,6 +11,12 @@ extern "C" {
 // JPH::Constraint
 void JphConstraint_addRef(const JphConstraint* self);
 void JphConstraint_release(const JphConstraint* self);
+// skipped void JPH::Constraint::SetupVelocityConstraint(float inDeltaTime): JPH::\w*Constraint::(SetupVelocity|WarmStartVelocity|SolveVelocity|SolvePosition)Constraint
+// skipped void JPH::Constraint::WarmStartVelocityConstraint(float inWarmStartImpulseRatio): JPH::\w*Constraint::(SetupVelocity|WarmStartVelocity|SolveVelocity|SolvePosition)Constraint
+// skipped bool JPH::Constraint::SolveVelocityConstraint(float inDeltaTime): JPH::\w*Constraint::(SetupVelocity|WarmStartVelocity|SolveVelocity|SolvePosition)Constraint
+// skipped bool JPH::Constraint::SolvePositionConstraint(float inDeltaTime, float inBaumgarte): JPH::\w*Constraint::(SetupVelocity|WarmStartVelocity|SolveVelocity|SolvePosition)Constraint
+// skipped void JPH::Constraint::BuildIslands(uint32 inConstraintIndex, IslandBuilder & ioBuilder, BodyManager & inBodyManager): uses JPH::IslandBuilder
+// skipped uint JPH::Constraint::BuildIslandSplits(LargeIslandSplitter & ioSplitter) const: uses JPH::LargeIslandSplitter
 JphEConstraintType JphConstraint_GetType(const JphConstraint* self);
 JphEConstraintSubType JphConstraint_GetSubType(const JphConstraint* self);
 uint32_t JphConstraint_GetConstraintPriority(const JphConstraint* self);
@@ -26,12 +32,6 @@ void JphConstraint_SetUserData(JphConstraint* self, uint64_t inUserData);
 void JphConstraint_NotifyShapeChanged(JphConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM);
 void JphConstraint_ResetWarmStart(JphConstraint* self);
 bool JphConstraint_IsActive(const JphConstraint* self);
-void JphConstraint_SetupVelocityConstraint(JphConstraint* self, float inDeltaTime);
-void JphConstraint_WarmStartVelocityConstraint(JphConstraint* self, float inWarmStartImpulseRatio);
-bool JphConstraint_SolveVelocityConstraint(JphConstraint* self, float inDeltaTime);
-bool JphConstraint_SolvePositionConstraint(JphConstraint* self, float inDeltaTime, float inBaumgarte);
-void JphConstraint_BuildIslands(JphConstraint* self, uint32_t inConstraintIndex, JphIslandBuilder* ioBuilder, JphBodyManager* inBodyManager);
-uint32_t JphConstraint_BuildIslandSplits(const JphConstraint* self, JphLargeIslandSplitter* ioSplitter);
 void JphConstraint_SaveState(const JphConstraint* self, JphStateRecorder* inStream);
 void JphConstraint_RestoreState(JphConstraint* self, JphStateRecorder* inStream);
 JphConstraintSettings* JphConstraint_GetConstraintSettings(const JphConstraint* self);

@@ -81,24 +81,6 @@ open class Constraint internal constructor(internal val constraintHandle: Native
     val isActive: Boolean
         get() = JphConstraint_IsActive(constraintHandle)
 
-    fun setupVelocityConstraint(deltaTime: Float) =
-        JphConstraint_SetupVelocityConstraint(constraintHandle, deltaTime)
-
-    fun warmStartVelocityConstraint(warmStartImpulseRatio: Float) =
-        JphConstraint_WarmStartVelocityConstraint(constraintHandle, warmStartImpulseRatio)
-
-    fun solveVelocityConstraint(deltaTime: Float): Boolean =
-        JphConstraint_SolveVelocityConstraint(constraintHandle, deltaTime)
-
-    fun solvePositionConstraint(deltaTime: Float, baumgarte: Float): Boolean =
-        JphConstraint_SolvePositionConstraint(constraintHandle, deltaTime, baumgarte)
-
-    fun buildIslands(constraintIndex: Int, builder: IslandBuilder, bodyManager: BodyManager) =
-        JphConstraint_BuildIslands(constraintHandle, constraintIndex, builder.islandBuilderHandle, bodyManager.bodyManagerHandle)
-
-    fun buildIslandSplits(splitter: LargeIslandSplitter): Int =
-        JphConstraint_BuildIslandSplits(constraintHandle, splitter.largeIslandSplitterHandle)
-
     fun saveState(stream: StateRecorder) =
         JphConstraint_SaveState(constraintHandle, stream.stateRecorderHandle)
 

@@ -9,16 +9,15 @@ extern "C" {
 #endif
 
 // JPH::SphereShape
+// skipped JPH::SphereShape(const SphereShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphSphereShape* JphSphereShape_create(void);
-// TODO(handwritten) JphSphereShape_create_SphereShapeSettings_ShapeResult: JPH::SphereShape(const SphereShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 JphSphereShape* JphSphereShape_create_float_PhysicsMaterial(float inRadius, const JphPhysicsMaterial* inMaterial);
 void JphSphereShape_addRef(const JphSphereShape* self);
 void JphSphereShape_release(const JphSphereShape* self);
 JphConvexShape* JphSphereShape_asConvexShape(JphSphereShape* self);
 JphShape* JphSphereShape_asShape(JphSphereShape* self);
+// skipped static void JPH::SphereShape::sRegister(): JPH::.*::sRegister
 float JphSphereShape_GetRadius(const JphSphereShape* self);
-void JphSphereShape_sRegister(void);
 
 
 #ifdef __cplusplus

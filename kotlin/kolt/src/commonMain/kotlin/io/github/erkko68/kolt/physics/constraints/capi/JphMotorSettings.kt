@@ -22,9 +22,6 @@ internal external fun JphMotorSettings_create_float_float_float_float(inFrequenc
 @ExternalSymbolName("JphMotorSettings_destroy")
 internal external fun JphMotorSettings_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphMotorSettings_sCreateRTTI")
-internal external fun JphMotorSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphMotorSettings_SetForceLimits")
 internal external fun JphMotorSettings_SetForceLimits(self: NativePointer, inMin: Float, inMax: Float)
 

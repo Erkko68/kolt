@@ -11,13 +11,13 @@ extern "C" {
 // JPH::Factory
 JphFactory* JphFactory_create(void);
 void JphFactory_destroy(JphFactory* self);
+// skipped const RTTI * JPH::Factory::Find(const char * inName): uses JPH::RTTI
+// skipped const RTTI * JPH::Factory::Find(uint32 inHash): uses JPH::RTTI
+// skipped bool JPH::Factory::Register(const RTTI * inRTTI): uses JPH::RTTI
+// skipped bool JPH::Factory::Register(const RTTI ** inRTTIs, uint inNumber): uses JPH::RTTI
+// skipped Array<const RTTI *> JPH::Factory::GetAllClasses() const: uses JPH::RTTI
 void* JphFactory_CreateObject(JphFactory* self, const char* inName);
-const JphRTTI* JphFactory_Find_char(JphFactory* self, const char* inName);
-const JphRTTI* JphFactory_Find_uint32(JphFactory* self, uint32_t inHash);
-bool JphFactory_Register_RTTI(JphFactory* self, const JphRTTI* inRTTI);
-bool JphFactory_Register_RTTIPtr_uint(JphFactory* self, const JphRTTI** inRTTIs, uint32_t inNumber);
 void JphFactory_Clear(JphFactory* self);
-uint32_t JphFactory_GetAllClasses(const JphFactory* self, const JphRTTI** out, uint32_t outCapacity);
 
 
 #ifdef __cplusplus

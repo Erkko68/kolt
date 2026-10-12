@@ -78,9 +78,4 @@ class ConvexHullShape internal constructor(internal val convexHullShapeHandle: N
             verticesPointer.fromInterop(vertices)
             nativeResult
         }
-
-    companion object {
-        fun register() =
-            JphConvexHullShape_sRegister()
-    }
 }

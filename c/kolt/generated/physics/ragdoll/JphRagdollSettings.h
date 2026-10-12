@@ -12,7 +12,7 @@ extern "C" {
 JphRagdollSettingsPart* JphRagdollSettingsPart_create(void);
 void JphRagdollSettingsPart_destroy(JphRagdollSettingsPart* self);
 JphBodyCreationSettings* JphRagdollSettingsPart_asBodyCreationSettings(JphRagdollSettingsPart* self);
-void JphRagdollSettingsPart_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::RagdollSettings::Part::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphTwoBodyConstraintSettings* JphRagdollSettingsPart_GetToParent(const JphRagdollSettingsPart* self);
 void JphRagdollSettingsPart_SetToParent(JphRagdollSettingsPart* self, JphTwoBodyConstraintSettings* value);
 
@@ -20,7 +20,7 @@ void JphRagdollSettingsPart_SetToParent(JphRagdollSettingsPart* self, JphTwoBody
 JphRagdollSettingsAdditionalConstraint* JphRagdollSettingsAdditionalConstraint_create(void);
 JphRagdollSettingsAdditionalConstraint* JphRagdollSettingsAdditionalConstraint_create_int_int_TwoBodyConstraintSettings(int32_t inBodyIdx1, int32_t inBodyIdx2, JphTwoBodyConstraintSettings* inConstraint);
 void JphRagdollSettingsAdditionalConstraint_destroy(JphRagdollSettingsAdditionalConstraint* self);
-void JphRagdollSettingsAdditionalConstraint_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::RagdollSettings::AdditionalConstraint::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphRagdollSettingsAdditionalConstraint_GetBodyIdx(const JphRagdollSettingsAdditionalConstraint* self, int32_t* out, uint32_t outCapacity);
 void JphRagdollSettingsAdditionalConstraint_SetBodyIdx(JphRagdollSettingsAdditionalConstraint* self, const int32_t* value, uint32_t valueCount);
 JphTwoBodyConstraintSettings* JphRagdollSettingsAdditionalConstraint_GetConstraint(const JphRagdollSettingsAdditionalConstraint* self);
@@ -30,7 +30,7 @@ void JphRagdollSettingsAdditionalConstraint_SetConstraint(JphRagdollSettingsAddi
 JphRagdollSettings* JphRagdollSettings_create(void);
 void JphRagdollSettings_addRef(const JphRagdollSettings* self);
 void JphRagdollSettings_release(const JphRagdollSettings* self);
-void JphRagdollSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::RagdollSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 bool JphRagdollSettings_Stabilize(JphRagdollSettings* self);
 void JphRagdollSettings_CalculateConstraintPriorities(JphRagdollSettings* self, uint32_t inBasePriority);
 // TODO(handwritten) JphRagdollSettings_DisableParentChildCollisions: void JPH::RagdollSettings::DisableParentChildCollisions(const Mat44 * inJointMatrices, float inMinSeparationDistance)

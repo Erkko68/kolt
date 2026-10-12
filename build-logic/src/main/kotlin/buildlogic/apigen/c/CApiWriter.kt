@@ -118,10 +118,10 @@ internal class CApiWriter(
         val cpp = bridges.cpp(record.name)
         val counted = bridges.refCounted(record)
         if (rules.creates(record)) {
-            val (skipped, constructors) = record.constructors.partition { api.skipReason(it) != null }
+            val (skipped, constructors) = record.constructors.partition { api.skipReason(it, record.name) != null }
             skipped.forEach {
-                section.declarations.appendLine("// skipped ${record.name}(${spelled(it)})" + reason(api.skipReason(it), ""))
-                bindings += Binding(names.function(record.name, "create"), "${record.name}(${spelled(it)})", "skipped: ${api.skipReason(it)}")
+                section.declarations.appendLine("// skipped ${record.name}(${spelled(it)})" + reason(api.skipReason(it, record.name), ""))
+                bindings += Binding(names.function(record.name, "create"), "${record.name}(${spelled(it)})", "skipped: ${api.skipReason(it, record.name)}")
             }
             constructors.zip(suffixes(constructors.map { ctor -> ctor.map { it.type.spelling } })).forEach { (params, suffix) ->
                 val name = names.function(record.name, "create", suffix)

@@ -228,9 +228,4 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
             returned
         }
         set(value) = JphBodyCreationSettings_SetMassPropertiesOverride(bodyCreationSettingsHandle, value.massPropertiesHandle)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphBodyCreationSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

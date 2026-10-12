@@ -58,9 +58,4 @@ class TaperedCylinderShapeSettings internal constructor(internal val taperedCyli
     var convexRadius: Float
         get() = JphTaperedCylinderShapeSettings_GetConvexRadius(taperedCylinderShapeSettingsHandle)
         set(value) = JphTaperedCylinderShapeSettings_SetConvexRadius(taperedCylinderShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphTaperedCylinderShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

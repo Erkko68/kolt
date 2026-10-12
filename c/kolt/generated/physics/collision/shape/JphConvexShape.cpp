@@ -64,8 +64,4 @@ float JphConvexShape_GetDensity(const JphConvexShape* self) {
     return kolt::cpp(self)->GetDensity();
 }
 
-void JphConvexShape_sRegister(void) {
-    JPH::ConvexShape::sRegister();
-}
-
 } // extern "C"

@@ -32,8 +32,4 @@ uint32_t JphMeshShape_GetTriangleUserData(const JphMeshShape* self, uint32_t inS
     return kolt::cpp(self)->GetTriangleUserData(kolt::subShapeID(inSubShapeID));
 }
 
-void JphMeshShape_sRegister(void) {
-    JPH::MeshShape::sRegister();
-}
-
 } // extern "C"

@@ -9,12 +9,12 @@ extern "C" {
 #endif
 
 // JPH::HeightFieldShape
+// skipped JPH::HeightFieldShape(const HeightFieldShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphHeightFieldShape* JphHeightFieldShape_create(void);
-// TODO(handwritten) JphHeightFieldShape_create_HeightFieldShapeSettings_ShapeResult: JPH::HeightFieldShape(const HeightFieldShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 void JphHeightFieldShape_addRef(const JphHeightFieldShape* self);
 void JphHeightFieldShape_release(const JphHeightFieldShape* self);
 JphShape* JphHeightFieldShape_asShape(JphHeightFieldShape* self);
+// skipped static void JPH::HeightFieldShape::sRegister(): JPH::.*::sRegister
 JphHeightFieldShape* JphHeightFieldShape_Clone(const JphHeightFieldShape* self);
 uint32_t JphHeightFieldShape_GetSampleCount(const JphHeightFieldShape* self);
 uint32_t JphHeightFieldShape_GetBlockSize(const JphHeightFieldShape* self);
@@ -31,7 +31,6 @@ uint32_t JphHeightFieldShape_GetMaterialList(const JphHeightFieldShape* self, co
 void JphHeightFieldShape_GetMaterials(const JphHeightFieldShape* self, uint32_t inX, uint32_t inY, uint32_t inSizeX, uint32_t inSizeY, uint8_t* outMaterials, int64_t inMaterialsStride);
 // TODO(handwritten) JphHeightFieldShape_SetMaterials: bool JPH::HeightFieldShape::SetMaterials(uint inX, uint inY, uint inSizeX, uint inSizeY, const uint8 * inMaterials, intptr_t inMaterialsStride, const PhysicsMaterialList * inMaterialList, TempAllocator & inAllocator)
 //     Array<RefConst<PhysicsMaterial>>: by non-const reference
-void JphHeightFieldShape_sRegister(void);
 
 
 #ifdef __cplusplus

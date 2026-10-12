@@ -11,6 +11,8 @@ extern "C" {
 // JPH::VehicleCollisionTester
 void JphVehicleCollisionTester_addRef(const JphVehicleCollisionTester* self);
 void JphVehicleCollisionTester_release(const JphVehicleCollisionTester* self);
+// skipped bool JPH::VehicleCollisionTester::Collide(PhysicsSystem & inPhysicsSystem, const VehicleConstraint & inVehicleConstraint, uint inWheelIndex, RVec3Arg inOrigin, Vec3Arg inDirection, const BodyID & inVehicleBodyID, Body *& outBody, SubShapeID & outSubShapeID, RVec3 & outContactPosition, Vec3 & outContactNormal, float & outSuspensionLength) const: JPH::VehicleCollisionTester::(Collide|PredictContactProperties)
+// skipped void JPH::VehicleCollisionTester::PredictContactProperties(PhysicsSystem & inPhysicsSystem, const VehicleConstraint & inVehicleConstraint, uint inWheelIndex, RVec3Arg inOrigin, Vec3Arg inDirection, const BodyID & inVehicleBodyID, Body *& ioBody, SubShapeID & ioSubShapeID, RVec3 & ioContactPosition, Vec3 & ioContactNormal, float & ioSuspensionLength) const: JPH::VehicleCollisionTester::(Collide|PredictContactProperties)
 uint32_t JphVehicleCollisionTester_GetObjectLayer(const JphVehicleCollisionTester* self);
 void JphVehicleCollisionTester_SetObjectLayer(JphVehicleCollisionTester* self, uint32_t inObjectLayer);
 void JphVehicleCollisionTester_SetBroadPhaseLayerFilter(JphVehicleCollisionTester* self, const JphBroadPhaseLayerFilter* inFilter);
@@ -19,10 +21,6 @@ void JphVehicleCollisionTester_SetObjectLayerFilter(JphVehicleCollisionTester* s
 const JphObjectLayerFilter* JphVehicleCollisionTester_GetObjectLayerFilter(const JphVehicleCollisionTester* self);
 void JphVehicleCollisionTester_SetBodyFilter(JphVehicleCollisionTester* self, const JphBodyFilter* inFilter);
 const JphBodyFilter* JphVehicleCollisionTester_GetBodyFilter(const JphVehicleCollisionTester* self);
-// TODO(handwritten) JphVehicleCollisionTester_Collide: bool JPH::VehicleCollisionTester::Collide(PhysicsSystem & inPhysicsSystem, const VehicleConstraint & inVehicleConstraint, uint inWheelIndex, RVec3Arg inOrigin, Vec3Arg inDirection, const BodyID & inVehicleBodyID, Body *& outBody, SubShapeID & outSubShapeID, RVec3 & outContactPosition, Vec3 & outContactNormal, float & outSuspensionLength) const
-//     Body *&: pointer to pointer
-// TODO(handwritten) JphVehicleCollisionTester_PredictContactProperties: void JPH::VehicleCollisionTester::PredictContactProperties(PhysicsSystem & inPhysicsSystem, const VehicleConstraint & inVehicleConstraint, uint inWheelIndex, RVec3Arg inOrigin, Vec3Arg inDirection, const BodyID & inVehicleBodyID, Body *& ioBody, SubShapeID & ioSubShapeID, RVec3 & ioContactPosition, Vec3 & ioContactNormal, float & ioSuspensionLength) const
-//     Body *&: pointer to pointer
 
 
 #ifdef __cplusplus

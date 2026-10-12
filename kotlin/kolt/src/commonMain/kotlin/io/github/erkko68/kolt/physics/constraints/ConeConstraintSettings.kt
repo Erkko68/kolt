@@ -89,9 +89,4 @@ class ConeConstraintSettings internal constructor(internal val coneConstraintSet
     var halfConeAngle: Float
         get() = JphConeConstraintSettings_GetHalfConeAngle(coneConstraintSettingsHandle)
         set(value) = JphConeConstraintSettings_SetHalfConeAngle(coneConstraintSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphConeConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

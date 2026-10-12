@@ -28,8 +28,4 @@ JphSerializableObject* JphMutableCompoundShapeSettings_asSerializableObject(JphM
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphMutableCompoundShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::MutableCompoundShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 } // extern "C"

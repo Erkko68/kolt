@@ -89,9 +89,4 @@ open class WheelSettingsWV internal constructor(internal val wheelSettingsWVHand
         }
         return true
     }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphWheelSettingsWV_sCreateRTTI(rtti.rttiHandle)
-    }
 }

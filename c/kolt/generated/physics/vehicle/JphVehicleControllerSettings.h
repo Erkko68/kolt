@@ -12,9 +12,9 @@ extern "C" {
 void JphVehicleControllerSettings_addRef(const JphVehicleControllerSettings* self);
 void JphVehicleControllerSettings_release(const JphVehicleControllerSettings* self);
 JphSerializableObject* JphVehicleControllerSettings_asSerializableObject(JphVehicleControllerSettings* self);
-const JphRTTI* JphVehicleControllerSettings_GetRTTI(const JphVehicleControllerSettings* self);
-const void* JphVehicleControllerSettings_CastTo(const JphVehicleControllerSettings* self, const JphRTTI* inRTTI);
-void JphVehicleControllerSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped const JPH::RTTI * JPH::VehicleControllerSettings::GetRTTI() const: uses JPH::RTTI
+// skipped const void * JPH::VehicleControllerSettings::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
+// skipped static void JPH::VehicleControllerSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphVehicleControllerSettings_SaveBinaryState(const JphVehicleControllerSettings* self, JphStreamOut* inStream);
 void JphVehicleControllerSettings_RestoreBinaryState(JphVehicleControllerSettings* self, JphStreamIn* inStream);
 JphVehicleController* JphVehicleControllerSettings_ConstructController(const JphVehicleControllerSettings* self, JphVehicleConstraint* inConstraint);

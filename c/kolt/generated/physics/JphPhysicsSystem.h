@@ -11,6 +11,11 @@ extern "C" {
 // JPH::PhysicsSystem
 JphPhysicsSystem* JphPhysicsSystem_create(void);
 void JphPhysicsSystem_destroy(JphPhysicsSystem* self);
+// skipped ContactConstraintManager::CombineFunction JPH::PhysicsSystem::GetCombineFriction() const: JPH::(VehicleConstraint|PhysicsSystem)::GetCombine(Friction|Restitution)
+// skipped ContactConstraintManager::CombineFunction JPH::PhysicsSystem::GetCombineRestitution() const: JPH::(VehicleConstraint|PhysicsSystem)::GetCombine(Friction|Restitution)
+// skipped const SimCollideBodyVsBody & JPH::PhysicsSystem::GetSimCollideBodyVsBody() const
+// skipped BodyStats JPH::PhysicsSystem::GetBodyStats() const: uses JPH::BodyManager::BodyStats
+// skipped const BodyID * JPH::PhysicsSystem::GetActiveBodiesUnsafe(EBodyType inType) const
 void JphPhysicsSystem_Init(JphPhysicsSystem* self, uint32_t inMaxBodies, uint32_t inNumBodyMutexes, uint32_t inMaxBodyPairs, uint32_t inMaxContactConstraints, const JphBroadPhaseLayerInterface* inBroadPhaseLayerInterface, const JphObjectVsBroadPhaseLayerFilter* inObjectVsBroadPhaseLayerFilter, const JphObjectLayerPairFilter* inObjectLayerPairFilter);
 void JphPhysicsSystem_SetBodyActivationListener(JphPhysicsSystem* self, JphBodyActivationListener* inListener);
 JphBodyActivationListener* JphPhysicsSystem_GetBodyActivationListener(const JphPhysicsSystem* self);
@@ -20,18 +25,12 @@ void JphPhysicsSystem_SetSoftBodyContactListener(JphPhysicsSystem* self, JphSoft
 JphSoftBodyContactListener* JphPhysicsSystem_GetSoftBodyContactListener(const JphPhysicsSystem* self);
 // TODO(handwritten) JphPhysicsSystem_SetCombineFriction: void JPH::PhysicsSystem::SetCombineFriction(ContactConstraintManager::CombineFunction inCombineFriction)
 //     float (*)(const Body &, const SubShapeID &, const Body &, const SubShapeID &): takes C++ types
-// TODO(handwritten) JphPhysicsSystem_GetCombineFriction: ContactConstraintManager::CombineFunction JPH::PhysicsSystem::GetCombineFriction() const
-//     float (*)(const Body &, const SubShapeID &, const Body &, const SubShapeID &): takes C++ types
 // TODO(handwritten) JphPhysicsSystem_SetCombineRestitution: void JPH::PhysicsSystem::SetCombineRestitution(ContactConstraintManager::CombineFunction inCombineRestitution)
-//     float (*)(const Body &, const SubShapeID &, const Body &, const SubShapeID &): takes C++ types
-// TODO(handwritten) JphPhysicsSystem_GetCombineRestitution: ContactConstraintManager::CombineFunction JPH::PhysicsSystem::GetCombineRestitution() const
 //     float (*)(const Body &, const SubShapeID &, const Body &, const SubShapeID &): takes C++ types
 void JphPhysicsSystem_SetSimShapeFilter(JphPhysicsSystem* self, const JphSimShapeFilter* inShapeFilter);
 const JphSimShapeFilter* JphPhysicsSystem_GetSimShapeFilter(const JphPhysicsSystem* self);
 // TODO(handwritten) JphPhysicsSystem_SetSimCollideBodyVsBody: void JPH::PhysicsSystem::SetSimCollideBodyVsBody(const SimCollideBodyVsBody & inBodyVsBody)
 //     JPH::PhysicsSystem::SimCollideBodyVsBody: arguments C takes in pieces
-// TODO(handwritten) JphPhysicsSystem_GetSimCollideBodyVsBody: const SimCollideBodyVsBody & JPH::PhysicsSystem::GetSimCollideBodyVsBody() const
-//     JPH::PhysicsSystem::SimCollideBodyVsBody by reference or as a result
 void JphPhysicsSystem_sDefaultSimCollideBodyVsBody(const JphBody* inBody1, const JphBody* inBody2, const JphMat44* inCenterOfMassTransform1, const JphMat44* inCenterOfMassTransform2, JphCollideShapeSettings* ioCollideShapeSettings, JphCollideShapeCollector* ioCollector, const JphShapeFilter* inShapeFilter);
 void JphPhysicsSystem_SetPhysicsSettings(JphPhysicsSystem* self, const JphPhysicsSettings* inSettings);
 void JphPhysicsSystem_GetPhysicsSettings(const JphPhysicsSystem* self, JphPhysicsSettings* out);
@@ -67,10 +66,8 @@ const JphObjectLayerPairFilter* JphPhysicsSystem_GetObjectLayerPairFilter(const 
 uint32_t JphPhysicsSystem_GetNumBodies(const JphPhysicsSystem* self);
 uint32_t JphPhysicsSystem_GetNumActiveBodies(const JphPhysicsSystem* self, JphEBodyType inType);
 uint32_t JphPhysicsSystem_GetMaxBodies(const JphPhysicsSystem* self);
-void JphPhysicsSystem_GetBodyStats(const JphPhysicsSystem* self, JphBodyManagerBodyStats* out);
 uint32_t JphPhysicsSystem_GetBodies(const JphPhysicsSystem* self, uint32_t* out, uint32_t outCapacity);
 uint32_t JphPhysicsSystem_GetActiveBodies(const JphPhysicsSystem* self, JphEBodyType inType, uint32_t* out, uint32_t outCapacity);
-const uint32_t* JphPhysicsSystem_GetActiveBodiesUnsafe(const JphPhysicsSystem* self, JphEBodyType inType);
 bool JphPhysicsSystem_WereBodiesInContact(const JphPhysicsSystem* self, uint32_t inBody1ID, uint32_t inBody2ID);
 void JphPhysicsSystem_GetBounds(const JphPhysicsSystem* self, JphAABox* out);
 

@@ -40,8 +40,4 @@ void JphRotatedTranslatedShape_TransformScale(const JphRotatedTranslatedShape* s
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->TransformScale(kolt::math<JPH::Vec3>(*inScale)));
 }
 
-void JphRotatedTranslatedShape_sRegister(void) {
-    JPH::RotatedTranslatedShape::sRegister();
-}
-
 } // extern "C"

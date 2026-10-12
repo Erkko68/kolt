@@ -12,7 +12,7 @@ extern "C" {
 JphCollisionGroup* JphCollisionGroup_create(void);
 JphCollisionGroup* JphCollisionGroup_create_GroupFilter_GroupID_SubGroupID(const JphGroupFilter* inFilter, uint32_t inGroupID, uint32_t inSubGroupID);
 void JphCollisionGroup_destroy(JphCollisionGroup* self);
-void JphCollisionGroup_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::CollisionGroup::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphCollisionGroup_SetGroupFilter(JphCollisionGroup* self, const JphGroupFilter* inFilter);
 const JphGroupFilter* JphCollisionGroup_GetGroupFilter(const JphCollisionGroup* self);
 void JphCollisionGroup_SetGroupID(JphCollisionGroup* self, uint32_t inID);

@@ -16,10 +16,6 @@ JphBodyCreationSettings* JphRagdollSettingsPart_asBodyCreationSettings(JphRagdol
     return kolt::c(static_cast<JPH::BodyCreationSettings*>(kolt::cpp(self)));
 }
 
-void JphRagdollSettingsPart_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::RagdollSettings::Part::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 JphTwoBodyConstraintSettings* JphRagdollSettingsPart_GetToParent(const JphRagdollSettingsPart* self) {
     return kolt::c((kolt::cpp(self)->mToParent).GetPtr());
 }
@@ -38,10 +34,6 @@ JphRagdollSettingsAdditionalConstraint* JphRagdollSettingsAdditionalConstraint_c
 
 void JphRagdollSettingsAdditionalConstraint_destroy(JphRagdollSettingsAdditionalConstraint* self) {
     delete kolt::cpp(self);
-}
-
-void JphRagdollSettingsAdditionalConstraint_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::RagdollSettings::AdditionalConstraint::sCreateRTTI(*kolt::cpp(inRTTI));
 }
 
 uint32_t JphRagdollSettingsAdditionalConstraint_GetBodyIdx(const JphRagdollSettingsAdditionalConstraint* self, int32_t* out, uint32_t outCapacity) {
@@ -70,10 +62,6 @@ void JphRagdollSettings_addRef(const JphRagdollSettings* self) {
 
 void JphRagdollSettings_release(const JphRagdollSettings* self) {
     kolt::cpp(self)->Release();
-}
-
-void JphRagdollSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::RagdollSettings::sCreateRTTI(*kolt::cpp(inRTTI));
 }
 
 bool JphRagdollSettings_Stabilize(JphRagdollSettings* self) {

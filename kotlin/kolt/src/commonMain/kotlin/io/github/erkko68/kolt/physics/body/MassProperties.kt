@@ -87,9 +87,6 @@ class MassProperties internal constructor(internal val massPropertiesHandle: Nat
         set(value) = interopScope { JphMassProperties_SetInertia(massPropertiesHandle, toInterop(value.toArray())) }
 
     companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphMassProperties_sCreateRTTI(rtti.rttiHandle)
-
         fun getEquivalentSolidBoxSize(mass: Float, inertiaDiagonal: Vec3): Vec3 =
             interopScope {
                 val returned = FloatArray(4)

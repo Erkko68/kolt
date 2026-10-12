@@ -12,10 +12,6 @@ void JphLinearCurvePoint_destroy(JphLinearCurvePoint* self) {
     delete kolt::cpp(self);
 }
 
-void JphLinearCurvePoint_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::LinearCurve::Point::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 float JphLinearCurvePoint_GetX(const JphLinearCurvePoint* self) {
     return kolt::cpp(self)->mX;
 }
@@ -38,10 +34,6 @@ JphLinearCurve* JphLinearCurve_create(void) {
 
 void JphLinearCurve_destroy(JphLinearCurve* self) {
     delete kolt::cpp(self);
-}
-
-void JphLinearCurve_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::LinearCurve::sCreateRTTI(*kolt::cpp(inRTTI));
 }
 
 void JphLinearCurve_Clear(JphLinearCurve* self) {

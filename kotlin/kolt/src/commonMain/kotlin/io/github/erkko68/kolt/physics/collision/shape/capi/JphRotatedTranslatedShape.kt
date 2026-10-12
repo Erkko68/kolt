@@ -30,6 +30,3 @@ internal external fun JphRotatedTranslatedShape_GetPosition(self: NativePointer,
 
 @ExternalSymbolName("JphRotatedTranslatedShape_TransformScale")
 internal external fun JphRotatedTranslatedShape_TransformScale(self: NativePointer, inScale: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphRotatedTranslatedShape_sRegister")
-internal external fun JphRotatedTranslatedShape_sRegister()

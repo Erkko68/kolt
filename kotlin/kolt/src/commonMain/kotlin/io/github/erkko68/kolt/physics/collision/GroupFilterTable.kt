@@ -50,9 +50,4 @@ class GroupFilterTable internal constructor(internal val groupFilterTableHandle:
 
     fun isCollisionEnabled(subGroup1: Int, subGroup2: Int): Boolean =
         JphGroupFilterTable_IsCollisionEnabled(groupFilterTableHandle, subGroup1, subGroup2)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphGroupFilterTable_sCreateRTTI(rtti.rttiHandle)
-    }
 }

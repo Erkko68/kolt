@@ -16,7 +16,7 @@ void JphTaperedCylinderShapeSettings_release(const JphTaperedCylinderShapeSettin
 JphConvexShapeSettings* JphTaperedCylinderShapeSettings_asConvexShapeSettings(JphTaperedCylinderShapeSettings* self);
 JphShapeSettings* JphTaperedCylinderShapeSettings_asShapeSettings(JphTaperedCylinderShapeSettings* self);
 JphSerializableObject* JphTaperedCylinderShapeSettings_asSerializableObject(JphTaperedCylinderShapeSettings* self);
-void JphTaperedCylinderShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::TaperedCylinderShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 float JphTaperedCylinderShapeSettings_GetHalfHeight(const JphTaperedCylinderShapeSettings* self);
 void JphTaperedCylinderShapeSettings_SetHalfHeight(JphTaperedCylinderShapeSettings* self, float value);
 float JphTaperedCylinderShapeSettings_GetTopRadius(const JphTaperedCylinderShapeSettings* self);

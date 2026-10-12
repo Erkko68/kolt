@@ -9,17 +9,16 @@ extern "C" {
 #endif
 
 // JPH::BoxShape
+// skipped JPH::BoxShape(const BoxShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphBoxShape* JphBoxShape_create(void);
-// TODO(handwritten) JphBoxShape_create_BoxShapeSettings_ShapeResult: JPH::BoxShape(const BoxShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 JphBoxShape* JphBoxShape_create_Vec3Arg_float_PhysicsMaterial(const JphVec3* inHalfExtent, float inConvexRadius, const JphPhysicsMaterial* inMaterial);
 void JphBoxShape_addRef(const JphBoxShape* self);
 void JphBoxShape_release(const JphBoxShape* self);
 JphConvexShape* JphBoxShape_asConvexShape(JphBoxShape* self);
 JphShape* JphBoxShape_asShape(JphBoxShape* self);
+// skipped static void JPH::BoxShape::sRegister(): JPH::.*::sRegister
 void JphBoxShape_GetHalfExtent(const JphBoxShape* self, JphVec3* out);
 float JphBoxShape_GetConvexRadius(const JphBoxShape* self);
-void JphBoxShape_sRegister(void);
 
 
 #ifdef __cplusplus

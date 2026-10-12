@@ -40,8 +40,4 @@ const JphPhysicsMaterial* JphPlaneShape_GetMaterial(const JphPlaneShape* self) {
     return kolt::c(kolt::cpp(self)->GetMaterial());
 }
 
-void JphPlaneShape_sRegister(void) {
-    JPH::PlaneShape::sRegister();
-}
-
 } // extern "C"

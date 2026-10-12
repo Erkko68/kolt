@@ -325,11 +325,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
         var invMass: Float
             get() = JphSoftBodySharedSettingsVertex_GetInvMass(softBodySharedSettingsVertexHandle)
             set(value) = JphSoftBodySharedSettingsVertex_SetInvMass(softBodySharedSettingsVertexHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsVertex_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::Face`. */
@@ -357,11 +352,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
         var materialIndex: Int
             get() = JphSoftBodySharedSettingsFace_GetMaterialIndex(softBodySharedSettingsFaceHandle)
             set(value) = JphSoftBodySharedSettingsFace_SetMaterialIndex(softBodySharedSettingsFaceHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsFace_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::Edge`. */
@@ -393,11 +383,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
         var compliance: Float
             get() = JphSoftBodySharedSettingsEdge_GetCompliance(softBodySharedSettingsEdgeHandle)
             set(value) = JphSoftBodySharedSettingsEdge_SetCompliance(softBodySharedSettingsEdgeHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsEdge_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::DihedralBend`. */
@@ -429,11 +414,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
         var initialAngle: Float
             get() = JphSoftBodySharedSettingsDihedralBend_GetInitialAngle(softBodySharedSettingsDihedralBendHandle)
             set(value) = JphSoftBodySharedSettingsDihedralBend_SetInitialAngle(softBodySharedSettingsDihedralBendHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsDihedralBend_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::Volume`. */
@@ -465,11 +445,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
         var compliance: Float
             get() = JphSoftBodySharedSettingsVolume_GetCompliance(softBodySharedSettingsVolumeHandle)
             set(value) = JphSoftBodySharedSettingsVolume_SetCompliance(softBodySharedSettingsVolumeHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsVolume_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::InvBind`. */
@@ -493,11 +468,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
                 Mat44(returned)
             }
             set(value) = interopScope { JphSoftBodySharedSettingsInvBind_SetInvBind(softBodySharedSettingsInvBindHandle, toInterop(value.toArray())) }
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsInvBind_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::SkinWeight`. */
@@ -515,11 +485,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
         var weight: Float
             get() = JphSoftBodySharedSettingsSkinWeight_GetWeight(softBodySharedSettingsSkinWeightHandle)
             set(value) = JphSoftBodySharedSettingsSkinWeight_SetWeight(softBodySharedSettingsSkinWeightHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsSkinWeight_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::Skinned`. */
@@ -561,11 +526,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
         var normalInfo: Int
             get() = JphSoftBodySharedSettingsSkinned_GetNormalInfo(softBodySharedSettingsSkinnedHandle)
             set(value) = JphSoftBodySharedSettingsSkinned_SetNormalInfo(softBodySharedSettingsSkinnedHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsSkinned_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::LRA`. */
@@ -593,11 +553,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
         var maxDistance: Float
             get() = JphSoftBodySharedSettingsLRA_GetMaxDistance(softBodySharedSettingsLRAHandle)
             set(value) = JphSoftBodySharedSettingsLRA_SetMaxDistance(softBodySharedSettingsLRAHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsLRA_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::RodStretchShear`. */
@@ -643,11 +598,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
                 Quat(returned)
             }
             set(value) = interopScope { JphSoftBodySharedSettingsRodStretchShear_SetBishop(softBodySharedSettingsRodStretchShearHandle, toInterop(value.toArray())) }
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsRodStretchShear_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::RodBendTwist`. */
@@ -682,11 +632,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
                 Quat(returned)
             }
             set(value) = interopScope { JphSoftBodySharedSettingsRodBendTwist_SetOmega0(softBodySharedSettingsRodBendTwistHandle, toInterop(value.toArray())) }
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphSoftBodySharedSettingsRodBendTwist_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::SoftBodySharedSettings::ELRAType`. */
@@ -712,9 +657,6 @@ class SoftBodySharedSettings internal constructor(internal val softBodySharedSet
     }
     
     companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphSoftBodySharedSettings_sCreateRTTI(rtti.rttiHandle)
-
         fun createCube(gridSize: Int, gridSpacing: Float): SoftBodySharedSettings? =
             JphSoftBodySharedSettings_sCreateCube(gridSize, gridSpacing).takeIf { it != NullPointer }?.let { SoftBodySharedSettings(it, owned = true) }
     }

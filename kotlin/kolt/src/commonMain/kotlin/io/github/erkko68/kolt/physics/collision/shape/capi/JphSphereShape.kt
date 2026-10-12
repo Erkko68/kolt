@@ -24,6 +24,3 @@ internal external fun JphSphereShape_asShape(self: NativePointer): NativePointer
 
 @ExternalSymbolName("JphSphereShape_GetRadius")
 internal external fun JphSphereShape_GetRadius(self: NativePointer): Float
-
-@ExternalSymbolName("JphSphereShape_sRegister")
-internal external fun JphSphereShape_sRegister()

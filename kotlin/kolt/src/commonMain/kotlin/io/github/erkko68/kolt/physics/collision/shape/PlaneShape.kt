@@ -56,9 +56,4 @@ class PlaneShape internal constructor(internal val planeShapeHandle: NativePoint
     var material: PhysicsMaterial?
         get() = JphPlaneShape_GetMaterial(planeShapeHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(material) = JphPlaneShape_SetMaterial(planeShapeHandle, material?.physicsMaterialHandle ?: NullPointer)
-
-    companion object {
-        fun register() =
-            JphPlaneShape_sRegister()
-    }
 }

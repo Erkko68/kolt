@@ -20,10 +20,6 @@ void JphBodyCreationSettings_destroy(JphBodyCreationSettings* self) {
     delete kolt::cpp(self);
 }
 
-void JphBodyCreationSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::BodyCreationSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 const JphShapeSettings* JphBodyCreationSettings_GetShapeSettings(const JphBodyCreationSettings* self) {
     return kolt::c(kolt::cpp(self)->GetShapeSettings());
 }

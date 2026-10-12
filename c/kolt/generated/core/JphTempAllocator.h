@@ -10,8 +10,8 @@ extern "C" {
 
 // JPH::TempAllocator
 void JphTempAllocator_destroy(JphTempAllocator* self);
-void* JphTempAllocator_Allocate(JphTempAllocator* self, uint32_t inSize);
-void JphTempAllocator_Free(JphTempAllocator* self, void* inAddress, uint32_t inSize);
+// skipped void * JPH::TempAllocator::Allocate(uint inSize): JPH::TempAllocator::(Allocate|Free)
+// skipped void JPH::TempAllocator::Free(void * inAddress, uint inSize): JPH::TempAllocator::(Allocate|Free)
 
 
 #ifdef __cplusplus

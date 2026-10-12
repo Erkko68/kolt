@@ -8,12 +8,4 @@ void JphTempAllocator_destroy(JphTempAllocator* self) {
     delete kolt::cpp(self);
 }
 
-void* JphTempAllocator_Allocate(JphTempAllocator* self, uint32_t inSize) {
-    return kolt::cpp(self)->Allocate(static_cast<unsigned int>(inSize));
-}
-
-void JphTempAllocator_Free(JphTempAllocator* self, void* inAddress, uint32_t inSize) {
-    kolt::cpp(self)->Free(inAddress, static_cast<unsigned int>(inSize));
-}
-
 } // extern "C"

@@ -28,10 +28,6 @@ void JphMotorSettings_destroy(JphMotorSettings* self) {
     delete kolt::cpp(self);
 }
 
-void JphMotorSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::MotorSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphMotorSettings_SetForceLimits(JphMotorSettings* self, float inMin, float inMax) {
     kolt::cpp(self)->SetForceLimits(inMin, inMax);
 }

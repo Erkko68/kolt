@@ -16,10 +16,6 @@ void JphSoftBodyCreationSettings_destroy(JphSoftBodyCreationSettings* self) {
     delete kolt::cpp(self);
 }
 
-void JphSoftBodyCreationSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::SoftBodyCreationSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphSoftBodyCreationSettings_SaveBinaryState(const JphSoftBodyCreationSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

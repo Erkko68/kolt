@@ -25,9 +25,6 @@ internal external fun JphBoxShapeSettings_asShapeSettings(self: NativePointer): 
 @ExternalSymbolName("JphBoxShapeSettings_asSerializableObject")
 internal external fun JphBoxShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphBoxShapeSettings_sCreateRTTI")
-internal external fun JphBoxShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphBoxShapeSettings_GetHalfExtent")
 internal external fun JphBoxShapeSettings_GetHalfExtent(self: NativePointer, out: NativePointer)
 

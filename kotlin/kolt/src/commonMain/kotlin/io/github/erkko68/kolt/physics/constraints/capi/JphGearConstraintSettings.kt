@@ -22,9 +22,6 @@ internal external fun JphGearConstraintSettings_asConstraintSettings(self: Nativ
 @ExternalSymbolName("JphGearConstraintSettings_asSerializableObject")
 internal external fun JphGearConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphGearConstraintSettings_sCreateRTTI")
-internal external fun JphGearConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphGearConstraintSettings_SetRatio")
 internal external fun JphGearConstraintSettings_SetRatio(self: NativePointer, inNumTeethGear1: Int, inNumTeethGear2: Int)
 

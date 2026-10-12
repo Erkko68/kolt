@@ -105,11 +105,6 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
         var toParent: TwoBodyConstraintSettings?
             get() = JphRagdollSettingsPart_GetToParent(ragdollSettingsPartHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraintSettings(it) }
             set(value) = JphRagdollSettingsPart_SetToParent(ragdollSettingsPartHandle, value?.twoBodyConstraintSettingsHandle ?: NullPointer)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphRagdollSettingsPart_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     /** C++ `JPH::RagdollSettings::AdditionalConstraint`. */
@@ -134,17 +129,9 @@ class RagdollSettings internal constructor(internal val ragdollSettingsHandle: N
         var constraint: TwoBodyConstraintSettings?
             get() = JphRagdollSettingsAdditionalConstraint_GetConstraint(ragdollSettingsAdditionalConstraintHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraintSettings(it) }
             set(value) = JphRagdollSettingsAdditionalConstraint_SetConstraint(ragdollSettingsAdditionalConstraintHandle, value?.twoBodyConstraintSettingsHandle ?: NullPointer)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphRagdollSettingsAdditionalConstraint_sCreateRTTI(rtti.rttiHandle)
-        }
     }
     
     companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphRagdollSettings_sCreateRTTI(rtti.rttiHandle)
-
         fun restoreFromBinaryState(stream: StreamIn): RagdollSettings =
             interopScope {
                 val error = ByteArray(256)

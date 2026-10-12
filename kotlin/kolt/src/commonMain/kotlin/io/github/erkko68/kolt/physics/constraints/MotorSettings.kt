@@ -87,9 +87,4 @@ class MotorSettings internal constructor(internal val motorSettingsHandle: Nativ
     var maxTorqueLimit: Float
         get() = JphMotorSettings_GetMaxTorqueLimit(motorSettingsHandle)
         set(value) = JphMotorSettings_SetMaxTorqueLimit(motorSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphMotorSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

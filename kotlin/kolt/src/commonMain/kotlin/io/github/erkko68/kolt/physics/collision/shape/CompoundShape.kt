@@ -162,9 +162,4 @@ open class CompoundShape internal constructor(internal val compoundShapeHandle: 
             get() = JphCompoundShapeSubShape_GetIsRotationIdentity(compoundShapeSubShapeHandle)
             set(value) = JphCompoundShapeSubShape_SetIsRotationIdentity(compoundShapeSubShapeHandle, value)
     }
-    
-    companion object {
-        fun register() =
-            JphCompoundShape_sRegister()
     }
-}

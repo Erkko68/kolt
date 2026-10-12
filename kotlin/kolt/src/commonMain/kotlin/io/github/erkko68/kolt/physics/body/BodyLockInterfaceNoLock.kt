@@ -34,8 +34,6 @@ import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyLockInterfaceNoLock`. */
 class BodyLockInterfaceNoLock internal constructor(internal val bodyLockInterfaceNoLockHandle: NativePointer, owned: Boolean = false) : BodyLockInterface(JphBodyLockInterfaceNoLock_asBodyLockInterface(bodyLockInterfaceNoLockHandle), owned), AutoCloseable {
-    constructor(arg0: BodyManager) : this(JphBodyLockInterfaceNoLock_create(arg0.bodyManagerHandle), owned = true)
-
     override fun close() =
         closeOnce { JphBodyLockInterfaceNoLock_destroy(bodyLockInterfaceNoLockHandle) }
 }

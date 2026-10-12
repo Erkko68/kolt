@@ -40,8 +40,4 @@ float JphTaperedCylinderShape_GetHalfHeight(const JphTaperedCylinderShape* self)
     return kolt::cpp(self)->GetHalfHeight();
 }
 
-void JphTaperedCylinderShape_sRegister(void) {
-    JPH::TaperedCylinderShape::sRegister();
-}
-
 } // extern "C"

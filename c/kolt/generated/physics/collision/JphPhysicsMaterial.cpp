@@ -47,18 +47,6 @@ JphSerializableObject* JphPhysicsMaterial_asSerializableObject(JphPhysicsMateria
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphPhysicsMaterial_GetRTTI(const JphPhysicsMaterial* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphPhysicsMaterial_CastTo(const JphPhysicsMaterial* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
-void JphPhysicsMaterial_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::PhysicsMaterial::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 const char* JphPhysicsMaterial_GetDebugName(const JphPhysicsMaterial* self) {
     return kolt::cpp(self)->GetDebugName();
 }

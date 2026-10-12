@@ -32,10 +32,6 @@ JphSerializableObject* JphMeshShapeSettings_asSerializableObject(JphMeshShapeSet
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphMeshShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::MeshShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphMeshShapeSettings_Sanitize(JphMeshShapeSettings* self) {
     kolt::cpp(self)->Sanitize();
 }

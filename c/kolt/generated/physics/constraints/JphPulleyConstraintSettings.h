@@ -15,7 +15,7 @@ void JphPulleyConstraintSettings_release(const JphPulleyConstraintSettings* self
 JphTwoBodyConstraintSettings* JphPulleyConstraintSettings_asTwoBodyConstraintSettings(JphPulleyConstraintSettings* self);
 JphConstraintSettings* JphPulleyConstraintSettings_asConstraintSettings(JphPulleyConstraintSettings* self);
 JphSerializableObject* JphPulleyConstraintSettings_asSerializableObject(JphPulleyConstraintSettings* self);
-void JphPulleyConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::PulleyConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphEConstraintSpace JphPulleyConstraintSettings_GetSpace(const JphPulleyConstraintSettings* self);
 void JphPulleyConstraintSettings_SetSpace(JphPulleyConstraintSettings* self, JphEConstraintSpace value);
 void JphPulleyConstraintSettings_GetBodyPoint1(const JphPulleyConstraintSettings* self, JphVec3* out);

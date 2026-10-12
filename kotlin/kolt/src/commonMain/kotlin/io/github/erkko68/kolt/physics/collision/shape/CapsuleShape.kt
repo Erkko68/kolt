@@ -48,9 +48,4 @@ class CapsuleShape internal constructor(internal val capsuleShapeHandle: NativeP
 
     val halfHeightOfCylinder: Float
         get() = JphCapsuleShape_GetHalfHeightOfCylinder(capsuleShapeHandle)
-
-    companion object {
-        fun register() =
-            JphCapsuleShape_sRegister()
-    }
 }

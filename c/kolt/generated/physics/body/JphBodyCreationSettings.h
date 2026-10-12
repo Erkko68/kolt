@@ -13,7 +13,7 @@ JphBodyCreationSettings* JphBodyCreationSettings_create(void);
 JphBodyCreationSettings* JphBodyCreationSettings_create_ShapeSettings_RVec3Arg_QuatArg_EMotionType_ObjectLayer(const JphShapeSettings* inShape, const JphVec3* inPosition, const JphQuat* inRotation, JphEMotionType inMotionType, uint32_t inObjectLayer);
 JphBodyCreationSettings* JphBodyCreationSettings_create_Shape_RVec3Arg_QuatArg_EMotionType_ObjectLayer(const JphShape* inShape, const JphVec3* inPosition, const JphQuat* inRotation, JphEMotionType inMotionType, uint32_t inObjectLayer);
 void JphBodyCreationSettings_destroy(JphBodyCreationSettings* self);
-void JphBodyCreationSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::BodyCreationSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 const JphShapeSettings* JphBodyCreationSettings_GetShapeSettings(const JphBodyCreationSettings* self);
 void JphBodyCreationSettings_SetShapeSettings(JphBodyCreationSettings* self, const JphShapeSettings* inShape);
 JphShape* JphBodyCreationSettings_ConvertShapeSettings(JphBodyCreationSettings* self, char* outError, uint32_t outErrorCapacity);

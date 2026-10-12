@@ -8,46 +8,6 @@ void JphBodyLockInterface_destroy(JphBodyLockInterface* self) {
     delete kolt::cpp(self);
 }
 
-JphSharedMutex* JphBodyLockInterface_LockRead_BodyID(const JphBodyLockInterface* self, uint32_t inBodyID) {
-    return kolt::c(kolt::cpp(self)->LockRead(JPH::BodyID(inBodyID)));
-}
-
-void JphBodyLockInterface_LockRead_MutexMask(const JphBodyLockInterface* self, uint64_t inMutexMask) {
-    kolt::cpp(self)->LockRead(inMutexMask);
-}
-
-void JphBodyLockInterface_UnlockRead_SharedMutex(const JphBodyLockInterface* self, JphSharedMutex* inMutex) {
-    kolt::cpp(self)->UnlockRead(kolt::cpp(inMutex));
-}
-
-void JphBodyLockInterface_UnlockRead_MutexMask(const JphBodyLockInterface* self, uint64_t inMutexMask) {
-    kolt::cpp(self)->UnlockRead(inMutexMask);
-}
-
-JphSharedMutex* JphBodyLockInterface_LockWrite_BodyID(const JphBodyLockInterface* self, uint32_t inBodyID) {
-    return kolt::c(kolt::cpp(self)->LockWrite(JPH::BodyID(inBodyID)));
-}
-
-void JphBodyLockInterface_LockWrite_MutexMask(const JphBodyLockInterface* self, uint64_t inMutexMask) {
-    kolt::cpp(self)->LockWrite(inMutexMask);
-}
-
-void JphBodyLockInterface_UnlockWrite_SharedMutex(const JphBodyLockInterface* self, JphSharedMutex* inMutex) {
-    kolt::cpp(self)->UnlockWrite(kolt::cpp(inMutex));
-}
-
-void JphBodyLockInterface_UnlockWrite_MutexMask(const JphBodyLockInterface* self, uint64_t inMutexMask) {
-    kolt::cpp(self)->UnlockWrite(inMutexMask);
-}
-
-void JphBodyLockInterface_GetAllBodiesMutexMask(const JphBodyLockInterface* self, uint64_t* out) {
-    *out = kolt::cpp(self)->GetAllBodiesMutexMask();
-}
-
-void JphBodyLockInterface_GetMutexMask(const JphBodyLockInterface* self, const uint32_t* inBodies, int32_t inNumber, uint64_t* out) {
-    *out = kolt::cpp(self)->GetMutexMask(reinterpret_cast<const JPH::BodyID*>(inBodies), static_cast<int>(inNumber));
-}
-
 JphBody* JphBodyLockInterface_TryGetBody(const JphBodyLockInterface* self, uint32_t inBodyID) {
     return kolt::c(kolt::cpp(self)->TryGetBody(JPH::BodyID(inBodyID)));
 }

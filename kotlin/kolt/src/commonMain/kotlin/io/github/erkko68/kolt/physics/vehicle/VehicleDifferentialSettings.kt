@@ -80,9 +80,4 @@ class VehicleDifferentialSettings internal constructor(internal val vehicleDiffe
     var engineTorqueRatio: Float
         get() = JphVehicleDifferentialSettings_GetEngineTorqueRatio(vehicleDifferentialSettingsHandle)
         set(value) = JphVehicleDifferentialSettings_SetEngineTorqueRatio(vehicleDifferentialSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphVehicleDifferentialSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

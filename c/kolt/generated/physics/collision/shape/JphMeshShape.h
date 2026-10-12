@@ -9,16 +9,15 @@ extern "C" {
 #endif
 
 // JPH::MeshShape
+// skipped JPH::MeshShape(const MeshShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphMeshShape* JphMeshShape_create(void);
-// TODO(handwritten) JphMeshShape_create_MeshShapeSettings_ShapeResult: JPH::MeshShape(const MeshShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 void JphMeshShape_addRef(const JphMeshShape* self);
 void JphMeshShape_release(const JphMeshShape* self);
 JphShape* JphMeshShape_asShape(JphMeshShape* self);
+// skipped static void JPH::MeshShape::sRegister(): JPH::.*::sRegister
 uint32_t JphMeshShape_GetMaterialList(const JphMeshShape* self, const JphPhysicsMaterial** out, uint32_t outCapacity);
 uint32_t JphMeshShape_GetMaterialIndex(const JphMeshShape* self, uint32_t inSubShapeID);
 uint32_t JphMeshShape_GetTriangleUserData(const JphMeshShape* self, uint32_t inSubShapeID);
-void JphMeshShape_sRegister(void);
 
 
 #ifdef __cplusplus

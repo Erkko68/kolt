@@ -47,9 +47,4 @@ open class DecoratedShapeSettings internal constructor(internal val decoratedSha
     var innerShapePtr: Shape?
         get() = JphDecoratedShapeSettings_GetInnerShapePtr(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(value) = JphDecoratedShapeSettings_SetInnerShapePtr(decoratedShapeSettingsHandle, value?.shapeHandle ?: NullPointer)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphDecoratedShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

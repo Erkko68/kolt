@@ -59,9 +59,4 @@ class MutableCompoundShape internal constructor(internal val mutableCompoundShap
 
     fun adjustCenterOfMass() =
         JphMutableCompoundShape_AdjustCenterOfMass(mutableCompoundShapeHandle)
-
-    companion object {
-        fun register() =
-            JphMutableCompoundShape_sRegister()
-    }
 }

@@ -13,9 +13,6 @@ internal external fun JphSoftBodyCreationSettings_create_SoftBodySharedSettings_
 @ExternalSymbolName("JphSoftBodyCreationSettings_destroy")
 internal external fun JphSoftBodyCreationSettings_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphSoftBodyCreationSettings_sCreateRTTI")
-internal external fun JphSoftBodyCreationSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSoftBodyCreationSettings_SaveBinaryState")
 internal external fun JphSoftBodyCreationSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

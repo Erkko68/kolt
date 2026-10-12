@@ -22,9 +22,6 @@ internal external fun JphPlaneShapeSettings_asShapeSettings(self: NativePointer)
 @ExternalSymbolName("JphPlaneShapeSettings_asSerializableObject")
 internal external fun JphPlaneShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphPlaneShapeSettings_sCreateRTTI")
-internal external fun JphPlaneShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphPlaneShapeSettings_GetPlane")
 internal external fun JphPlaneShapeSettings_GetPlane(self: NativePointer, out: NativePointer)
 

@@ -56,9 +56,4 @@ class VehicleAntiRollBar internal constructor(internal val vehicleAntiRollBarHan
     var stiffness: Float
         get() = JphVehicleAntiRollBar_GetStiffness(vehicleAntiRollBarHandle)
         set(value) = JphVehicleAntiRollBar_SetStiffness(vehicleAntiRollBarHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphVehicleAntiRollBar_sCreateRTTI(rtti.rttiHandle)
-    }
 }

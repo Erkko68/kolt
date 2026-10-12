@@ -76,9 +76,4 @@ class TriangleShapeSettings internal constructor(internal val triangleShapeSetti
     var convexRadius: Float
         get() = JphTriangleShapeSettings_GetConvexRadius(triangleShapeSettingsHandle)
         set(value) = JphTriangleShapeSettings_SetConvexRadius(triangleShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphTriangleShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

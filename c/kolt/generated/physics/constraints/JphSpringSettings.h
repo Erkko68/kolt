@@ -12,7 +12,7 @@ extern "C" {
 JphSpringSettings* JphSpringSettings_create(void);
 JphSpringSettings* JphSpringSettings_create_ESpringMode_float_float(JphESpringMode inMode, float inFrequencyOrStiffness, float inDamping);
 void JphSpringSettings_destroy(JphSpringSettings* self);
-void JphSpringSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SpringSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphSpringSettings_SaveBinaryState(const JphSpringSettings* self, JphStreamOut* inStream);
 void JphSpringSettings_RestoreBinaryState(JphSpringSettings* self, JphStreamIn* inStream);
 bool JphSpringSettings_HasStiffness(const JphSpringSettings* self);

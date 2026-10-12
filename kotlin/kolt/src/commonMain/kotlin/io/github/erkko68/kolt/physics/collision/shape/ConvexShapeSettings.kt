@@ -47,9 +47,4 @@ open class ConvexShapeSettings internal constructor(internal val convexShapeSett
     var density: Float
         get() = JphConvexShapeSettings_GetDensity(convexShapeSettingsHandle)
         set(density) = JphConvexShapeSettings_SetDensity(convexShapeSettingsHandle, density)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphConvexShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

@@ -72,30 +72,6 @@ bool JphConstraint_IsActive(const JphConstraint* self) {
     return kolt::cpp(self)->IsActive();
 }
 
-void JphConstraint_SetupVelocityConstraint(JphConstraint* self, float inDeltaTime) {
-    kolt::cpp(self)->SetupVelocityConstraint(inDeltaTime);
-}
-
-void JphConstraint_WarmStartVelocityConstraint(JphConstraint* self, float inWarmStartImpulseRatio) {
-    kolt::cpp(self)->WarmStartVelocityConstraint(inWarmStartImpulseRatio);
-}
-
-bool JphConstraint_SolveVelocityConstraint(JphConstraint* self, float inDeltaTime) {
-    return kolt::cpp(self)->SolveVelocityConstraint(inDeltaTime);
-}
-
-bool JphConstraint_SolvePositionConstraint(JphConstraint* self, float inDeltaTime, float inBaumgarte) {
-    return kolt::cpp(self)->SolvePositionConstraint(inDeltaTime, inBaumgarte);
-}
-
-void JphConstraint_BuildIslands(JphConstraint* self, uint32_t inConstraintIndex, JphIslandBuilder* ioBuilder, JphBodyManager* inBodyManager) {
-    kolt::cpp(self)->BuildIslands(inConstraintIndex, *kolt::cpp(ioBuilder), *kolt::cpp(inBodyManager));
-}
-
-uint32_t JphConstraint_BuildIslandSplits(const JphConstraint* self, JphLargeIslandSplitter* ioSplitter) {
-    return static_cast<uint32_t>(kolt::cpp(self)->BuildIslandSplits(*kolt::cpp(ioSplitter)));
-}
-
 void JphConstraint_SaveState(const JphConstraint* self, JphStateRecorder* inStream) {
     kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
 }

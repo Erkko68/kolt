@@ -67,9 +67,4 @@ class SpringSettings internal constructor(internal val springSettingsHandle: Nat
     var damping: Float
         get() = JphSpringSettings_GetDamping(springSettingsHandle)
         set(value) = JphSpringSettings_SetDamping(springSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphSpringSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

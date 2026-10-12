@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 // JPH::BodyLockInterfaceNoLock
-JphBodyLockInterfaceNoLock* JphBodyLockInterfaceNoLock_create(JphBodyManager* arg0);
+// skipped JPH::BodyLockInterfaceNoLock(BodyManager &): uses JPH::BodyManager
 void JphBodyLockInterfaceNoLock_destroy(JphBodyLockInterfaceNoLock* self);
 JphBodyLockInterface* JphBodyLockInterfaceNoLock_asBodyLockInterface(JphBodyLockInterfaceNoLock* self);
 

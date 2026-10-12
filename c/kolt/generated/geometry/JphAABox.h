@@ -14,6 +14,7 @@ JphAABox* JphAABox_create_Vec3Arg_Vec3Arg(const JphVec3* inMin, const JphVec3* i
 JphAABox* JphAABox_create_DVec3Arg_DVec3Arg(const JphDVec3* inMin, const JphDVec3* inMax);
 JphAABox* JphAABox_create_Vec3Arg_float(const JphVec3* inCenter, float inRadius);
 void JphAABox_destroy(JphAABox* self);
+// skipped void JPH::AABox::GetSupportingFace(Vec3Arg inDirection, VERTEX_ARRAY & outVertices) const
 void JphAABox_sFromTwoPoints(const JphVec3* inP1, const JphVec3* inP2, JphAABox* out);
 void JphAABox_sFromTriangle(const JphFloat3* inVertices, uint32_t inVerticesCount, const JphIndexedTriangle* inTriangle, JphAABox* out);
 void JphAABox_sBiggest(JphAABox* out);
@@ -42,8 +43,6 @@ void JphAABox_Transformed_Mat44Arg(const JphAABox* self, const JphMat44* inMatri
 void JphAABox_Transformed_DMat44Arg(const JphAABox* self, const JphDMat44* inMatrix, JphAABox* out);
 void JphAABox_Scaled(const JphAABox* self, const JphVec3* inScale, JphAABox* out);
 void JphAABox_GetSupport(const JphAABox* self, const JphVec3* inDirection, JphVec3* out);
-// TODO(handwritten) JphAABox_GetSupportingFace: template void JPH::AABox::GetSupportingFace(Vec3Arg inDirection, VERTEX_ARRAY & outVertices) const
-//     function template: functionInstantiations lists none
 void JphAABox_GetClosestPoint(const JphAABox* self, const JphVec3* inPoint, JphVec3* out);
 float JphAABox_GetSqDistanceTo(const JphAABox* self, const JphVec3* inPoint);
 void JphAABox_GetMin(const JphAABox* self, JphVec3* out);

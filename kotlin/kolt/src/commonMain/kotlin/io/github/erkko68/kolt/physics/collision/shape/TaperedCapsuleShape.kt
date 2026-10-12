@@ -50,9 +50,4 @@ class TaperedCapsuleShape internal constructor(internal val taperedCapsuleShapeH
 
     val halfHeight: Float
         get() = JphTaperedCapsuleShape_GetHalfHeight(taperedCapsuleShapeHandle)
-
-    companion object {
-        fun register() =
-            JphTaperedCapsuleShape_sRegister()
-    }
 }

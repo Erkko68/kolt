@@ -19,15 +19,6 @@ internal external fun JphConstraintSettings_bindUpcalls(self: NativePointer, use
 @ExternalSymbolName("JphConstraintSettings_asSerializableObject")
 internal external fun JphConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphConstraintSettings_GetRTTI")
-internal external fun JphConstraintSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphConstraintSettings_CastTo")
-internal external fun JphConstraintSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
-@ExternalSymbolName("JphConstraintSettings_sCreateRTTI")
-internal external fun JphConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphConstraintSettings_SaveBinaryState")
 internal external fun JphConstraintSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

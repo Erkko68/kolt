@@ -18,6 +18,3 @@ internal external fun JphStaticCompoundShape_asCompoundShape(self: NativePointer
 
 @ExternalSymbolName("JphStaticCompoundShape_asShape")
 internal external fun JphStaticCompoundShape_asShape(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphStaticCompoundShape_sRegister")
-internal external fun JphStaticCompoundShape_sRegister()

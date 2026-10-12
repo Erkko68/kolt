@@ -40,8 +40,4 @@ float JphCylinderShape_GetConvexRadius(const JphCylinderShape* self) {
     return kolt::cpp(self)->GetConvexRadius();
 }
 
-void JphCylinderShape_sRegister(void) {
-    JPH::CylinderShape::sRegister();
-}
-
 } // extern "C"

@@ -16,9 +16,6 @@ internal external fun JphConvexShapeSettings_asShapeSettings(self: NativePointer
 @ExternalSymbolName("JphConvexShapeSettings_asSerializableObject")
 internal external fun JphConvexShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphConvexShapeSettings_sCreateRTTI")
-internal external fun JphConvexShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphConvexShapeSettings_SetDensity")
 internal external fun JphConvexShapeSettings_SetDensity(self: NativePointer, inDensity: Float)
 

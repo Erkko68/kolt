@@ -25,9 +25,6 @@ internal external fun JphSphereShapeSettings_asShapeSettings(self: NativePointer
 @ExternalSymbolName("JphSphereShapeSettings_asSerializableObject")
 internal external fun JphSphereShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphSphereShapeSettings_sCreateRTTI")
-internal external fun JphSphereShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSphereShapeSettings_GetRadius")
 internal external fun JphSphereShapeSettings_GetRadius(self: NativePointer): Float
 

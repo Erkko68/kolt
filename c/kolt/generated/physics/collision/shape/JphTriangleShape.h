@@ -9,19 +9,18 @@ extern "C" {
 #endif
 
 // JPH::TriangleShape
+// skipped JPH::TriangleShape(const TriangleShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphTriangleShape* JphTriangleShape_create(void);
-// TODO(handwritten) JphTriangleShape_create_TriangleShapeSettings_ShapeResult: JPH::TriangleShape(const TriangleShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 JphTriangleShape* JphTriangleShape_create_Vec3Arg_Vec3Arg_Vec3Arg_float_PhysicsMaterial(const JphVec3* inV1, const JphVec3* inV2, const JphVec3* inV3, float inConvexRadius, const JphPhysicsMaterial* inMaterial);
 void JphTriangleShape_addRef(const JphTriangleShape* self);
 void JphTriangleShape_release(const JphTriangleShape* self);
 JphConvexShape* JphTriangleShape_asConvexShape(JphTriangleShape* self);
 JphShape* JphTriangleShape_asShape(JphTriangleShape* self);
+// skipped static void JPH::TriangleShape::sRegister(): JPH::.*::sRegister
 void JphTriangleShape_GetVertex1(const JphTriangleShape* self, JphVec3* out);
 void JphTriangleShape_GetVertex2(const JphTriangleShape* self, JphVec3* out);
 void JphTriangleShape_GetVertex3(const JphTriangleShape* self, JphVec3* out);
 float JphTriangleShape_GetConvexRadius(const JphTriangleShape* self);
-void JphTriangleShape_sRegister(void);
 
 
 #ifdef __cplusplus

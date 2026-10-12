@@ -82,9 +82,4 @@ open class WheeledVehicleControllerSettings internal constructor(internal val wh
         }
         return true
     }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphWheeledVehicleControllerSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

@@ -77,9 +77,4 @@ open class MotorcycleControllerSettings internal constructor(internal val motorc
         }
         return true
     }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphMotorcycleControllerSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

@@ -14,7 +14,7 @@ void JphGroupFilterTable_addRef(const JphGroupFilterTable* self);
 void JphGroupFilterTable_release(const JphGroupFilterTable* self);
 JphGroupFilter* JphGroupFilterTable_asGroupFilter(JphGroupFilterTable* self);
 JphSerializableObject* JphGroupFilterTable_asSerializableObject(JphGroupFilterTable* self);
-void JphGroupFilterTable_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::GroupFilterTable::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphGroupFilterTable_DisableCollision(JphGroupFilterTable* self, uint32_t inSubGroup1, uint32_t inSubGroup2);
 void JphGroupFilterTable_EnableCollision(JphGroupFilterTable* self, uint32_t inSubGroup1, uint32_t inSubGroup2);
 bool JphGroupFilterTable_IsCollisionEnabled(const JphGroupFilterTable* self, uint32_t inSubGroup1, uint32_t inSubGroup2);

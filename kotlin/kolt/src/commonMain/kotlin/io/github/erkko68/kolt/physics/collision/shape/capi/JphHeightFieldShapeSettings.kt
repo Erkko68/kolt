@@ -22,9 +22,6 @@ internal external fun JphHeightFieldShapeSettings_asShapeSettings(self: NativePo
 @ExternalSymbolName("JphHeightFieldShapeSettings_asSerializableObject")
 internal external fun JphHeightFieldShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphHeightFieldShapeSettings_sCreateRTTI")
-internal external fun JphHeightFieldShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphHeightFieldShapeSettings_DetermineMinAndMaxSample")
 internal external fun JphHeightFieldShapeSettings_DetermineMinAndMaxSample(self: NativePointer, outMinValue: NativePointer, outMaxValue: NativePointer, outQuantizationScale: NativePointer)
 

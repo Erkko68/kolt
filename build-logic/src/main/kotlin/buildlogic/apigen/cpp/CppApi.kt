@@ -70,8 +70,10 @@ class CppApi(
 
     fun skipReason(field: CppField, owner: String): String? = skipReason("$owner::${field.name}") ?: usesSkipped(listOf(field.type))
 
-    /** Why a constructor taking [params] is left out: its parameters use a skipped record. */
-    fun skipReason(params: List<CppParam>): String? = usesSkipped(params.map { it.type })
+    /** Why [owner]'s constructor taking [params] is left out: it's skipped, as `Owner(Types)`, or its parameters use a skipped record. */
+    fun skipReason(params: List<CppParam>, owner: String): String? = skip(constructor(owner, params)) ?: usesSkipped(params.map { it.type })
+
+    private fun constructor(owner: String, params: List<CppParam>) = "$owner(${params.joinToString(", ") { parameter(it.type) }})"
 
     private fun usesSkipped(types: List<CppType>) = types.flatMap { it.withArgs() }.mapNotNull { it.decl }
         // Through aliases too: Ktx1Reader takes image::KtxInfo as ktxreader::KtxInfo.
@@ -89,7 +91,8 @@ class CppApi(
         (records.keys + enums.keys + publicConstants +
             records.values.flatMap { r -> (r.methods.map { it.name } + r.fields.map { it.name }).map { "${r.name}::$it" } } +
             enums.values.flatMap { e -> e.constants.map { "${e.name}::${it.first}" } } +
-            functions.map { "${it.owner}::${it.name}" } + (records.values.flatMap { it.methods } + functions).map { overload(it) }).toSet()
+            functions.map { "${it.owner}::${it.name}" } + (records.values.flatMap { it.methods } + functions).map { overload(it) } +
+            records.values.flatMap { r -> r.constructors.map { constructor(r.name, it) } }).toSet()
     }
 
     /** [skipped] entries that name nothing, stale after an upstream rename or removal. */

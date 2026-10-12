@@ -23,12 +23,12 @@ void JphConvexShapeSupportBuffer_SetData(JphConvexShapeSupportBuffer* self, cons
 void JphConvexShape_addRef(const JphConvexShape* self);
 void JphConvexShape_release(const JphConvexShape* self);
 JphShape* JphConvexShape_asShape(JphConvexShape* self);
+// skipped static void JPH::ConvexShape::sRegister(): JPH::.*::sRegister
 const JphConvexShapeSupport* JphConvexShape_GetSupportFunction(const JphConvexShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale);
 void JphConvexShape_SetMaterial(JphConvexShape* self, const JphPhysicsMaterial* inMaterial);
 const JphPhysicsMaterial* JphConvexShape_GetMaterial(const JphConvexShape* self);
 void JphConvexShape_SetDensity(JphConvexShape* self, float inDensity);
 float JphConvexShape_GetDensity(const JphConvexShape* self);
-void JphConvexShape_sRegister(void);
 
 
 #ifdef __cplusplus

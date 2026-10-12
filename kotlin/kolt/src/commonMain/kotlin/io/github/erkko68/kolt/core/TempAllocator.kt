@@ -36,10 +36,4 @@ import io.github.erkko68.kolt.skeleton.*
 open class TempAllocator internal constructor(internal val tempAllocatorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     override fun close() =
         closeOnce { JphTempAllocator_destroy(tempAllocatorHandle) }
-
-    fun allocate(size: Int): NativePointer =
-        JphTempAllocator_Allocate(tempAllocatorHandle, size)
-
-    fun free(address: NativePointer, size: Int) =
-        JphTempAllocator_Free(tempAllocatorHandle, address, size)
 }

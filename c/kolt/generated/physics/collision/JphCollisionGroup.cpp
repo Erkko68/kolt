@@ -16,10 +16,6 @@ void JphCollisionGroup_destroy(JphCollisionGroup* self) {
     delete kolt::cpp(self);
 }
 
-void JphCollisionGroup_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::CollisionGroup::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphCollisionGroup_SetGroupFilter(JphCollisionGroup* self, const JphGroupFilter* inFilter) {
     kolt::cpp(self)->SetGroupFilter(kolt::cpp(inFilter));
 }

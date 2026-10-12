@@ -120,8 +120,4 @@ void JphCompoundShape_GetSubShapeIDFromIndex(const JphCompoundShape* self, int32
     *kolt::cpp(out) = kolt::cpp(self)->GetSubShapeIDFromIndex(static_cast<int>(inIdx), *kolt::cpp(inParentSubShapeID));
 }
 
-void JphCompoundShape_sRegister(void) {
-    JPH::CompoundShape::sRegister();
-}
-
 } // extern "C"

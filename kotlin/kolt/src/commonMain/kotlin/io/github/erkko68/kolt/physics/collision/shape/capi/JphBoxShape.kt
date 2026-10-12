@@ -27,6 +27,3 @@ internal external fun JphBoxShape_GetHalfExtent(self: NativePointer, out: Native
 
 @ExternalSymbolName("JphBoxShape_GetConvexRadius")
 internal external fun JphBoxShape_GetConvexRadius(self: NativePointer): Float
-
-@ExternalSymbolName("JphBoxShape_sRegister")
-internal external fun JphBoxShape_sRegister()

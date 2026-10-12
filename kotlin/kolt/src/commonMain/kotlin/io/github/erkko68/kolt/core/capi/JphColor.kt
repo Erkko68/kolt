@@ -22,9 +22,6 @@ internal external fun JphColor_destroy(self: NativePointer)
 @ExternalSymbolName("JphColor_GetUInt32")
 internal external fun JphColor_GetUInt32(self: NativePointer): Int
 
-@ExternalSymbolName("JphColor_invoke")
-internal external fun JphColor_invoke(self: NativePointer, inIdx: Int): NativePointer
-
 @ExternalSymbolName("JphColor_ToVec4")
 internal external fun JphColor_ToVec4(self: NativePointer, out: NativePointer)
 

@@ -15,7 +15,7 @@ void JphHingeConstraintSettings_release(const JphHingeConstraintSettings* self);
 JphTwoBodyConstraintSettings* JphHingeConstraintSettings_asTwoBodyConstraintSettings(JphHingeConstraintSettings* self);
 JphConstraintSettings* JphHingeConstraintSettings_asConstraintSettings(JphHingeConstraintSettings* self);
 JphSerializableObject* JphHingeConstraintSettings_asSerializableObject(JphHingeConstraintSettings* self);
-void JphHingeConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::HingeConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphEConstraintSpace JphHingeConstraintSettings_GetSpace(const JphHingeConstraintSettings* self);
 void JphHingeConstraintSettings_SetSpace(JphHingeConstraintSettings* self, JphEConstraintSpace value);
 void JphHingeConstraintSettings_GetPoint1(const JphHingeConstraintSettings* self, JphVec3* out);

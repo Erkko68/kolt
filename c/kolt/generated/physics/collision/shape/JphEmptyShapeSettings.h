@@ -15,7 +15,7 @@ void JphEmptyShapeSettings_addRef(const JphEmptyShapeSettings* self);
 void JphEmptyShapeSettings_release(const JphEmptyShapeSettings* self);
 JphShapeSettings* JphEmptyShapeSettings_asShapeSettings(JphEmptyShapeSettings* self);
 JphSerializableObject* JphEmptyShapeSettings_asSerializableObject(JphEmptyShapeSettings* self);
-void JphEmptyShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::EmptyShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphEmptyShapeSettings_GetCenterOfMass(const JphEmptyShapeSettings* self, JphVec3* out);
 void JphEmptyShapeSettings_SetCenterOfMass(JphEmptyShapeSettings* self, const JphVec3* value);
 

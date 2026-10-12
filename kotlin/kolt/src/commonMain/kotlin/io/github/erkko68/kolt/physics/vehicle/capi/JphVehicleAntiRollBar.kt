@@ -10,9 +10,6 @@ internal external fun JphVehicleAntiRollBar_create(): NativePointer
 @ExternalSymbolName("JphVehicleAntiRollBar_destroy")
 internal external fun JphVehicleAntiRollBar_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphVehicleAntiRollBar_sCreateRTTI")
-internal external fun JphVehicleAntiRollBar_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphVehicleAntiRollBar_SaveBinaryState")
 internal external fun JphVehicleAntiRollBar_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

@@ -11,7 +11,7 @@ extern "C" {
 // JPH::VehicleTrackSettings
 JphVehicleTrackSettings* JphVehicleTrackSettings_create(void);
 void JphVehicleTrackSettings_destroy(JphVehicleTrackSettings* self);
-void JphVehicleTrackSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::VehicleTrackSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphVehicleTrackSettings_SaveBinaryState(const JphVehicleTrackSettings* self, JphStreamOut* inStream);
 void JphVehicleTrackSettings_RestoreBinaryState(JphVehicleTrackSettings* self, JphStreamIn* inStream);
 uint32_t JphVehicleTrackSettings_GetDrivenWheel(const JphVehicleTrackSettings* self);

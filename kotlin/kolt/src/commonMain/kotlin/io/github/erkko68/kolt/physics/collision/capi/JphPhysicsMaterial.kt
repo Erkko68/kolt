@@ -22,15 +22,6 @@ internal external fun JphPhysicsMaterial_bindUpcalls(self: NativePointer, userDa
 @ExternalSymbolName("JphPhysicsMaterial_asSerializableObject")
 internal external fun JphPhysicsMaterial_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphPhysicsMaterial_GetRTTI")
-internal external fun JphPhysicsMaterial_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphPhysicsMaterial_CastTo")
-internal external fun JphPhysicsMaterial_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
-@ExternalSymbolName("JphPhysicsMaterial_sCreateRTTI")
-internal external fun JphPhysicsMaterial_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphPhysicsMaterial_GetDebugName")
 internal external fun JphPhysicsMaterial_GetDebugName(self: NativePointer): NativePointer
 

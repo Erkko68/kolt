@@ -81,9 +81,4 @@ class DistanceConstraintSettings internal constructor(internal val distanceConst
             returned
         }
         set(value) = JphDistanceConstraintSettings_SetLimitsSpringSettings(distanceConstraintSettingsHandle, value.springSettingsHandle)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphDistanceConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

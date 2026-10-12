@@ -53,9 +53,4 @@ class ScaledShapeSettings internal constructor(internal val scaledShapeSettingsH
             Vec3(returned)
         }
         set(value) = interopScope { JphScaledShapeSettings_SetScale(scaledShapeSettingsHandle, toInterop(value.toArray())) }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphScaledShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

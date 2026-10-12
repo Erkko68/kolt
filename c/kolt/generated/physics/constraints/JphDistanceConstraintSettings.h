@@ -15,7 +15,7 @@ void JphDistanceConstraintSettings_release(const JphDistanceConstraintSettings* 
 JphTwoBodyConstraintSettings* JphDistanceConstraintSettings_asTwoBodyConstraintSettings(JphDistanceConstraintSettings* self);
 JphConstraintSettings* JphDistanceConstraintSettings_asConstraintSettings(JphDistanceConstraintSettings* self);
 JphSerializableObject* JphDistanceConstraintSettings_asSerializableObject(JphDistanceConstraintSettings* self);
-void JphDistanceConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::DistanceConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 JphEConstraintSpace JphDistanceConstraintSettings_GetSpace(const JphDistanceConstraintSettings* self);
 void JphDistanceConstraintSettings_SetSpace(JphDistanceConstraintSettings* self, JphEConstraintSpace value);
 void JphDistanceConstraintSettings_GetPoint1(const JphDistanceConstraintSettings* self, JphVec3* out);

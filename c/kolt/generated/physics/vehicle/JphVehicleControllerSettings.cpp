@@ -16,18 +16,6 @@ JphSerializableObject* JphVehicleControllerSettings_asSerializableObject(JphVehi
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphVehicleControllerSettings_GetRTTI(const JphVehicleControllerSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphVehicleControllerSettings_CastTo(const JphVehicleControllerSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
-void JphVehicleControllerSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::VehicleControllerSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphVehicleControllerSettings_SaveBinaryState(const JphVehicleControllerSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

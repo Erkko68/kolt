@@ -57,10 +57,6 @@ JphSerializableObject* JphTrackedVehicleControllerSettings_asSerializableObject(
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphTrackedVehicleControllerSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::TrackedVehicleControllerSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphTrackedVehicleControllerSettings_GetEngine(const JphTrackedVehicleControllerSettings* self, JphVehicleEngineSettings* out) {
     *kolt::cpp(out) = kolt::cpp(self)->mEngine;
 }

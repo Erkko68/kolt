@@ -25,9 +25,6 @@ internal external fun JphCylinderShapeSettings_asShapeSettings(self: NativePoint
 @ExternalSymbolName("JphCylinderShapeSettings_asSerializableObject")
 internal external fun JphCylinderShapeSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphCylinderShapeSettings_sCreateRTTI")
-internal external fun JphCylinderShapeSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphCylinderShapeSettings_GetHalfHeight")
 internal external fun JphCylinderShapeSettings_GetHalfHeight(self: NativePointer): Float
 

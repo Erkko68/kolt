@@ -36,10 +36,6 @@ JphSerializableObject* JphOffsetCenterOfMassShapeSettings_asSerializableObject(J
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphOffsetCenterOfMassShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::OffsetCenterOfMassShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphOffsetCenterOfMassShapeSettings_GetOffset(const JphOffsetCenterOfMassShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mOffset);
 }

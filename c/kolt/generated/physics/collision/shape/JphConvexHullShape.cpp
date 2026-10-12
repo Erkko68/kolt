@@ -52,8 +52,4 @@ uint32_t JphConvexHullShape_GetFaceVertices(const JphConvexHullShape* self, uint
     return static_cast<uint32_t>(kolt::cpp(self)->GetFaceVertices(static_cast<unsigned int>(inFaceIndex), static_cast<unsigned int>(inMaxVertices), outVertices));
 }
 
-void JphConvexHullShape_sRegister(void) {
-    JPH::ConvexHullShape::sRegister();
-}
-
 } // extern "C"

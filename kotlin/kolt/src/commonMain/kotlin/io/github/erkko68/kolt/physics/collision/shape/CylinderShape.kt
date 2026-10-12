@@ -51,9 +51,4 @@ class CylinderShape internal constructor(internal val cylinderShapeHandle: Nativ
 
     val convexRadius: Float
         get() = JphCylinderShape_GetConvexRadius(cylinderShapeHandle)
-
-    companion object {
-        fun register() =
-            JphCylinderShape_sRegister()
-    }
 }

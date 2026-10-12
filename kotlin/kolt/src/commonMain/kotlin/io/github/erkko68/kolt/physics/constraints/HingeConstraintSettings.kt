@@ -133,9 +133,4 @@ class HingeConstraintSettings internal constructor(internal val hingeConstraintS
             returned
         }
         set(value) = JphHingeConstraintSettings_SetMotorSettings(hingeConstraintSettingsHandle, value.motorSettingsHandle)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphHingeConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

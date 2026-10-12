@@ -28,10 +28,6 @@ uint32_t JphColor_GetUInt32(const JphColor* self) {
     return kolt::cpp(self)->GetUInt32();
 }
 
-uint8_t* JphColor_invoke(JphColor* self, uint32_t inIdx) {
-    return &kolt::cpp(self)->operator()(static_cast<unsigned int>(inIdx));
-}
-
 void JphColor_ToVec4(const JphColor* self, JphVec4* out) {
     *out = kolt::mirror<JphVec4>(kolt::cpp(self)->ToVec4());
 }

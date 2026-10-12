@@ -15,7 +15,7 @@ JphMotorSettings* JphMotorSettings_create_float_float(float inFrequency, float i
 JphMotorSettings* JphMotorSettings_create_ESpringMode_float_float_float_float(JphESpringMode inMode, float inFrequency, float inDamping, float inForceLimit, float inTorqueLimit);
 JphMotorSettings* JphMotorSettings_create_float_float_float_float(float inFrequency, float inDamping, float inForceLimit, float inTorqueLimit);
 void JphMotorSettings_destroy(JphMotorSettings* self);
-void JphMotorSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::MotorSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphMotorSettings_SetForceLimits(JphMotorSettings* self, float inMin, float inMax);
 void JphMotorSettings_SetTorqueLimits(JphMotorSettings* self, float inMin, float inMax);
 void JphMotorSettings_SetForceLimit(JphMotorSettings* self, float inLimit);

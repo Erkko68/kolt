@@ -78,9 +78,4 @@ open class TrackedVehicleControllerSettings internal constructor(internal val tr
         }
         return true
     }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphTrackedVehicleControllerSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

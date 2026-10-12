@@ -15,9 +15,9 @@ void JphPhysicsMaterial_release(const JphPhysicsMaterial* self);
 JphPhysicsMaterial* JphPhysicsMaterial_createUpcalls(JphUpcall call);
 void JphPhysicsMaterial_bindUpcalls(JphPhysicsMaterial* self, void* userData);
 JphSerializableObject* JphPhysicsMaterial_asSerializableObject(JphPhysicsMaterial* self);
-const JphRTTI* JphPhysicsMaterial_GetRTTI(const JphPhysicsMaterial* self);
-const void* JphPhysicsMaterial_CastTo(const JphPhysicsMaterial* self, const JphRTTI* inRTTI);
-void JphPhysicsMaterial_sCreateRTTI(JphRTTI* inRTTI);
+// skipped const JPH::RTTI * JPH::PhysicsMaterial::GetRTTI() const: uses JPH::RTTI
+// skipped const void * JPH::PhysicsMaterial::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
+// skipped static void JPH::PhysicsMaterial::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 const char* JphPhysicsMaterial_GetDebugName(const JphPhysicsMaterial* self);
 void JphPhysicsMaterial_GetDebugColor(const JphPhysicsMaterial* self, JphColor* out);
 void JphPhysicsMaterial_SaveBinaryState(const JphPhysicsMaterial* self, JphStreamOut* inStream);

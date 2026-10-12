@@ -45,12 +45,6 @@ open class GroupFilter internal constructor(internal val groupFilterHandle: Nati
     override fun close() =
         closeOnce { JphGroupFilter_release(groupFilterHandle) }
 
-    val rtti: RTTI?
-        get() = JphGroupFilter_GetRTTI(groupFilterHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
-
-    fun castTo(rtti: RTTI?): NativePointer =
-        JphGroupFilter_CastTo(groupFilterHandle, rtti?.rttiHandle ?: NullPointer)
-
     open fun canCollide(group1: CollisionGroup, group2: CollisionGroup): Boolean =
         JphGroupFilter_CanCollide(groupFilterHandle, group1.collisionGroupHandle, group2.collisionGroupHandle)
 
@@ -67,9 +61,6 @@ open class GroupFilter internal constructor(internal val groupFilterHandle: Nati
     }
 
     companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphGroupFilter_sCreateRTTI(rtti.rttiHandle)
-
         fun restoreFromBinaryState(stream: StreamIn): GroupFilter =
             interopScope {
                 val error = ByteArray(256)

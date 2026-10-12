@@ -25,9 +25,6 @@ internal external fun JphTrackedVehicleControllerSettings_asVehicleControllerSet
 @ExternalSymbolName("JphTrackedVehicleControllerSettings_asSerializableObject")
 internal external fun JphTrackedVehicleControllerSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphTrackedVehicleControllerSettings_sCreateRTTI")
-internal external fun JphTrackedVehicleControllerSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphTrackedVehicleControllerSettings_GetEngine")
 internal external fun JphTrackedVehicleControllerSettings_GetEngine(self: NativePointer, out: NativePointer)
 

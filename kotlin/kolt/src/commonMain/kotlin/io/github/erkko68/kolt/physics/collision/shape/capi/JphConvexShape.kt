@@ -48,6 +48,3 @@ internal external fun JphConvexShape_SetDensity(self: NativePointer, inDensity: 
 
 @ExternalSymbolName("JphConvexShape_GetDensity")
 internal external fun JphConvexShape_GetDensity(self: NativePointer): Float
-
-@ExternalSymbolName("JphConvexShape_sRegister")
-internal external fun JphConvexShape_sRegister()

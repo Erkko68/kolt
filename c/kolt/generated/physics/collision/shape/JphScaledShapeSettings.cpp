@@ -36,10 +36,6 @@ JphSerializableObject* JphScaledShapeSettings_asSerializableObject(JphScaledShap
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphScaledShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::ScaledShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphScaledShapeSettings_GetScale(const JphScaledShapeSettings* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->mScale);
 }

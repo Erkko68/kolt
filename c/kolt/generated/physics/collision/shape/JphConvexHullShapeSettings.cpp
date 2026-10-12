@@ -32,10 +32,6 @@ JphSerializableObject* JphConvexHullShapeSettings_asSerializableObject(JphConvex
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphConvexHullShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::ConvexHullShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 uint32_t JphConvexHullShapeSettings_GetPoints(const JphConvexHullShapeSettings* self, JphVec3* out, uint32_t outCapacity) {
     return kolt::copy(kolt::cpp(self)->mPoints, outCapacity, [&](auto& x, uint32_t i) { out[i] = kolt::mirror<JphVec3>(x); });
 }

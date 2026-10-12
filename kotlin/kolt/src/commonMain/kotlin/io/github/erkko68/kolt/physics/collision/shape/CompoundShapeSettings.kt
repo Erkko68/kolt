@@ -93,15 +93,5 @@ open class CompoundShapeSettings internal constructor(internal val compoundShape
         var userData: Int
             get() = JphCompoundShapeSettingsSubShapeSettings_GetUserData(compoundShapeSettingsSubShapeSettingsHandle)
             set(value) = JphCompoundShapeSettingsSubShapeSettings_SetUserData(compoundShapeSettingsSubShapeSettingsHandle, value)
-    
-        companion object {
-            fun createRTTI(rtti: RTTI) =
-                JphCompoundShapeSettingsSubShapeSettings_sCreateRTTI(rtti.rttiHandle)
-        }
     }
-    
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphCompoundShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
-}

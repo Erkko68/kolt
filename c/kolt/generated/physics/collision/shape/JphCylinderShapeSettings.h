@@ -16,7 +16,7 @@ void JphCylinderShapeSettings_release(const JphCylinderShapeSettings* self);
 JphConvexShapeSettings* JphCylinderShapeSettings_asConvexShapeSettings(JphCylinderShapeSettings* self);
 JphShapeSettings* JphCylinderShapeSettings_asShapeSettings(JphCylinderShapeSettings* self);
 JphSerializableObject* JphCylinderShapeSettings_asSerializableObject(JphCylinderShapeSettings* self);
-void JphCylinderShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::CylinderShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 float JphCylinderShapeSettings_GetHalfHeight(const JphCylinderShapeSettings* self);
 void JphCylinderShapeSettings_SetHalfHeight(JphCylinderShapeSettings* self, float value);
 float JphCylinderShapeSettings_GetRadius(const JphCylinderShapeSettings* self);

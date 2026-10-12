@@ -45,12 +45,6 @@ open class ConstraintSettings internal constructor(internal val constraintSettin
     override fun close() =
         closeOnce { JphConstraintSettings_release(constraintSettingsHandle) }
 
-    val rtti: RTTI?
-        get() = JphConstraintSettings_GetRTTI(constraintSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
-
-    fun castTo(rtti: RTTI?): NativePointer =
-        JphConstraintSettings_CastTo(constraintSettingsHandle, rtti?.rttiHandle ?: NullPointer)
-
     open fun saveBinaryState(stream: StreamOut) =
         JphConstraintSettings_SaveBinaryState(constraintSettingsHandle, stream.streamOutHandle)
 
@@ -93,9 +87,6 @@ open class ConstraintSettings internal constructor(internal val constraintSettin
     }
 
     companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-
         fun restoreFromBinaryState(stream: StreamIn): ConstraintSettings =
             interopScope {
                 val error = ByteArray(256)

@@ -13,9 +13,6 @@ internal external fun JphSpringSettings_create_ESpringMode_float_float(inMode: I
 @ExternalSymbolName("JphSpringSettings_destroy")
 internal external fun JphSpringSettings_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphSpringSettings_sCreateRTTI")
-internal external fun JphSpringSettings_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSpringSettings_SaveBinaryState")
 internal external fun JphSpringSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
 

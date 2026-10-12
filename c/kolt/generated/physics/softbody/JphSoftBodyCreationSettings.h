@@ -12,7 +12,7 @@ extern "C" {
 JphSoftBodyCreationSettings* JphSoftBodyCreationSettings_create(void);
 JphSoftBodyCreationSettings* JphSoftBodyCreationSettings_create_SoftBodySharedSettings_RVec3Arg_QuatArg_ObjectLayer(const JphSoftBodySharedSettings* inSettings, const JphVec3* inPosition, const JphQuat* inRotation, uint32_t inObjectLayer);
 void JphSoftBodyCreationSettings_destroy(JphSoftBodyCreationSettings* self);
-void JphSoftBodyCreationSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodyCreationSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphSoftBodyCreationSettings_SaveBinaryState(const JphSoftBodyCreationSettings* self, JphStreamOut* inStream);
 void JphSoftBodyCreationSettings_RestoreBinaryState(JphSoftBodyCreationSettings* self, JphStreamIn* inStream);
 // TODO(handwritten) JphSoftBodyCreationSettings_SaveWithChildren: void JPH::SoftBodyCreationSettings::SaveWithChildren(StreamOut & inStream, SharedSettingsToIDMap * ioSharedSettingsMap, MaterialToIDMap * ioMaterialMap, GroupFilterToIDMap * ioGroupFilterMap) const

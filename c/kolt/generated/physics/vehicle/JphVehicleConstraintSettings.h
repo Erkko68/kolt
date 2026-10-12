@@ -16,7 +16,7 @@ JphVehicleConstraintSettings* JphVehicleConstraintSettings_createUpcalls(JphUpca
 void JphVehicleConstraintSettings_bindUpcalls(JphVehicleConstraintSettings* self, void* userData);
 JphConstraintSettings* JphVehicleConstraintSettings_asConstraintSettings(JphVehicleConstraintSettings* self);
 JphSerializableObject* JphVehicleConstraintSettings_asSerializableObject(JphVehicleConstraintSettings* self);
-void JphVehicleConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::VehicleConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphVehicleConstraintSettings_GetUp(const JphVehicleConstraintSettings* self, JphVec3* out);
 void JphVehicleConstraintSettings_SetUp(JphVehicleConstraintSettings* self, const JphVec3* value);
 void JphVehicleConstraintSettings_GetForward(const JphVehicleConstraintSettings* self, JphVec3* out);

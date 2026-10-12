@@ -41,14 +41,8 @@ fun isVelocityMotor(motorState: EMotorState): Boolean =
 fun isPositionMotor(motorState: EMotorState): Boolean =
     Jph_IsPositionMotor(motorState.value)
 
-fun verifyJoltVersionIDInternal(versionID: Long): Boolean =
-    Jph_VerifyJoltVersionIDInternal(versionID)
-
 fun verifyJoltVersionID(): Boolean =
     Jph_VerifyJoltVersionID()
-
-fun registerTypesInternal(versionID: Long) =
-    Jph_RegisterTypesInternal(versionID)
 
 fun registerTypes() =
     Jph_RegisterTypes()

@@ -9,17 +9,16 @@ extern "C" {
 #endif
 
 // JPH::TaperedCapsuleShape
+// skipped JPH::TaperedCapsuleShape(const TaperedCapsuleShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphTaperedCapsuleShape* JphTaperedCapsuleShape_create(void);
-// TODO(handwritten) JphTaperedCapsuleShape_create_TaperedCapsuleShapeSettings_ShapeResult: JPH::TaperedCapsuleShape(const TaperedCapsuleShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 void JphTaperedCapsuleShape_addRef(const JphTaperedCapsuleShape* self);
 void JphTaperedCapsuleShape_release(const JphTaperedCapsuleShape* self);
 JphConvexShape* JphTaperedCapsuleShape_asConvexShape(JphTaperedCapsuleShape* self);
 JphShape* JphTaperedCapsuleShape_asShape(JphTaperedCapsuleShape* self);
+// skipped static void JPH::TaperedCapsuleShape::sRegister(): JPH::.*::sRegister
 float JphTaperedCapsuleShape_GetTopRadius(const JphTaperedCapsuleShape* self);
 float JphTaperedCapsuleShape_GetBottomRadius(const JphTaperedCapsuleShape* self);
 float JphTaperedCapsuleShape_GetHalfHeight(const JphTaperedCapsuleShape* self);
-void JphTaperedCapsuleShape_sRegister(void);
 
 
 #ifdef __cplusplus

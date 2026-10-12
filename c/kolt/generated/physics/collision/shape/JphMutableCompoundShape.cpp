@@ -48,8 +48,4 @@ void JphMutableCompoundShape_AdjustCenterOfMass(JphMutableCompoundShape* self) {
     kolt::cpp(self)->AdjustCenterOfMass();
 }
 
-void JphMutableCompoundShape_sRegister(void) {
-    JPH::MutableCompoundShape::sRegister();
-}
-
 } // extern "C"

@@ -15,9 +15,9 @@ void JphWheelSettings_release(const JphWheelSettings* self);
 JphWheelSettings* JphWheelSettings_createUpcalls(JphUpcall call);
 void JphWheelSettings_bindUpcalls(JphWheelSettings* self, void* userData);
 JphSerializableObject* JphWheelSettings_asSerializableObject(JphWheelSettings* self);
-const JphRTTI* JphWheelSettings_GetRTTI(const JphWheelSettings* self);
-const void* JphWheelSettings_CastTo(const JphWheelSettings* self, const JphRTTI* inRTTI);
-void JphWheelSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped const JPH::RTTI * JPH::WheelSettings::GetRTTI() const: uses JPH::RTTI
+// skipped const void * JPH::WheelSettings::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
+// skipped static void JPH::WheelSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphWheelSettings_SaveBinaryState(const JphWheelSettings* self, JphStreamOut* inStream);
 void JphWheelSettings_RestoreBinaryState(JphWheelSettings* self, JphStreamIn* inStream);
 void JphWheelSettings_GetPosition(const JphWheelSettings* self, JphVec3* out);

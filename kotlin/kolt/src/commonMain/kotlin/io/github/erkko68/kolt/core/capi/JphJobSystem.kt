@@ -4,44 +4,8 @@ package io.github.erkko68.kolt.core.capi
 import io.github.erkko68.kolt.interop.ExternalSymbolName
 import io.github.erkko68.kolt.interop.NativePointer
 
-@ExternalSymbolName("JphJobSystemJobHandle_create")
-internal external fun JphJobSystemJobHandle_create(): NativePointer
-
-@ExternalSymbolName("JphJobSystemJobHandle_destroy")
-internal external fun JphJobSystemJobHandle_destroy(self: NativePointer)
-
-@ExternalSymbolName("JphJobSystemJobHandle_IsValid")
-internal external fun JphJobSystemJobHandle_IsValid(self: NativePointer): Boolean
-
-@ExternalSymbolName("JphJobSystemJobHandle_IsDone")
-internal external fun JphJobSystemJobHandle_IsDone(self: NativePointer): Boolean
-
-@ExternalSymbolName("JphJobSystemJobHandle_AddDependency")
-internal external fun JphJobSystemJobHandle_AddDependency(self: NativePointer, inCount: Int)
-
-@ExternalSymbolName("JphJobSystemJobHandle_RemoveDependency")
-internal external fun JphJobSystemJobHandle_RemoveDependency(self: NativePointer, inCount: Int)
-
-@ExternalSymbolName("JphJobSystemJobHandle_sRemoveDependencies")
-internal external fun JphJobSystemJobHandle_sRemoveDependencies(inHandles: NativePointer, inNumHandles: Int, inCount: Int)
-
-@ExternalSymbolName("JphJobSystemBarrier_AddJob")
-internal external fun JphJobSystemBarrier_AddJob(self: NativePointer, inJob: NativePointer)
-
-@ExternalSymbolName("JphJobSystemBarrier_AddJobs")
-internal external fun JphJobSystemBarrier_AddJobs(self: NativePointer, inHandles: NativePointer, inNumHandles: Int)
-
 @ExternalSymbolName("JphJobSystem_destroy")
 internal external fun JphJobSystem_destroy(self: NativePointer)
 
 @ExternalSymbolName("JphJobSystem_GetMaxConcurrency")
 internal external fun JphJobSystem_GetMaxConcurrency(self: NativePointer): Int
-
-@ExternalSymbolName("JphJobSystem_CreateBarrier")
-internal external fun JphJobSystem_CreateBarrier(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphJobSystem_DestroyBarrier")
-internal external fun JphJobSystem_DestroyBarrier(self: NativePointer, inBarrier: NativePointer)
-
-@ExternalSymbolName("JphJobSystem_WaitForJobs")
-internal external fun JphJobSystem_WaitForJobs(self: NativePointer, inBarrier: NativePointer)

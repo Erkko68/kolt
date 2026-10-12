@@ -24,6 +24,3 @@ internal external fun JphScaledShape_asShape(self: NativePointer): NativePointer
 
 @ExternalSymbolName("JphScaledShape_GetScale")
 internal external fun JphScaledShape_GetScale(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphScaledShape_sRegister")
-internal external fun JphScaledShape_sRegister()

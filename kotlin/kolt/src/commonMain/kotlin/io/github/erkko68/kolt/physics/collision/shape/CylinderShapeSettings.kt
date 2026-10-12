@@ -54,9 +54,4 @@ class CylinderShapeSettings internal constructor(internal val cylinderShapeSetti
     var convexRadius: Float
         get() = JphCylinderShapeSettings_GetConvexRadius(cylinderShapeSettingsHandle)
         set(value) = JphCylinderShapeSettings_SetConvexRadius(cylinderShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphCylinderShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

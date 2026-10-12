@@ -45,7 +45,7 @@ void JphSoftBodySharedSettingsOptimizationResults_SetSkinnedRemap(JphSoftBodySha
 JphSoftBodySharedSettingsVertex* JphSoftBodySharedSettingsVertex_create(void);
 JphSoftBodySharedSettingsVertex* JphSoftBodySharedSettingsVertex_create_Float3_Float3_float(const JphFloat3* inPosition, const JphFloat3* inVelocity, float inInvMass);
 void JphSoftBodySharedSettingsVertex_destroy(JphSoftBodySharedSettingsVertex* self);
-void JphSoftBodySharedSettingsVertex_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::Vertex::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphSoftBodySharedSettingsVertex_GetPosition(const JphSoftBodySharedSettingsVertex* self, JphFloat3* out);
 void JphSoftBodySharedSettingsVertex_SetPosition(JphSoftBodySharedSettingsVertex* self, const JphFloat3* value);
 void JphSoftBodySharedSettingsVertex_GetVelocity(const JphSoftBodySharedSettingsVertex* self, JphFloat3* out);
@@ -57,7 +57,7 @@ void JphSoftBodySharedSettingsVertex_SetInvMass(JphSoftBodySharedSettingsVertex*
 JphSoftBodySharedSettingsFace* JphSoftBodySharedSettingsFace_create(void);
 JphSoftBodySharedSettingsFace* JphSoftBodySharedSettingsFace_create_uint32_uint32_uint32_uint32(uint32_t inVertex1, uint32_t inVertex2, uint32_t inVertex3, uint32_t inMaterialIndex);
 void JphSoftBodySharedSettingsFace_destroy(JphSoftBodySharedSettingsFace* self);
-void JphSoftBodySharedSettingsFace_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::Face::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 bool JphSoftBodySharedSettingsFace_IsDegenerate(const JphSoftBodySharedSettingsFace* self);
 uint32_t JphSoftBodySharedSettingsFace_GetVertex(const JphSoftBodySharedSettingsFace* self, uint32_t* out, uint32_t outCapacity);
 void JphSoftBodySharedSettingsFace_SetVertex(JphSoftBodySharedSettingsFace* self, const uint32_t* value, uint32_t valueCount);
@@ -68,7 +68,7 @@ void JphSoftBodySharedSettingsFace_SetMaterialIndex(JphSoftBodySharedSettingsFac
 JphSoftBodySharedSettingsEdge* JphSoftBodySharedSettingsEdge_create(void);
 JphSoftBodySharedSettingsEdge* JphSoftBodySharedSettingsEdge_create_uint32_uint32_float(uint32_t inVertex1, uint32_t inVertex2, float inCompliance);
 void JphSoftBodySharedSettingsEdge_destroy(JphSoftBodySharedSettingsEdge* self);
-void JphSoftBodySharedSettingsEdge_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::Edge::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphSoftBodySharedSettingsEdge_GetMinVertexIndex(const JphSoftBodySharedSettingsEdge* self);
 uint32_t JphSoftBodySharedSettingsEdge_GetVertex(const JphSoftBodySharedSettingsEdge* self, uint32_t* out, uint32_t outCapacity);
 void JphSoftBodySharedSettingsEdge_SetVertex(JphSoftBodySharedSettingsEdge* self, const uint32_t* value, uint32_t valueCount);
@@ -81,7 +81,7 @@ void JphSoftBodySharedSettingsEdge_SetCompliance(JphSoftBodySharedSettingsEdge* 
 JphSoftBodySharedSettingsDihedralBend* JphSoftBodySharedSettingsDihedralBend_create(void);
 JphSoftBodySharedSettingsDihedralBend* JphSoftBodySharedSettingsDihedralBend_create_uint32_uint32_uint32_uint32_float(uint32_t inVertex1, uint32_t inVertex2, uint32_t inVertex3, uint32_t inVertex4, float inCompliance);
 void JphSoftBodySharedSettingsDihedralBend_destroy(JphSoftBodySharedSettingsDihedralBend* self);
-void JphSoftBodySharedSettingsDihedralBend_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::DihedralBend::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphSoftBodySharedSettingsDihedralBend_GetMinVertexIndex(const JphSoftBodySharedSettingsDihedralBend* self);
 uint32_t JphSoftBodySharedSettingsDihedralBend_GetVertex(const JphSoftBodySharedSettingsDihedralBend* self, uint32_t* out, uint32_t outCapacity);
 void JphSoftBodySharedSettingsDihedralBend_SetVertex(JphSoftBodySharedSettingsDihedralBend* self, const uint32_t* value, uint32_t valueCount);
@@ -94,7 +94,7 @@ void JphSoftBodySharedSettingsDihedralBend_SetInitialAngle(JphSoftBodySharedSett
 JphSoftBodySharedSettingsVolume* JphSoftBodySharedSettingsVolume_create(void);
 JphSoftBodySharedSettingsVolume* JphSoftBodySharedSettingsVolume_create_uint32_uint32_uint32_uint32_float(uint32_t inVertex1, uint32_t inVertex2, uint32_t inVertex3, uint32_t inVertex4, float inCompliance);
 void JphSoftBodySharedSettingsVolume_destroy(JphSoftBodySharedSettingsVolume* self);
-void JphSoftBodySharedSettingsVolume_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::Volume::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphSoftBodySharedSettingsVolume_GetMinVertexIndex(const JphSoftBodySharedSettingsVolume* self);
 uint32_t JphSoftBodySharedSettingsVolume_GetVertex(const JphSoftBodySharedSettingsVolume* self, uint32_t* out, uint32_t outCapacity);
 void JphSoftBodySharedSettingsVolume_SetVertex(JphSoftBodySharedSettingsVolume* self, const uint32_t* value, uint32_t valueCount);
@@ -107,7 +107,7 @@ void JphSoftBodySharedSettingsVolume_SetCompliance(JphSoftBodySharedSettingsVolu
 JphSoftBodySharedSettingsInvBind* JphSoftBodySharedSettingsInvBind_create(void);
 JphSoftBodySharedSettingsInvBind* JphSoftBodySharedSettingsInvBind_create_uint32_Mat44Arg(uint32_t inJointIndex, const JphMat44* inInvBind);
 void JphSoftBodySharedSettingsInvBind_destroy(JphSoftBodySharedSettingsInvBind* self);
-void JphSoftBodySharedSettingsInvBind_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::InvBind::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphSoftBodySharedSettingsInvBind_GetJointIndex(const JphSoftBodySharedSettingsInvBind* self);
 void JphSoftBodySharedSettingsInvBind_SetJointIndex(JphSoftBodySharedSettingsInvBind* self, uint32_t value);
 void JphSoftBodySharedSettingsInvBind_GetInvBind(const JphSoftBodySharedSettingsInvBind* self, JphMat44* out);
@@ -117,7 +117,7 @@ void JphSoftBodySharedSettingsInvBind_SetInvBind(JphSoftBodySharedSettingsInvBin
 JphSoftBodySharedSettingsSkinWeight* JphSoftBodySharedSettingsSkinWeight_create(void);
 JphSoftBodySharedSettingsSkinWeight* JphSoftBodySharedSettingsSkinWeight_create_uint32_float(uint32_t inInvBindIndex, float inWeight);
 void JphSoftBodySharedSettingsSkinWeight_destroy(JphSoftBodySharedSettingsSkinWeight* self);
-void JphSoftBodySharedSettingsSkinWeight_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::SkinWeight::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphSoftBodySharedSettingsSkinWeight_GetInvBindIndex(const JphSoftBodySharedSettingsSkinWeight* self);
 void JphSoftBodySharedSettingsSkinWeight_SetInvBindIndex(JphSoftBodySharedSettingsSkinWeight* self, uint32_t value);
 float JphSoftBodySharedSettingsSkinWeight_GetWeight(const JphSoftBodySharedSettingsSkinWeight* self);
@@ -127,7 +127,7 @@ void JphSoftBodySharedSettingsSkinWeight_SetWeight(JphSoftBodySharedSettingsSkin
 JphSoftBodySharedSettingsSkinned* JphSoftBodySharedSettingsSkinned_create(void);
 JphSoftBodySharedSettingsSkinned* JphSoftBodySharedSettingsSkinned_create_uint32_float_float_float(uint32_t inVertex, float inMaxDistance, float inBackStopDistance, float inBackStopRadius);
 void JphSoftBodySharedSettingsSkinned_destroy(JphSoftBodySharedSettingsSkinned* self);
-void JphSoftBodySharedSettingsSkinned_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::Skinned::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphSoftBodySharedSettingsSkinned_NormalizeWeights(JphSoftBodySharedSettingsSkinned* self);
 uint32_t JphSoftBodySharedSettingsSkinned_GetVertex(const JphSoftBodySharedSettingsSkinned* self);
 void JphSoftBodySharedSettingsSkinned_SetVertex(JphSoftBodySharedSettingsSkinned* self, uint32_t value);
@@ -146,7 +146,7 @@ void JphSoftBodySharedSettingsSkinned_SetNormalInfo(JphSoftBodySharedSettingsSki
 JphSoftBodySharedSettingsLRA* JphSoftBodySharedSettingsLRA_create(void);
 JphSoftBodySharedSettingsLRA* JphSoftBodySharedSettingsLRA_create_uint32_uint32_float(uint32_t inVertex1, uint32_t inVertex2, float inMaxDistance);
 void JphSoftBodySharedSettingsLRA_destroy(JphSoftBodySharedSettingsLRA* self);
-void JphSoftBodySharedSettingsLRA_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::LRA::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphSoftBodySharedSettingsLRA_GetMinVertexIndex(const JphSoftBodySharedSettingsLRA* self);
 uint32_t JphSoftBodySharedSettingsLRA_GetVertex(const JphSoftBodySharedSettingsLRA* self, uint32_t* out, uint32_t outCapacity);
 void JphSoftBodySharedSettingsLRA_SetVertex(JphSoftBodySharedSettingsLRA* self, const uint32_t* value, uint32_t valueCount);
@@ -157,7 +157,7 @@ void JphSoftBodySharedSettingsLRA_SetMaxDistance(JphSoftBodySharedSettingsLRA* s
 JphSoftBodySharedSettingsRodStretchShear* JphSoftBodySharedSettingsRodStretchShear_create(void);
 JphSoftBodySharedSettingsRodStretchShear* JphSoftBodySharedSettingsRodStretchShear_create_uint32_uint32_float(uint32_t inVertex1, uint32_t inVertex2, float inCompliance);
 void JphSoftBodySharedSettingsRodStretchShear_destroy(JphSoftBodySharedSettingsRodStretchShear* self);
-void JphSoftBodySharedSettingsRodStretchShear_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::RodStretchShear::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphSoftBodySharedSettingsRodStretchShear_GetMinVertexIndex(const JphSoftBodySharedSettingsRodStretchShear* self);
 uint32_t JphSoftBodySharedSettingsRodStretchShear_GetVertex(const JphSoftBodySharedSettingsRodStretchShear* self, uint32_t* out, uint32_t outCapacity);
 void JphSoftBodySharedSettingsRodStretchShear_SetVertex(JphSoftBodySharedSettingsRodStretchShear* self, const uint32_t* value, uint32_t valueCount);
@@ -174,7 +174,7 @@ void JphSoftBodySharedSettingsRodStretchShear_SetBishop(JphSoftBodySharedSetting
 JphSoftBodySharedSettingsRodBendTwist* JphSoftBodySharedSettingsRodBendTwist_create(void);
 JphSoftBodySharedSettingsRodBendTwist* JphSoftBodySharedSettingsRodBendTwist_create_uint32_uint32_float(uint32_t inRod1, uint32_t inRod2, float inCompliance);
 void JphSoftBodySharedSettingsRodBendTwist_destroy(JphSoftBodySharedSettingsRodBendTwist* self);
-void JphSoftBodySharedSettingsRodBendTwist_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::RodBendTwist::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 uint32_t JphSoftBodySharedSettingsRodBendTwist_GetRod(const JphSoftBodySharedSettingsRodBendTwist* self, uint32_t* out, uint32_t outCapacity);
 void JphSoftBodySharedSettingsRodBendTwist_SetRod(JphSoftBodySharedSettingsRodBendTwist* self, const uint32_t* value, uint32_t valueCount);
 float JphSoftBodySharedSettingsRodBendTwist_GetCompliance(const JphSoftBodySharedSettingsRodBendTwist* self);
@@ -186,7 +186,7 @@ void JphSoftBodySharedSettingsRodBendTwist_SetOmega0(JphSoftBodySharedSettingsRo
 JphSoftBodySharedSettings* JphSoftBodySharedSettings_create(void);
 void JphSoftBodySharedSettings_addRef(const JphSoftBodySharedSettings* self);
 void JphSoftBodySharedSettings_release(const JphSoftBodySharedSettings* self);
-void JphSoftBodySharedSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::SoftBodySharedSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphSoftBodySharedSettings_CreateConstraints(JphSoftBodySharedSettings* self, const JphSoftBodySharedSettingsVertexAttributes* inVertexAttributes, uint32_t inVertexAttributesLength, JphSoftBodySharedSettingsEBendType inBendType, float inAngleTolerance);
 void JphSoftBodySharedSettings_CalculateEdgeLengths(JphSoftBodySharedSettings* self);
 void JphSoftBodySharedSettings_CalculateRodProperties(JphSoftBodySharedSettings* self);

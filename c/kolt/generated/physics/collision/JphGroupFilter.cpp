@@ -49,18 +49,6 @@ JphSerializableObject* JphGroupFilter_asSerializableObject(JphGroupFilter* self)
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphGroupFilter_GetRTTI(const JphGroupFilter* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphGroupFilter_CastTo(const JphGroupFilter* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
-void JphGroupFilter_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::GroupFilter::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 bool JphGroupFilter_CanCollide(const JphGroupFilter* self, const JphCollisionGroup* inGroup1, const JphCollisionGroup* inGroup2) {
     return kolt::cpp(self)->CanCollide(*kolt::cpp(inGroup1), *kolt::cpp(inGroup2));
 }

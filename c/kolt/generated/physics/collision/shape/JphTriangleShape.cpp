@@ -44,8 +44,4 @@ float JphTriangleShape_GetConvexRadius(const JphTriangleShape* self) {
     return kolt::cpp(self)->GetConvexRadius();
 }
 
-void JphTriangleShape_sRegister(void) {
-    JPH::TriangleShape::sRegister();
-}
-
 } // extern "C"

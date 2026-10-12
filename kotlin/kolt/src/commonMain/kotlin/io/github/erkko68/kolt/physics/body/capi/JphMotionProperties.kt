@@ -172,21 +172,6 @@ internal external fun JphMotionProperties_AddAngularVelocityStep(self: NativePoi
 @ExternalSymbolName("JphMotionProperties_SubAngularVelocityStep")
 internal external fun JphMotionProperties_SubAngularVelocityStep(self: NativePointer, inAngularVelocityChange: NativePointer)
 
-@ExternalSymbolName("JphMotionProperties_ApplyGyroscopicForceInternal")
-internal external fun JphMotionProperties_ApplyGyroscopicForceInternal(self: NativePointer, inBodyRotation: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphMotionProperties_ApplyForceTorqueAndDragInternal")
-internal external fun JphMotionProperties_ApplyForceTorqueAndDragInternal(self: NativePointer, inBodyRotation: NativePointer, inGravity: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphMotionProperties_GetIslandIndexInternal")
-internal external fun JphMotionProperties_GetIslandIndexInternal(self: NativePointer): Int
-
-@ExternalSymbolName("JphMotionProperties_SetIslandIndexInternal")
-internal external fun JphMotionProperties_SetIslandIndexInternal(self: NativePointer, inIndex: Int)
-
-@ExternalSymbolName("JphMotionProperties_GetIndexInActiveBodiesInternal")
-internal external fun JphMotionProperties_GetIndexInActiveBodiesInternal(self: NativePointer): Int
-
 @ExternalSymbolName("JphMotionProperties_ResetSleepTestTimer")
 internal external fun JphMotionProperties_ResetSleepTestTimer(self: NativePointer)
 

@@ -11,7 +11,7 @@ extern "C" {
 // JPH::LinearCurve::Point
 JphLinearCurvePoint* JphLinearCurvePoint_create(void);
 void JphLinearCurvePoint_destroy(JphLinearCurvePoint* self);
-void JphLinearCurvePoint_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::LinearCurve::Point::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 float JphLinearCurvePoint_GetX(const JphLinearCurvePoint* self);
 void JphLinearCurvePoint_SetX(JphLinearCurvePoint* self, float value);
 float JphLinearCurvePoint_GetY(const JphLinearCurvePoint* self);
@@ -20,7 +20,7 @@ void JphLinearCurvePoint_SetY(JphLinearCurvePoint* self, float value);
 // JPH::LinearCurve
 JphLinearCurve* JphLinearCurve_create(void);
 void JphLinearCurve_destroy(JphLinearCurve* self);
-void JphLinearCurve_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::LinearCurve::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphLinearCurve_Clear(JphLinearCurve* self);
 void JphLinearCurve_Reserve(JphLinearCurve* self, uint32_t inNumPoints);
 void JphLinearCurve_AddPoint(JphLinearCurve* self, float inX, float inY);

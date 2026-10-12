@@ -24,8 +24,4 @@ JphShape* JphStaticCompoundShape_asShape(JphStaticCompoundShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
-void JphStaticCompoundShape_sRegister(void) {
-    JPH::StaticCompoundShape::sRegister();
-}
-
 } // extern "C"

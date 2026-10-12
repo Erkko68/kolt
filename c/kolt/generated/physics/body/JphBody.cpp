@@ -352,46 +352,6 @@ void JphBody_SubRotationStep(JphBody* self, const JphVec3* inAngularVelocityTime
     kolt::cpp(self)->SubRotationStep(kolt::math<JPH::Vec3>(*inAngularVelocityTimesDeltaTime));
 }
 
-void JphBody_SetObjectLayerInternal(JphBody* self, uint32_t inLayer, const JphBroadPhaseLayerInterface* inBPLInterface) {
-    kolt::cpp(self)->SetObjectLayerInternal(static_cast<uint16_t>(inLayer), *kolt::cpp(inBPLInterface));
-}
-
-void JphBody_SetInBroadPhaseInternal(JphBody* self, bool inInBroadPhase) {
-    kolt::cpp(self)->SetInBroadPhaseInternal(inInBroadPhase);
-}
-
-bool JphBody_InvalidateContactCacheInternal(JphBody* self) {
-    return kolt::cpp(self)->InvalidateContactCacheInternal();
-}
-
-void JphBody_ValidateContactCacheInternal(JphBody* self) {
-    kolt::cpp(self)->ValidateContactCacheInternal();
-}
-
-void JphBody_CalculateWorldSpaceBoundsInternal(JphBody* self) {
-    kolt::cpp(self)->CalculateWorldSpaceBoundsInternal();
-}
-
-void JphBody_SetPositionAndRotationInternal(JphBody* self, const JphVec3* inPosition, const JphQuat* inRotation, bool inResetSleepTimer) {
-    kolt::cpp(self)->SetPositionAndRotationInternal(kolt::math<JPH::Vec3>(*inPosition), kolt::math<JPH::Quat>(*inRotation), inResetSleepTimer);
-}
-
-void JphBody_UpdateCenterOfMassInternal(JphBody* self, const JphVec3* inPreviousCenterOfMass, bool inUpdateMassProperties) {
-    kolt::cpp(self)->UpdateCenterOfMassInternal(kolt::math<JPH::Vec3>(*inPreviousCenterOfMass), inUpdateMassProperties);
-}
-
-void JphBody_SetShapeInternal(JphBody* self, const JphShape* inShape, bool inUpdateMassProperties) {
-    kolt::cpp(self)->SetShapeInternal(kolt::cpp(inShape), inUpdateMassProperties);
-}
-
-uint32_t JphBody_GetIndexInActiveBodiesInternal(const JphBody* self) {
-    return kolt::cpp(self)->GetIndexInActiveBodiesInternal();
-}
-
-JphECanSleep JphBody_UpdateSleepStateInternal(JphBody* self, float inDeltaTime, float inMaxMovement, float inTimeBeforeSleep) {
-    return static_cast<JphECanSleep>(kolt::cpp(self)->UpdateSleepStateInternal(inDeltaTime, inMaxMovement, inTimeBeforeSleep));
-}
-
 void JphBody_SaveState(const JphBody* self, JphStateRecorder* inStream) {
     kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
 }

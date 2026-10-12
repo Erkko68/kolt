@@ -12,10 +12,6 @@ void JphCompoundShapeSettingsSubShapeSettings_destroy(JphCompoundShapeSettingsSu
     delete kolt::cpp(self);
 }
 
-void JphCompoundShapeSettingsSubShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::CompoundShapeSettings::SubShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 const JphShapeSettings* JphCompoundShapeSettingsSubShapeSettings_GetShape(const JphCompoundShapeSettingsSubShapeSettings* self) {
     return kolt::c((kolt::cpp(self)->mShape).GetPtr());
 }
@@ -70,10 +66,6 @@ JphShapeSettings* JphCompoundShapeSettings_asShapeSettings(JphCompoundShapeSetti
 
 JphSerializableObject* JphCompoundShapeSettings_asSerializableObject(JphCompoundShapeSettings* self) {
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
-}
-
-void JphCompoundShapeSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::CompoundShapeSettings::sCreateRTTI(*kolt::cpp(inRTTI));
 }
 
 void JphCompoundShapeSettings_AddShape_ShapeSettings_uint32(JphCompoundShapeSettings* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShapeSettings* inShape, uint32_t inUserData) {

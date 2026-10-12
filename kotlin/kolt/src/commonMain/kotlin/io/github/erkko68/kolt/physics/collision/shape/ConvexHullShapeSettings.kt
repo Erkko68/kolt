@@ -65,9 +65,4 @@ class ConvexHullShapeSettings internal constructor(internal val convexHullShapeS
     var hullTolerance: Float
         get() = JphConvexHullShapeSettings_GetHullTolerance(convexHullShapeSettingsHandle)
         set(value) = JphConvexHullShapeSettings_SetHullTolerance(convexHullShapeSettingsHandle, value)
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphConvexHullShapeSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

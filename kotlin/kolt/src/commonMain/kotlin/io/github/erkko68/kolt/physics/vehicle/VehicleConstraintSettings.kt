@@ -98,9 +98,4 @@ open class VehicleConstraintSettings internal constructor(internal val vehicleCo
         }
         return true
     }
-
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphVehicleConstraintSettings_sCreateRTTI(rtti.rttiHandle)
-    }
 }

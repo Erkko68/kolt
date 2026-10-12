@@ -16,7 +16,7 @@ void JphTaperedCapsuleShapeSettings_release(const JphTaperedCapsuleShapeSettings
 JphConvexShapeSettings* JphTaperedCapsuleShapeSettings_asConvexShapeSettings(JphTaperedCapsuleShapeSettings* self);
 JphShapeSettings* JphTaperedCapsuleShapeSettings_asShapeSettings(JphTaperedCapsuleShapeSettings* self);
 JphSerializableObject* JphTaperedCapsuleShapeSettings_asSerializableObject(JphTaperedCapsuleShapeSettings* self);
-void JphTaperedCapsuleShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::TaperedCapsuleShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 bool JphTaperedCapsuleShapeSettings_IsValid(const JphTaperedCapsuleShapeSettings* self);
 bool JphTaperedCapsuleShapeSettings_IsSphere(const JphTaperedCapsuleShapeSettings* self);
 float JphTaperedCapsuleShapeSettings_GetHalfHeightOfTaperedCylinder(const JphTaperedCapsuleShapeSettings* self);

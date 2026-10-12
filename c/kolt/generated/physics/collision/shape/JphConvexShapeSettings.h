@@ -13,7 +13,7 @@ void JphConvexShapeSettings_addRef(const JphConvexShapeSettings* self);
 void JphConvexShapeSettings_release(const JphConvexShapeSettings* self);
 JphShapeSettings* JphConvexShapeSettings_asShapeSettings(JphConvexShapeSettings* self);
 JphSerializableObject* JphConvexShapeSettings_asSerializableObject(JphConvexShapeSettings* self);
-void JphConvexShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::ConvexShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphConvexShapeSettings_SetDensity(JphConvexShapeSettings* self, float inDensity);
 const JphPhysicsMaterial* JphConvexShapeSettings_GetMaterial(const JphConvexShapeSettings* self);
 void JphConvexShapeSettings_SetMaterial(JphConvexShapeSettings* self, const JphPhysicsMaterial* value);

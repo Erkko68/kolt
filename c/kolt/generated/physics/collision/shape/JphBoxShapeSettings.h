@@ -16,7 +16,7 @@ void JphBoxShapeSettings_release(const JphBoxShapeSettings* self);
 JphConvexShapeSettings* JphBoxShapeSettings_asConvexShapeSettings(JphBoxShapeSettings* self);
 JphShapeSettings* JphBoxShapeSettings_asShapeSettings(JphBoxShapeSettings* self);
 JphSerializableObject* JphBoxShapeSettings_asSerializableObject(JphBoxShapeSettings* self);
-void JphBoxShapeSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::BoxShapeSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphBoxShapeSettings_GetHalfExtent(const JphBoxShapeSettings* self, JphVec3* out);
 void JphBoxShapeSettings_SetHalfExtent(JphBoxShapeSettings* self, const JphVec3* value);
 float JphBoxShapeSettings_GetConvexRadius(const JphBoxShapeSettings* self);

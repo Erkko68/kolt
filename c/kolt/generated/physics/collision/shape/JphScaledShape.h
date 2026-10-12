@@ -9,16 +9,15 @@ extern "C" {
 #endif
 
 // JPH::ScaledShape
+// skipped JPH::ScaledShape(const ScaledShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphScaledShape* JphScaledShape_create(void);
-// TODO(handwritten) JphScaledShape_create_ScaledShapeSettings_ShapeResult: JPH::ScaledShape(const ScaledShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 JphScaledShape* JphScaledShape_create_Shape_Vec3Arg(const JphShape* inShape, const JphVec3* inScale);
 void JphScaledShape_addRef(const JphScaledShape* self);
 void JphScaledShape_release(const JphScaledShape* self);
 JphDecoratedShape* JphScaledShape_asDecoratedShape(JphScaledShape* self);
 JphShape* JphScaledShape_asShape(JphScaledShape* self);
+// skipped static void JPH::ScaledShape::sRegister(): JPH::.*::sRegister
 void JphScaledShape_GetScale(const JphScaledShape* self, JphVec3* out);
-void JphScaledShape_sRegister(void);
 
 
 #ifdef __cplusplus

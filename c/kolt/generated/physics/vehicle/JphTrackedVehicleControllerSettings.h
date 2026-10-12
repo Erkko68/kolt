@@ -16,7 +16,7 @@ JphTrackedVehicleControllerSettings* JphTrackedVehicleControllerSettings_createU
 void JphTrackedVehicleControllerSettings_bindUpcalls(JphTrackedVehicleControllerSettings* self, void* userData);
 JphVehicleControllerSettings* JphTrackedVehicleControllerSettings_asVehicleControllerSettings(JphTrackedVehicleControllerSettings* self);
 JphSerializableObject* JphTrackedVehicleControllerSettings_asSerializableObject(JphTrackedVehicleControllerSettings* self);
-void JphTrackedVehicleControllerSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::TrackedVehicleControllerSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphTrackedVehicleControllerSettings_GetEngine(const JphTrackedVehicleControllerSettings* self, JphVehicleEngineSettings* out);
 void JphTrackedVehicleControllerSettings_SetEngine(JphTrackedVehicleControllerSettings* self, const JphVehicleEngineSettings* value);
 void JphTrackedVehicleControllerSettings_GetTransmission(const JphTrackedVehicleControllerSettings* self, JphVehicleTransmissionSettings* out);

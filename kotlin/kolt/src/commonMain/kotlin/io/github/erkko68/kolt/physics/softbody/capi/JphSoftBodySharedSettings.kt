@@ -100,9 +100,6 @@ internal external fun JphSoftBodySharedSettingsVertex_create_Float3_Float3_float
 @ExternalSymbolName("JphSoftBodySharedSettingsVertex_destroy")
 internal external fun JphSoftBodySharedSettingsVertex_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphSoftBodySharedSettingsVertex_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsVertex_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSoftBodySharedSettingsVertex_GetPosition")
 internal external fun JphSoftBodySharedSettingsVertex_GetPosition(self: NativePointer, out: NativePointer)
 
@@ -130,9 +127,6 @@ internal external fun JphSoftBodySharedSettingsFace_create_uint32_uint32_uint32_
 @ExternalSymbolName("JphSoftBodySharedSettingsFace_destroy")
 internal external fun JphSoftBodySharedSettingsFace_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphSoftBodySharedSettingsFace_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsFace_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSoftBodySharedSettingsFace_IsDegenerate")
 internal external fun JphSoftBodySharedSettingsFace_IsDegenerate(self: NativePointer): Boolean
 
@@ -156,9 +150,6 @@ internal external fun JphSoftBodySharedSettingsEdge_create_uint32_uint32_float(i
 
 @ExternalSymbolName("JphSoftBodySharedSettingsEdge_destroy")
 internal external fun JphSoftBodySharedSettingsEdge_destroy(self: NativePointer)
-
-@ExternalSymbolName("JphSoftBodySharedSettingsEdge_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsEdge_sCreateRTTI(inRTTI: NativePointer)
 
 @ExternalSymbolName("JphSoftBodySharedSettingsEdge_GetMinVertexIndex")
 internal external fun JphSoftBodySharedSettingsEdge_GetMinVertexIndex(self: NativePointer): Int
@@ -190,9 +181,6 @@ internal external fun JphSoftBodySharedSettingsDihedralBend_create_uint32_uint32
 @ExternalSymbolName("JphSoftBodySharedSettingsDihedralBend_destroy")
 internal external fun JphSoftBodySharedSettingsDihedralBend_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphSoftBodySharedSettingsDihedralBend_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsDihedralBend_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSoftBodySharedSettingsDihedralBend_GetMinVertexIndex")
 internal external fun JphSoftBodySharedSettingsDihedralBend_GetMinVertexIndex(self: NativePointer): Int
 
@@ -222,9 +210,6 @@ internal external fun JphSoftBodySharedSettingsVolume_create_uint32_uint32_uint3
 
 @ExternalSymbolName("JphSoftBodySharedSettingsVolume_destroy")
 internal external fun JphSoftBodySharedSettingsVolume_destroy(self: NativePointer)
-
-@ExternalSymbolName("JphSoftBodySharedSettingsVolume_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsVolume_sCreateRTTI(inRTTI: NativePointer)
 
 @ExternalSymbolName("JphSoftBodySharedSettingsVolume_GetMinVertexIndex")
 internal external fun JphSoftBodySharedSettingsVolume_GetMinVertexIndex(self: NativePointer): Int
@@ -256,9 +241,6 @@ internal external fun JphSoftBodySharedSettingsInvBind_create_uint32_Mat44Arg(in
 @ExternalSymbolName("JphSoftBodySharedSettingsInvBind_destroy")
 internal external fun JphSoftBodySharedSettingsInvBind_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphSoftBodySharedSettingsInvBind_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsInvBind_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSoftBodySharedSettingsInvBind_GetJointIndex")
 internal external fun JphSoftBodySharedSettingsInvBind_GetJointIndex(self: NativePointer): Int
 
@@ -280,9 +262,6 @@ internal external fun JphSoftBodySharedSettingsSkinWeight_create_uint32_float(in
 @ExternalSymbolName("JphSoftBodySharedSettingsSkinWeight_destroy")
 internal external fun JphSoftBodySharedSettingsSkinWeight_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphSoftBodySharedSettingsSkinWeight_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsSkinWeight_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSoftBodySharedSettingsSkinWeight_GetInvBindIndex")
 internal external fun JphSoftBodySharedSettingsSkinWeight_GetInvBindIndex(self: NativePointer): Int
 
@@ -303,9 +282,6 @@ internal external fun JphSoftBodySharedSettingsSkinned_create_uint32_float_float
 
 @ExternalSymbolName("JphSoftBodySharedSettingsSkinned_destroy")
 internal external fun JphSoftBodySharedSettingsSkinned_destroy(self: NativePointer)
-
-@ExternalSymbolName("JphSoftBodySharedSettingsSkinned_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsSkinned_sCreateRTTI(inRTTI: NativePointer)
 
 @ExternalSymbolName("JphSoftBodySharedSettingsSkinned_NormalizeWeights")
 internal external fun JphSoftBodySharedSettingsSkinned_NormalizeWeights(self: NativePointer)
@@ -355,9 +331,6 @@ internal external fun JphSoftBodySharedSettingsLRA_create_uint32_uint32_float(in
 @ExternalSymbolName("JphSoftBodySharedSettingsLRA_destroy")
 internal external fun JphSoftBodySharedSettingsLRA_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphSoftBodySharedSettingsLRA_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsLRA_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSoftBodySharedSettingsLRA_GetMinVertexIndex")
 internal external fun JphSoftBodySharedSettingsLRA_GetMinVertexIndex(self: NativePointer): Int
 
@@ -381,9 +354,6 @@ internal external fun JphSoftBodySharedSettingsRodStretchShear_create_uint32_uin
 
 @ExternalSymbolName("JphSoftBodySharedSettingsRodStretchShear_destroy")
 internal external fun JphSoftBodySharedSettingsRodStretchShear_destroy(self: NativePointer)
-
-@ExternalSymbolName("JphSoftBodySharedSettingsRodStretchShear_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsRodStretchShear_sCreateRTTI(inRTTI: NativePointer)
 
 @ExternalSymbolName("JphSoftBodySharedSettingsRodStretchShear_GetMinVertexIndex")
 internal external fun JphSoftBodySharedSettingsRodStretchShear_GetMinVertexIndex(self: NativePointer): Int
@@ -427,9 +397,6 @@ internal external fun JphSoftBodySharedSettingsRodBendTwist_create_uint32_uint32
 @ExternalSymbolName("JphSoftBodySharedSettingsRodBendTwist_destroy")
 internal external fun JphSoftBodySharedSettingsRodBendTwist_destroy(self: NativePointer)
 
-@ExternalSymbolName("JphSoftBodySharedSettingsRodBendTwist_sCreateRTTI")
-internal external fun JphSoftBodySharedSettingsRodBendTwist_sCreateRTTI(inRTTI: NativePointer)
-
 @ExternalSymbolName("JphSoftBodySharedSettingsRodBendTwist_GetRod")
 internal external fun JphSoftBodySharedSettingsRodBendTwist_GetRod(self: NativePointer, out: NativePointer, outCapacity: Int): Int
 
@@ -456,9 +423,6 @@ internal external fun JphSoftBodySharedSettings_addRef(self: NativePointer)
 
 @ExternalSymbolName("JphSoftBodySharedSettings_release")
 internal external fun JphSoftBodySharedSettings_release(self: NativePointer)
-
-@ExternalSymbolName("JphSoftBodySharedSettings_sCreateRTTI")
-internal external fun JphSoftBodySharedSettings_sCreateRTTI(inRTTI: NativePointer)
 
 @ExternalSymbolName("JphSoftBodySharedSettings_CreateConstraints")
 internal external fun JphSoftBodySharedSettings_CreateConstraints(self: NativePointer, inVertexAttributes: NativePointer, inVertexAttributesLength: Int, inBendType: Int, inAngleTolerance: Float)

@@ -6,9 +6,3 @@ import io.github.erkko68.kolt.interop.NativePointer
 
 @ExternalSymbolName("JphTempAllocator_destroy")
 internal external fun JphTempAllocator_destroy(self: NativePointer)
-
-@ExternalSymbolName("JphTempAllocator_Allocate")
-internal external fun JphTempAllocator_Allocate(self: NativePointer, inSize: Int): NativePointer
-
-@ExternalSymbolName("JphTempAllocator_Free")
-internal external fun JphTempAllocator_Free(self: NativePointer, inAddress: NativePointer, inSize: Int)

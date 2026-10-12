@@ -54,9 +54,4 @@ class BoxShape internal constructor(internal val boxShapeHandle: NativePointer, 
 
     val convexRadius: Float
         get() = JphBoxShape_GetConvexRadius(boxShapeHandle)
-
-    companion object {
-        fun register() =
-            JphBoxShape_sRegister()
-    }
 }

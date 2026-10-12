@@ -9,6 +9,16 @@ extern "C" {
 #endif
 
 // JPH::Body
+// skipped void JPH::Body::SetObjectLayerInternal(ObjectLayer inLayer, const BroadPhaseLayerInterface & inBPLInterface): JPH::.*Internal
+// skipped void JPH::Body::SetInBroadPhaseInternal(bool inInBroadPhase): JPH::.*Internal
+// skipped bool JPH::Body::InvalidateContactCacheInternal(): JPH::.*Internal
+// skipped void JPH::Body::ValidateContactCacheInternal(): JPH::.*Internal
+// skipped void JPH::Body::CalculateWorldSpaceBoundsInternal(): JPH::.*Internal
+// skipped void JPH::Body::SetPositionAndRotationInternal(RVec3Arg inPosition, QuatArg inRotation, bool inResetSleepTimer): JPH::.*Internal
+// skipped void JPH::Body::UpdateCenterOfMassInternal(Vec3Arg inPreviousCenterOfMass, bool inUpdateMassProperties): JPH::.*Internal
+// skipped void JPH::Body::SetShapeInternal(const Shape * inShape, bool inUpdateMassProperties): JPH::.*Internal
+// skipped uint32 JPH::Body::GetIndexInActiveBodiesInternal() const: JPH::.*Internal
+// skipped ECanSleep JPH::Body::UpdateSleepStateInternal(float inDeltaTime, float inMaxMovement, float inTimeBeforeSleep): JPH::.*Internal
 uint32_t JphBody_GetID(const JphBody* self);
 JphEBodyType JphBody_GetBodyType(const JphBody* self);
 bool JphBody_IsRigidBody(const JphBody* self);
@@ -94,16 +104,6 @@ void JphBody_AddPositionStep(JphBody* self, const JphVec3* inLinearVelocityTimes
 void JphBody_SubPositionStep(JphBody* self, const JphVec3* inLinearVelocityTimesDeltaTime);
 void JphBody_AddRotationStep(JphBody* self, const JphVec3* inAngularVelocityTimesDeltaTime);
 void JphBody_SubRotationStep(JphBody* self, const JphVec3* inAngularVelocityTimesDeltaTime);
-void JphBody_SetObjectLayerInternal(JphBody* self, uint32_t inLayer, const JphBroadPhaseLayerInterface* inBPLInterface);
-void JphBody_SetInBroadPhaseInternal(JphBody* self, bool inInBroadPhase);
-bool JphBody_InvalidateContactCacheInternal(JphBody* self);
-void JphBody_ValidateContactCacheInternal(JphBody* self);
-void JphBody_CalculateWorldSpaceBoundsInternal(JphBody* self);
-void JphBody_SetPositionAndRotationInternal(JphBody* self, const JphVec3* inPosition, const JphQuat* inRotation, bool inResetSleepTimer);
-void JphBody_UpdateCenterOfMassInternal(JphBody* self, const JphVec3* inPreviousCenterOfMass, bool inUpdateMassProperties);
-void JphBody_SetShapeInternal(JphBody* self, const JphShape* inShape, bool inUpdateMassProperties);
-uint32_t JphBody_GetIndexInActiveBodiesInternal(const JphBody* self);
-JphECanSleep JphBody_UpdateSleepStateInternal(JphBody* self, float inDeltaTime, float inMaxMovement, float inTimeBeforeSleep);
 void JphBody_SaveState(const JphBody* self, JphStateRecorder* inStream);
 void JphBody_RestoreState(JphBody* self, JphStateRecorder* inStream);
 

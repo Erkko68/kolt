@@ -100,17 +100,5 @@ internal external fun JphSoftBodyMotionProperties_RestoreState(self: NativePoint
 @ExternalSymbolName("JphSoftBodyMotionProperties_CustomUpdate")
 internal external fun JphSoftBodyMotionProperties_CustomUpdate(self: NativePointer, inDeltaTime: Float, ioSoftBody: NativePointer, inSystem: NativePointer)
 
-@ExternalSymbolName("JphSoftBodyMotionProperties_InitializeUpdateContext")
-internal external fun JphSoftBodyMotionProperties_InitializeUpdateContext(self: NativePointer, inDeltaTime: Float, inSoftBody: NativePointer, inSystem: NativePointer, ioContext: NativePointer)
-
-@ExternalSymbolName("JphSoftBodyMotionProperties_DetermineCollidingShapes")
-internal external fun JphSoftBodyMotionProperties_DetermineCollidingShapes(self: NativePointer, inContext: NativePointer, inSystem: NativePointer, inBodyLockInterface: NativePointer)
-
-@ExternalSymbolName("JphSoftBodyMotionProperties_ParallelUpdate")
-internal external fun JphSoftBodyMotionProperties_ParallelUpdate(self: NativePointer, ioContext: NativePointer, inPhysicsSettings: NativePointer): Int
-
-@ExternalSymbolName("JphSoftBodyMotionProperties_UpdateRigidBodyVelocities")
-internal external fun JphSoftBodyMotionProperties_UpdateRigidBodyVelocities(self: NativePointer, inContext: NativePointer, inBodyInterface: NativePointer)
-
 @ExternalSymbolName("JphSoftBodyMotionProperties_RequestContactCallback")
 internal external fun JphSoftBodyMotionProperties_RequestContactCallback(self: NativePointer)

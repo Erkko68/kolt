@@ -98,9 +98,4 @@ open class ConvexShape internal constructor(internal val convexShapeHandle: Nati
             fun of(value: Int) = entries.first { it.value == value }
         }
     }
-    
-    companion object {
-        fun register() =
-            JphConvexShape_sRegister()
     }
-}

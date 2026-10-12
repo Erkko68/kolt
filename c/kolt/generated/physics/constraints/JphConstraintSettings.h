@@ -14,9 +14,9 @@ void JphConstraintSettings_release(const JphConstraintSettings* self);
 JphConstraintSettings* JphConstraintSettings_createUpcalls(JphUpcall call);
 void JphConstraintSettings_bindUpcalls(JphConstraintSettings* self, void* userData);
 JphSerializableObject* JphConstraintSettings_asSerializableObject(JphConstraintSettings* self);
-const JphRTTI* JphConstraintSettings_GetRTTI(const JphConstraintSettings* self);
-const void* JphConstraintSettings_CastTo(const JphConstraintSettings* self, const JphRTTI* inRTTI);
-void JphConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
+// skipped const JPH::RTTI * JPH::ConstraintSettings::GetRTTI() const: uses JPH::RTTI
+// skipped const void * JPH::ConstraintSettings::CastTo(const JPH::RTTI * inRTTI) const: uses JPH::RTTI
+// skipped static void JPH::ConstraintSettings::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 void JphConstraintSettings_SaveBinaryState(const JphConstraintSettings* self, JphStreamOut* inStream);
 JphConstraintSettings* JphConstraintSettings_sRestoreFromBinaryState(JphStreamIn* inStream, char* outError, uint32_t outErrorCapacity);
 bool JphConstraintSettings_GetEnabled(const JphConstraintSettings* self);

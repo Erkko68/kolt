@@ -16,7 +16,7 @@ JphWheelSettingsWV* JphWheelSettingsWV_createUpcalls(JphUpcall call);
 void JphWheelSettingsWV_bindUpcalls(JphWheelSettingsWV* self, void* userData);
 JphWheelSettings* JphWheelSettingsWV_asWheelSettings(JphWheelSettingsWV* self);
 JphSerializableObject* JphWheelSettingsWV_asSerializableObject(JphWheelSettingsWV* self);
-void JphWheelSettingsWV_sCreateRTTI(JphRTTI* inRTTI);
+// skipped static void JPH::WheelSettingsWV::sCreateRTTI(JPH::RTTI & inRTTI): uses JPH::RTTI
 float JphWheelSettingsWV_GetInertia(const JphWheelSettingsWV* self);
 void JphWheelSettingsWV_SetInertia(JphWheelSettingsWV* self, float value);
 float JphWheelSettingsWV_GetAngularDamping(const JphWheelSettingsWV* self);

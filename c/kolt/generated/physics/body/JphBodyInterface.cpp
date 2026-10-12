@@ -12,10 +12,6 @@ void JphBodyInterface_destroy(JphBodyInterface* self) {
     delete kolt::cpp(self);
 }
 
-void JphBodyInterface_Init(JphBodyInterface* self, JphBodyLockInterface* inBodyLockInterface, JphBodyManager* inBodyManager, JphBroadPhase* inBroadPhase) {
-    kolt::cpp(self)->Init(*kolt::cpp(inBodyLockInterface), *kolt::cpp(inBodyManager), *kolt::cpp(inBroadPhase));
-}
-
 JphBody* JphBodyInterface_CreateBody(JphBodyInterface* self, const JphBodyCreationSettings* inSettings) {
     return kolt::c(kolt::cpp(self)->CreateBody(*kolt::cpp(inSettings)));
 }

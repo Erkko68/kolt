@@ -14,6 +14,7 @@ void JphSliderConstraint_addRef(const JphSliderConstraint* self);
 void JphSliderConstraint_release(const JphSliderConstraint* self);
 JphTwoBodyConstraint* JphSliderConstraint_asTwoBodyConstraint(JphSliderConstraint* self);
 JphConstraint* JphSliderConstraint_asConstraint(JphSliderConstraint* self);
+// skipped Vector<2> JPH::SliderConstraint::GetTotalLambdaPosition() const: JPH::(HingeConstraint::GetTotalLambdaRotation|SliderConstraint::GetTotalLambdaPosition)
 float JphSliderConstraint_GetCurrentPosition(const JphSliderConstraint* self);
 void JphSliderConstraint_SetMaxFrictionForce(JphSliderConstraint* self, float inFrictionForce);
 float JphSliderConstraint_GetMaxFrictionForce(const JphSliderConstraint* self);
@@ -30,8 +31,6 @@ float JphSliderConstraint_GetLimitsMax(const JphSliderConstraint* self);
 bool JphSliderConstraint_HasLimits(const JphSliderConstraint* self);
 JphSpringSettings* JphSliderConstraint_GetLimitsSpringSettings(JphSliderConstraint* self);
 void JphSliderConstraint_SetLimitsSpringSettings(JphSliderConstraint* self, const JphSpringSettings* inLimitsSpringSettings);
-// TODO(handwritten) JphSliderConstraint_GetTotalLambdaPosition: Vector<2> JPH::SliderConstraint::GetTotalLambdaPosition() const
-//     Vector<2>: class template
 float JphSliderConstraint_GetTotalLambdaPositionLimits(const JphSliderConstraint* self);
 void JphSliderConstraint_GetTotalLambdaRotation(const JphSliderConstraint* self, JphVec3* out);
 float JphSliderConstraint_GetTotalLambdaMotor(const JphSliderConstraint* self);

@@ -9,16 +9,15 @@ extern "C" {
 #endif
 
 // JPH::OffsetCenterOfMassShape
+// skipped JPH::OffsetCenterOfMassShape(const OffsetCenterOfMassShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphOffsetCenterOfMassShape* JphOffsetCenterOfMassShape_create(void);
-// TODO(handwritten) JphOffsetCenterOfMassShape_create_OffsetCenterOfMassShapeSettings_ShapeResult: JPH::OffsetCenterOfMassShape(const OffsetCenterOfMassShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 JphOffsetCenterOfMassShape* JphOffsetCenterOfMassShape_create_Shape_Vec3Arg(const JphShape* inShape, const JphVec3* inOffset);
 void JphOffsetCenterOfMassShape_addRef(const JphOffsetCenterOfMassShape* self);
 void JphOffsetCenterOfMassShape_release(const JphOffsetCenterOfMassShape* self);
 JphDecoratedShape* JphOffsetCenterOfMassShape_asDecoratedShape(JphOffsetCenterOfMassShape* self);
 JphShape* JphOffsetCenterOfMassShape_asShape(JphOffsetCenterOfMassShape* self);
+// skipped static void JPH::OffsetCenterOfMassShape::sRegister(): JPH::.*::sRegister
 void JphOffsetCenterOfMassShape_GetOffset(const JphOffsetCenterOfMassShape* self, JphVec3* out);
-void JphOffsetCenterOfMassShape_sRegister(void);
 
 
 #ifdef __cplusplus

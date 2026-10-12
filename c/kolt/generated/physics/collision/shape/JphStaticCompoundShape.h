@@ -9,14 +9,13 @@ extern "C" {
 #endif
 
 // JPH::StaticCompoundShape
+// skipped JPH::StaticCompoundShape(const StaticCompoundShapeSettings & inSettings, TempAllocator & inTempAllocator, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphStaticCompoundShape* JphStaticCompoundShape_create(void);
-// TODO(handwritten) JphStaticCompoundShape_create_StaticCompoundShapeSettings_TempAllocator_ShapeResult: JPH::StaticCompoundShape(const StaticCompoundShapeSettings & inSettings, TempAllocator & inTempAllocator, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 void JphStaticCompoundShape_addRef(const JphStaticCompoundShape* self);
 void JphStaticCompoundShape_release(const JphStaticCompoundShape* self);
 JphCompoundShape* JphStaticCompoundShape_asCompoundShape(JphStaticCompoundShape* self);
 JphShape* JphStaticCompoundShape_asShape(JphStaticCompoundShape* self);
-void JphStaticCompoundShape_sRegister(void);
+// skipped static void JPH::StaticCompoundShape::sRegister(): JPH::.*::sRegister
 
 
 #ifdef __cplusplus

@@ -9,18 +9,17 @@ extern "C" {
 #endif
 
 // JPH::RotatedTranslatedShape
+// skipped JPH::RotatedTranslatedShape(const RotatedTranslatedShapeSettings & inSettings, ShapeResult & outResult): JPH::\w+Shape\(JPH::\w+ShapeSettings, .*\)
 JphRotatedTranslatedShape* JphRotatedTranslatedShape_create(void);
-// TODO(handwritten) JphRotatedTranslatedShape_create_RotatedTranslatedShapeSettings_ShapeResult: JPH::RotatedTranslatedShape(const RotatedTranslatedShapeSettings & inSettings, ShapeResult & outResult)
-//     Result<Ref<Shape>>: only as a result by value
 JphRotatedTranslatedShape* JphRotatedTranslatedShape_create_Vec3Arg_QuatArg_Shape(const JphVec3* inPosition, const JphQuat* inRotation, const JphShape* inShape);
 void JphRotatedTranslatedShape_addRef(const JphRotatedTranslatedShape* self);
 void JphRotatedTranslatedShape_release(const JphRotatedTranslatedShape* self);
 JphDecoratedShape* JphRotatedTranslatedShape_asDecoratedShape(JphRotatedTranslatedShape* self);
 JphShape* JphRotatedTranslatedShape_asShape(JphRotatedTranslatedShape* self);
+// skipped static void JPH::RotatedTranslatedShape::sRegister(): JPH::.*::sRegister
 void JphRotatedTranslatedShape_GetRotation(const JphRotatedTranslatedShape* self, JphQuat* out);
 void JphRotatedTranslatedShape_GetPosition(const JphRotatedTranslatedShape* self, JphVec3* out);
 void JphRotatedTranslatedShape_TransformScale(const JphRotatedTranslatedShape* self, const JphVec3* inScale, JphVec3* out);
-void JphRotatedTranslatedShape_sRegister(void);
 
 
 #ifdef __cplusplus

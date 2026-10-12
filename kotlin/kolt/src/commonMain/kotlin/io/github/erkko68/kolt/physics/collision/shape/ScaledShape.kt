@@ -51,9 +51,4 @@ class ScaledShape internal constructor(internal val scaledShapeHandle: NativePoi
             returnedPointer.fromInterop(returned)
             Vec3(returned)
         }
-
-    companion object {
-        fun register() =
-            JphScaledShape_sRegister()
-    }
 }

@@ -24,6 +24,3 @@ internal external fun JphMeshShape_GetMaterialIndex(self: NativePointer, inSubSh
 
 @ExternalSymbolName("JphMeshShape_GetTriangleUserData")
 internal external fun JphMeshShape_GetTriangleUserData(self: NativePointer, inSubShapeID: Int): Int
-
-@ExternalSymbolName("JphMeshShape_sRegister")
-internal external fun JphMeshShape_sRegister()

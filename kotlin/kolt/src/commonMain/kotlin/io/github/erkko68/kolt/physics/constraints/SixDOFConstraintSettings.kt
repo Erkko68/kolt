@@ -191,9 +191,4 @@ class SixDOFConstraintSettings internal constructor(internal val sixDOFConstrain
             fun of(value: Int) = entries.first { it.value == value }
         }
     }
-    
-    companion object {
-        fun createRTTI(rtti: RTTI) =
-            JphSixDOFConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
-}

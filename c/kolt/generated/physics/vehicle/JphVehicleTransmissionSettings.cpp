@@ -12,10 +12,6 @@ void JphVehicleTransmissionSettings_destroy(JphVehicleTransmissionSettings* self
     delete kolt::cpp(self);
 }
 
-void JphVehicleTransmissionSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::VehicleTransmissionSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 void JphVehicleTransmissionSettings_SaveBinaryState(const JphVehicleTransmissionSettings* self, JphStreamOut* inStream) {
     kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }

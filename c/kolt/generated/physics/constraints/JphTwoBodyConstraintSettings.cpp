@@ -20,10 +20,6 @@ JphSerializableObject* JphTwoBodyConstraintSettings_asSerializableObject(JphTwoB
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-void JphTwoBodyConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
-    JPH::TwoBodyConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
 JphTwoBodyConstraint* JphTwoBodyConstraintSettings_Create(const JphTwoBodyConstraintSettings* self, JphBody* inBody1, JphBody* inBody2) {
     return kolt::c(kolt::cpp(self)->Create(*kolt::cpp(inBody1), *kolt::cpp(inBody2)));
 }

@@ -27,6 +27,3 @@ internal external fun JphTaperedCapsuleShape_GetBottomRadius(self: NativePointer
 
 @ExternalSymbolName("JphTaperedCapsuleShape_GetHalfHeight")
 internal external fun JphTaperedCapsuleShape_GetHalfHeight(self: NativePointer): Float
-
-@ExternalSymbolName("JphTaperedCapsuleShape_sRegister")
-internal external fun JphTaperedCapsuleShape_sRegister()
