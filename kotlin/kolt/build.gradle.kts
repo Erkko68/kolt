@@ -10,6 +10,8 @@ val cmakeBuild = tasks.register<Exec>("cmakeBuild") {
     inputs.dir(c).withPropertyName("c")
     inputs.dir(rootProject.layout.projectDirectory.dir("jolt/Jolt")).withPropertyName("jolt")
     outputs.dir(cLibDir)
+    // Compiles what it writes, and tasks run in parallel.
+    mustRunAfter(":generateCApi")
     // Kotlin/Native's minimum macOS (konan.properties' minVersion.macos).
     commandLine(
         "sh", "-c",

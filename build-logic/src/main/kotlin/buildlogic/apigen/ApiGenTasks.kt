@@ -4,6 +4,7 @@ import buildlogic.apigen.c.GenerateCApiTask
 import buildlogic.apigen.cpp.ApiModelTask
 import buildlogic.apigen.externals.GenerateBindingsTask
 import buildlogic.apigen.gaps.ApiCoverageTask
+import buildlogic.apigen.kotlin.api.GenerateKotlinApiTask
 import buildlogic.apigen.kotlin.GenerateKotlinExternalsTask
 import buildlogic.apigen.verify.ApiVerifyTask
 import org.gradle.api.Project
@@ -19,6 +20,7 @@ import org.gradle.kotlin.dsl.register
  * c/            CppApi → c/<module>/generated; the functions those and
  *               c/<module>/manual declare → c/api-manifest.json     generateCApi    (committed)
  * kotlin/       api-manifest.json → Kotlin externals                generateKotlinExternals (committed)
+ * kotlin/api/   what the c stage bound → the typed API over them    generateKotlinApi (committed)
  * externals/    api-manifest.json → JNI forwarders, wasm tables     generateBindings (build/)
  * gaps/         what C++ the C and Kotlin APIs bind, by C function     apiCoverage (committed report)
  *               C++ API the C API's objects don't call                 apiGaps  (report; the library's build registers it)
@@ -58,7 +60,7 @@ fun Project.registerApiGenTasks(config: ApiGenConfig) {
         configure()
         // Reads what they write, and tasks run in parallel under the configuration cache.
         mustRunAfter("generateCApi")
-        if (config.kotlin != null) mustRunAfter("generateKotlinExternals")
+        if (config.kotlin != null) mustRunAfter("generateKotlinExternals", "generateKotlinApi")
     }
 
     if (config.kotlin == null) return
@@ -69,6 +71,12 @@ fun Project.registerApiGenTasks(config: ApiGenConfig) {
         configure()
         // Reads the manifest generateCApi writes.
         mustRunAfter("generateCApi")
+    }
+
+    tasks.register<GenerateKotlinApiTask>("generateKotlinApi") {
+        group = "build setup"
+        description = "Generates the typed Kotlin API over the externals, for what of ${config.name}'s API they pass as plain values and handles."
+        configure()
     }
 
     tasks.register<ApiVerifyTask>("apiVerify") {

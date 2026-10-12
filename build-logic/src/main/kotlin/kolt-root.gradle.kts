@@ -20,6 +20,7 @@ registerApiGenTasks(
         groupRoot = "Jolt",
         droppedNamespaces = setOf("JPH"),
         memberPrefix = "^m(?=[A-Z])",
+        parameterPrefix = "^(in|out|io)(?=[A-Z])",
         helpers = "kolt",
         bridgeHeader = "../manual/JphBridge.hpp",
         // IDs and layers are their value.

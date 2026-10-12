@@ -36,6 +36,8 @@ data class ApiGenConfig(
     val droppedNamespaces: Set<String> = emptySet(),
     /** A regex of what field names start with that their accessors drop (`^m(?=[A-Z])` for `mPosition`), or empty. */
     val memberPrefix: String = "",
+    /** A regex of what parameter names start with that a typed wrapper's drop (`^(in|out|io)(?=[A-Z])` for `inRadius`), or empty. */
+    val parameterPrefix: String = "",
     /** The verbs of a field's accessors, named as the library names methods. */
     val getter: String = "Get",
     val setter: String = "Set",

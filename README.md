@@ -13,11 +13,13 @@ c/api-coverage.txt    each C function the API calls for: wrapped by Kotlin or no
 c/CMakeLists.txt      builds Jolt and the C API as static libraries (./gradlew :kotlin:kolt:cmakeBuild)
 kotlin/kolt/          the Kotlin module: interop/ and, per group, a package whose capi/ is the generated externals
                       (physics.body.capi; ./gradlew generateKotlinExternals)
+                      and the rest the generated classes over them (./gradlew generateKotlinApi); math/ is hand-written
 build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C), kotlin/ (manifest → externals),
+                      kotlin/api/ (what C bound → classes),
                       externals/ (manifest → JNI and wasm glue), gaps/ (coverage), verify/ (Kotlin enums' values)
 ```
 
-`./gradlew :kotlin:kolt:macosArm64Test` drops a sphere through the externals, on Kotlin/Native on an Apple Silicon Mac:
+`./gradlew :kotlin:kolt:macosArm64Test` drops a sphere through the generated classes, on Kotlin/Native on an Apple Silicon Mac:
 the only target so far, as it needs no glue.
 
 `./gradlew apiModel` reports the C++ API clang sees in the listed headers.

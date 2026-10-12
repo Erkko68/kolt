@@ -17,7 +17,10 @@ class DirectBridges internal constructor(
     val c = if (const) "const " else ""
 
     fun scalar(decl: String, scalar: Scalar): CBridge {
-        if (byValue) return CBridge(scalar.c, if (result) scalar::toC else scalar::toCpp, out = result && CAbi.returnsThroughPointer(scalar.c))
+        if (byValue) {
+            val out = result && CAbi.returnsThroughPointer(scalar.c)
+            return CBridge(scalar.c, if (result) scalar::toC else scalar::toCpp, out = out, value = CValue.Scalar(names.type(decl), scalar.c).takeIf { !out })
+        }
         if (!scalar.layout || indirection == "&&") throw Unsupported("$decl by pointer")
         return pointer(scalar.c, decl)
     }
@@ -43,7 +46,8 @@ class DirectBridges internal constructor(
         val base = spelled.removePrefix("std::")
         if (byValue) {
             val cType = CAbi.byValue(base)
-            return CBridge(cType, if (cType == base) { v -> v } else cast(cType, base), out = result && CAbi.returnsThroughPointer(cType))
+            val out = result && CAbi.returnsThroughPointer(cType)
+            return CBridge(cType, if (cType == base) { v -> v } else cast(cType, base), out = out, value = CValue.Builtin(cType).takeIf { !out })
         }
         CAbi.checkPointee(base)
         return when {
@@ -56,7 +60,7 @@ class DirectBridges internal constructor(
     fun enum(decl: String, wideType: String?): CBridge {
         if (!byValue) throw Unsupported("$decl by pointer")
         val name = names.type(decl)
-        return CBridge(name, cast(name, decl), out = result && wideType != null && CAbi.returnsThroughPointer(wideType))
+        return CBridge(name, cast(name, decl), out = result && wideType != null && CAbi.returnsThroughPointer(wideType), value = CValue.Enum(name).takeIf { wideType == null })
     }
 
     /**
@@ -65,9 +69,10 @@ class DirectBridges internal constructor(
      */
     fun math(decl: String): CBridge {
         val name = names.type(decl)
+        val value = config.mirrors.getValue(decl).let { CValue.Mirror(name, it.element, it.count) }
         return when {
-            byValue && result -> CBridge(name, { "$h::mirror<$name>($it)" }, out = true)
-            byValue -> CBridge("const $name*", { "$h::math<$decl>(*$it)" })
+            byValue && result -> CBridge(name, { "$h::mirror<$name>($it)" }, out = true, value = value)
+            byValue -> CBridge("const $name*", { "$h::math<$decl>(*$it)" }, value = value)
             result || !config.mirrors.getValue(decl).aligned -> handle(name)
             indirection == "&" -> CBridge("$name*", { "$h::InOut<$decl, $name>($it)" })
             else -> throw Unsupported("$decl by pointer: C's mirror isn't aligned as the SIMD type is")
@@ -79,10 +84,10 @@ class DirectBridges internal constructor(
         val name = names.type(decl)
         return when {
             !value && indirection == null -> throw Unsupported("$decl by value")
-            !value || !byValue -> handle(name)
-            !result -> CBridge("const $name*", { "*$h::cpp($it)" })
+            !value || !byValue -> handle(name, record = true)
+            !result -> CBridge("const $name*", { "*$h::cpp($it)" }, value = CValue.Handle(name, nullable = false))
             // C can't create one to copy into; a reference's outlives the call, so C borrows it.
-            !copyable && indirection == "&" -> handle(name)
+            !copyable && indirection == "&" -> handle(name, record = true)
             !copyable -> throw Unsupported("$decl result: C can't create one to copy it into")
             else -> CBridge(name, { it }, out = true, store = { v, out -> "*$h::cpp($out) = $v;" })
         }
@@ -100,9 +105,10 @@ class DirectBridges internal constructor(
     }
 
     /** A pointer to a record's handle or a math mirror, converted by the `cpp`/`c` overloads. */
-    private fun handle(cName: String): CBridge {
+    private fun handle(cName: String, record: Boolean = false): CBridge {
         val ref = indirection != "*"
-        return if (result) CBridge("$c$cName*", { "$h::c(${if (ref) "&" else ""}$it)" })
-        else CBridge("$c$cName*", { "${if (ref) "*" else ""}$h::cpp($it)" })
+        val value = CValue.Handle(cName, nullable = !ref).takeIf { record }
+        return if (result) CBridge("$c$cName*", { "$h::c(${if (ref) "&" else ""}$it)" }, value = value)
+        else CBridge("$c$cName*", { "${if (ref) "*" else ""}$h::cpp($it)" }, value = value)
     }
 }

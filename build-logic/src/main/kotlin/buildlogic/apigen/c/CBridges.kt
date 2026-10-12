@@ -27,7 +27,24 @@ class CBridge(
     val extra: List<Pair<String, String>> = emptyList(),
     /** A typedef its C spelling needs, by C name: a callback's function pointer type. */
     val typedef: Pair<String, String>? = null,
+    /** What the value is, for a stage wrapping the C API in typed code; null when [c] alone doesn't say how to. */
+    val value: CValue? = null,
 )
+
+/** A bridged value a wrapper can type from its C spelling: [c] is the C type, by which the wrapper names its own. */
+sealed interface CValue {
+    val c: String
+
+    /** A number or bool C passes as it is. */
+    data class Builtin(override val c: String) : CValue
+    data class Enum(override val c: String) : CValue
+    /** An [ApiGenConfig.scalars] type, crossing as the integer [scalar]; [c] is the name C would give the type. */
+    data class Scalar(override val c: String, val scalar: String) : CValue
+    /** An [ApiGenConfig.mirrors] type by value: C passes a pointer to its [count] [element]s, which a result fills. */
+    data class Mirror(override val c: String, val element: String, val count: Int) : CValue
+    /** A record's handle; [nullable]: C++ takes or returns a pointer, not a reference. */
+    data class Handle(override val c: String, val nullable: Boolean) : CValue
+}
 
 private fun isArray(type: CppType) = type.spelling.trim().endsWith("]")
 
@@ -189,11 +206,13 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
     private fun ref(type: CppType, bridge: DirectBridges): CBridge {
         if (!bridge.byValue) throw Unsupported("${type.spelling}: by pointer or non-const reference")
         val const = if (refs!!.pointers.getValue(type.decl!!)) "const " else ""
-        val c = "$const${names.type(handle(type.args.single()).name)}*"
+        val name = names.type(handle(type.args.single()).name)
+        val c = "$const$name*"
+        val value = CValue.Handle(name, nullable = true)
         return when {
-            !bridge.result -> CBridge(c, { "$h::cpp($it)" })
-            bridge.indirection == null && !bridge.lvalue -> CBridge(c, { "$h::c($h::retain($it))" })
-            else -> CBridge(c, { "$h::c(($it).${refs.get}())" })
+            !bridge.result -> CBridge(c, { "$h::cpp($it)" }, value = value)
+            bridge.indirection == null && !bridge.lvalue -> CBridge(c, { "$h::c($h::retain($it))" }, value = value)
+            else -> CBridge(c, { "$h::c(($it).${refs.get}())" }, value = value)
         }
     }
 

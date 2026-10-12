@@ -22,7 +22,7 @@ internal object KotlinExternalsWriter {
     }
 
     private val TYPES = mapOf("ptr" to "NativePointer", "i32" to "Int", "i64" to "Long", "f32" to "Float", "f64" to "Double", "bool" to "Boolean")
-    private val KEYWORDS = setOf(
+    val KEYWORDS = setOf(
         "as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if", "in", "interface", "is", "null",
         "object", "package", "return", "super", "this", "throw", "true", "try", "typealias", "typeof", "val", "var",
         "when", "while",

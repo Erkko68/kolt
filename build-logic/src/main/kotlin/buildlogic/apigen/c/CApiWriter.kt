@@ -20,7 +20,7 @@ internal class CApiWriter(
     private val manual: Set<String> = emptySet(),
 ) {
     private val h = config.helpers
-    private val names = CNames(config)
+    val names = CNames(config)
     private val bridges = CBridges(api, config, names)
     private val rules = BindingRules(api, config, bridges, api.apiRecords(headers).mapTo(HashSet()) { it.name })
     private val surface = api.surface(headers)
@@ -29,8 +29,25 @@ internal class CApiWriter(
     /** After [write]: each C function the C++ API calls for, bound or not. */
     val bindings = ArrayList<Binding>()
 
-    /** C function [c] for the C++ [cpp]; [gap] is null once bound (generated or in manual/), else `todo: …` or `skipped: …`. */
-    class Binding(val c: String, val cpp: String, val gap: String?)
+    /**
+     * C function [c] for the C++ [cpp]; [gap] is null once bound (generated or in manual/), else `todo: …` or
+     * `skipped: …`. [bound]: what a generated one does.
+     */
+    class Binding(val c: String, val cpp: String, val gap: String?, val bound: Bound? = null)
+
+    /**
+     * What a generated C function does of [owner] (a record, or a namespace for its functions), for the stages wrapping
+     * the C API. [name]: the member's, as C names it without an overload's suffix; an upcast's base, as C names the type.
+     */
+    class Bound(
+        val role: Role, val owner: String, val name: String, val params: List<Pair<String, CBridge>> = emptyList(),
+        val returns: CBridge? = null, val isStatic: Boolean = false,
+    ) {
+        enum class Role { CREATE, ADD_REF, RELEASE, DESTROY, UPCAST, METHOD, GETTER, SETTER }
+    }
+
+    /** A C function's [signature] and the [body] forwarding it. */
+    private class Forwarder(val signature: String, val body: String, val bound: Bound)
     private val files = LinkedHashMap<String, Section>()
     /** One generated header and its forwarders. */
     private class Section(val module: String, val group: String = "") {
@@ -73,8 +90,12 @@ internal class CApiWriter(
 
     private fun section(module: String, name: String, group: String = "") = files.getOrPut(name) { Section(module, group) }
 
+    /** The records C holds by a handle, and the enums, the API reaches. */
+    val handles by lazy { surface.mapNotNull { api.records[it] }.filter { handled(it) && it !in twinBases } }
+    val enums by lazy { surface.mapNotNull { api.enums[it] } }
+
     /** The dir under `generated/` for what [header] declares: its own under [ApiGenConfig.groupRoot], lowercased, if any. */
-    private fun groupOf(header: String?) = config.groupRoot?.let { root ->
+    fun groupOf(header: String?) = config.groupRoot?.let { root ->
         header?.takeIf { it.startsWith("$root/") }?.removePrefix("$root/")?.substringBeforeLast('/', "")?.lowercase()
     }.orEmpty()
 
@@ -94,18 +115,18 @@ internal class CApiWriter(
                 emit(name, "$cpp(${spelled(params)})", section) {
                     val bridged = bridge(params)
                     val made = "new $cpp(${args(bridged)})"
-                    "$self* $name(${cParams(null, bridged)})" to "return $h::c(${if (counted) "$h::retain($made)" else made});"
+                    Forwarder("$self* $name(${cParams(null, bridged)})", "return $h::c(${if (counted) "$h::retain($made)" else made});", Bound(Bound.Role.CREATE, record.name, "create", bridged))
                 }
             }
         }
         // What `_create` and results by value hand C: a reference to give back, in place of `_destroy`.
         if (counted && !bridges.uninstantiated(record)) {
-            emit("${self}_addRef", "${record.name}::${config.refs!!.addRef}()", section) { "void ${self}_addRef(const $self* self)" to "$h::cpp(self)->${config.refs!!.addRef}();" }
-            emit("${self}_release", "${record.name}::${config.refs!!.release}()", section) { "void ${self}_release(const $self* self)" to "$h::cpp(self)->${config.refs!!.release}();" }
+            emit("${self}_addRef", "${record.name}::${config.refs!!.addRef}()", section) { Forwarder("void ${self}_addRef(const $self* self)", "$h::cpp(self)->${config.refs!!.addRef}();", Bound(Bound.Role.ADD_REF, record.name, "addRef")) }
+            emit("${self}_release", "${record.name}::${config.refs!!.release}()", section) { Forwarder("void ${self}_release(const $self* self)", "$h::cpp(self)->${config.refs!!.release}();", Bound(Bound.Role.RELEASE, record.name, "release")) }
         }
         if (rules.destroys(record)) {
             emit("${self}_destroy", "~${record.name}()", section) {
-                "void ${self}_destroy($self* self)" to "delete $h::cpp(self);"
+                Forwarder("void ${self}_destroy($self* self)", "delete $h::cpp(self);", Bound(Bound.Role.DESTROY, record.name, "destroy"))
             }
         }
         rules.upcasts(record).forEach { base ->
@@ -113,7 +134,7 @@ internal class CApiWriter(
             val name = "${self}_as${baseType.removePrefix(names.prefix)}"
             val baseCpp = bridges.cpp(base.name)
             emit(name, "${record.name} as ${base.name}", section) {
-                "$baseType* $name($self* self)" to "return $h::c(static_cast<$baseCpp*>($h::cpp(self)));"
+                Forwarder("$baseType* $name($self* self)", "return $h::c(static_cast<$baseCpp*>($h::cpp(self)));", Bound(Bound.Role.UPCAST, record.name, baseType))
             }
         }
         val (skipped, methods) = rules.methods(record).partition { api.skipReason(it, record.name) != null }
@@ -161,7 +182,7 @@ internal class CApiWriter(
         }
     }
 
-    private fun forwarder(method: CppMethod, name: String, templateArguments: List<String> = emptyList()): Pair<String, String> {
+    private fun forwarder(method: CppMethod, name: String, templateArguments: List<String> = emptyList()): Forwarder {
         if (api.records[method.owner]?.let(bridges::uninstantiated) == true) throw Unsupported("member of a class template")
         val returns = bridges.result(method.returns)
         val params = bridge(method.params)
@@ -170,10 +191,11 @@ internal class CApiWriter(
         val target = if (method.isStatic) "${bridges.cpp(method.owner)}::" else "$h::cpp(self)->"
         val explicit = if (templateArguments.isEmpty()) "" else templateArguments.joinToString(prefix = "<", postfix = ">")
         val call = "$target${method.name}$explicit(${args(params)})"
+        val bound = Bound(Bound.Role.METHOD, method.owner, method.name, params, returns, method.isStatic)
         return when {
-            returns.out -> "void $name(${cParams(self, params, out = "${returns.c}* out")})" to returns.store(call, "out")
-            returns.c == "void" -> "void $name(${cParams(self, params)})" to "$call;"
-            else -> "${returns.c} $name(${cParams(self, params, trailing(returns))})" to "return ${returns.convert(call)};"
+            returns.out -> Forwarder("void $name(${cParams(self, params, out = "${returns.c}* out")})", returns.store(call, "out"), bound)
+            returns.c == "void" -> Forwarder("void $name(${cParams(self, params)})", "$call;", bound)
+            else -> Forwarder("${returns.c} $name(${cParams(self, params, trailing(returns))})", "return ${returns.convert(call)};", bound)
         }
     }
 
@@ -186,8 +208,9 @@ internal class CApiWriter(
         if (getter !in functionNames) emit(getter, cpp, section) {
             val result = bridges.result(field.type, lvalue = true)
             val read = "$h::cpp(self)->${field.name}"
-            if (result.out) "void $getter(const $self* self, ${result.c}* out)" to result.store(read, "out")
-            else "${result.c} $getter(${cParams("const $self* self", emptyList(), trailing(result))})" to "return ${result.convert(read)};"
+            val bound = Bound(Bound.Role.GETTER, record.name, getter.removePrefix("${self}_"), returns = result)
+            if (result.out) Forwarder("void $getter(const $self* self, ${result.c}* out)", result.store(read, "out"), bound)
+            else Forwarder("${result.c} $getter(${cParams("const $self* self", emptyList(), trailing(result))})", "return ${result.convert(read)};", bound)
         }
         val setter = names.setter(record.name, field.name)
         if (rules.getterOnly(record, field)) {
@@ -198,7 +221,8 @@ internal class CApiWriter(
         if (setter !in functionNames) emit(setter, cpp, section) {
             if (bridges.borrowsPointer(field.type)) throw Unsupported("${field.type.spelling}: the struct would keep the caller's pointer")
             val param = bridges.param(field.type)
-            "void $setter(${cParams("$self* self", listOf("value" to param))})" to param.assign("$h::cpp(self)->${field.name}", "value")
+            Forwarder("void $setter(${cParams("$self* self", listOf("value" to param))})", param.assign("$h::cpp(self)->${field.name}", "value"),
+                Bound(Bound.Role.SETTER, record.name, setter.removePrefix("${self}_"), listOf("value" to param)))
         }
     }
 
@@ -206,14 +230,15 @@ internal class CApiWriter(
      * Writes one function, or a `TODO(handwritten)` naming [cpp] when [build] can't bridge it. A [guard]ed one exists on
      * every target, and panics where the header's condition hides the C++ it calls.
      */
-    private fun emit(name: String, cpp: String, section: Section, guard: String? = null, build: () -> Pair<String, String>) {
+    private fun emit(name: String, cpp: String, section: Section, guard: String? = null, build: () -> Forwarder) {
         try {
-            val (signature, body) = build()
+            val forwarder = build()
+            val (signature, body) = forwarder.signature to forwarder.body
             if (!functionNames.add(name)) throw Unsupported("$name is already generated for another overload")
             section.declarations.appendLine("$signature;")
             val guarded = if (guard == null) "    $body" else "#if $guard\n    $body\n#else\n    $h::unavailable(\"$name\");\n#endif"
             section.definitions.appendLine("$signature {\n$guarded\n}\n")
-            bindings += Binding(name, cpp, null)
+            bindings += Binding(name, cpp, null, forwarder.bound)
         } catch (e: Unsupported) {
             // By hand as itself, or as one function per case (`_aux_float2`, … for a std::variant).
             val handwritten = manual.filter { it == name || it.startsWith("${name}_") }
@@ -275,7 +300,7 @@ internal class CApiWriter(
         return text.append("\n} // namespace $h\n").toString()
     }
 
-    private fun moduleRecords(module: String) = surface.mapNotNull { api.records[it] }.filter { handled(it) && it !in twinBases && moduleOf(it.header) == module }.sortedBy { it.name }
+    private fun moduleRecords(module: String) = handles.filter { moduleOf(it.header) == module }.sortedBy { it.name }
 
     /** Bases sharing a derived record's C name: the name is the derived record's handle, which converts to them. */
     private val twinBases by lazy { surface.mapNotNull { api.records[it] }.flatMapTo(HashSet()) { bridges.twins(it) } }
@@ -303,7 +328,7 @@ internal class CApiWriter(
     }
 
     /** API headers go to their section's module; the types they use from elsewhere, to the first. */
-    private fun moduleOf(header: String?) = header?.let(apiHeaders::moduleOf) ?: baseModule
+    fun moduleOf(header: String?) = header?.let(apiHeaders::moduleOf) ?: baseModule
 
     private fun topLevel(record: String) =
         generateSequence(record) { it.substringBeforeLast("::", "").takeIf { parent -> parent in api.records } }.last()

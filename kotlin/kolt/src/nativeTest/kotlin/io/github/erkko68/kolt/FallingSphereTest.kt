@@ -1,82 +1,83 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
-
 package io.github.erkko68.kolt
 
-import io.github.erkko68.kolt.capi.*
-import io.github.erkko68.kolt.core.capi.*
-import io.github.erkko68.kolt.physics.body.capi.*
-import io.github.erkko68.kolt.physics.capi.*
-import io.github.erkko68.kolt.physics.collision.broadphase.capi.*
-import io.github.erkko68.kolt.physics.collision.capi.*
-import io.github.erkko68.kolt.physics.collision.shape.capi.*
+import io.github.erkko68.kolt.capi.JphFactory_SetInstance
+import io.github.erkko68.kolt.capi.Jph_RegisterDefaultAllocator
+import io.github.erkko68.kolt.core.Factory
+import io.github.erkko68.kolt.core.JobSystemThreadPool
+import io.github.erkko68.kolt.core.TempAllocatorImpl
 import io.github.erkko68.kolt.interop.NullPointer
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.toLong
-import kotlinx.cinterop.usePinned
+import io.github.erkko68.kolt.math.Quat
+import io.github.erkko68.kolt.math.Vec3
+import io.github.erkko68.kolt.physics.EPhysicsUpdateError
+import io.github.erkko68.kolt.physics.PhysicsSystem
+import io.github.erkko68.kolt.physics.body.BodyCreationSettings
+import io.github.erkko68.kolt.physics.EActivation
+import io.github.erkko68.kolt.physics.body.EMotionType
+import io.github.erkko68.kolt.physics.collision.ObjectLayerPairFilterTable
+import io.github.erkko68.kolt.physics.collision.broadphase.BroadPhaseLayer
+import io.github.erkko68.kolt.physics.collision.broadphase.BroadPhaseLayerInterfaceTable
+import io.github.erkko68.kolt.physics.collision.broadphase.ObjectVsBroadPhaseLayerFilterTable
+import io.github.erkko68.kolt.physics.collision.shape.EShapeSubType
+import io.github.erkko68.kolt.physics.collision.shape.Shape
+import io.github.erkko68.kolt.physics.collision.shape.SphereShape
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-private const val DYNAMIC = 2 // JPH_EMOTION_TYPE_DYNAMIC
-private const val ACTIVATE = 0 // JPH_EACTIVATION_ACTIVATE
-
-// A JphVec3 or JphQuat: four floats.
-private inline fun <R> FloatArray.ptr(block: (Long) -> R): R = usePinned { block(it.addressOf(0).toLong()) }
-
-/** The externals reach Jolt: a sphere dropped from 10 m has fallen about g/2 after a second. */
+/**
+ * The generated classes reach Jolt: a sphere dropped from 10 m has fallen about g/2 after a second. Numbers, enums,
+ * IDs, handles and math types cross, a derived class passes as its base, and `use` destroys.
+ */
 class FallingSphereTest {
     @Test
     fun sphereFalls() {
         Jph_RegisterDefaultAllocator()
-        val factory = JphFactory_create()
-        JphFactory_SetInstance(factory)
-        Jph_RegisterTypes()
+        val factory = Factory()
+        JphFactory_SetInstance(factory.factoryHandle)
+        registerTypes()
 
-        val temp = JphTempAllocatorImpl_create(10 * 1024 * 1024)
-        val jobs = JphJobSystemThreadPool_create_uint_uint_int(2048, 8, 1)
+        val temp = TempAllocatorImpl(10 * 1024 * 1024)
+        val jobs = JobSystemThreadPool(2048, 8, 1)
         // One object layer in one broad phase layer, colliding with itself.
-        val broadPhaseLayers = JphBroadPhaseLayerInterfaceTable_create(1, 1)
-        JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer(broadPhaseLayers, 0, 0)
-        val layerPairs = JphObjectLayerPairFilterTable_create(1)
-        JphObjectLayerPairFilterTable_EnableCollision(layerPairs, 0, 0)
-        val broadPhaseLayerInterface = JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(broadPhaseLayers)
-        val layerPairFilter = JphObjectLayerPairFilterTable_asObjectLayerPairFilter(layerPairs)
-        val objectVsBroadPhase = JphObjectVsBroadPhaseLayerFilterTable_create(broadPhaseLayerInterface, 1, layerPairFilter, 1)
+        val broadPhaseLayers = BroadPhaseLayerInterfaceTable(1, 1)
+        broadPhaseLayers.mapObjectToBroadPhaseLayer(0, BroadPhaseLayer(0))
+        val layerPairs = ObjectLayerPairFilterTable(1)
+        layerPairs.enableCollision(0, 0)
+        val objectVsBroadPhase = ObjectVsBroadPhaseLayerFilterTable(broadPhaseLayers, 1, layerPairs, 1)
+        val system = PhysicsSystem()
+        system.init(1024, 0, 1024, 1024, broadPhaseLayers, objectVsBroadPhase, layerPairs)
+        assertEquals(Vec3(0f, -9.81f, 0f), system.gravity)
 
-        val system = JphPhysicsSystem_create()
-        JphPhysicsSystem_Init(
-            system, 1024, 0, 1024, 1024, broadPhaseLayerInterface,
-            JphObjectVsBroadPhaseLayerFilterTable_asObjectVsBroadPhaseLayerFilter(objectVsBroadPhase), layerPairFilter,
-        )
-        val bodies = JphPhysicsSystem_GetBodyInterface(system)
+        val sphere = SphereShape(0.5f, null)
+        assertEquals(0.5f, sphere.radius)
+        val shape: Shape = sphere
+        assertEquals(EShapeSubType.Sphere, shape.subType)
 
-        val shape = JphSphereShape_asShape(JphSphereShape_create_float_PhysicsMaterial(0.5f, NullPointer))
-        val settings = floatArrayOf(0f, 10f, 0f, 0f).ptr { position ->
-            floatArrayOf(0f, 0f, 0f, 1f).ptr { rotation ->
-                JphBodyCreationSettings_create_Shape_RVec3Arg_QuatArg_EMotionType_ObjectLayer(shape, position, rotation, DYNAMIC, 0)
-            }
+        val bodies = system.bodyInterface
+        val body = BodyCreationSettings(sphere, Vec3(0f, 10f, 0f), Quat.IDENTITY, EMotionType.Dynamic, 0).use { settings ->
+            assertEquals(EMotionType.Dynamic, settings.motionType)
+            assertEquals(Vec3(0f, 10f, 0f), settings.position)
+            bodies.createAndAddBody(settings, EActivation.Activate)
         }
-        val body = JphBodyInterface_CreateAndAddBody(bodies, settings, ACTIVATE)
-        JphBodyCreationSettings_destroy(settings)
+        assertEquals(1, system.numBodies)
 
-        repeat(60) {
-            assertEquals(0, JphPhysicsSystem_Update(system, 1f / 60, 1, JphTempAllocatorImpl_asTempAllocator(temp), JphJobSystemThreadPool_asJobSystem(jobs)))
-        }
-        val position = FloatArray(4)
-        position.ptr { JphBodyInterface_GetPosition(bodies, body, it) }
-        assertEquals(0f, position[0])
-        assertTrue(position[1] in 4.5f..5.5f, "y = ${position[1]}")
+        repeat(60) { assertEquals(EPhysicsUpdateError.None, system.update(1f / 60, 1, temp, jobs)) }
+        val position = bodies.getPosition(body)
+        assertEquals(0f, position.x)
+        assertTrue(position.y in 4.5f..5.5f, "y = ${position.y}")
+        assertTrue(bodies.getLinearVelocity(body).y < -9f)
 
-        JphBodyInterface_RemoveBody(bodies, body)
-        JphBodyInterface_DestroyBody(bodies, body)
-        JphPhysicsSystem_destroy(system)
-        JphObjectVsBroadPhaseLayerFilterTable_destroy(objectVsBroadPhase)
-        JphObjectLayerPairFilterTable_destroy(layerPairs)
-        JphBroadPhaseLayerInterfaceTable_destroy(broadPhaseLayers)
-        JphJobSystemThreadPool_destroy(jobs)
-        JphTempAllocatorImpl_destroy(temp)
-        Jph_UnregisterTypes()
+        bodies.removeBody(body)
+        bodies.destroyBody(body)
+        sphere.close()
+        system.close()
+        objectVsBroadPhase.close()
+        layerPairs.close()
+        broadPhaseLayers.close()
+        jobs.close()
+        temp.close()
+        unregisterTypes()
         JphFactory_SetInstance(NullPointer)
-        JphFactory_destroy(factory)
+        factory.close()
     }
 }
