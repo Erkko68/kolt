@@ -1,4 +1,5 @@
 import buildlogic.apigen.ApiGenConfig
+import buildlogic.apigen.KotlinBindings
 import buildlogic.apigen.Mirror
 import buildlogic.apigen.RefCounting
 import buildlogic.apigen.Scalar
@@ -43,5 +44,11 @@ registerApiGenTasks(
             get = "GetPtr", addRef = "AddRef", release = "Release",
         ),
         results = setOf("JPH::Result"),
+        kotlin = KotlinBindings(
+            packages = mapOf("kolt" to "io.github.erkko68.kolt.capi"),
+            interop = "io.github.erkko68.kolt.interop",
+            wasmRuntime = "kolt",
+            wasmPackage = "io.github.erkko68.kolt.wasm",
+        ),
     ),
 )

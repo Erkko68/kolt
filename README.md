@@ -7,11 +7,17 @@ generated from Jolt's headers (the generator is filament-kmp's `buildlogic.apige
 jolt/                 Jolt Physics, pinned (submodule)
 c/api-headers.txt     which Jolt headers are API
 c/kolt/generated/     the generated C API (./gradlew generateCApi)
-c/api-manifest.json   each C function's ABI signature, by header; what the Kotlin stages will read
+c/api-manifest.json   each C function's ABI signature, by header; what the Kotlin stages read
 c/kolt/manual/        hand-written C for what the generator can't map, and the helpers only Jolt can write (JphBridge.hpp)
-c/api-coverage.txt    each C function the API calls for: bound, or why not (./gradlew apiCoverage)
-build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C), gaps/ (coverage)
+c/api-coverage.txt    each C function the API calls for: wrapped by Kotlin or not yet, or why it isn't bound (./gradlew apiCoverage)
+c/CMakeLists.txt      builds Jolt and the C API as static libraries (./gradlew :kotlin:kolt:cmakeBuild)
+kotlin/kolt/          the Kotlin module: capi/ is the generated externals (./gradlew generateKotlinExternals), interop/ what they need
+build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C), kotlin/ (manifest → externals),
+                      externals/ (manifest → JNI and wasm glue), gaps/ (coverage), verify/ (Kotlin enums' values)
 ```
+
+`./gradlew :kotlin:kolt:macosArm64Test` drops a sphere through the externals, on Kotlin/Native on an Apple Silicon Mac:
+the only target so far, as it needs no glue.
 
 `./gradlew apiModel` reports the C++ API clang sees in the listed headers.
 
