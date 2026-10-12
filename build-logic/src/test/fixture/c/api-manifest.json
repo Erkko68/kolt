@@ -1,0 +1,46 @@
+{
+"geo/generated/GeoCircle.h": [
+{"name":"GeoCircle_create","returns":"ptr","params":[["center","ptr"],["radius","f32"]]},
+{"name":"GeoCircle_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"GeoCircle_asShape","returns":"ptr","params":[["self","ptr"]]},
+{"name":"GeoCircle_radius","returns":"f32","params":[["self","ptr"]]},
+{"name":"GeoCircle_scale","returns":"void","params":[["self","ptr"],["factor","f32"]]},
+{"name":"GeoCircle_scale_float","returns":"void","params":[["self","ptr"],["x","f32"],["y","f32"]]},
+{"name":"GeoCircle_intersect","returns":"bool","params":[["self","ptr"],["other","ptr"],["out","ptr"]]}
+],
+"geo/generated/GeoGeo.h": [
+{"name":"Geo_distance","returns":"f32","params":[["a","ptr"],["b","ptr"]]},
+{"name":"Geo_find","returns":"ptr","params":[["id","i32"]]}
+],
+"geo/generated/GeoPoint.h": [
+{"name":"GeoPoint_create","returns":"ptr","params":[]},
+{"name":"GeoPoint_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"GeoPoint_getX","returns":"f32","params":[["self","ptr"]]},
+{"name":"GeoPoint_setX","returns":"void","params":[["self","ptr"],["value","f32"]]},
+{"name":"GeoPoint_getY","returns":"f32","params":[["self","ptr"]]},
+{"name":"GeoPoint_setY","returns":"void","params":[["self","ptr"],["value","f32"]]}
+],
+"geo/generated/GeoPolygon.h": [
+{"name":"GeoPolygon_create","returns":"ptr","params":[["points","ptr"],["pointsCount","i32"]]},
+{"name":"GeoPolygon_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"GeoPolygon_asShape","returns":"ptr","params":[["self","ptr"]]},
+{"name":"GeoPolygon_points","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"GeoPolygon_visit","returns":"void","params":[["self","ptr"],["visitor","ptr"],["visitorUser","ptr"]]},
+{"name":"GeoPolygon_hash","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"GeoPolygon_as_float","returns":"f32","params":[["self","ptr"]]},
+{"name":"GeoPolygon_as_int","returns":"i32","params":[["self","ptr"]]}
+],
+"geo/generated/GeoShape.h": [
+{"name":"GeoShape_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"GeoShape_createUpcalls","returns":"ptr","params":[["call","ptr"]]},
+{"name":"GeoShape_bindUpcalls","returns":"void","params":[["self","ptr"],["userData","ptr"]]},
+{"name":"GeoShape_kind","returns":"i32","params":[["self","ptr"]]},
+{"name":"GeoShape_area","returns":"f32","params":[["self","ptr"]]},
+{"name":"GeoShape_name","returns":"ptr","params":[["self","ptr"]]},
+{"name":"GeoShape_set_name","returns":"void","params":[["self","ptr"],["name","ptr"]]},
+{"name":"GeoShape_id","returns":"i32","params":[["self","ptr"]]},
+{"name":"GeoShape_centroid","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"GeoShape_move_by","returns":"void","params":[["self","ptr"],["offset","ptr"]]},
+{"name":"GeoShape_dump","returns":"void","params":[["self","ptr"]]}
+]
+}

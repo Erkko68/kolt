@@ -146,11 +146,11 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
                     val deprecated = child.children().any { it["kind"] == "DeprecatedAttr" }
                     fields += CppField(name, type, initializer(child)?.let { values.of(it, qualified) }, isPublic, deprecated, child.doc())
                 }
-                // An anonymous union or struct's members are the record's own (MaterialKey's UV fields).
+                // An anonymous union or struct's members are the record's own.
                 "CXXRecordDecl" if child["name"] == null -> anonymousFields(child).forEach { field ->
                     fields += CppField(field["name"] as String, scopes.resolve(spelledType(field), qualified), null, isPublic, false, field.doc())
                 }
-                // `class Frustum getFrustum()` declares Frustum in the namespace, though clang lists it here.
+                // `class X getX()` declares X in the namespace, though clang lists it here.
                 "CXXRecordDecl", "ClassTemplateDecl" -> if (child["parentDeclContextId"] == null)
                     visit(child, qualified, exported = public && isPublic, accessible = accessible && isPublic, template = template)
                 else -> visit(child, qualified, exported = false, accessible = accessible && isPublic)

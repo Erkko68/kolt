@@ -81,10 +81,15 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     fun writeC(c: CApi) {
         generatedDirs().forEach { it.deleteRecursively() }
         write(cDir, c.files)
+        checkCompiles(c)
+        manifestFile.writeText(manifest().json())
+    }
+
+    /** Checks [c]'s headers, as written under the C dir, parse as C, and its forwarders compile against the library's headers. */
+    fun checkCompiles(c: CApi) {
         val files = c.files.keys.map(cDir::resolve)
         compile("headers.c", files.filter { it.extension == "h" }, listOf("clang", "-x", "c", "-std=c11"))
         compile("forwarders.cpp", files.filter { it.extension == "cpp" }, listOf("clang++", "-std=${config.sources.std}") + config.sources.clangArgs + listOf("-I", includeDir.path))
-        manifestFile.writeText(manifest().json())
     }
 
     private fun compile(unit: String, sources: List<File>, command: List<String>) {

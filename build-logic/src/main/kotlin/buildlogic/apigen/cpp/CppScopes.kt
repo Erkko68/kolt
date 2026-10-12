@@ -61,7 +61,7 @@ internal class CppScopes {
         for (enclosing in enclosing(scope)) {
             val candidates = listOfNotNull(qualify(enclosing, head), usingNames[enclosing]?.get(head)) +
                 usingNamespaces[enclosing].orEmpty().map { qualify(it, head) } +
-                // A base template's parameters aren't its members (BuilderNameMixin<Builder>'s Builder).
+                // A base template's parameters aren't its members (`Mixin<T>`'s `T`).
                 inherited(enclosing).map { qualify(it, head) }.filter { names[it] != Decl.TEMPLATE_PARAMETER }
             // A using-declaration of a namespace the dump leaves out names what clang found (`using std::string_view`).
             val found = candidates.firstOrNull { it in names } ?: externalNames[enclosing]?.get(head) ?: continue
@@ -73,8 +73,7 @@ internal class CppScopes {
     }
 
     /**
-     * `class X` names X, or declares it in the nearest enclosing namespace (Camera's `class Frustum getFrustum()`,
-     * read before Frustum.h).
+     * `class X` names X, or declares it in the nearest enclosing namespace (`class X getX()`, read before X's header).
      */
     private fun elaborated(spelled: String, scope: String): String? {
         if ("::" in spelled) return lookup(spelled, scope)

@@ -76,7 +76,7 @@ class CppApi(
     private fun constructor(owner: String, params: List<CppParam>) = "$owner(${params.joinToString(", ") { parameter(it.type) }})"
 
     private fun usesSkipped(types: List<CppType>) = types.flatMap { it.withArgs() }.mapNotNull { it.decl }
-        // Through aliases too: Ktx1Reader takes image::KtxInfo as ktxreader::KtxInfo.
+        // Through aliases too: a record a signature names by a `using` elsewhere.
         .map { decl -> generateSequence(decl) { aliases[it]?.decl }.last() }
         .firstNotNullOfOrNull { decl -> decl.takeIf { it in records }?.let(::skipReason)?.let { "uses $decl" } }
 
@@ -114,7 +114,7 @@ class CppApi(
         publicConstants.filter { it.substringBeforeLast("::") in surface && skipReason(it) == null }.sorted()
     }
 
-    /** The names code outside spells [name] by: Texture::InternalFormat for backend::TextureFormat. */
+    /** The names code outside spells [name] by: itself, and every alias of it. */
     fun aliasesOf(name: String): Set<String> = generateSequence(setOf(name)) { names ->
         (names + aliases.filterValues { it.decl in names }.keys).takeIf { it.size > names.size }
     }.last()
@@ -212,7 +212,7 @@ class CppMethod(
     val isFinal: Boolean = false,
     /** A function template's named parameters, in order; null for a plain function. */
     val templateParameters: List<String>? = null,
-    /** The header's `#if` condition around the declaration (e.g. `UTILS_HAS_THREADING`), or null. */
+    /** The header's `#if` condition around the declaration (e.g. `defined(JPH_ENABLE_ASSERTS)`), or null. */
     val guard: String? = null,
     val doc: String? = null,
 ) {
