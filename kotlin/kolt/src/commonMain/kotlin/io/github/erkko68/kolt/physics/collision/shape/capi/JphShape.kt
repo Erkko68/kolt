@@ -85,6 +85,9 @@ internal external fun JphShape_GetMaterial(self: NativePointer, inSubShapeID: In
 @ExternalSymbolName("JphShape_GetSurfaceNormal")
 internal external fun JphShape_GetSurfaceNormal(self: NativePointer, inSubShapeID: Int, inLocalSurfacePosition: NativePointer, out: NativePointer)
 
+@ExternalSymbolName("JphShape_GetSupportingFace")
+internal external fun JphShape_GetSupportingFace(self: NativePointer, inSubShapeID: Int, inDirection: NativePointer, inScale: NativePointer, inCenterOfMassTransform: NativePointer, out: NativePointer, outCapacity: Int): Int
+
 @ExternalSymbolName("JphShape_GetSubShapeUserData")
 internal external fun JphShape_GetSubShapeUserData(self: NativePointer, inSubShapeID: Int, out: NativePointer)
 
@@ -123,6 +126,12 @@ internal external fun JphShape_SaveBinaryState(self: NativePointer, inStream: Na
 
 @ExternalSymbolName("JphShape_sRestoreFromBinaryState")
 internal external fun JphShape_sRestoreFromBinaryState(inStream: NativePointer, outError: NativePointer, outErrorCapacity: Int): NativePointer
+
+@ExternalSymbolName("JphShape_SaveMaterialState")
+internal external fun JphShape_SaveMaterialState(self: NativePointer, out: NativePointer, outCapacity: Int): Int
+
+@ExternalSymbolName("JphShape_SaveSubShapeState")
+internal external fun JphShape_SaveSubShapeState(self: NativePointer, out: NativePointer, outCapacity: Int): Int
 
 @ExternalSymbolName("JphShape_GetVolume")
 internal external fun JphShape_GetVolume(self: NativePointer): Float

@@ -76,6 +76,10 @@ JphVehicleController* JphVehicleConstraint_GetController(JphVehicleConstraint* s
     return kolt::c(kolt::cpp(self)->GetController());
 }
 
+uint32_t JphVehicleConstraint_GetWheels(JphVehicleConstraint* self, JphWheel** out, uint32_t outCapacity) {
+    return kolt::copy(kolt::cpp(self)->GetWheels(), outCapacity, [&](auto& x, uint32_t i) { out[i] = kolt::c(x); });
+}
+
 JphWheel* JphVehicleConstraint_GetWheel(JphVehicleConstraint* self, uint32_t inIdx) {
     return kolt::c(kolt::cpp(self)->GetWheel(static_cast<unsigned int>(inIdx)));
 }
@@ -90,6 +94,10 @@ void JphVehicleConstraint_GetWheelLocalTransform(const JphVehicleConstraint* sel
 
 void JphVehicleConstraint_GetWheelWorldTransform(const JphVehicleConstraint* self, uint32_t inWheelIndex, const JphVec3* inWheelRight, const JphVec3* inWheelUp, JphMat44* out) {
     *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetWheelWorldTransform(static_cast<unsigned int>(inWheelIndex), kolt::math<JPH::Vec3>(*inWheelRight), kolt::math<JPH::Vec3>(*inWheelUp)));
+}
+
+uint32_t JphVehicleConstraint_GetAntiRollBars(JphVehicleConstraint* self, JphVehicleAntiRollBar* const* out, uint32_t outCapacity) {
+    return kolt::copy(kolt::cpp(self)->GetAntiRollBars(), outCapacity, [&](auto& x, uint32_t i) { *kolt::cpp(out[i]) = x; });
 }
 
 void JphVehicleConstraint_SetNumStepsBetweenCollisionTestActive(JphVehicleConstraint* self, uint32_t inSteps) {

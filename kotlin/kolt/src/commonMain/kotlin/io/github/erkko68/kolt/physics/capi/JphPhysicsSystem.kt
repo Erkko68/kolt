@@ -25,6 +25,12 @@ internal external fun JphPhysicsSystem_SetContactListener(self: NativePointer, i
 @ExternalSymbolName("JphPhysicsSystem_GetContactListener")
 internal external fun JphPhysicsSystem_GetContactListener(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphPhysicsSystem_SetSoftBodyContactListener")
+internal external fun JphPhysicsSystem_SetSoftBodyContactListener(self: NativePointer, inListener: NativePointer)
+
+@ExternalSymbolName("JphPhysicsSystem_GetSoftBodyContactListener")
+internal external fun JphPhysicsSystem_GetSoftBodyContactListener(self: NativePointer): NativePointer
+
 @ExternalSymbolName("JphPhysicsSystem_SetSimShapeFilter")
 internal external fun JphPhysicsSystem_SetSimShapeFilter(self: NativePointer, inShapeFilter: NativePointer)
 
@@ -126,6 +132,12 @@ internal external fun JphPhysicsSystem_GetMaxBodies(self: NativePointer): Int
 
 @ExternalSymbolName("JphPhysicsSystem_GetBodyStats")
 internal external fun JphPhysicsSystem_GetBodyStats(self: NativePointer, out: NativePointer)
+
+@ExternalSymbolName("JphPhysicsSystem_GetBodies")
+internal external fun JphPhysicsSystem_GetBodies(self: NativePointer, out: NativePointer, outCapacity: Int): Int
+
+@ExternalSymbolName("JphPhysicsSystem_GetActiveBodies")
+internal external fun JphPhysicsSystem_GetActiveBodies(self: NativePointer, inType: Int, out: NativePointer, outCapacity: Int): Int
 
 @ExternalSymbolName("JphPhysicsSystem_GetActiveBodiesUnsafe")
 internal external fun JphPhysicsSystem_GetActiveBodiesUnsafe(self: NativePointer, inType: Int): NativePointer

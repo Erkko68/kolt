@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::OffsetCenterOfMassShapeSettings`. */
-open class OffsetCenterOfMassShapeSettings internal constructor(internal val offsetCenterOfMassShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphOffsetCenterOfMassShapeSettings_asShapeSettings(offsetCenterOfMassShapeSettingsHandle), owned), AutoCloseable {
+open class OffsetCenterOfMassShapeSettings internal constructor(internal val offsetCenterOfMassShapeSettingsHandle: NativePointer, owned: Boolean = false) : DecoratedShapeSettings(JphOffsetCenterOfMassShapeSettings_asDecoratedShapeSettings(offsetCenterOfMassShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphOffsetCenterOfMassShapeSettings_create(), owned = true)
     constructor(offset: Vec3, shape: ShapeSettings?) : this(interopScope { JphOffsetCenterOfMassShapeSettings_create_Vec3Arg_ShapeSettings(toInterop(offset.toArray()), shape?.shapeSettingsHandle ?: NullPointer) }, owned = true)
     constructor(offset: Vec3, shape: Shape?) : this(interopScope { JphOffsetCenterOfMassShapeSettings_create_Vec3Arg_Shape(toInterop(offset.toArray()), shape?.shapeHandle ?: NullPointer) }, owned = true)

@@ -12,6 +12,7 @@ extern "C" {
 JphCharacterVirtualSettings* JphCharacterVirtualSettings_create(void);
 void JphCharacterVirtualSettings_addRef(const JphCharacterVirtualSettings* self);
 void JphCharacterVirtualSettings_release(const JphCharacterVirtualSettings* self);
+JphCharacterBaseSettings* JphCharacterVirtualSettings_asCharacterBaseSettings(JphCharacterVirtualSettings* self);
 void JphCharacterVirtualSettings_GetID(const JphCharacterVirtualSettings* self, JphCharacterID* out);
 void JphCharacterVirtualSettings_SetID(JphCharacterVirtualSettings* self, const JphCharacterID* value);
 float JphCharacterVirtualSettings_GetMass(const JphCharacterVirtualSettings* self);

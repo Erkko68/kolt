@@ -23,8 +23,7 @@ void JphTrackedVehicleController_SetBrakeInput(JphTrackedVehicleController* self
 float JphTrackedVehicleController_GetBrakeInput(const JphTrackedVehicleController* self);
 JphVehicleEngine* JphTrackedVehicleController_GetEngine(JphTrackedVehicleController* self);
 JphVehicleTransmission* JphTrackedVehicleController_GetTransmission(JphTrackedVehicleController* self);
-// TODO(handwritten) JphTrackedVehicleController_GetTracks: VehicleTracks & JPH::TrackedVehicleController::GetTracks()
-//     VehicleTrack[2]: by non-const reference
+uint32_t JphTrackedVehicleController_GetTracks(JphTrackedVehicleController* self, JphVehicleTrack* const* out, uint32_t outCapacity);
 
 
 #ifdef __cplusplus

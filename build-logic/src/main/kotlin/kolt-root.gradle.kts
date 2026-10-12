@@ -21,6 +21,7 @@ registerApiGenTasks(
         droppedNamespaces = setOf("JPH"),
         memberPrefix = "^m(?=[A-Z])",
         parameterPrefix = "^(in|out|io)(?=[A-Z])",
+        outParameter = "^out(?=[A-Z])",
         staticPrefix = "^s(?=[A-Z])",
         helpers = "kolt",
         bridgeHeader = "../manual/JphBridge.hpp",

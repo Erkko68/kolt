@@ -20,6 +20,7 @@ typedef struct JphVec3 { float v[4]; } JphVec3;
 typedef struct JphVec4 { float v[4]; } JphVec4;
 
 typedef struct JphAABox JphAABox;
+typedef struct JphAABoxCast JphAABoxCast;
 typedef struct JphBody JphBody;
 typedef struct JphBodyActivationListener JphBodyActivationListener;
 typedef struct JphBodyCreationSettings JphBodyCreationSettings;
@@ -206,7 +207,10 @@ typedef struct JphSkeletonJoint JphSkeletonJoint;
 typedef struct JphSkeletonPose JphSkeletonPose;
 typedef struct JphSliderConstraint JphSliderConstraint;
 typedef struct JphSliderConstraintSettings JphSliderConstraintSettings;
+typedef struct JphSoftBodyContactListener JphSoftBodyContactListener;
+typedef struct JphSoftBodyContactSettings JphSoftBodyContactSettings;
 typedef struct JphSoftBodyCreationSettings JphSoftBodyCreationSettings;
+typedef struct JphSoftBodyManifold JphSoftBodyManifold;
 typedef struct JphSoftBodyMotionProperties JphSoftBodyMotionProperties;
 typedef struct JphSoftBodySharedSettings JphSoftBodySharedSettings;
 typedef struct JphSoftBodySharedSettingsDihedralBend JphSoftBodySharedSettingsDihedralBend;
@@ -542,6 +546,12 @@ typedef enum JphSoftBodySharedSettingsELRAType {
     JPH_SOFT_BODY_SHARED_SETTINGS_ELRATYPE_EUCLIDEAN_DISTANCE = 1,
     JPH_SOFT_BODY_SHARED_SETTINGS_ELRATYPE_GEODESIC_DISTANCE = 2,
 } JphSoftBodySharedSettingsELRAType;
+
+// JPH::SoftBodyValidateResult
+typedef enum JphSoftBodyValidateResult {
+    JPH_SOFT_BODY_VALIDATE_RESULT_ACCEPT_CONTACT = 0,
+    JPH_SOFT_BODY_VALIDATE_RESULT_REJECT_CONTACT = 1,
+} JphSoftBodyValidateResult;
 
 // JPH::ValidateResult
 typedef enum JphValidateResult {

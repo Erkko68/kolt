@@ -33,4 +33,23 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DecoratedShapeSettings`. */
-open class DecoratedShapeSettings internal constructor(internal val decoratedShapeSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+open class DecoratedShapeSettings internal constructor(internal val decoratedShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphDecoratedShapeSettings_asShapeSettings(decoratedShapeSettingsHandle), owned), AutoCloseable {
+    override fun addRef() =
+        own { JphDecoratedShapeSettings_addRef(decoratedShapeSettingsHandle) }
+
+    override fun close() =
+        closeOnce { JphDecoratedShapeSettings_release(decoratedShapeSettingsHandle) }
+
+    open var innerShape: ShapeSettings?
+        get() = JphDecoratedShapeSettings_GetInnerShape(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
+        set(value) = JphDecoratedShapeSettings_SetInnerShape(decoratedShapeSettingsHandle, value?.shapeSettingsHandle ?: NullPointer)
+
+    open var innerShapePtr: Shape?
+        get() = JphDecoratedShapeSettings_GetInnerShapePtr(decoratedShapeSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        set(value) = JphDecoratedShapeSettings_SetInnerShapePtr(decoratedShapeSettingsHandle, value?.shapeHandle ?: NullPointer)
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphDecoratedShapeSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

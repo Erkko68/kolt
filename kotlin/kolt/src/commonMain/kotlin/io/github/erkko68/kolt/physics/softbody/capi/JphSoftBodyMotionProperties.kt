@@ -19,6 +19,9 @@ internal external fun JphSoftBodyMotionProperties_Initialize(self: NativePointer
 @ExternalSymbolName("JphSoftBodyMotionProperties_GetSettings")
 internal external fun JphSoftBodyMotionProperties_GetSettings(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphSoftBodyMotionProperties_GetVertices")
+internal external fun JphSoftBodyMotionProperties_GetVertices(self: NativePointer, out: NativePointer, outCapacity: Int): Int
+
 @ExternalSymbolName("JphSoftBodyMotionProperties_GetVertex")
 internal external fun JphSoftBodyMotionProperties_GetVertex(self: NativePointer, inIndex: Int): NativePointer
 

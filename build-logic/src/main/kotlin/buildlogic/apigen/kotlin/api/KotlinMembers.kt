@@ -15,6 +15,8 @@ internal class Member(
     val isProperty: Boolean = false, val setter: Member? = null,
     /** The C++ method's signature ([CApiWriter.Bound.signature]). */
     val signature: String? = null,
+    /** The C++ parameters, by index, whose values it returns after its own result; and of those, the ones it doesn't take. */
+    val outs: List<Int> = emptyList(), val untaken: Set<Int> = emptySet(),
 ) {
     /** What Kotlin tells members apart by. */
     val key get() = Triple(isStatic, name.takeIf { role != Role.CREATE }, if (isProperty) listOf("val") else params.map { it.second })
@@ -24,6 +26,8 @@ internal class Member(
 /**
  * The members of each class, from the C functions bound for its record: a function is wrapped when [KotlinValues] types
  * every value it passes. `GetX()` reads a property `x`, which `SetX(x)` makes a `var`; `IsX()` a property `isX`. What
+ * a parameter C++ writes through is returned, after the function's own result if it has one, in a `Pair` or `Triple`;
+ * the callee is passed its value first unless it only writes it ([ApiGenConfig.outParameter]). What
  * destroys the object, or releases a reference to it, is `close`, which acts once and only on a wrapper that owns it;
  * `addRef` makes a borrowed wrapper own a reference.
  */
@@ -35,9 +39,21 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
     val parents = values.records.mapValues { (cName, record) -> parent(cName, record) }
     private val members = HashMap<String, List<Member>>()
     private val staticPrefix = Regex(config.staticPrefix.ifEmpty { "$^" })
+    private val outParameter = Regex(config.outParameter.ifEmpty { "$^" })
 
     /** The C function creating [cName]'s overridable object, and the virtual functions that passes on, if C has one. */
     fun upcalls(cName: String) = byOwner[cName].orEmpty().firstOrNull { it.bound!!.role == Role.UPCALLS }?.let { it.c to it.bound!!.upcalls }
+
+    /**
+     * The bases [cName]'s class doesn't inherit, C++ deriving from more than one, each with the upcast's C function:
+     * the class has a function returning itself as that base.
+     */
+    fun otherBases(cName: String): List<Pair<String, String>> {
+        fun upcasts(c: String) = byOwner[c].orEmpty().filter { it.bound!!.role == Role.UPCAST }.map { it.bound!!.name to it.c }
+        val chain = generateSequence(parents[cName]?.first) { parents[it]?.first }.toList()
+        val inherited = chain.toSet() + chain.flatMap { upcasts(it).map { (base, _) -> base } }
+        return upcasts(cName).filter { (base, _) -> base in values.records && base !in inherited }
+    }
 
     /** The member of [cName] or a base wrapping the C++ method of [signature]; true when it's the property's setter. */
     fun wrapping(cName: String, signature: String): Pair<Member, Boolean>? = generateSequence(cName) { parents[it]?.first }.flatMap { of(it) }.firstNotNullOfOrNull { m ->
@@ -75,7 +91,7 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
                 else -> return@mapNotNull null
             }
             val set = members.singleOrNull { it.name == sets && !it.isStatic }?.takeIf { it.returns == "Unit" && it.params.map { p -> p.second } == listOf(m.returns) }
-            m to Member(name, emptyList(), m.returns, m.body, m.role, isStatic = false, isProperty = true, setter = set, signature = m.signature)
+            m to Member(name, emptyList(), m.returns, m.body, m.role, isStatic = false, isProperty = true, setter = set, signature = m.signature, outs = m.outs, untaken = m.untaken)
         }.toMap()
         val setters = properties.values.mapNotNull { it.setter }.toSet()
         return members.filter { it !in setters }.map { properties[it] ?: it }
@@ -92,11 +108,21 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
     private fun member(binding: CApiWriter.Binding): Member? {
         val b = binding.bound!!
         if (b.role == Role.UPCAST || b.role == Role.UPCALLS || b.role == Role.BIND_UPCALLS) return null
-        val params = b.params.map { (name, bridge) -> values.parameterName(name).let { it to (values.parameter(bridge, it) ?: return null) } }
+        val params = b.params.map { (name, bridge) -> values.parameterName(name).let { it to (values.parameter(bridge, it, outParameter.containsMatchIn(name)) ?: return null) } }
         val returns = values.result(b.returns) ?: return null
+        // What the callee leaves in a parameter is returned after the function's own result.
+        val outs = params.mapNotNull { it.second.returned }
+        val own = returns.type != "Unit"
+        val type = tuple(listOfNotNull(returns.type.takeIf { own }) + outs.map { it.first }, "<", ">") ?: return null
+        val (before, after) = params.flatMap { it.second.before } to params.flatMap { it.second.after }
         val self = if (b.isStatic || b.role == Role.CREATE || names.type(b.owner) !in values.records) emptyList() else listOf(values.handle(names.type(b.owner)))
         val call = { last: String? -> "${binding.c}(${(self + params.map { it.second.argument } + listOfNotNull(last)).joinToString()})" }
-        val returned = returns.body(call)
+        val returned = returns.body(call).let { body ->
+            if (before.isEmpty() && after.isEmpty()) return@let body
+            val lines = body.split("\n")
+            (before + lines.dropLast(1) + (if (own) "val nativeResult = ${lines.last()}" else lines.last()) + after +
+                listOfNotNull(tuple(listOfNotNull("nativeResult".takeIf { own }) + outs.map { it.second }, "(", ")").takeIf { it != "Unit" })).joinToString("\n")
+        }
         val body = when {
             b.role == Role.DESTROY || b.role == Role.RELEASE -> "closeOnce { ${call(null)} }"
             b.role == Role.ADD_REF -> "own { ${call(null)} }"
@@ -110,7 +136,16 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
             b.isStatic -> values.escape(values.lowerCamel(staticPrefix.replace(b.name, "").ifEmpty { b.name }))
             else -> values.escape(values.lowerCamel(b.name))
         }
-        return Member(name, params.map { (n, p) -> n to p.type }, returns.type, body, b.role, b.role != Role.CREATE && (b.isStatic || self.isEmpty()), signature = b.signature)
+        return Member(name, params.filter { it.second.taken }.map { (n, p) -> n to p.type }, type, body, b.role, b.role != Role.CREATE && (b.isStatic || self.isEmpty()),
+            signature = b.signature, outs = params.indices.filter { params[it].second.returned != null }, untaken = params.indices.filterTo(HashSet()) { !params[it].second.taken })
+    }
+
+    /** [parts] as one: itself, a Pair or a Triple, with its arguments between [open] and [close]; null for more. */
+    private fun tuple(parts: List<String>, open: String, close: String) = when (parts.size) {
+        0 -> "Unit"
+        1 -> parts[0]
+        2, 3 -> "${if (parts.size == 2) "Pair" else "Triple"}$open${parts.joinToString()}$close"
+        else -> null
     }
 
     /**

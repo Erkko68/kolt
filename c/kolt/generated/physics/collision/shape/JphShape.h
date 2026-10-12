@@ -40,8 +40,7 @@ void JphShape_GetMassProperties(const JphShape* self, JphMassProperties* out);
 const JphShape* JphShape_GetLeafShape(const JphShape* self, uint32_t inSubShapeID, uint32_t* outRemainder);
 const JphPhysicsMaterial* JphShape_GetMaterial(const JphShape* self, uint32_t inSubShapeID);
 void JphShape_GetSurfaceNormal(const JphShape* self, uint32_t inSubShapeID, const JphVec3* inLocalSurfacePosition, JphVec3* out);
-// TODO(handwritten) JphShape_GetSupportingFace: void JPH::Shape::GetSupportingFace(const SubShapeID & inSubShapeID, Vec3Arg inDirection, Vec3Arg inScale, Mat44Arg inCenterOfMassTransform, SupportingFace & outVertices) const
-//     StaticArray<Vec3, 32>: by non-const reference
+uint32_t JphShape_GetSupportingFace(const JphShape* self, uint32_t inSubShapeID, const JphVec3* inDirection, const JphVec3* inScale, const JphMat44* inCenterOfMassTransform, JphVec3* out, uint32_t outCapacity);
 void JphShape_GetSubShapeUserData(const JphShape* self, uint32_t inSubShapeID, uint64_t* out);
 void JphShape_GetSubShapeTransformedShape(const JphShape* self, uint32_t inSubShapeID, const JphVec3* inPositionCOM, const JphQuat* inRotation, const JphVec3* inScale, uint32_t* outRemainder, JphTransformedShape* out);
 void JphShape_GetSubmergedVolume(const JphShape* self, const JphMat44* inCenterOfMassTransform, const JphVec3* inScale, const JphPlane* inSurface, float* outTotalVolume, float* outSubmergedVolume, JphVec3* outCenterOfBuoyancy);
@@ -57,12 +56,10 @@ void JphShape_GetTrianglesStart(const JphShape* self, JphShapeGetTrianglesContex
 int32_t JphShape_GetTrianglesNext(const JphShape* self, JphShapeGetTrianglesContext* ioContext, int32_t inMaxTrianglesRequested, JphFloat3* outTriangleVertices, const JphPhysicsMaterial** outMaterials);
 void JphShape_SaveBinaryState(const JphShape* self, JphStreamOut* inStream);
 JphShape* JphShape_sRestoreFromBinaryState(JphStreamIn* inStream, char* outError, uint32_t outErrorCapacity);
-// TODO(handwritten) JphShape_SaveMaterialState: void JPH::Shape::SaveMaterialState(PhysicsMaterialList & outMaterials) const
-//     Array<RefConst<PhysicsMaterial>>: by non-const reference
+uint32_t JphShape_SaveMaterialState(const JphShape* self, const JphPhysicsMaterial** out, uint32_t outCapacity);
 // TODO(handwritten) JphShape_RestoreMaterialState: void JPH::Shape::RestoreMaterialState(const PhysicsMaterialRefC * inMaterials, uint inNumMaterials)
 //     RefConst<PhysicsMaterial>: by pointer or non-const reference
-// TODO(handwritten) JphShape_SaveSubShapeState: void JPH::Shape::SaveSubShapeState(ShapeList & outSubShapes) const
-//     Array<ShapeRefC>: by non-const reference
+uint32_t JphShape_SaveSubShapeState(const JphShape* self, const JphShape** out, uint32_t outCapacity);
 // TODO(handwritten) JphShape_RestoreSubShapeState: void JPH::Shape::RestoreSubShapeState(const ShapeRefC * inSubShapes, uint inNumShapes)
 //     RefConst<Shape>: by pointer or non-const reference
 // TODO(handwritten) JphShape_SaveWithChildren: void JPH::Shape::SaveWithChildren(StreamOut & inStream, ShapeToIDMap & ioShapeMap, MaterialToIDMap & ioMaterialMap) const

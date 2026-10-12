@@ -78,6 +78,18 @@ open class Character internal constructor(internal val characterHandle: NativePo
     open val bodyID: BodyID
         get() = BodyID(JphCharacter_GetBodyID(characterHandle))
 
+    open fun getPositionAndRotation(lockBodies: Boolean): Pair<Vec3, Quat> =
+        interopScope {
+            val positionArray = FloatArray(4)
+            val positionPointer = toInterop(positionArray)
+            val rotationArray = FloatArray(4)
+            val rotationPointer = toInterop(rotationArray)
+            JphCharacter_GetPositionAndRotation(characterHandle, positionPointer, rotationPointer, lockBodies)
+            positionPointer.fromInterop(positionArray)
+            rotationPointer.fromInterop(rotationArray)
+            Pair(Vec3(positionArray), Quat(rotationArray))
+        }
+
     open fun setPositionAndRotation(position: Vec3, rotation: Quat, activationMode: EActivation, lockBodies: Boolean) =
         interopScope { JphCharacter_SetPositionAndRotation(characterHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), activationMode.value, lockBodies) }
 

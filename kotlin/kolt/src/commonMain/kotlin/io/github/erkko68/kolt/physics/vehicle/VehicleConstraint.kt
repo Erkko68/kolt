@@ -101,8 +101,31 @@ open class VehicleConstraint internal constructor(internal val vehicleConstraint
     open val controller: VehicleController?
         get() = JphVehicleConstraint_GetController(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleController(it) }
 
+    open val wheels: List<Wheel>
+        get() = interopScope {
+            val count = JphVehicleConstraint_GetWheels(vehicleConstraintHandle, NullPointer, 0)
+            val returnedPointer = toInterop(List(count) { NullPointer })
+            JphVehicleConstraint_GetWheels(vehicleConstraintHandle, returnedPointer, count)
+            readPointers(returnedPointer, count).map { Wheel(it) }
+        }
+
     open fun getWheel(idx: Int): Wheel? =
         JphVehicleConstraint_GetWheel(vehicleConstraintHandle, idx).takeIf { it != NullPointer }?.let { Wheel(it) }
+
+    open fun getWheelLocalBasis(wheel: Wheel?): Triple<Vec3, Vec3, Vec3> =
+        interopScope {
+            val forwardArray = FloatArray(4)
+            val forwardPointer = toInterop(forwardArray)
+            val upArray = FloatArray(4)
+            val upPointer = toInterop(upArray)
+            val rightArray = FloatArray(4)
+            val rightPointer = toInterop(rightArray)
+            JphVehicleConstraint_GetWheelLocalBasis(vehicleConstraintHandle, wheel?.wheelHandle ?: NullPointer, forwardPointer, upPointer, rightPointer)
+            forwardPointer.fromInterop(forwardArray)
+            upPointer.fromInterop(upArray)
+            rightPointer.fromInterop(rightArray)
+            Triple(Vec3(forwardArray), Vec3(upArray), Vec3(rightArray))
+        }
 
     open fun getWheelLocalTransform(wheelIndex: Int, wheelRight: Vec3, wheelUp: Vec3): Mat44 =
         interopScope {
@@ -122,6 +145,14 @@ open class VehicleConstraint internal constructor(internal val vehicleConstraint
             Mat44(returned)
         }
 
+    open val antiRollBars: List<VehicleAntiRollBar>
+        get() = interopScope {
+            val count = JphVehicleConstraint_GetAntiRollBars(vehicleConstraintHandle, NullPointer, 0)
+            val returned = List(count) { VehicleAntiRollBar(JphVehicleAntiRollBar_create(), owned = true) }
+            JphVehicleConstraint_GetAntiRollBars(vehicleConstraintHandle, toInterop(returned.map { it.vehicleAntiRollBarHandle }), count)
+            returned
+        }
+
     open var numStepsBetweenCollisionTestActive: Int
         get() = JphVehicleConstraint_GetNumStepsBetweenCollisionTestActive(vehicleConstraintHandle)
         set(steps) = JphVehicleConstraint_SetNumStepsBetweenCollisionTestActive(vehicleConstraintHandle, steps)
@@ -129,4 +160,7 @@ open class VehicleConstraint internal constructor(internal val vehicleConstraint
     open var numStepsBetweenCollisionTestInactive: Int
         get() = JphVehicleConstraint_GetNumStepsBetweenCollisionTestInactive(vehicleConstraintHandle)
         set(steps) = JphVehicleConstraint_SetNumStepsBetweenCollisionTestInactive(vehicleConstraintHandle, steps)
+
+    /** This object as its other base, borrowed. */
+    fun asPhysicsStepListener() = PhysicsStepListener(JphVehicleConstraint_asPhysicsStepListener(vehicleConstraintHandle))
 }

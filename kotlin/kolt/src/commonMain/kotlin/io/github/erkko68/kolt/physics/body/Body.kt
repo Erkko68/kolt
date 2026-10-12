@@ -217,6 +217,21 @@ open class Body internal constructor(internal val bodyHandle: NativePointer, own
     open fun moveKinematic(targetPosition: Vec3, targetRotation: Quat, deltaTime: Float) =
         interopScope { JphBody_MoveKinematic(bodyHandle, toInterop(targetPosition.toArray()), toInterop(targetRotation.toArray()), deltaTime) }
 
+    open fun getSubmergedVolume(surfacePosition: Vec3, surfaceNormal: Vec3): Triple<Float, Float, Vec3> =
+        interopScope {
+            val totalVolumeArray = FloatArray(1)
+            val totalVolumePointer = toInterop(totalVolumeArray)
+            val submergedVolumeArray = FloatArray(1)
+            val submergedVolumePointer = toInterop(submergedVolumeArray)
+            val relativeCenterOfBuoyancyArray = FloatArray(4)
+            val relativeCenterOfBuoyancyPointer = toInterop(relativeCenterOfBuoyancyArray)
+            JphBody_GetSubmergedVolume(bodyHandle, toInterop(surfacePosition.toArray()), toInterop(surfaceNormal.toArray()), totalVolumePointer, submergedVolumePointer, relativeCenterOfBuoyancyPointer)
+            totalVolumePointer.fromInterop(totalVolumeArray)
+            submergedVolumePointer.fromInterop(submergedVolumeArray)
+            relativeCenterOfBuoyancyPointer.fromInterop(relativeCenterOfBuoyancyArray)
+            Triple(totalVolumeArray[0], submergedVolumeArray[0], Vec3(relativeCenterOfBuoyancyArray))
+        }
+
     open fun applyBuoyancyImpulse(surfacePosition: Vec3, surfaceNormal: Vec3, buoyancy: Float, linearDrag: Float, angularDrag: Float, fluidVelocity: Vec3, gravity: Vec3, deltaTime: Float): Boolean =
         interopScope { JphBody_ApplyBuoyancyImpulse_RVec3Arg_Vec3Arg_float_float_float_Vec3Arg_Vec3Arg_float(bodyHandle, toInterop(surfacePosition.toArray()), toInterop(surfaceNormal.toArray()), buoyancy, linearDrag, angularDrag, toInterop(fluidVelocity.toArray()), toInterop(gravity.toArray()), deltaTime) }
 

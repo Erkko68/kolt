@@ -88,6 +88,12 @@ void JphTransformedShape_GetWorldSpaceSurfaceNormal(const JphTransformedShape* s
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetWorldSpaceSurfaceNormal(kolt::subShapeID(inSubShapeID), kolt::math<JPH::Vec3>(*inPosition)));
 }
 
+uint32_t JphTransformedShape_GetSupportingFace(const JphTransformedShape* self, uint32_t inSubShapeID, const JphVec3* inDirection, const JphVec3* inBaseOffset, JphVec3* out, uint32_t outCapacity) {
+    auto filled = kolt::copy(kolt::Pending(), outCapacity, [&](auto& x, uint32_t i) { out[i] = kolt::mirror<JphVec3>(x); });
+    kolt::cpp(self)->GetSupportingFace(kolt::subShapeID(inSubShapeID), kolt::math<JPH::Vec3>(*inDirection), kolt::math<JPH::Vec3>(*inBaseOffset), filled);
+    return filled.finish();
+}
+
 const JphPhysicsMaterial* JphTransformedShape_GetMaterial(const JphTransformedShape* self, uint32_t inSubShapeID) {
     return kolt::c(kolt::cpp(self)->GetMaterial(kolt::subShapeID(inSubShapeID)));
 }

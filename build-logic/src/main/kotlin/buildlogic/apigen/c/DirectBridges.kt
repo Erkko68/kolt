@@ -22,7 +22,7 @@ class DirectBridges internal constructor(
             return CBridge(scalar.c, if (result) scalar::toC else scalar::toCpp, out = out, value = CValue.Scalar(names.type(decl), scalar.c).takeIf { !out })
         }
         if (!scalar.layout || indirection == "&&") throw Unsupported("$decl by pointer")
-        return pointer(scalar.c, decl)
+        return pointer(scalar.c, decl, CValue.Scalar(names.type(decl), scalar.c))
     }
 
     /** Strings cross as NUL-terminated `const char*`: copied in, and out only when the C++ string outlives the call. */
@@ -50,10 +50,15 @@ class DirectBridges internal constructor(
             return CBridge(cType, if (cType == base) { v -> v } else cast(cType, base), out = out, value = CValue.Builtin(cType))
         }
         CAbi.checkPointee(base)
+        val element = CValue.Builtin(CAbi.element(base))
         return when {
-            indirection == "*" -> CBridge("$c$base*", { it }, value = CValue.Text.takeIf { const && base == "char" })
+            indirection == "*" -> CBridge("$c$base*", { it }, value = when {
+                const && base == "char" -> CValue.Text
+                base == "void" -> CValue.Opaque
+                else -> referenced(element)
+            })
             result -> CBridge("$base*", { "&$it" })
-            else -> CBridge("$base*", { "*$it" })
+            else -> CBridge("$base*", { "*$it" }, value = referenced(element))
         }
     }
 
@@ -73,8 +78,8 @@ class DirectBridges internal constructor(
         return when {
             byValue && result -> CBridge(name, { "$h::mirror<$name>($it)" }, out = true, value = value)
             byValue -> CBridge("const $name*", { "$h::math<$decl>(*$it)" }, value = value)
-            result || !config.mirrors.getValue(decl).aligned -> handle(name)
-            indirection == "&" -> CBridge("$name*", { "$h::InOut<$decl, $name>($it)" })
+            result || !config.mirrors.getValue(decl).aligned -> handle(name, referenced(value))
+            indirection == "&" -> CBridge("$name*", { "$h::InOut<$decl, $name>($it)" }, value = referenced(value))
             else -> throw Unsupported("$decl by pointer: C's mirror isn't aligned as the SIMD type is")
         }
     }
@@ -82,12 +87,13 @@ class DirectBridges internal constructor(
     /** A value struct taken or returned by value is copied: in from a `const` pointer, out into one C created. */
     fun record(decl: String, value: Boolean, copyable: Boolean): CBridge {
         val name = names.type(decl)
+        val record = CValue.Handle(name, nullable = indirection == "*")
         return when {
             !value && indirection == null -> throw Unsupported("$decl by value")
-            !value || !byValue -> handle(name, record = true)
+            !value || !byValue -> handle(name, record)
             !result -> CBridge("const $name*", { "*$h::cpp($it)" }, value = CValue.Handle(name, nullable = false))
             // C can't create one to copy into; a reference's outlives the call, so C borrows it.
-            !copyable && indirection == "&" -> handle(name, record = true)
+            !copyable && indirection == "&" -> handle(name, record)
             !copyable -> throw Unsupported("$decl result: C can't create one to copy it into")
             else -> CBridge(name, { it }, out = true, store = { v, out -> "*$h::cpp($out) = $v;" }, value = CValue.Handle(name, nullable = false))
         }
@@ -97,17 +103,23 @@ class DirectBridges internal constructor(
     private fun cast(cType: String, cpp: String) = if (result) { v: String -> "static_cast<$cType>($v)" } else { v -> "static_cast<$cpp>($v)" }
 
     /** C passes a pointer whichever of `*` or `&` C++ takes. */
-    private fun pointer(cName: String, cppName: String): CBridge {
+    private fun pointer(cName: String, cppName: String, element: CValue): CBridge {
         val cType = "$c$cName*"
         val address = if (indirection == "*") "" else "&"
         return if (result) CBridge(cType, { "reinterpret_cast<$cType>($address$it)" })
-        else CBridge(cType, { (if (indirection == "*") "" else "*") + "reinterpret_cast<$c$cppName*>($it)" })
+        else CBridge(cType, { (if (indirection == "*") "" else "*") + "reinterpret_cast<$c$cppName*>($it)" }, value = referenced(element))
+    }
+
+    /** What a parameter by pointer, or by non-const reference, passes of [element]; a result that's one stays untyped. */
+    private fun referenced(element: CValue) = when {
+        result -> null
+        indirection == "*" -> CValue.Pointer(element, const)
+        else -> CValue.InOut(element)
     }
 
     /** A pointer to a record's handle or a math mirror, converted by the `cpp`/`c` overloads. */
-    private fun handle(cName: String, record: Boolean = false): CBridge {
+    private fun handle(cName: String, value: CValue?): CBridge {
         val ref = indirection != "*"
-        val value = CValue.Handle(cName, nullable = !ref).takeIf { record }
         return if (result) CBridge("$c$cName*", { "$h::c(${if (ref) "&" else ""}$it)" }, value = value)
         else CBridge("$c$cName*", { "${if (ref) "*" else ""}$h::cpp($it)" }, value = value)
     }

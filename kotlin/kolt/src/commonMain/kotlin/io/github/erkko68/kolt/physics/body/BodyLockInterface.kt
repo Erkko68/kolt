@@ -70,6 +70,18 @@ open class BodyLockInterface internal constructor(internal val bodyLockInterface
             returned[0]
         }
 
+    open fun getMutexMask(bodies: List<BodyID>, number: Int): Long =
+        interopScope {
+            val bodiesArray = IntArray(bodies.size) { bodies[it].value }
+            val bodiesPointer = toInterop(bodiesArray)
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphBodyLockInterface_GetMutexMask(bodyLockInterfaceHandle, bodiesPointer, number, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            val nativeResult = returned[0]
+            nativeResult
+        }
+
     open fun tryGetBody(bodyID: BodyID): Body? =
         JphBodyLockInterface_TryGetBody(bodyLockInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { Body(it) }
 }

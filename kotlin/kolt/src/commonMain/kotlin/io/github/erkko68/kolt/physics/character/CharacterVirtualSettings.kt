@@ -33,10 +33,10 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterVirtualSettings`. */
-open class CharacterVirtualSettings internal constructor(internal val characterVirtualSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+open class CharacterVirtualSettings internal constructor(internal val characterVirtualSettingsHandle: NativePointer, owned: Boolean = false) : CharacterBaseSettings(JphCharacterVirtualSettings_asCharacterBaseSettings(characterVirtualSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCharacterVirtualSettings_create(), owned = true)
 
-    open fun addRef() =
+    override fun addRef() =
         own { JphCharacterVirtualSettings_addRef(characterVirtualSettingsHandle) }
 
     override fun close() =

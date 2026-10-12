@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ShapeCastSettings`. */
-open class ShapeCastSettings internal constructor(internal val shapeCastSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+open class ShapeCastSettings internal constructor(internal val shapeCastSettingsHandle: NativePointer, owned: Boolean = false) : CollideSettingsBase(JphShapeCastSettings_asCollideSettingsBase(shapeCastSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphShapeCastSettings_create(), owned = true)
 
     override fun close() =

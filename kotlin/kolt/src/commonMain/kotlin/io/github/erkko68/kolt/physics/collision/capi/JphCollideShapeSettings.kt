@@ -10,6 +10,9 @@ internal external fun JphCollideShapeSettings_create(): NativePointer
 @ExternalSymbolName("JphCollideShapeSettings_destroy")
 internal external fun JphCollideShapeSettings_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphCollideShapeSettings_asCollideSettingsBase")
+internal external fun JphCollideShapeSettings_asCollideSettingsBase(self: NativePointer): NativePointer
+
 @ExternalSymbolName("JphCollideShapeSettings_GetMaxSeparationDistance")
 internal external fun JphCollideShapeSettings_GetMaxSeparationDistance(self: NativePointer): Float
 

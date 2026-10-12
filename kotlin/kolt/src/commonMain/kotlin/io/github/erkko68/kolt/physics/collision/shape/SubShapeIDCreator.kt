@@ -33,4 +33,22 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SubShapeIDCreator`. */
-open class SubShapeIDCreator internal constructor(internal val subShapeIDCreatorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+open class SubShapeIDCreator internal constructor(internal val subShapeIDCreatorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphSubShapeIDCreator_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphSubShapeIDCreator_destroy(subShapeIDCreatorHandle) }
+
+    open fun pushID(value: Int, bits: Int): SubShapeIDCreator =
+        run {
+            val returned = SubShapeIDCreator(JphSubShapeIDCreator_create(), owned = true)
+            JphSubShapeIDCreator_PushID(subShapeIDCreatorHandle, value, bits, returned.subShapeIDCreatorHandle)
+            returned
+        }
+
+    open val id: SubShapeID
+        get() = SubShapeID(JphSubShapeIDCreator_GetID(subShapeIDCreatorHandle))
+
+    open val numBitsWritten: Int
+        get() = JphSubShapeIDCreator_GetNumBitsWritten(subShapeIDCreatorHandle)
+}

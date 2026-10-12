@@ -72,8 +72,24 @@ open class BodyInterface internal constructor(internal val bodyInterfaceHandle: 
     open fun unassignBodyID(bodyID: BodyID): Body? =
         JphBodyInterface_UnassignBodyID(bodyInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { Body(it) }
 
+    open fun unassignBodyIDs(bodyIDs: List<BodyID>, number: Int, bodies: MutableList<Body?>) =
+        interopScope {
+            val bodyIDsArray = IntArray(bodyIDs.size) { bodyIDs[it].value }
+            val bodyIDsPointer = toInterop(bodyIDsArray)
+            val bodiesPointer = toInterop(bodies.map { it?.bodyHandle ?: NullPointer })
+            JphBodyInterface_UnassignBodyIDs(bodyInterfaceHandle, bodyIDsPointer, number, bodiesPointer)
+            readPointers(bodiesPointer, bodies.size).forEachIndexed { i, p -> bodies[i] = p.takeIf { it != NullPointer }?.let { Body(it) } }
+        }
+
     open fun destroyBody(bodyID: BodyID) =
         JphBodyInterface_DestroyBody(bodyInterfaceHandle, bodyID.value)
+
+    open fun destroyBodies(bodyIDs: List<BodyID>, number: Int) =
+        interopScope {
+            val bodyIDsArray = IntArray(bodyIDs.size) { bodyIDs[it].value }
+            val bodyIDsPointer = toInterop(bodyIDsArray)
+            JphBodyInterface_DestroyBodies(bodyInterfaceHandle, bodyIDsPointer, number)
+        }
 
     open fun addBody(bodyID: BodyID, activationMode: EActivation) =
         JphBodyInterface_AddBody(bodyInterfaceHandle, bodyID.value, activationMode.value)
@@ -90,14 +106,65 @@ open class BodyInterface internal constructor(internal val bodyInterfaceHandle: 
     open fun createAndAddSoftBody(settings: SoftBodyCreationSettings, activationMode: EActivation): BodyID =
         BodyID(JphBodyInterface_CreateAndAddSoftBody(bodyInterfaceHandle, settings.softBodyCreationSettingsHandle, activationMode.value))
 
+    open fun addBodiesPrepare(bodies: MutableList<BodyID>, number: Int): NativePointer =
+        interopScope {
+            val bodiesArray = IntArray(bodies.size) { bodies[it].value }
+            val bodiesPointer = toInterop(bodiesArray)
+            val nativeResult = JphBodyInterface_AddBodiesPrepare(bodyInterfaceHandle, bodiesPointer, number)
+            bodiesPointer.fromInterop(bodiesArray)
+            for (i in bodies.indices) bodies[i] = BodyID(bodiesArray[i])
+            nativeResult
+        }
+
+    open fun addBodiesFinalize(bodies: MutableList<BodyID>, number: Int, addState: NativePointer, activationMode: EActivation) =
+        interopScope {
+            val bodiesArray = IntArray(bodies.size) { bodies[it].value }
+            val bodiesPointer = toInterop(bodiesArray)
+            JphBodyInterface_AddBodiesFinalize(bodyInterfaceHandle, bodiesPointer, number, addState, activationMode.value)
+            bodiesPointer.fromInterop(bodiesArray)
+            for (i in bodies.indices) bodies[i] = BodyID(bodiesArray[i])
+        }
+
+    open fun addBodiesAbort(bodies: MutableList<BodyID>, number: Int, addState: NativePointer) =
+        interopScope {
+            val bodiesArray = IntArray(bodies.size) { bodies[it].value }
+            val bodiesPointer = toInterop(bodiesArray)
+            JphBodyInterface_AddBodiesAbort(bodyInterfaceHandle, bodiesPointer, number, addState)
+            bodiesPointer.fromInterop(bodiesArray)
+            for (i in bodies.indices) bodies[i] = BodyID(bodiesArray[i])
+        }
+
+    open fun removeBodies(bodies: MutableList<BodyID>, number: Int) =
+        interopScope {
+            val bodiesArray = IntArray(bodies.size) { bodies[it].value }
+            val bodiesPointer = toInterop(bodiesArray)
+            JphBodyInterface_RemoveBodies(bodyInterfaceHandle, bodiesPointer, number)
+            bodiesPointer.fromInterop(bodiesArray)
+            for (i in bodies.indices) bodies[i] = BodyID(bodiesArray[i])
+        }
+
     open fun activateBody(bodyID: BodyID) =
         JphBodyInterface_ActivateBody(bodyInterfaceHandle, bodyID.value)
+
+    open fun activateBodies(bodyIDs: List<BodyID>, number: Int) =
+        interopScope {
+            val bodyIDsArray = IntArray(bodyIDs.size) { bodyIDs[it].value }
+            val bodyIDsPointer = toInterop(bodyIDsArray)
+            JphBodyInterface_ActivateBodies(bodyInterfaceHandle, bodyIDsPointer, number)
+        }
 
     open fun activateBodiesInAABox(box: AABox, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
         JphBodyInterface_ActivateBodiesInAABox(bodyInterfaceHandle, box.aaBoxHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle)
 
     open fun deactivateBody(bodyID: BodyID) =
         JphBodyInterface_DeactivateBody(bodyInterfaceHandle, bodyID.value)
+
+    open fun deactivateBodies(bodyIDs: List<BodyID>, number: Int) =
+        interopScope {
+            val bodyIDsArray = IntArray(bodyIDs.size) { bodyIDs[it].value }
+            val bodyIDsPointer = toInterop(bodyIDsArray)
+            JphBodyInterface_DeactivateBodies(bodyInterfaceHandle, bodyIDsPointer, number)
+        }
 
     open fun isActive(bodyID: BodyID): Boolean =
         JphBodyInterface_IsActive(bodyInterfaceHandle, bodyID.value)
@@ -131,6 +198,18 @@ open class BodyInterface internal constructor(internal val bodyInterfaceHandle: 
 
     open fun setPositionAndRotationWhenChanged(bodyID: BodyID, position: Vec3, rotation: Quat, activationMode: EActivation) =
         interopScope { JphBodyInterface_SetPositionAndRotationWhenChanged(bodyInterfaceHandle, bodyID.value, toInterop(position.toArray()), toInterop(rotation.toArray()), activationMode.value) }
+
+    open fun getPositionAndRotation(bodyID: BodyID): Pair<Vec3, Quat> =
+        interopScope {
+            val positionArray = FloatArray(4)
+            val positionPointer = toInterop(positionArray)
+            val rotationArray = FloatArray(4)
+            val rotationPointer = toInterop(rotationArray)
+            JphBodyInterface_GetPositionAndRotation(bodyInterfaceHandle, bodyID.value, positionPointer, rotationPointer)
+            positionPointer.fromInterop(positionArray)
+            rotationPointer.fromInterop(rotationArray)
+            Pair(Vec3(positionArray), Quat(rotationArray))
+        }
 
     open fun setPosition(bodyID: BodyID, position: Vec3, activationMode: EActivation) =
         interopScope { JphBodyInterface_SetPosition(bodyInterfaceHandle, bodyID.value, toInterop(position.toArray()), activationMode.value) }
@@ -188,6 +267,18 @@ open class BodyInterface internal constructor(internal val bodyInterfaceHandle: 
 
     open fun setLinearAndAngularVelocity(bodyID: BodyID, linearVelocity: Vec3, angularVelocity: Vec3) =
         interopScope { JphBodyInterface_SetLinearAndAngularVelocity(bodyInterfaceHandle, bodyID.value, toInterop(linearVelocity.toArray()), toInterop(angularVelocity.toArray())) }
+
+    open fun getLinearAndAngularVelocity(bodyID: BodyID): Pair<Vec3, Vec3> =
+        interopScope {
+            val linearVelocityArray = FloatArray(4)
+            val linearVelocityPointer = toInterop(linearVelocityArray)
+            val angularVelocityArray = FloatArray(4)
+            val angularVelocityPointer = toInterop(angularVelocityArray)
+            JphBodyInterface_GetLinearAndAngularVelocity(bodyInterfaceHandle, bodyID.value, linearVelocityPointer, angularVelocityPointer)
+            linearVelocityPointer.fromInterop(linearVelocityArray)
+            angularVelocityPointer.fromInterop(angularVelocityArray)
+            Pair(Vec3(linearVelocityArray), Vec3(angularVelocityArray))
+        }
 
     open fun setLinearVelocity(bodyID: BodyID, linearVelocity: Vec3) =
         interopScope { JphBodyInterface_SetLinearVelocity(bodyInterfaceHandle, bodyID.value, toInterop(linearVelocity.toArray())) }

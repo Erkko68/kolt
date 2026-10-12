@@ -38,6 +38,11 @@ data class ApiGenConfig(
     val memberPrefix: String = "",
     /** A regex of what parameter names start with that a typed wrapper's drop (`^(in|out|io)(?=[A-Z])` for `inRadius`), or empty. */
     val parameterPrefix: String = "",
+    /**
+     * A regex of what the names of the parameters a callee only writes start with (`^out(?=[A-Z])` for `outPosition`),
+     * or empty: a typed wrapper returns those, and passes the callee nothing of its own for them.
+     */
+    val outParameter: String = "",
     /** A regex of what static function names start with that a typed wrapper's drop (`^s(?=[A-Z])` for `sCreate`), or empty. */
     val staticPrefix: String = "",
     /** The verbs of a field's accessors, named as the library names methods. */

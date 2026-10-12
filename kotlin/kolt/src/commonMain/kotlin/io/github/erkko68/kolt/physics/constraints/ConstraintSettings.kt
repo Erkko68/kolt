@@ -48,6 +48,9 @@ open class ConstraintSettings internal constructor(internal val constraintSettin
     open val rtti: RTTI?
         get() = JphConstraintSettings_GetRTTI(constraintSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
+    open fun castTo(rtti: RTTI?): NativePointer =
+        JphConstraintSettings_CastTo(constraintSettingsHandle, rtti?.rttiHandle ?: NullPointer)
+
     open fun saveBinaryState(stream: StreamOut) =
         JphConstraintSettings_SaveBinaryState(constraintSettingsHandle, stream.streamOutHandle)
 

@@ -33,4 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DecoratedShape`. */
-open class DecoratedShape internal constructor(internal val decoratedShapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+open class DecoratedShape internal constructor(internal val decoratedShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphDecoratedShape_asShape(decoratedShapeHandle), owned), AutoCloseable {
+    override fun addRef() =
+        own { JphDecoratedShape_addRef(decoratedShapeHandle) }
+
+    override fun close() =
+        closeOnce { JphDecoratedShape_release(decoratedShapeHandle) }
+
+    open val innerShape: Shape?
+        get() = JphDecoratedShape_GetInnerShape(decoratedShapeHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+}

@@ -21,7 +21,8 @@ build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C
 
 `./gradlew :kotlin:kolt:macosArm64Test` runs Jolt through the generated classes, on Kotlin/Native on an Apple Silicon Mac,
 the only target so far, as it needs no glue: a falling sphere and a ray cast, a convex hull from points, and contact
-listeners, filters and a hit collector written in Kotlin.
+listeners, filters and a hit collector written in Kotlin, and a batch of bodies, a shape's triangles and a character
+on a moving floor through out-parameters and arrays.
 
 ## The Kotlin API
 
@@ -33,8 +34,13 @@ header's directory (`physics.body.BodyInterface`); `GetX`/`SetX` are a property 
 - A class with virtual functions is open to Kotlin: `object : ContactListener() { override fun onContactAdded(…) }`.
   Jolt calls the overrides, from its job threads too, and keeps its own for the rest.
 - A result that's a value or an error returns the value, or throws `NativeException` with the error.
-- `c/api-coverage.txt` lists what isn't wrapped yet: mostly functions taking raw pointers, or returning through
-  reference parameters.
+- What Jolt writes through a reference parameter is returned: `getPositionAndRotation(id)` is a `Pair<Vec3, Quat>`,
+  after the function's own result if it has one. An `io` parameter is passed in and returned.
+- A pointer to an array is a `List` or a primitive array, with the count where Jolt takes it; one Jolt writes to is a
+  `MutableList`, changed in place. A `void*` is a `NativePointer`.
+- A second C++ base is a function: `vehicle.asPhysicsStepListener()`.
+- `c/api-coverage.txt` lists what isn't bound yet: mostly `std::function` callbacks, the stream save and restore
+  maps, and SIMD arrays by pointer.
 
 `./gradlew apiModel` reports the C++ API clang sees in the listed headers.
 

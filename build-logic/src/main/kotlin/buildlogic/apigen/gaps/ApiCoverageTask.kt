@@ -1,6 +1,8 @@
 package buildlogic.apigen.gaps
 
 import buildlogic.apigen.ApiGenTask
+import buildlogic.apigen.c.CApiWriter
+import buildlogic.apigen.c.CApiWriter.Bound.Role
 import buildlogic.apigen.kotlin.KotlinDeclarations
 import buildlogic.apigen.kotlin.kotlinApiSources
 import buildlogic.apigen.kotlin.kotlinExternals
@@ -11,7 +13,8 @@ import org.gradle.api.tasks.UntrackedTask
 
 /**
  * Writes `api-coverage.txt`: each C function the C++ API calls for: bound, and a public Kotlin wrapper calls it
- * (`wrapped`) or none does yet (`unwrapped`); or why it isn't bound (`todo`, `skipped`). Then each enum value and class
+ * (`wrapped`) or none does yet (`unwrapped`); or why it isn't bound (`todo`, `skipped`). An upcast the class inherits
+ * through another counts as wrapped. Then each enum value and class
  * constant of that API, which no function carries: the Kotlin API declares it (`declared`) or doesn't (`undeclared`;
  * `untyped` when it has no declaration of the enum's name). Committed, so a library bump's diff shows what changed and
  * how far it got. Warns when the committed C API or Kotlin externals aren't what the generators would write. Without
@@ -30,8 +33,8 @@ abstract class ApiCoverageTask : ApiGenTask() {
         val manifest = apiGen.manifest()
         if (!apiGen.manifestFile.isFile || apiGen.manifestFile.readText() != manifest.json()) warnStale("C API", "generateCApi", setOf(apiGen.manifestFile.name))
         val report = c.resolve("api-coverage.txt")
-        fun lines(status: (String) -> String) = writer.bindings.distinctBy { it.c to it.cpp }.sortedWith(compareBy({ it.c }, { it.cpp })).map { b ->
-            "${(b.gap?.substringBefore(':') ?: status(b.c)).padEnd(9)} ${b.c} = ${b.cpp}" + (b.gap?.substringAfter(": ")?.let { "  -- $it" } ?: "")
+        fun lines(status: (CApiWriter.Binding) -> String) = writer.bindings.distinctBy { it.c to it.cpp }.sortedWith(compareBy({ it.c }, { it.cpp })).map { b ->
+            "${(b.gap?.substringBefore(':') ?: status(b)).padEnd(9)} ${b.c} = ${b.cpp}" + (b.gap?.substringAfter(": ")?.let { "  -- $it" } ?: "")
         }
         if (kotlin == null) {
             val lines = lines { "bound" }
@@ -47,7 +50,20 @@ abstract class ApiCoverageTask : ApiGenTask() {
 
         val sources = kotlinApiSources(kotlin)
         val called = Regex("""\b${Regex.escape(config.get().prefix)}\w+""").findAll(sources).mapTo(HashSet()) { it.value }
-        val lines = lines { if (it in called) "wrapped" else "unwrapped" }
+        // An upcast the API doesn't call is wrapped when the ones it calls lead to the same base: the class inherits it.
+        // So is a constructor without arguments, when the class is created as one a subclass overrides.
+        val names = writer.names
+        val upcasts = writer.bindings.filter { it.bound?.role == Role.UPCAST && it.c in called }.groupBy({ names.type(it.bound!!.owner) }) { it.bound!!.name }
+        fun reaches(from: String, base: String): Boolean = upcasts[from].orEmpty().any { it == base || reaches(it, base) }
+        val lines = lines { b ->
+            val bound = b.bound
+            val inherited = bound != null && when (bound.role) {
+                Role.UPCAST -> reaches(names.type(bound.owner), bound.name)
+                Role.CREATE -> bound.params.isEmpty() && "${names.type(bound.owner)}_createUpcalls" in called
+                else -> false
+            }
+            if (b.c in called || inherited) "wrapped" else "unwrapped"
+        }
         val summary = summary(lines, STATUSES)
         val api = writer.api
         val declarations = KotlinDeclarations(sources)

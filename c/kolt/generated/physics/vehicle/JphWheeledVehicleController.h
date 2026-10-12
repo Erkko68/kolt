@@ -23,8 +23,7 @@ void JphWheeledVehicleController_SetHandBrakeInput(JphWheeledVehicleController* 
 float JphWheeledVehicleController_GetHandBrakeInput(const JphWheeledVehicleController* self);
 JphVehicleEngine* JphWheeledVehicleController_GetEngine(JphWheeledVehicleController* self);
 JphVehicleTransmission* JphWheeledVehicleController_GetTransmission(JphWheeledVehicleController* self);
-// TODO(handwritten) JphWheeledVehicleController_GetDifferentials: Differentials & JPH::WheeledVehicleController::GetDifferentials()
-//     Array<VehicleDifferentialSettings>: by non-const reference
+uint32_t JphWheeledVehicleController_GetDifferentials(JphWheeledVehicleController* self, JphVehicleDifferentialSettings* const* out, uint32_t outCapacity);
 float JphWheeledVehicleController_GetDifferentialLimitedSlipRatio(const JphWheeledVehicleController* self);
 void JphWheeledVehicleController_SetDifferentialLimitedSlipRatio(JphWheeledVehicleController* self, float inV);
 float JphWheeledVehicleController_GetWheelSpeedAtClutch(const JphWheeledVehicleController* self);

@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RotatedTranslatedShape`. */
-open class RotatedTranslatedShape internal constructor(internal val rotatedTranslatedShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphRotatedTranslatedShape_asShape(rotatedTranslatedShapeHandle), owned), AutoCloseable {
+open class RotatedTranslatedShape internal constructor(internal val rotatedTranslatedShapeHandle: NativePointer, owned: Boolean = false) : DecoratedShape(JphRotatedTranslatedShape_asDecoratedShape(rotatedTranslatedShapeHandle), owned), AutoCloseable {
     constructor() : this(JphRotatedTranslatedShape_create(), owned = true)
     constructor(position: Vec3, rotation: Quat, shape: Shape?) : this(interopScope { JphRotatedTranslatedShape_create_Vec3Arg_QuatArg_Shape(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) }, owned = true)
 

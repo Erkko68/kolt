@@ -58,6 +58,9 @@ internal external fun JphVehicleConstraint_GetVehicleBody(self: NativePointer): 
 @ExternalSymbolName("JphVehicleConstraint_GetController")
 internal external fun JphVehicleConstraint_GetController(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphVehicleConstraint_GetWheels")
+internal external fun JphVehicleConstraint_GetWheels(self: NativePointer, out: NativePointer, outCapacity: Int): Int
+
 @ExternalSymbolName("JphVehicleConstraint_GetWheel")
 internal external fun JphVehicleConstraint_GetWheel(self: NativePointer, inIdx: Int): NativePointer
 
@@ -69,6 +72,9 @@ internal external fun JphVehicleConstraint_GetWheelLocalTransform(self: NativePo
 
 @ExternalSymbolName("JphVehicleConstraint_GetWheelWorldTransform")
 internal external fun JphVehicleConstraint_GetWheelWorldTransform(self: NativePointer, inWheelIndex: Int, inWheelRight: NativePointer, inWheelUp: NativePointer, out: NativePointer)
+
+@ExternalSymbolName("JphVehicleConstraint_GetAntiRollBars")
+internal external fun JphVehicleConstraint_GetAntiRollBars(self: NativePointer, out: NativePointer, outCapacity: Int): Int
 
 @ExternalSymbolName("JphVehicleConstraint_SetNumStepsBetweenCollisionTestActive")
 internal external fun JphVehicleConstraint_SetNumStepsBetweenCollisionTestActive(self: NativePointer, inSteps: Int)

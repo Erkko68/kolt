@@ -35,12 +35,28 @@ import io.github.erkko68.kolt.skeleton.*
 /** C++ `JPH::HeightFieldShapeSettings`. */
 open class HeightFieldShapeSettings internal constructor(internal val heightFieldShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphHeightFieldShapeSettings_asShapeSettings(heightFieldShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphHeightFieldShapeSettings_create(), owned = true)
+    constructor(samples: FloatArray, offset: Vec3, scale: Vec3, sampleCount: Int, materialIndices: ByteArray, materialList: List<PhysicsMaterial>) : this(interopScope { JphHeightFieldShapeSettings_create_float_Vec3Arg_Vec3Arg_uint32_uint8_PhysicsMaterialList(toInterop(samples), toInterop(offset.toArray()), toInterop(scale.toArray()), sampleCount, toInterop(materialIndices), toInterop(materialList.map { it.physicsMaterialHandle }), materialList.size) }, owned = true)
 
     override fun addRef() =
         own { JphHeightFieldShapeSettings_addRef(heightFieldShapeSettingsHandle) }
 
     override fun close() =
         closeOnce { JphHeightFieldShapeSettings_release(heightFieldShapeSettingsHandle) }
+
+    open fun determineMinAndMaxSample(): Triple<Float, Float, Float> =
+        interopScope {
+            val minValueArray = FloatArray(1)
+            val minValuePointer = toInterop(minValueArray)
+            val maxValueArray = FloatArray(1)
+            val maxValuePointer = toInterop(maxValueArray)
+            val quantizationScaleArray = FloatArray(1)
+            val quantizationScalePointer = toInterop(quantizationScaleArray)
+            JphHeightFieldShapeSettings_DetermineMinAndMaxSample(heightFieldShapeSettingsHandle, minValuePointer, maxValuePointer, quantizationScalePointer)
+            minValuePointer.fromInterop(minValueArray)
+            maxValuePointer.fromInterop(maxValueArray)
+            quantizationScalePointer.fromInterop(quantizationScaleArray)
+            Triple(minValueArray[0], maxValueArray[0], quantizationScaleArray[0])
+        }
 
     open fun calculateBitsPerSampleForError(maxError: Float): Int =
         JphHeightFieldShapeSettings_CalculateBitsPerSampleForError(heightFieldShapeSettingsHandle, maxError)

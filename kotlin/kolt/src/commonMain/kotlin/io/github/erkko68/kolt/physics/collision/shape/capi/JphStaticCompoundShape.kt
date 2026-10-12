@@ -19,11 +19,5 @@ internal external fun JphStaticCompoundShape_asCompoundShape(self: NativePointer
 @ExternalSymbolName("JphStaticCompoundShape_asShape")
 internal external fun JphStaticCompoundShape_asShape(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphStaticCompoundShape_GetIntersectingSubShapes_AABox_uint_int")
-internal external fun JphStaticCompoundShape_GetIntersectingSubShapes_AABox_uint_int(self: NativePointer, inBox: NativePointer, outSubShapeIndices: NativePointer, inMaxSubShapeIndices: Int): Int
-
-@ExternalSymbolName("JphStaticCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int")
-internal external fun JphStaticCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int(self: NativePointer, inBox: NativePointer, outSubShapeIndices: NativePointer, inMaxSubShapeIndices: Int): Int
-
 @ExternalSymbolName("JphStaticCompoundShape_sRegister")
 internal external fun JphStaticCompoundShape_sRegister()

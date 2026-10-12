@@ -60,6 +60,10 @@ JphVehicleTransmission* JphWheeledVehicleController_GetTransmission(JphWheeledVe
     return kolt::c(&kolt::cpp(self)->GetTransmission());
 }
 
+uint32_t JphWheeledVehicleController_GetDifferentials(JphWheeledVehicleController* self, JphVehicleDifferentialSettings* const* out, uint32_t outCapacity) {
+    return kolt::copy(kolt::cpp(self)->GetDifferentials(), outCapacity, [&](auto& x, uint32_t i) { *kolt::cpp(out[i]) = x; });
+}
+
 float JphWheeledVehicleController_GetDifferentialLimitedSlipRatio(const JphWheeledVehicleController* self) {
     return kolt::cpp(self)->GetDifferentialLimitedSlipRatio();
 }

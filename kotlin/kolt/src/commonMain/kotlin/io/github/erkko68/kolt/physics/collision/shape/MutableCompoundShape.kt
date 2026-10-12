@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MutableCompoundShape`. */
-open class MutableCompoundShape internal constructor(internal val mutableCompoundShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphMutableCompoundShape_asShape(mutableCompoundShapeHandle), owned), AutoCloseable {
+open class MutableCompoundShape internal constructor(internal val mutableCompoundShapeHandle: NativePointer, owned: Boolean = false) : CompoundShape(JphMutableCompoundShape_asCompoundShape(mutableCompoundShapeHandle), owned), AutoCloseable {
     constructor() : this(JphMutableCompoundShape_create(), owned = true)
 
     override fun addRef() =

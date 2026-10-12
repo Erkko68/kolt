@@ -16,6 +16,10 @@ void JphCharacterSettings_release(const JphCharacterSettings* self) {
     kolt::cpp(self)->Release();
 }
 
+JphCharacterBaseSettings* JphCharacterSettings_asCharacterBaseSettings(JphCharacterSettings* self) {
+    return kolt::c(static_cast<JPH::CharacterBaseSettings*>(kolt::cpp(self)));
+}
+
 uint32_t JphCharacterSettings_GetLayer(const JphCharacterSettings* self) {
     return static_cast<uint32_t>(kolt::cpp(self)->mLayer);
 }

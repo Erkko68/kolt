@@ -22,12 +22,6 @@ internal external fun JphMutableCompoundShape_asShape(self: NativePointer): Nati
 @ExternalSymbolName("JphMutableCompoundShape_Clone")
 internal external fun JphMutableCompoundShape_Clone(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphMutableCompoundShape_GetIntersectingSubShapes_AABox_uint_int")
-internal external fun JphMutableCompoundShape_GetIntersectingSubShapes_AABox_uint_int(self: NativePointer, inBox: NativePointer, outSubShapeIndices: NativePointer, inMaxSubShapeIndices: Int): Int
-
-@ExternalSymbolName("JphMutableCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int")
-internal external fun JphMutableCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int(self: NativePointer, inBox: NativePointer, outSubShapeIndices: NativePointer, inMaxSubShapeIndices: Int): Int
-
 @ExternalSymbolName("JphMutableCompoundShape_AddShape")
 internal external fun JphMutableCompoundShape_AddShape(self: NativePointer, inPosition: NativePointer, inRotation: NativePointer, inShape: NativePointer, inUserData: Int, inIndex: Int): Int
 

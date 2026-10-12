@@ -33,4 +33,69 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodyVertex`. */
-open class SoftBodyVertex internal constructor(internal val softBodyVertexHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+open class SoftBodyVertex internal constructor(internal val softBodyVertexHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphSoftBodyVertex_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphSoftBodyVertex_destroy(softBodyVertexHandle) }
+
+    open fun resetCollision() =
+        JphSoftBodyVertex_ResetCollision(softBodyVertexHandle)
+
+    open fun markCCDContact(bodyID: BodyID, contactPlane: Plane) =
+        JphSoftBodyVertex_MarkCCDContact(softBodyVertexHandle, bodyID.value, contactPlane.planeHandle)
+
+    open var previousPosition: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphSoftBodyVertex_GetPreviousPosition(softBodyVertexHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphSoftBodyVertex_SetPreviousPosition(softBodyVertexHandle, toInterop(value.toArray())) }
+
+    open var position: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphSoftBodyVertex_GetPosition(softBodyVertexHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphSoftBodyVertex_SetPosition(softBodyVertexHandle, toInterop(value.toArray())) }
+
+    open var velocity: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphSoftBodyVertex_GetVelocity(softBodyVertexHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphSoftBodyVertex_SetVelocity(softBodyVertexHandle, toInterop(value.toArray())) }
+
+    open var collisionPlane: Plane
+        get() = run {
+            val returned = Plane(JphPlane_create(), owned = true)
+            JphSoftBodyVertex_GetCollisionPlane(softBodyVertexHandle, returned.planeHandle)
+            returned
+        }
+        set(value) = JphSoftBodyVertex_SetCollisionPlane(softBodyVertexHandle, value.planeHandle)
+
+    open var collidingShapeIndex: Int
+        get() = JphSoftBodyVertex_GetCollidingShapeIndex(softBodyVertexHandle)
+        set(value) = JphSoftBodyVertex_SetCollidingShapeIndex(softBodyVertexHandle, value)
+
+    open var hasContact: Boolean
+        get() = JphSoftBodyVertex_GetHasContact(softBodyVertexHandle)
+        set(value) = JphSoftBodyVertex_SetHasContact(softBodyVertexHandle, value)
+
+    open var largestPenetration: Float
+        get() = JphSoftBodyVertex_GetLargestPenetration(softBodyVertexHandle)
+        set(value) = JphSoftBodyVertex_SetLargestPenetration(softBodyVertexHandle, value)
+
+    open var invMass: Float
+        get() = JphSoftBodyVertex_GetInvMass(softBodyVertexHandle)
+        set(value) = JphSoftBodyVertex_SetInvMass(softBodyVertexHandle, value)
+}

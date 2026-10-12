@@ -42,6 +42,18 @@ open class CharacterContactListener internal constructor(internal val characterC
     override fun close() =
         closeOnce { JphCharacterContactListener_destroy(characterContactListenerHandle) }
 
+    open fun onAdjustBodyVelocity(character: CharacterVirtual?, body2: Body, linearVelocity: Vec3, angularVelocity: Vec3): Pair<Vec3, Vec3> =
+        interopScope {
+            val linearVelocityArray = linearVelocity.toArray()
+            val linearVelocityPointer = toInterop(linearVelocityArray)
+            val angularVelocityArray = angularVelocity.toArray()
+            val angularVelocityPointer = toInterop(angularVelocityArray)
+            JphCharacterContactListener_OnAdjustBodyVelocity(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, body2.bodyHandle, linearVelocityPointer, angularVelocityPointer)
+            linearVelocityPointer.fromInterop(linearVelocityArray)
+            angularVelocityPointer.fromInterop(angularVelocityArray)
+            Pair(Vec3(linearVelocityArray), Vec3(angularVelocityArray))
+        }
+
     open fun onContactValidate(character: CharacterVirtual?, contact: CharacterContact): Boolean =
         JphCharacterContactListener_OnContactValidate(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, contact.characterContactHandle)
 
@@ -66,16 +78,47 @@ open class CharacterContactListener internal constructor(internal val characterC
     open fun onCharacterContactRemoved(character: CharacterVirtual?, otherCharacterID: CharacterID, subShapeID2: SubShapeID) =
         JphCharacterContactListener_OnCharacterContactRemoved(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, otherCharacterID.characterIDHandle, subShapeID2.value)
 
+    open fun onContactSolve(character: CharacterVirtual?, bodyID2: BodyID, subShapeID2: SubShapeID, contactPosition: Vec3, contactNormal: Vec3, contactVelocity: Vec3, contactMaterial: PhysicsMaterial?, characterVelocity: Vec3, newCharacterVelocity: Vec3): Vec3 =
+        interopScope {
+            val newCharacterVelocityArray = newCharacterVelocity.toArray()
+            val newCharacterVelocityPointer = toInterop(newCharacterVelocityArray)
+            JphCharacterContactListener_OnContactSolve(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, bodyID2.value, subShapeID2.value, toInterop(contactPosition.toArray()), toInterop(contactNormal.toArray()), toInterop(contactVelocity.toArray()), contactMaterial?.physicsMaterialHandle ?: NullPointer, toInterop(characterVelocity.toArray()), newCharacterVelocityPointer)
+            newCharacterVelocityPointer.fromInterop(newCharacterVelocityArray)
+            Vec3(newCharacterVelocityArray)
+        }
+
+    open fun onCharacterContactSolve(character: CharacterVirtual?, otherCharacter: CharacterVirtual?, subShapeID2: SubShapeID, contactPosition: Vec3, contactNormal: Vec3, contactVelocity: Vec3, contactMaterial: PhysicsMaterial?, characterVelocity: Vec3, newCharacterVelocity: Vec3): Vec3 =
+        interopScope {
+            val newCharacterVelocityArray = newCharacterVelocity.toArray()
+            val newCharacterVelocityPointer = toInterop(newCharacterVelocityArray)
+            JphCharacterContactListener_OnCharacterContactSolve(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, otherCharacter?.characterVirtualHandle ?: NullPointer, subShapeID2.value, toInterop(contactPosition.toArray()), toInterop(contactNormal.toArray()), toInterop(contactVelocity.toArray()), contactMaterial?.physicsMaterialHandle ?: NullPointer, toInterop(characterVelocity.toArray()), newCharacterVelocityPointer)
+            newCharacterVelocityPointer.fromInterop(newCharacterVelocityArray)
+            Vec3(newCharacterVelocityArray)
+        }
+
     override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
         when (method) {
-            0 -> writeSlot(result, if (onContactValidate(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)))) 1L else 0L)
-            1 -> onContactAdded(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
-            2 -> onContactPersisted(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
-            3 -> onContactRemoved(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, BodyID(readSlot(args, 1).toInt()), SubShapeID(readSlot(args, 2).toInt()))
-            4 -> writeSlot(result, if (onCharacterContactValidate(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)))) 1L else 0L)
-            5 -> onCharacterContactAdded(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
-            6 -> onCharacterContactPersisted(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
-            7 -> onCharacterContactRemoved(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterID(readPointerSlot(args, 1)), SubShapeID(readSlot(args, 2).toInt()))
+            0 -> {
+                val returned = onAdjustBodyVelocity(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, Body(readPointerSlot(args, 1)), Vec3(readFloats(readPointerSlot(args, 2), 4)), Vec3(readFloats(readPointerSlot(args, 3), 4)))
+                writeFloats(readPointerSlot(args, 2), returned.first.toArray())
+                writeFloats(readPointerSlot(args, 3), returned.second.toArray())
+            }
+            1 -> writeSlot(result, if (onContactValidate(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)))) 1L else 0L)
+            2 -> onContactAdded(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
+            3 -> onContactPersisted(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
+            4 -> onContactRemoved(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, BodyID(readSlot(args, 1).toInt()), SubShapeID(readSlot(args, 2).toInt()))
+            5 -> writeSlot(result, if (onCharacterContactValidate(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)))) 1L else 0L)
+            6 -> onCharacterContactAdded(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
+            7 -> onCharacterContactPersisted(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
+            8 -> onCharacterContactRemoved(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterID(readPointerSlot(args, 1)), SubShapeID(readSlot(args, 2).toInt()))
+            9 -> {
+                val returned = onContactSolve(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, BodyID(readSlot(args, 1).toInt()), SubShapeID(readSlot(args, 2).toInt()), Vec3(readFloats(readPointerSlot(args, 3), 4)), Vec3(readFloats(readPointerSlot(args, 4), 4)), Vec3(readFloats(readPointerSlot(args, 5), 4)), readPointerSlot(args, 6).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }, Vec3(readFloats(readPointerSlot(args, 7), 4)), Vec3(readFloats(readPointerSlot(args, 8), 4)))
+                writeFloats(readPointerSlot(args, 8), returned.toArray())
+            }
+            10 -> {
+                val returned = onCharacterContactSolve(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, readPointerSlot(args, 1).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, SubShapeID(readSlot(args, 2).toInt()), Vec3(readFloats(readPointerSlot(args, 3), 4)), Vec3(readFloats(readPointerSlot(args, 4), 4)), Vec3(readFloats(readPointerSlot(args, 5), 4)), readPointerSlot(args, 6).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }, Vec3(readFloats(readPointerSlot(args, 7), 4)), Vec3(readFloats(readPointerSlot(args, 8), 4)))
+                writeFloats(readPointerSlot(args, 8), returned.toArray())
+            }
             else -> return false
         }
         return true

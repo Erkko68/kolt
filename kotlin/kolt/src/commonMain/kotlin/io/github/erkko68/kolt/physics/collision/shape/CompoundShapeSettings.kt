@@ -33,7 +33,75 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CompoundShapeSettings`. */
-open class CompoundShapeSettings internal constructor(internal val compoundShapeSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+open class CompoundShapeSettings internal constructor(internal val compoundShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphCompoundShapeSettings_asShapeSettings(compoundShapeSettingsHandle), owned), AutoCloseable {
+    override fun addRef() =
+        own { JphCompoundShapeSettings_addRef(compoundShapeSettingsHandle) }
+
+    override fun close() =
+        closeOnce { JphCompoundShapeSettings_release(compoundShapeSettingsHandle) }
+
+    open fun addShape(position: Vec3, rotation: Quat, shape: ShapeSettings?, userData: Int) =
+        interopScope { JphCompoundShapeSettings_AddShape_ShapeSettings_uint32(compoundShapeSettingsHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeSettingsHandle ?: NullPointer, userData) }
+
+    open fun addShape(position: Vec3, rotation: Quat, shape: Shape?, userData: Int) =
+        interopScope { JphCompoundShapeSettings_AddShape_Shape_uint32(compoundShapeSettingsHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer, userData) }
+
+    open var subShapes: List<CompoundShapeSettings.SubShapeSettings>
+        get() = interopScope {
+            val count = JphCompoundShapeSettings_GetSubShapes(compoundShapeSettingsHandle, NullPointer, 0)
+            val returned = List(count) { CompoundShapeSettings.SubShapeSettings(JphCompoundShapeSettingsSubShapeSettings_create(), owned = true) }
+            JphCompoundShapeSettings_GetSubShapes(compoundShapeSettingsHandle, toInterop(returned.map { it.compoundShapeSettingsSubShapeSettingsHandle }), count)
+            returned
+        }
+        set(value) = interopScope { JphCompoundShapeSettings_SetSubShapes(compoundShapeSettingsHandle, toInterop(value.map { it.compoundShapeSettingsSubShapeSettingsHandle }), value.size) }
+
     /** C++ `JPH::CompoundShapeSettings::SubShapeSettings`. */
-    open class SubShapeSettings internal constructor(internal val compoundShapeSettingsSubShapeSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    open class SubShapeSettings internal constructor(internal val compoundShapeSettingsSubShapeSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+        constructor() : this(JphCompoundShapeSettingsSubShapeSettings_create(), owned = true)
+    
+        override fun close() =
+            closeOnce { JphCompoundShapeSettingsSubShapeSettings_destroy(compoundShapeSettingsSubShapeSettingsHandle) }
+    
+        open var shape: ShapeSettings?
+            get() = JphCompoundShapeSettingsSubShapeSettings_GetShape(compoundShapeSettingsSubShapeSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
+            set(value) = JphCompoundShapeSettingsSubShapeSettings_SetShape(compoundShapeSettingsSubShapeSettingsHandle, value?.shapeSettingsHandle ?: NullPointer)
+    
+        open var shapePtr: Shape?
+            get() = JphCompoundShapeSettingsSubShapeSettings_GetShapePtr(compoundShapeSettingsSubShapeSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+            set(value) = JphCompoundShapeSettingsSubShapeSettings_SetShapePtr(compoundShapeSettingsSubShapeSettingsHandle, value?.shapeHandle ?: NullPointer)
+    
+        open var position: Vec3
+            get() = interopScope {
+                val returned = FloatArray(4)
+                val returnedPointer = toInterop(returned)
+                JphCompoundShapeSettingsSubShapeSettings_GetPosition(compoundShapeSettingsSubShapeSettingsHandle, returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Vec3(returned)
+            }
+            set(value) = interopScope { JphCompoundShapeSettingsSubShapeSettings_SetPosition(compoundShapeSettingsSubShapeSettingsHandle, toInterop(value.toArray())) }
+    
+        open var rotation: Quat
+            get() = interopScope {
+                val returned = FloatArray(4)
+                val returnedPointer = toInterop(returned)
+                JphCompoundShapeSettingsSubShapeSettings_GetRotation(compoundShapeSettingsSubShapeSettingsHandle, returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Quat(returned)
+            }
+            set(value) = interopScope { JphCompoundShapeSettingsSubShapeSettings_SetRotation(compoundShapeSettingsSubShapeSettingsHandle, toInterop(value.toArray())) }
+    
+        open var userData: Int
+            get() = JphCompoundShapeSettingsSubShapeSettings_GetUserData(compoundShapeSettingsSubShapeSettingsHandle)
+            set(value) = JphCompoundShapeSettingsSubShapeSettings_SetUserData(compoundShapeSettingsSubShapeSettingsHandle, value)
+    
+        companion object {
+            fun createRTTI(rtti: RTTI) =
+                JphCompoundShapeSettingsSubShapeSettings_sCreateRTTI(rtti.rttiHandle)
+        }
     }
+    
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphCompoundShapeSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

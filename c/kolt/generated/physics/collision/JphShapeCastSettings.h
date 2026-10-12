@@ -11,6 +11,7 @@ extern "C" {
 // JPH::ShapeCastSettings
 JphShapeCastSettings* JphShapeCastSettings_create(void);
 void JphShapeCastSettings_destroy(JphShapeCastSettings* self);
+JphCollideSettingsBase* JphShapeCastSettings_asCollideSettingsBase(JphShapeCastSettings* self);
 void JphShapeCastSettings_SetBackFaceMode(JphShapeCastSettings* self, JphEBackFaceMode inMode);
 float JphShapeCastSettings_GetExtraConvexRadius(const JphShapeCastSettings* self);
 void JphShapeCastSettings_SetExtraConvexRadius(JphShapeCastSettings* self, float value);

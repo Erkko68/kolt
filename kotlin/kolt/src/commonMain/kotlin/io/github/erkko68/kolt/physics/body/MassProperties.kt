@@ -39,6 +39,18 @@ open class MassProperties internal constructor(internal val massPropertiesHandle
     override fun close() =
         closeOnce { JphMassProperties_destroy(massPropertiesHandle) }
 
+    open fun decomposePrincipalMomentsOfInertia(): Triple<Boolean, Mat44, Vec3> =
+        interopScope {
+            val rotationArray = FloatArray(16)
+            val rotationPointer = toInterop(rotationArray)
+            val diagonalArray = FloatArray(4)
+            val diagonalPointer = toInterop(diagonalArray)
+            val nativeResult = JphMassProperties_DecomposePrincipalMomentsOfInertia(massPropertiesHandle, rotationPointer, diagonalPointer)
+            rotationPointer.fromInterop(rotationArray)
+            diagonalPointer.fromInterop(diagonalArray)
+            Triple(nativeResult, Mat44(rotationArray), Vec3(diagonalArray))
+        }
+
     open fun setMassAndInertiaOfSolidBox(boxSize: Vec3, density: Float) =
         interopScope { JphMassProperties_SetMassAndInertiaOfSolidBox(massPropertiesHandle, toInterop(boxSize.toArray()), density) }
 

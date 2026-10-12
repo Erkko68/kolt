@@ -65,6 +65,21 @@ sealed interface CValue {
      * a reference to release. A result [CBridge.out] is copied into one the caller created.
      */
     data class Handle(override val c: String, val nullable: Boolean, val owned: Boolean = false) : CValue
+    /** A pointer to one [value], which C++ takes by non-const reference: the callee reads what's there and writes its own. */
+    data class InOut(val value: CValue) : CValue {
+        override val c get() = value.c
+    }
+    /**
+     * A pointer to [element]s, as many as the callee knows or another argument says. [const]: the callee only reads
+     * them; a pointer to handles doesn't say, so there the parameter's name does ([ApiGenConfig.outParameter]).
+     */
+    data class Pointer(val element: CValue, val const: Boolean) : CValue {
+        override val c get() = element.c
+    }
+    /** A `void*`, which C passes as it is. */
+    data object Opaque : CValue {
+        override val c get() = "void*"
+    }
 }
 
 private fun isArray(type: CppType) = type.spelling.trim().endsWith("]")
@@ -260,7 +275,8 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
      */
     private fun sequence(type: CppType, bridge: DirectBridges): CBridge {
         if (!bridge.byValue && !bridge.result && !bridge.const && type.decl == "std::array") return updated(type)
-        if (!bridge.byValue) throw Unsupported("${type.spelling}: by non-const reference")
+        // A result by reference is read like a const one's.
+        if (!bridge.byValue && !(bridge.result && bridge.indirection == "&")) throw Unsupported("${type.spelling}: by non-const reference")
         // std::array's second argument is its size.
         val element = type.args.first()
         val resolved = generateSequence(element) { t -> t.decl?.let(api.aliases::get) }.last().decl
@@ -288,6 +304,18 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         )
     }
 
+    /**
+     * [type], a sequence the callee fills through a non-const reference, as the result C copies out of it; null when it
+     * isn't one. `Pending` stands in for the call, and makes the argument the callee fills (Bridge.hpp).
+     */
+    fun filled(type: CppType): CBridge? {
+        val s = shape(type.spelling)
+        if (s.const || s.indirection != listOf("&")) return null
+        val target = generateSequence(type) { t -> t.decl?.let(api.aliases::get) }.last()
+        if (!isArray(target) && target.decl !in config.allSequences) return null
+        return result(CppType(type.spelling.trim().removeSuffix("&").trim(), type.decl, type.kind, type.args))
+    }
+
     /** A std::array the callee changes (by pointer or reference): C's array goes in, and gets the changes back. */
     private fun updated(type: CppType): CBridge {
         val element = type.args.first()
@@ -313,7 +341,8 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         val base = Regex("""(?<![\w:])${Regex.escape(shape.base)}(?![\w:])""")
         val c = base.replaceFirst(spelling, names.type(record.name))
         val cpp = base.replaceFirst(spelling, cpp(record.name))
-        return CBridge(c, { "reinterpret_cast<${if (result) c else cpp}>($it)" })
+        return CBridge(c, { "reinterpret_cast<${if (result) c else cpp}>($it)" },
+            value = CValue.Pointer(CValue.Handle(names.type(record.name), nullable = true), const = false).takeIf { !result })
     }
 
     /**

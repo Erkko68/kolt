@@ -31,7 +31,15 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
     val mirrors by lazy { config.mirrors.keys.associate { names.type(it) to c.api.records[it]?.header }.filter { (cName, header) -> kotlinDir.resolve(path(header, kotlin(cName))).isFile } }
 
     /** A parameter's Kotlin [type] and the [argument] the external takes; [scoped]: it's only valid inside `interopScope`. */
-    class Passed(val type: String, val argument: String, val scoped: Boolean = false)
+    class Passed(
+        val type: String, val argument: String, val scoped: Boolean = false,
+        /** The statements before the call, and after it. */
+        val before: List<String> = emptyList(), val after: List<String> = emptyList(),
+        /** The type and value of what the callee left in it, which the function returns after its own result. */
+        val returned: Pair<String, String>? = null,
+        /** Whether the function takes it: not what the callee only writes. */
+        val taken: Boolean = true,
+    )
 
     /**
      * A result's Kotlin [type], and the [body] returning it, given what spells the external's call with the arguments
@@ -42,32 +50,84 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
     /** Records with a C function creating one from nothing, for C to copy a result into. */
     private val creates = c.bindings.mapNotNull { b -> b.bound?.takeIf { b.gap == null && it.role == CApiWriter.Bound.Role.CREATE && it.params.isEmpty() }?.let { names.type(it.owner) to b.c } }.toMap()
 
-    /** How Kotlin passes [name] to [bridge]'s parameter, or null when [CValue] doesn't type it. */
-    fun parameter(bridge: CBridge, name: String): Passed? {
+    /**
+     * How Kotlin passes [name] to [bridge]'s parameter, or null when [CValue] doesn't type it. [out]: the callee only
+     * writes it ([ApiGenConfig.outParameter]).
+     */
+    fun parameter(bridge: CBridge, name: String, out: Boolean = false): Passed? {
         val value = bridge.value ?: return null
+        if (value is CValue.InOut) return inOut(value.value, name, out).takeIf { bridge.extra.isEmpty() }
+        if (value is CValue.Pointer) return pointer(value, name, out).takeIf { bridge.extra.isEmpty() }
         val type = type(value) ?: return null
         if (value is CValue.Sequence) {
             if (bridge.extra != listOf("uint32_t" to "Count")) return null
-            val n = (value.element as? CValue.Mirror)?.count
-            val items = when (val e = value.element) {
-                is CValue.Builtin -> name
-                is CValue.Enum, is CValue.Scalar -> "IntArray($name.size) { $name[it].value }"
-                is CValue.Mirror -> "${ARRAYS.getValue(e.element)}($name.size * $n).also { a -> $name.forEachIndexed { i, v -> v.toArray().copyInto(a, i * $n) } }"
-                is CValue.Handle -> "$name.map { it.${handle(e.c)} }"
-                else -> return null
-            }
-            return Passed(type, "toInterop($items), $name.size", scoped = true)
+            return Passed(type, "toInterop(${items(value.element, name) ?: return null}), $name.size", scoped = true)
         }
         if (bridge.extra.isNotEmpty()) return null
         return when (value) {
-            is CValue.Builtin -> Passed(type, name)
+            is CValue.Builtin, is CValue.Opaque -> Passed(type, name)
             is CValue.Enum, is CValue.Scalar -> Passed(type, "$name.value")
             is CValue.Handle -> Passed(type, if (value.nullable) "$name?.${handle(value.c)} ?: NullPointer" else "$name.${handle(value.c)}")
             // ponytail: an array per call; reuse a scratch buffer per thread if profiles show it.
             is CValue.Mirror -> Passed(type, "toInterop($name.toArray())", scoped = true)
             is CValue.Text -> Passed(type, "toInterop($name)", scoped = true)
-            is CValue.Sequence, is CValue.Fallible -> null
+            is CValue.Sequence, is CValue.Fallible, is CValue.InOut, is CValue.Pointer -> null
         }
+    }
+
+    /** The array, or list of pointers, C takes for the [element]s of the list [name]. */
+    private fun items(element: CValue, name: String): String? = when (element) {
+        is CValue.Builtin -> name
+        is CValue.Enum, is CValue.Scalar -> "IntArray($name.size) { $name[it].value }"
+        is CValue.Mirror -> element.count.let { n -> "${ARRAYS.getValue(element.element)}($name.size * $n).also { a -> $name.forEachIndexed { i, v -> v.toArray().copyInto(a, i * $n) } }" }
+        is CValue.Handle -> "$name.map { it.${handle(element.c)} }"
+        else -> null
+    }
+
+    /**
+     * A [value] the callee writes through a pointer: an array of it goes in, holding [name] unless the callee [out]
+     * only writes, and the function returns what comes back.
+     */
+    private fun inOut(value: CValue, name: String, out: Boolean): Passed? {
+        val type = type(value) ?: return null
+        val (array, pointer) = name.trim('`').let { "${it}Array" to "${it}Pointer" }
+        val (made, read) = when (value) {
+            is CValue.Builtin -> (ARRAYS[value.c] ?: return null).let { (if (out) "$it(1)" else "${it.replaceFirstChar(Char::lowercaseChar)}Of($name)") to "$array[0]" }
+            is CValue.Scalar -> (if (out) "IntArray(1)" else "intArrayOf($name.value)") to "$type($array[0])"
+            is CValue.Mirror -> (if (out) "${ARRAYS.getValue(value.element)}(${value.count})" else "$name.toArray()") to "$type($array)"
+            else -> return null
+        }
+        return Passed(type, pointer, scoped = true, before = listOf("val $array = $made", "val $pointer = toInterop($array)"),
+            after = listOf("$pointer.fromInterop($array)"), returned = type to read, taken = !out)
+    }
+
+    /**
+     * The elements the callee reads through a pointer, as many as it knows to: numbers as their array, the rest as a
+     * list. Ones it writes too come back in place, so that list is mutable; of handles, when the parameter is [out].
+     * ponytail: nothing checks the array holds as many as the callee takes; the count is another argument, or none.
+     */
+    private fun pointer(value: CValue.Pointer, name: String, out: Boolean): Passed? {
+        val e = value.element
+        val (array, pointer) = name.trim('`').let { "${it}Array" to "${it}Pointer" }
+        if (e is CValue.Builtin) {
+            val type = ARRAYS[e.c] ?: return null
+            return if (value.const) Passed(type, "toInterop($name)", scoped = true)
+            else Passed(type, pointer, scoped = true, before = listOf("val $pointer = toInterop($name)"), after = listOf("$pointer.fromInterop($name)"))
+        }
+        val k = type(e)?.removeSuffix("?") ?: return null
+        val items = items(e, name) ?: return null
+        if (e is CValue.Handle) return if (!out) Passed("List<$k>", "toInterop($items)", scoped = true) else Passed(
+            "MutableList<$k?>", pointer, scoped = true, before = listOf("val $pointer = toInterop($name.map { it?.${handle(e.c)} ?: NullPointer })"),
+            after = listOf("readPointers($pointer, $name.size).forEachIndexed { i, p -> $name[i] = p.takeIf { it != NullPointer }?.let { $k(it) } }"),
+        )
+        val before = listOf("val $array = $items", "val $pointer = toInterop($array)")
+        if (value.const) return Passed("List<$k>", pointer, scoped = true, before = before)
+        val read = when (e) {
+            is CValue.Scalar -> "$k($array[i])"
+            is CValue.Mirror -> "$k($array.copyOfRange(i * ${e.count}, i * ${e.count} + ${e.count}))"
+            else -> return null
+        }
+        return Passed("MutableList<$k>", pointer, scoped = true, before = before, after = listOf("$pointer.fromInterop($array)", "for (i in $name.indices) $name[i] = $read"))
     }
 
     /** How Kotlin takes [bridge]'s result, or null when [CValue] doesn't type it. */
@@ -159,8 +219,22 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
             is CValue.Scalar -> "$type($slot.toInt())"
             is CValue.Handle -> if (value.nullable) "$pointer.takeIf { it != NullPointer }?.let { ${kotlin(value.c)}(it) }" else "$type($pointer)"
             is CValue.Mirror -> "$type(readFloats($pointer, ${value.count}))".takeIf { value.element == "float" }
+            is CValue.Opaque -> pointer
+            // The slot points at it.
+            is CValue.InOut -> when (val v = value.value) {
+                is CValue.Mirror -> fromSlot(v, i)
+                is CValue.Builtin -> "readFloats($pointer, 1)[0]".takeIf { v.c == "float" }
+                else -> null
+            }
             else -> null
         }
+    }
+
+    /** The statement writing [expression] to what slot [i] of an upcall's arguments points at, a [value] C++ takes back. */
+    fun toPointerSlot(value: CValue, i: Int, expression: String): String? = when (val v = (value as? CValue.InOut)?.value) {
+        is CValue.Mirror -> "writeFloats(readPointerSlot(args, $i), $expression.toArray())".takeIf { v.element == "float" }
+        is CValue.Builtin -> "writeFloats(readPointerSlot(args, $i), floatArrayOf($expression))".takeIf { v.c == "float" }
+        else -> null
     }
 
     /** The slot holding [expression], an upcall's result of [value]. */
@@ -184,10 +258,13 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
         is CValue.Handle -> (kotlin(value.c) + if (value.nullable) "?" else "").takeIf { value.c in records }
         is CValue.Mirror -> kotlin(value.c).takeIf { value.c in mirrors && value.element in ARRAYS }
         is CValue.Text -> "String?"
+        is CValue.Opaque -> "NativePointer"
+        is CValue.InOut -> type(value.value)
+        is CValue.Pointer -> null
         is CValue.Fallible -> type(value.value)?.removeSuffix("?")
         is CValue.Sequence -> when (val e = value.element) {
             is CValue.Builtin -> ARRAYS[e.c]
-            is CValue.Sequence, is CValue.Fallible, is CValue.Text -> null
+            is CValue.Sequence, is CValue.Fallible, is CValue.Text, is CValue.InOut, is CValue.Pointer, is CValue.Opaque -> null
             else -> type(e)?.let { "List<${it.removeSuffix("?")}>" }
         }
     }
@@ -231,6 +308,6 @@ internal class KotlinValues(val c: CApiWriter, private val config: ApiGenConfig,
         const val ERROR_CAPACITY = 256
         val INTS = setOf("int32_t", "uint32_t")
         val BUILTINS = mapOf("bool" to "Boolean", "float" to "Float", "double" to "Double", "int32_t" to "Int", "uint32_t" to "Int", "int64_t" to "Long", "uint64_t" to "Long")
-        val ARRAYS = mapOf("float" to "FloatArray", "double" to "DoubleArray", "int32_t" to "IntArray", "uint32_t" to "IntArray", "int64_t" to "LongArray", "uint64_t" to "LongArray")
+        val ARRAYS = mapOf("int8_t" to "ByteArray", "uint8_t" to "ByteArray", "float" to "FloatArray", "double" to "DoubleArray", "int32_t" to "IntArray", "uint32_t" to "IntArray", "int64_t" to "LongArray", "uint64_t" to "LongArray")
     }
 }

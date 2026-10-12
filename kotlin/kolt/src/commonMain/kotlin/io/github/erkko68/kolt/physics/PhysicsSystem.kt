@@ -50,6 +50,10 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
         get() = JphPhysicsSystem_GetContactListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { ContactListener(it) }
         set(listener) = JphPhysicsSystem_SetContactListener(physicsSystemHandle, listener?.contactListenerHandle ?: NullPointer)
 
+    open var softBodyContactListener: SoftBodyContactListener?
+        get() = JphPhysicsSystem_GetSoftBodyContactListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { SoftBodyContactListener(it) }
+        set(listener) = JphPhysicsSystem_SetSoftBodyContactListener(physicsSystemHandle, listener?.softBodyContactListenerHandle ?: NullPointer)
+
     open var simShapeFilter: SimShapeFilter?
         get() = JphPhysicsSystem_GetSimShapeFilter(physicsSystemHandle).takeIf { it != NullPointer }?.let { SimShapeFilter(it) }
         set(shapeFilter) = JphPhysicsSystem_SetSimShapeFilter(physicsSystemHandle, shapeFilter?.simShapeFilterHandle ?: NullPointer)
@@ -82,6 +86,12 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
 
     open fun removeConstraint(constraint: Constraint?) =
         JphPhysicsSystem_RemoveConstraint(physicsSystemHandle, constraint?.constraintHandle ?: NullPointer)
+
+    open fun addConstraints(constraints: List<Constraint>, number: Int) =
+        interopScope { JphPhysicsSystem_AddConstraints(physicsSystemHandle, toInterop(constraints.map { it.constraintHandle }), number) }
+
+    open fun removeConstraints(constraints: List<Constraint>, number: Int) =
+        interopScope { JphPhysicsSystem_RemoveConstraints(physicsSystemHandle, toInterop(constraints.map { it.constraintHandle }), number) }
 
     open val constraints: List<Constraint>
         get() = interopScope {
@@ -148,6 +158,26 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
 
     open val maxBodies: Int
         get() = JphPhysicsSystem_GetMaxBodies(physicsSystemHandle)
+
+    open val bodies: List<BodyID>
+        get() = interopScope {
+            val count = JphPhysicsSystem_GetBodies(physicsSystemHandle, NullPointer, 0)
+            val returned = IntArray(count)
+            val returnedPointer = toInterop(returned)
+            JphPhysicsSystem_GetBodies(physicsSystemHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned.map { BodyID(it) }
+        }
+
+    open fun getActiveBodies(type: EBodyType): List<BodyID> =
+        interopScope {
+            val count = JphPhysicsSystem_GetActiveBodies(physicsSystemHandle, type.value, NullPointer, 0)
+            val returned = IntArray(count)
+            val returnedPointer = toInterop(returned)
+            JphPhysicsSystem_GetActiveBodies(physicsSystemHandle, type.value, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned.map { BodyID(it) }
+        }
 
     open fun wereBodiesInContact(body1ID: BodyID, body2ID: BodyID): Boolean =
         JphPhysicsSystem_WereBodiesInContact(physicsSystemHandle, body1ID.value, body2ID.value)

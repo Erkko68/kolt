@@ -63,4 +63,12 @@ open class TrackedVehicleController internal constructor(internal val trackedVeh
 
     open val transmission: VehicleTransmission
         get() = VehicleTransmission(JphTrackedVehicleController_GetTransmission(trackedVehicleControllerHandle))
+
+    open val tracks: List<VehicleTrack>
+        get() = interopScope {
+            val count = JphTrackedVehicleController_GetTracks(trackedVehicleControllerHandle, NullPointer, 0)
+            val returned = List(count) { VehicleTrack(JphVehicleTrack_create(), owned = true) }
+            JphTrackedVehicleController_GetTracks(trackedVehicleControllerHandle, toInterop(returned.map { it.vehicleTrackHandle }), count)
+            returned
+        }
 }

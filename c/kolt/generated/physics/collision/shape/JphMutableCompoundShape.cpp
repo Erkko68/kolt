@@ -28,14 +28,6 @@ JphMutableCompoundShape* JphMutableCompoundShape_Clone(const JphMutableCompoundS
     return kolt::c(kolt::retain(kolt::cpp(self)->Clone()));
 }
 
-int32_t JphMutableCompoundShape_GetIntersectingSubShapes_AABox_uint_int(const JphMutableCompoundShape* self, const JphAABox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices) {
-    return static_cast<int32_t>(kolt::cpp(self)->GetIntersectingSubShapes(*kolt::cpp(inBox), outSubShapeIndices, static_cast<int>(inMaxSubShapeIndices)));
-}
-
-int32_t JphMutableCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int(const JphMutableCompoundShape* self, const JphOrientedBox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices) {
-    return static_cast<int32_t>(kolt::cpp(self)->GetIntersectingSubShapes(*kolt::cpp(inBox), outSubShapeIndices, static_cast<int>(inMaxSubShapeIndices)));
-}
-
 uint32_t JphMutableCompoundShape_AddShape(JphMutableCompoundShape* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShape* inShape, uint32_t inUserData, uint32_t inIndex) {
     return static_cast<uint32_t>(kolt::cpp(self)->AddShape(kolt::math<JPH::Vec3>(*inPosition), kolt::math<JPH::Quat>(*inRotation), kolt::cpp(inShape), inUserData, static_cast<unsigned int>(inIndex)));
 }

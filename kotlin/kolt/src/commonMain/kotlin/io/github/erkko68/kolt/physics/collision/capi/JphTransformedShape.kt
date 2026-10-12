@@ -67,6 +67,9 @@ internal external fun JphTransformedShape_MakeSubShapeIDRelativeToShape(self: Na
 @ExternalSymbolName("JphTransformedShape_GetWorldSpaceSurfaceNormal")
 internal external fun JphTransformedShape_GetWorldSpaceSurfaceNormal(self: NativePointer, inSubShapeID: Int, inPosition: NativePointer, out: NativePointer)
 
+@ExternalSymbolName("JphTransformedShape_GetSupportingFace")
+internal external fun JphTransformedShape_GetSupportingFace(self: NativePointer, inSubShapeID: Int, inDirection: NativePointer, inBaseOffset: NativePointer, out: NativePointer, outCapacity: Int): Int
+
 @ExternalSymbolName("JphTransformedShape_GetMaterial")
 internal external fun JphTransformedShape_GetMaterial(self: NativePointer, inSubShapeID: Int): NativePointer
 

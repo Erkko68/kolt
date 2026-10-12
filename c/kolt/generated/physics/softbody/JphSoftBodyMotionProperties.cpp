@@ -24,6 +24,10 @@ const JphSoftBodySharedSettings* JphSoftBodyMotionProperties_GetSettings(const J
     return kolt::c(kolt::cpp(self)->GetSettings());
 }
 
+uint32_t JphSoftBodyMotionProperties_GetVertices(JphSoftBodyMotionProperties* self, JphSoftBodyVertex* const* out, uint32_t outCapacity) {
+    return kolt::copy(kolt::cpp(self)->GetVertices(), outCapacity, [&](auto& x, uint32_t i) { *kolt::cpp(out[i]) = x; });
+}
+
 JphSoftBodyVertex* JphSoftBodyMotionProperties_GetVertex(JphSoftBodyMotionProperties* self, uint32_t inIndex) {
     return kolt::c(&kolt::cpp(self)->GetVertex(static_cast<unsigned int>(inIndex)));
 }

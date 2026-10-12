@@ -26,6 +26,7 @@ internal class CApiWriter(
     private val surface = api.surface(headers)
     private val baseModule = apiHeaders.modules.keys.first()
     private val functionNames = HashSet<String>()
+    private val outParameter = Regex(config.outParameter.ifEmpty { "$^" })
     /** After [write]: each C function the C++ API calls for, bound or not. */
     val bindings = ArrayList<Binding>()
 
@@ -234,6 +235,10 @@ internal class CApiWriter(
         if (record != null && handled(record) && record.accessible && s.indirection.size == 1 && s.indirection[0] != "&&")
             return Triple("", "$h::c(${if (s.indirection[0] == "&") "&" else ""}p$i)", CValue.Handle(names.type(record.name), nullable = s.indirection[0] == "*"))
         val b = bridges.result(p.type)
+        // What the function may write: the slot points at C++'s own, which lies as C's mirror does. Of floats, for now.
+        if (b.value == null && b.extra.isEmpty()) (try { bridges.param(p.type).value as? CValue.InOut } catch (e: Unsupported) { null })
+            ?.takeIf { v -> v.value.let { it is CValue.Mirror && it.element == "float" || it == CValue.Builtin("float") } }
+            ?.let { return Triple("", b.convert("p$i"), it) }
         val value = b.value?.takeIf { b.extra.isEmpty() } ?: throw Unsupported("${p.type.spelling}: no slot holds it")
         return when {
             value is CValue.Mirror -> Triple("        ${b.c} a$i;\n        ${b.store("p$i", "&a$i")}\n", "&a$i", value)
@@ -272,15 +277,22 @@ internal class CApiWriter(
 
     private fun forwarder(method: CppMethod, name: String, templateArguments: List<String> = emptyList()): Forwarder {
         if (api.records[method.owner]?.let(bridges::uninstantiated) == true) throw Unsupported("member of a class template")
-        val returns = bridges.result(method.returns)
-        val params = bridge(method.params)
+        // The one sequence a function returning nothing only fills is what C returns.
+        val out = method.params.singleOrNull { outParameter.containsMatchIn(it.name) && shape(it.type.spelling).let { s -> !s.const && s.indirection == listOf("&") } }
+            ?.takeIf { method.returns.spelling == "void" }
+        val filled = out?.let { bridges.filled(it.type) }
+        val returns = filled ?: bridges.result(method.returns)
+        val params = bridge(if (filled == null) method.params else method.params - out!!)
         val const = if (method.isConst) "const " else ""
         val self = if (method.isStatic) null else "$const${names.type(method.owner)}* self"
         val target = if (method.isStatic) "${bridges.cpp(method.owner)}::" else "$h::cpp(self)->"
         val explicit = if (templateArguments.isEmpty()) "" else templateArguments.joinToString(prefix = "<", postfix = ">")
-        val call = "$target${method.name}$explicit(${args(params)})"
+        val passed = params.iterator()
+        val call = "$target${method.name}$explicit(${method.params.joinToString { p -> if (filled != null && p === out) "filled" else passed.next().let { (n, b) -> b.convert(n) } }})"
         val bound = Bound(Bound.Role.METHOD, method.owner, method.name, params, returns, method.isStatic, signature = virtualSignature(method))
         return when {
+            filled != null -> Forwarder("uint32_t $name(${cParams(self, params, trailing(filled))})",
+                "auto filled = ${filled.convert("$h::Pending()")};\n    $call;\n    return filled.finish();", bound)
             returns.out -> Forwarder("void $name(${cParams(self, params, out = "${returns.c}* out")})", returns.store(call, "out"), bound)
             returns.c == "void" -> Forwarder("void $name(${cParams(self, params)})", "$call;", bound)
             else -> Forwarder("${returns.c} $name(${cParams(self, params, trailing(returns))})", "return ${returns.convert(call)};", bound)

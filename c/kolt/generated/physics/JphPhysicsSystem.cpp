@@ -32,6 +32,14 @@ JphContactListener* JphPhysicsSystem_GetContactListener(const JphPhysicsSystem* 
     return kolt::c(kolt::cpp(self)->GetContactListener());
 }
 
+void JphPhysicsSystem_SetSoftBodyContactListener(JphPhysicsSystem* self, JphSoftBodyContactListener* inListener) {
+    kolt::cpp(self)->SetSoftBodyContactListener(kolt::cpp(inListener));
+}
+
+JphSoftBodyContactListener* JphPhysicsSystem_GetSoftBodyContactListener(const JphPhysicsSystem* self) {
+    return kolt::c(kolt::cpp(self)->GetSoftBodyContactListener());
+}
+
 void JphPhysicsSystem_SetSimShapeFilter(JphPhysicsSystem* self, const JphSimShapeFilter* inShapeFilter) {
     kolt::cpp(self)->SetSimShapeFilter(kolt::cpp(inShapeFilter));
 }
@@ -166,6 +174,18 @@ uint32_t JphPhysicsSystem_GetMaxBodies(const JphPhysicsSystem* self) {
 
 void JphPhysicsSystem_GetBodyStats(const JphPhysicsSystem* self, JphBodyManagerBodyStats* out) {
     *kolt::cpp(out) = kolt::cpp(self)->GetBodyStats();
+}
+
+uint32_t JphPhysicsSystem_GetBodies(const JphPhysicsSystem* self, uint32_t* out, uint32_t outCapacity) {
+    auto filled = kolt::copy(kolt::Pending(), outCapacity, [&](auto& x, uint32_t i) { out[i] = (x).GetIndexAndSequenceNumber(); });
+    kolt::cpp(self)->GetBodies(filled);
+    return filled.finish();
+}
+
+uint32_t JphPhysicsSystem_GetActiveBodies(const JphPhysicsSystem* self, JphEBodyType inType, uint32_t* out, uint32_t outCapacity) {
+    auto filled = kolt::copy(kolt::Pending(), outCapacity, [&](auto& x, uint32_t i) { out[i] = (x).GetIndexAndSequenceNumber(); });
+    kolt::cpp(self)->GetActiveBodies(static_cast<JPH::EBodyType>(inType), filled);
+    return filled.finish();
 }
 
 const uint32_t* JphPhysicsSystem_GetActiveBodiesUnsafe(const JphPhysicsSystem* self, JphEBodyType inType) {

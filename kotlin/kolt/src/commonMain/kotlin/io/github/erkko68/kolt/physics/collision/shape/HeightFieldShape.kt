@@ -66,11 +66,48 @@ open class HeightFieldShape internal constructor(internal val heightFieldShapeHa
     open fun isNoCollision(x: Int, y: Int): Boolean =
         JphHeightFieldShape_IsNoCollision(heightFieldShapeHandle, x, y)
 
+    open fun projectOntoSurface(localPosition: Vec3): Triple<Boolean, Vec3, SubShapeID> =
+        interopScope {
+            val surfacePositionArray = FloatArray(4)
+            val surfacePositionPointer = toInterop(surfacePositionArray)
+            val subShapeIDArray = IntArray(1)
+            val subShapeIDPointer = toInterop(subShapeIDArray)
+            val nativeResult = JphHeightFieldShape_ProjectOntoSurface(heightFieldShapeHandle, toInterop(localPosition.toArray()), surfacePositionPointer, subShapeIDPointer)
+            surfacePositionPointer.fromInterop(surfacePositionArray)
+            subShapeIDPointer.fromInterop(subShapeIDArray)
+            Triple(nativeResult, Vec3(surfacePositionArray), SubShapeID(subShapeIDArray[0]))
+        }
+
+    open fun getSubShapeCoordinates(subShapeID: SubShapeID): Triple<Int, Int, Int> =
+        interopScope {
+            val xArray = IntArray(1)
+            val xPointer = toInterop(xArray)
+            val yArray = IntArray(1)
+            val yPointer = toInterop(yArray)
+            val triangleIndexArray = IntArray(1)
+            val triangleIndexPointer = toInterop(triangleIndexArray)
+            JphHeightFieldShape_GetSubShapeCoordinates(heightFieldShapeHandle, subShapeID.value, xPointer, yPointer, triangleIndexPointer)
+            xPointer.fromInterop(xArray)
+            yPointer.fromInterop(yArray)
+            triangleIndexPointer.fromInterop(triangleIndexArray)
+            Triple(xArray[0], yArray[0], triangleIndexArray[0])
+        }
+
     open val minHeightValue: Float
         get() = JphHeightFieldShape_GetMinHeightValue(heightFieldShapeHandle)
 
     open val maxHeightValue: Float
         get() = JphHeightFieldShape_GetMaxHeightValue(heightFieldShapeHandle)
+
+    open fun getHeights(x: Int, y: Int, sizeX: Int, sizeY: Int, heights: FloatArray, heightsStride: Long) =
+        interopScope {
+            val heightsPointer = toInterop(heights)
+            JphHeightFieldShape_GetHeights(heightFieldShapeHandle, x, y, sizeX, sizeY, heightsPointer, heightsStride)
+            heightsPointer.fromInterop(heights)
+        }
+
+    open fun setHeights(x: Int, y: Int, sizeX: Int, sizeY: Int, heights: FloatArray, heightsStride: Long, allocator: TempAllocator, activeEdgeCosThresholdAngle: Float) =
+        interopScope { JphHeightFieldShape_SetHeights(heightFieldShapeHandle, x, y, sizeX, sizeY, toInterop(heights), heightsStride, allocator.tempAllocatorHandle, activeEdgeCosThresholdAngle) }
 
     open val materialList: List<PhysicsMaterial>
         get() = interopScope {
@@ -78,6 +115,13 @@ open class HeightFieldShape internal constructor(internal val heightFieldShapeHa
             val returnedPointer = toInterop(List(count) { NullPointer })
             JphHeightFieldShape_GetMaterialList(heightFieldShapeHandle, returnedPointer, count)
             readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
+        }
+
+    open fun getMaterials(x: Int, y: Int, sizeX: Int, sizeY: Int, materials: ByteArray, materialsStride: Long) =
+        interopScope {
+            val materialsPointer = toInterop(materials)
+            JphHeightFieldShape_GetMaterials(heightFieldShapeHandle, x, y, sizeX, sizeY, materialsPointer, materialsStride)
+            materialsPointer.fromInterop(materials)
         }
 
     companion object {

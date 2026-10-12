@@ -52,6 +52,9 @@ open class BroadPhaseQuery internal constructor(internal val broadPhaseQueryHand
     open fun collideOrientedBox(box: OrientedBox, collector: CollideShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
         JphBroadPhaseQuery_CollideOrientedBox(broadPhaseQueryHandle, box.orientedBoxHandle, collector.collideShapeBodyCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle)
 
+    open fun castAABox(box: AABoxCast, collector: CastShapeBodyCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter) =
+        JphBroadPhaseQuery_CastAABox(broadPhaseQueryHandle, box.aaBoxCastHandle, collector.castShapeBodyCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle)
+
     open val bounds: AABox
         get() = run {
             val returned = AABox(JphAABox_create(), owned = true)

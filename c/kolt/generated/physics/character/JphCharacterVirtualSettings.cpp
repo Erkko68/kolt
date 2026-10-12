@@ -16,6 +16,10 @@ void JphCharacterVirtualSettings_release(const JphCharacterVirtualSettings* self
     kolt::cpp(self)->Release();
 }
 
+JphCharacterBaseSettings* JphCharacterVirtualSettings_asCharacterBaseSettings(JphCharacterVirtualSettings* self) {
+    return kolt::c(static_cast<JPH::CharacterBaseSettings*>(kolt::cpp(self)));
+}
+
 void JphCharacterVirtualSettings_GetID(const JphCharacterVirtualSettings* self, JphCharacterID* out) {
     *kolt::cpp(out) = kolt::cpp(self)->mID;
 }

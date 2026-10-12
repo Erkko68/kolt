@@ -64,6 +64,14 @@ open class WheeledVehicleController internal constructor(internal val wheeledVeh
     open val transmission: VehicleTransmission
         get() = VehicleTransmission(JphWheeledVehicleController_GetTransmission(wheeledVehicleControllerHandle))
 
+    open val differentials: List<VehicleDifferentialSettings>
+        get() = interopScope {
+            val count = JphWheeledVehicleController_GetDifferentials(wheeledVehicleControllerHandle, NullPointer, 0)
+            val returned = List(count) { VehicleDifferentialSettings(JphVehicleDifferentialSettings_create(), owned = true) }
+            JphWheeledVehicleController_GetDifferentials(wheeledVehicleControllerHandle, toInterop(returned.map { it.vehicleDifferentialSettingsHandle }), count)
+            returned
+        }
+
     open var differentialLimitedSlipRatio: Float
         get() = JphWheeledVehicleController_GetDifferentialLimitedSlipRatio(wheeledVehicleControllerHandle)
         set(v) = JphWheeledVehicleController_SetDifferentialLimitedSlipRatio(wheeledVehicleControllerHandle, v)

@@ -12,6 +12,7 @@ extern "C" {
 JphCharacterSettings* JphCharacterSettings_create(void);
 void JphCharacterSettings_addRef(const JphCharacterSettings* self);
 void JphCharacterSettings_release(const JphCharacterSettings* self);
+JphCharacterBaseSettings* JphCharacterSettings_asCharacterBaseSettings(JphCharacterSettings* self);
 uint32_t JphCharacterSettings_GetLayer(const JphCharacterSettings* self);
 void JphCharacterSettings_SetLayer(JphCharacterSettings* self, uint32_t value);
 float JphCharacterSettings_GetMass(const JphCharacterSettings* self);

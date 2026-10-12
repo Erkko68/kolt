@@ -28,6 +28,10 @@ void JphBroadPhaseQuery_CollideOrientedBox(const JphBroadPhaseQuery* self, const
     kolt::cpp(self)->CollideOrientedBox(*kolt::cpp(inBox), *kolt::cpp(ioCollector), *kolt::cpp(inBroadPhaseLayerFilter), *kolt::cpp(inObjectLayerFilter));
 }
 
+void JphBroadPhaseQuery_CastAABox(const JphBroadPhaseQuery* self, const JphAABoxCast* inBox, JphCastShapeBodyCollector* ioCollector, const JphBroadPhaseLayerFilter* inBroadPhaseLayerFilter, const JphObjectLayerFilter* inObjectLayerFilter) {
+    kolt::cpp(self)->CastAABox(*kolt::cpp(inBox), *kolt::cpp(ioCollector), *kolt::cpp(inBroadPhaseLayerFilter), *kolt::cpp(inObjectLayerFilter));
+}
+
 void JphBroadPhaseQuery_GetBounds(const JphBroadPhaseQuery* self, JphAABox* out) {
     *kolt::cpp(out) = kolt::cpp(self)->GetBounds();
 }

@@ -15,8 +15,7 @@ void JphBroadPhaseQuery_CollideAABox(const JphBroadPhaseQuery* self, const JphAA
 void JphBroadPhaseQuery_CollideSphere(const JphBroadPhaseQuery* self, const JphVec3* inCenter, float inRadius, JphCollideShapeBodyCollector* ioCollector, const JphBroadPhaseLayerFilter* inBroadPhaseLayerFilter, const JphObjectLayerFilter* inObjectLayerFilter);
 void JphBroadPhaseQuery_CollidePoint(const JphBroadPhaseQuery* self, const JphVec3* inPoint, JphCollideShapeBodyCollector* ioCollector, const JphBroadPhaseLayerFilter* inBroadPhaseLayerFilter, const JphObjectLayerFilter* inObjectLayerFilter);
 void JphBroadPhaseQuery_CollideOrientedBox(const JphBroadPhaseQuery* self, const JphOrientedBox* inBox, JphCollideShapeBodyCollector* ioCollector, const JphBroadPhaseLayerFilter* inBroadPhaseLayerFilter, const JphObjectLayerFilter* inObjectLayerFilter);
-// TODO(handwritten) JphBroadPhaseQuery_CastAABox: void JPH::BroadPhaseQuery::CastAABox(const AABoxCast & inBox, CastShapeBodyCollector & ioCollector, const BroadPhaseLayerFilter & inBroadPhaseLayerFilter, const ObjectLayerFilter & inObjectLayerFilter) const
-//     const AABoxCast &: JPH::AABoxCast
+void JphBroadPhaseQuery_CastAABox(const JphBroadPhaseQuery* self, const JphAABoxCast* inBox, JphCastShapeBodyCollector* ioCollector, const JphBroadPhaseLayerFilter* inBroadPhaseLayerFilter, const JphObjectLayerFilter* inObjectLayerFilter);
 void JphBroadPhaseQuery_GetBounds(const JphBroadPhaseQuery* self, JphAABox* out);
 
 

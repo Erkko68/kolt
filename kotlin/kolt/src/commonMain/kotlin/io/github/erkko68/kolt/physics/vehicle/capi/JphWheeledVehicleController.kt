@@ -46,6 +46,9 @@ internal external fun JphWheeledVehicleController_GetEngine(self: NativePointer)
 @ExternalSymbolName("JphWheeledVehicleController_GetTransmission")
 internal external fun JphWheeledVehicleController_GetTransmission(self: NativePointer): NativePointer
 
+@ExternalSymbolName("JphWheeledVehicleController_GetDifferentials")
+internal external fun JphWheeledVehicleController_GetDifferentials(self: NativePointer, out: NativePointer, outCapacity: Int): Int
+
 @ExternalSymbolName("JphWheeledVehicleController_GetDifferentialLimitedSlipRatio")
 internal external fun JphWheeledVehicleController_GetDifferentialLimitedSlipRatio(self: NativePointer): Float
 

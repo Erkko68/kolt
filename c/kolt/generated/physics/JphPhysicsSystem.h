@@ -16,10 +16,8 @@ void JphPhysicsSystem_SetBodyActivationListener(JphPhysicsSystem* self, JphBodyA
 JphBodyActivationListener* JphPhysicsSystem_GetBodyActivationListener(const JphPhysicsSystem* self);
 void JphPhysicsSystem_SetContactListener(JphPhysicsSystem* self, JphContactListener* inListener);
 JphContactListener* JphPhysicsSystem_GetContactListener(const JphPhysicsSystem* self);
-// TODO(handwritten) JphPhysicsSystem_SetSoftBodyContactListener: void JPH::PhysicsSystem::SetSoftBodyContactListener(SoftBodyContactListener * inListener)
-//     SoftBodyContactListener *: JPH::SoftBodyContactListener
-// TODO(handwritten) JphPhysicsSystem_GetSoftBodyContactListener: SoftBodyContactListener * JPH::PhysicsSystem::GetSoftBodyContactListener() const
-//     SoftBodyContactListener *: JPH::SoftBodyContactListener
+void JphPhysicsSystem_SetSoftBodyContactListener(JphPhysicsSystem* self, JphSoftBodyContactListener* inListener);
+JphSoftBodyContactListener* JphPhysicsSystem_GetSoftBodyContactListener(const JphPhysicsSystem* self);
 // TODO(handwritten) JphPhysicsSystem_SetCombineFriction: void JPH::PhysicsSystem::SetCombineFriction(ContactConstraintManager::CombineFunction inCombineFriction)
 //     float (*)(const Body &, const SubShapeID &, const Body &, const SubShapeID &): takes C++ types
 // TODO(handwritten) JphPhysicsSystem_GetCombineFriction: ContactConstraintManager::CombineFunction JPH::PhysicsSystem::GetCombineFriction() const
@@ -70,10 +68,8 @@ uint32_t JphPhysicsSystem_GetNumBodies(const JphPhysicsSystem* self);
 uint32_t JphPhysicsSystem_GetNumActiveBodies(const JphPhysicsSystem* self, JphEBodyType inType);
 uint32_t JphPhysicsSystem_GetMaxBodies(const JphPhysicsSystem* self);
 void JphPhysicsSystem_GetBodyStats(const JphPhysicsSystem* self, JphBodyManagerBodyStats* out);
-// TODO(handwritten) JphPhysicsSystem_GetBodies: void JPH::PhysicsSystem::GetBodies(BodyIDVector & outBodyIDs) const
-//     Array<BodyID>: by non-const reference
-// TODO(handwritten) JphPhysicsSystem_GetActiveBodies: void JPH::PhysicsSystem::GetActiveBodies(EBodyType inType, BodyIDVector & outBodyIDs) const
-//     Array<BodyID>: by non-const reference
+uint32_t JphPhysicsSystem_GetBodies(const JphPhysicsSystem* self, uint32_t* out, uint32_t outCapacity);
+uint32_t JphPhysicsSystem_GetActiveBodies(const JphPhysicsSystem* self, JphEBodyType inType, uint32_t* out, uint32_t outCapacity);
 const uint32_t* JphPhysicsSystem_GetActiveBodiesUnsafe(const JphPhysicsSystem* self, JphEBodyType inType);
 bool JphPhysicsSystem_WereBodiesInContact(const JphPhysicsSystem* self, uint32_t inBody1ID, uint32_t inBody2ID);
 void JphPhysicsSystem_GetBounds(const JphPhysicsSystem* self, JphAABox* out);

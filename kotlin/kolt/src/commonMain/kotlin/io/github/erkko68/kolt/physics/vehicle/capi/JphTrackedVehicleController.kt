@@ -45,3 +45,6 @@ internal external fun JphTrackedVehicleController_GetEngine(self: NativePointer)
 
 @ExternalSymbolName("JphTrackedVehicleController_GetTransmission")
 internal external fun JphTrackedVehicleController_GetTransmission(self: NativePointer): NativePointer
+
+@ExternalSymbolName("JphTrackedVehicleController_GetTracks")
+internal external fun JphTrackedVehicleController_GetTracks(self: NativePointer, out: NativePointer, outCapacity: Int): Int

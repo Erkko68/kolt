@@ -11,6 +11,7 @@ extern "C" {
 // JPH::CollideShapeSettings
 JphCollideShapeSettings* JphCollideShapeSettings_create(void);
 void JphCollideShapeSettings_destroy(JphCollideShapeSettings* self);
+JphCollideSettingsBase* JphCollideShapeSettings_asCollideSettingsBase(JphCollideShapeSettings* self);
 float JphCollideShapeSettings_GetMaxSeparationDistance(const JphCollideShapeSettings* self);
 void JphCollideShapeSettings_SetMaxSeparationDistance(JphCollideShapeSettings* self, float value);
 JphEBackFaceMode JphCollideShapeSettings_GetBackFaceMode(const JphCollideShapeSettings* self);

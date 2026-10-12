@@ -45,6 +45,18 @@ open class VehicleDifferentialSettings internal constructor(internal val vehicle
     open fun restoreBinaryState(stream: StreamIn) =
         JphVehicleDifferentialSettings_RestoreBinaryState(vehicleDifferentialSettingsHandle, stream.streamInHandle)
 
+    open fun calculateTorqueRatio(leftAngularVelocity: Float, rightAngularVelocity: Float): Pair<Float, Float> =
+        interopScope {
+            val leftTorqueFractionArray = FloatArray(1)
+            val leftTorqueFractionPointer = toInterop(leftTorqueFractionArray)
+            val rightTorqueFractionArray = FloatArray(1)
+            val rightTorqueFractionPointer = toInterop(rightTorqueFractionArray)
+            JphVehicleDifferentialSettings_CalculateTorqueRatio(vehicleDifferentialSettingsHandle, leftAngularVelocity, rightAngularVelocity, leftTorqueFractionPointer, rightTorqueFractionPointer)
+            leftTorqueFractionPointer.fromInterop(leftTorqueFractionArray)
+            rightTorqueFractionPointer.fromInterop(rightTorqueFractionArray)
+            Pair(leftTorqueFractionArray[0], rightTorqueFractionArray[0])
+        }
+
     open var leftWheel: Int
         get() = JphVehicleDifferentialSettings_GetLeftWheel(vehicleDifferentialSettingsHandle)
         set(value) = JphVehicleDifferentialSettings_SetLeftWheel(vehicleDifferentialSettingsHandle, value)

@@ -48,6 +48,9 @@ open class WheelSettings internal constructor(internal val wheelSettingsHandle: 
     open val rtti: RTTI?
         get() = JphWheelSettings_GetRTTI(wheelSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
+    open fun castTo(rtti: RTTI?): NativePointer =
+        JphWheelSettings_CastTo(wheelSettingsHandle, rtti?.rttiHandle ?: NullPointer)
+
     open fun saveBinaryState(stream: StreamOut) =
         JphWheelSettings_SaveBinaryState(wheelSettingsHandle, stream.streamOutHandle)
 

@@ -112,6 +112,12 @@ void JphShape_GetSurfaceNormal(const JphShape* self, uint32_t inSubShapeID, cons
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetSurfaceNormal(kolt::subShapeID(inSubShapeID), kolt::math<JPH::Vec3>(*inLocalSurfacePosition)));
 }
 
+uint32_t JphShape_GetSupportingFace(const JphShape* self, uint32_t inSubShapeID, const JphVec3* inDirection, const JphVec3* inScale, const JphMat44* inCenterOfMassTransform, JphVec3* out, uint32_t outCapacity) {
+    auto filled = kolt::copy(kolt::Pending(), outCapacity, [&](auto& x, uint32_t i) { out[i] = kolt::mirror<JphVec3>(x); });
+    kolt::cpp(self)->GetSupportingFace(kolt::subShapeID(inSubShapeID), kolt::math<JPH::Vec3>(*inDirection), kolt::math<JPH::Vec3>(*inScale), kolt::math<JPH::Mat44>(*inCenterOfMassTransform), filled);
+    return filled.finish();
+}
+
 void JphShape_GetSubShapeUserData(const JphShape* self, uint32_t inSubShapeID, uint64_t* out) {
     *out = kolt::cpp(self)->GetSubShapeUserData(kolt::subShapeID(inSubShapeID));
 }
@@ -162,6 +168,18 @@ void JphShape_SaveBinaryState(const JphShape* self, JphStreamOut* inStream) {
 
 JphShape* JphShape_sRestoreFromBinaryState(JphStreamIn* inStream, char* outError, uint32_t outErrorCapacity) {
     return kolt::result(JPH::Shape::sRestoreFromBinaryState(*kolt::cpp(inStream)), outError, outErrorCapacity, [&](auto& v) { return kolt::c(kolt::retain(v)); });
+}
+
+uint32_t JphShape_SaveMaterialState(const JphShape* self, const JphPhysicsMaterial** out, uint32_t outCapacity) {
+    auto filled = kolt::copy(kolt::Pending(), outCapacity, [&](auto& x, uint32_t i) { out[i] = kolt::c(kolt::retain(x)); });
+    kolt::cpp(self)->SaveMaterialState(filled);
+    return filled.finish();
+}
+
+uint32_t JphShape_SaveSubShapeState(const JphShape* self, const JphShape** out, uint32_t outCapacity) {
+    auto filled = kolt::copy(kolt::Pending(), outCapacity, [&](auto& x, uint32_t i) { out[i] = kolt::c(kolt::retain(x)); });
+    kolt::cpp(self)->SaveSubShapeState(filled);
+    return filled.finish();
 }
 
 float JphShape_GetVolume(const JphShape* self) {

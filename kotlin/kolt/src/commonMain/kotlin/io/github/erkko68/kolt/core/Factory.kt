@@ -39,6 +39,9 @@ open class Factory internal constructor(internal val factoryHandle: NativePointe
     override fun close() =
         closeOnce { JphFactory_destroy(factoryHandle) }
 
+    open fun createObject(name: String?): NativePointer =
+        interopScope { JphFactory_CreateObject(factoryHandle, toInterop(name)) }
+
     open fun find(name: String?): RTTI? =
         interopScope { JphFactory_Find_char(factoryHandle, toInterop(name)).takeIf { it != NullPointer }?.let { RTTI(it) } }
 
@@ -47,6 +50,9 @@ open class Factory internal constructor(internal val factoryHandle: NativePointe
 
     open fun register(rtti: RTTI?): Boolean =
         JphFactory_Register_RTTI(factoryHandle, rtti?.rttiHandle ?: NullPointer)
+
+    open fun register(rttIs: List<RTTI>, number: Int): Boolean =
+        interopScope { JphFactory_Register_RTTIPtr_uint(factoryHandle, toInterop(rttIs.map { it.rttiHandle }), number) }
 
     open fun clear() =
         JphFactory_Clear(factoryHandle)

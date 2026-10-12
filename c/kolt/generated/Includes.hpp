@@ -29,6 +29,7 @@
 #include <Jolt/Physics/Character/CharacterBase.h>
 #include <Jolt/Physics/Character/CharacterID.h>
 #include <Jolt/Physics/Character/CharacterVirtual.h>
+#include <Jolt/Physics/Collision/AABoxCast.h>
 #include <Jolt/Physics/Collision/BroadPhase/BroadPhaseLayer.h>
 #include <Jolt/Physics/Collision/BroadPhase/BroadPhaseLayerInterfaceMask.h>
 #include <Jolt/Physics/Collision/BroadPhase/BroadPhaseLayerInterfaceTable.h>
@@ -53,9 +54,11 @@
 #include <Jolt/Physics/Collision/RayCast.h>
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
+#include <Jolt/Physics/Collision/Shape/CompoundShape.h>
 #include <Jolt/Physics/Collision/Shape/ConvexHullShape.h>
 #include <Jolt/Physics/Collision/Shape/ConvexShape.h>
 #include <Jolt/Physics/Collision/Shape/CylinderShape.h>
+#include <Jolt/Physics/Collision/Shape/DecoratedShape.h>
 #include <Jolt/Physics/Collision/Shape/EmptyShape.h>
 #include <Jolt/Physics/Collision/Shape/HeightFieldShape.h>
 #include <Jolt/Physics/Collision/Shape/MeshShape.h>
@@ -67,6 +70,7 @@
 #include <Jolt/Physics/Collision/Shape/Shape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
 #include <Jolt/Physics/Collision/Shape/StaticCompoundShape.h>
+#include <Jolt/Physics/Collision/Shape/SubShapeID.h>
 #include <Jolt/Physics/Collision/Shape/SubShapeIDPair.h>
 #include <Jolt/Physics/Collision/Shape/TaperedCapsuleShape.h>
 #include <Jolt/Physics/Collision/Shape/TaperedCylinderShape.h>
@@ -92,9 +96,12 @@
 #include <Jolt/Physics/PhysicsSettings.h>
 #include <Jolt/Physics/PhysicsSystem.h>
 #include <Jolt/Physics/Ragdoll/Ragdoll.h>
+#include <Jolt/Physics/SoftBody/SoftBodyContactListener.h>
 #include <Jolt/Physics/SoftBody/SoftBodyCreationSettings.h>
+#include <Jolt/Physics/SoftBody/SoftBodyManifold.h>
 #include <Jolt/Physics/SoftBody/SoftBodyMotionProperties.h>
 #include <Jolt/Physics/SoftBody/SoftBodySharedSettings.h>
+#include <Jolt/Physics/SoftBody/SoftBodyVertex.h>
 #include <Jolt/Physics/Vehicle/MotorcycleController.h>
 #include <Jolt/Physics/Vehicle/TrackedVehicleController.h>
 #include <Jolt/Physics/Vehicle/VehicleAntiRollBar.h>
@@ -121,6 +128,7 @@ KOLT_TYPE(JphUVec4, JPH::UVec4)
 KOLT_TYPE(JphVec3, JPH::Vec3)
 KOLT_TYPE(JphVec4, JPH::Vec4)
 KOLT_TYPE(JphAABox, JPH::AABox)
+KOLT_TYPE(JphAABoxCast, JPH::AABoxCast)
 KOLT_TYPE(JphBody, JPH::Body)
 KOLT_TYPE(JphBodyActivationListener, JPH::BodyActivationListener)
 KOLT_TYPE(JphBodyCreationSettings, JPH::BodyCreationSettings)
@@ -307,7 +315,10 @@ KOLT_TYPE(JphSkeletonJoint, JPH::Skeleton::Joint)
 KOLT_TYPE(JphSkeletonPose, JPH::SkeletonPose)
 KOLT_TYPE(JphSliderConstraint, JPH::SliderConstraint)
 KOLT_TYPE(JphSliderConstraintSettings, JPH::SliderConstraintSettings)
+KOLT_TYPE(JphSoftBodyContactListener, JPH::SoftBodyContactListener)
+KOLT_TYPE(JphSoftBodyContactSettings, JPH::SoftBodyContactSettings)
 KOLT_TYPE(JphSoftBodyCreationSettings, JPH::SoftBodyCreationSettings)
+KOLT_TYPE(JphSoftBodyManifold, JPH::SoftBodyManifold)
 KOLT_TYPE(JphSoftBodyMotionProperties, JPH::SoftBodyMotionProperties)
 KOLT_TYPE(JphSoftBodySharedSettings, JPH::SoftBodySharedSettings)
 KOLT_TYPE(JphSoftBodySharedSettingsDihedralBend, JPH::SoftBodySharedSettings::DihedralBend)

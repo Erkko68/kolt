@@ -43,14 +43,12 @@ void JphVehicleConstraint_GetLocalUp(const JphVehicleConstraint* self, JphVec3* 
 void JphVehicleConstraint_GetWorldUp(const JphVehicleConstraint* self, JphVec3* out);
 JphBody* JphVehicleConstraint_GetVehicleBody(const JphVehicleConstraint* self);
 JphVehicleController* JphVehicleConstraint_GetController(JphVehicleConstraint* self);
-// TODO(handwritten) JphVehicleConstraint_GetWheels: Wheels & JPH::VehicleConstraint::GetWheels()
-//     Array<Wheel *>: by non-const reference
+uint32_t JphVehicleConstraint_GetWheels(JphVehicleConstraint* self, JphWheel** out, uint32_t outCapacity);
 JphWheel* JphVehicleConstraint_GetWheel(JphVehicleConstraint* self, uint32_t inIdx);
 void JphVehicleConstraint_GetWheelLocalBasis(const JphVehicleConstraint* self, const JphWheel* inWheel, JphVec3* outForward, JphVec3* outUp, JphVec3* outRight);
 void JphVehicleConstraint_GetWheelLocalTransform(const JphVehicleConstraint* self, uint32_t inWheelIndex, const JphVec3* inWheelRight, const JphVec3* inWheelUp, JphMat44* out);
 void JphVehicleConstraint_GetWheelWorldTransform(const JphVehicleConstraint* self, uint32_t inWheelIndex, const JphVec3* inWheelRight, const JphVec3* inWheelUp, JphMat44* out);
-// TODO(handwritten) JphVehicleConstraint_GetAntiRollBars: VehicleAntiRollBars & JPH::VehicleConstraint::GetAntiRollBars()
-//     Array<VehicleAntiRollBar>: by non-const reference
+uint32_t JphVehicleConstraint_GetAntiRollBars(JphVehicleConstraint* self, JphVehicleAntiRollBar* const* out, uint32_t outCapacity);
 void JphVehicleConstraint_SetNumStepsBetweenCollisionTestActive(JphVehicleConstraint* self, uint32_t inSteps);
 uint32_t JphVehicleConstraint_GetNumStepsBetweenCollisionTestActive(const JphVehicleConstraint* self);
 void JphVehicleConstraint_SetNumStepsBetweenCollisionTestInactive(JphVehicleConstraint* self, uint32_t inSteps);

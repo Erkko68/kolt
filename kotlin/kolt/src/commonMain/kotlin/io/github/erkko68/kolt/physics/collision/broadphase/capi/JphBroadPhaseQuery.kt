@@ -22,5 +22,8 @@ internal external fun JphBroadPhaseQuery_CollidePoint(self: NativePointer, inPoi
 @ExternalSymbolName("JphBroadPhaseQuery_CollideOrientedBox")
 internal external fun JphBroadPhaseQuery_CollideOrientedBox(self: NativePointer, inBox: NativePointer, ioCollector: NativePointer, inBroadPhaseLayerFilter: NativePointer, inObjectLayerFilter: NativePointer)
 
+@ExternalSymbolName("JphBroadPhaseQuery_CastAABox")
+internal external fun JphBroadPhaseQuery_CastAABox(self: NativePointer, inBox: NativePointer, ioCollector: NativePointer, inBroadPhaseLayerFilter: NativePointer, inObjectLayerFilter: NativePointer)
+
 @ExternalSymbolName("JphBroadPhaseQuery_GetBounds")
 internal external fun JphBroadPhaseQuery_GetBounds(self: NativePointer, out: NativePointer)

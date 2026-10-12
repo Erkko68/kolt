@@ -14,8 +14,7 @@ void JphSoftBodyMotionProperties_destroy(JphSoftBodyMotionProperties* self);
 JphMotionProperties* JphSoftBodyMotionProperties_asMotionProperties(JphSoftBodyMotionProperties* self);
 void JphSoftBodyMotionProperties_Initialize(JphSoftBodyMotionProperties* self, const JphSoftBodyCreationSettings* inSettings);
 const JphSoftBodySharedSettings* JphSoftBodyMotionProperties_GetSettings(const JphSoftBodyMotionProperties* self);
-// TODO(handwritten) JphSoftBodyMotionProperties_GetVertices: Array<Vertex> & JPH::SoftBodyMotionProperties::GetVertices()
-//     Array<Vertex> &: by non-const reference
+uint32_t JphSoftBodyMotionProperties_GetVertices(JphSoftBodyMotionProperties* self, JphSoftBodyVertex* const* out, uint32_t outCapacity);
 JphSoftBodyVertex* JphSoftBodyMotionProperties_GetVertex(JphSoftBodyMotionProperties* self, uint32_t inIndex);
 void JphSoftBodyMotionProperties_GetRodRotation(const JphSoftBodyMotionProperties* self, uint32_t inIndex, JphQuat* out);
 void JphSoftBodyMotionProperties_GetRodAngularVelocity(const JphSoftBodyMotionProperties* self, uint32_t inIndex, JphVec3* out);

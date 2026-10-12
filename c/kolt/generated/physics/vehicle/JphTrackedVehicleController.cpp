@@ -60,4 +60,8 @@ JphVehicleTransmission* JphTrackedVehicleController_GetTransmission(JphTrackedVe
     return kolt::c(&kolt::cpp(self)->GetTransmission());
 }
 
+uint32_t JphTrackedVehicleController_GetTracks(JphTrackedVehicleController* self, JphVehicleTrack* const* out, uint32_t outCapacity) {
+    return kolt::copy(kolt::cpp(self)->GetTracks(), outCapacity, [&](auto& x, uint32_t i) { *kolt::cpp(out[i]) = x; });
+}
+
 } // extern "C"

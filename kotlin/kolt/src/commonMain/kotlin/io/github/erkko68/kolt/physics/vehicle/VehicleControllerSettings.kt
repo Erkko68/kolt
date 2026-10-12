@@ -43,6 +43,9 @@ open class VehicleControllerSettings internal constructor(internal val vehicleCo
     open val rtti: RTTI?
         get() = JphVehicleControllerSettings_GetRTTI(vehicleControllerSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
+    open fun castTo(rtti: RTTI?): NativePointer =
+        JphVehicleControllerSettings_CastTo(vehicleControllerSettingsHandle, rtti?.rttiHandle ?: NullPointer)
+
     open fun saveBinaryState(stream: StreamOut) =
         JphVehicleControllerSettings_SaveBinaryState(vehicleControllerSettingsHandle, stream.streamOutHandle)
 

@@ -20,6 +20,9 @@ internal object CAbi {
         if (cpp in TARGET_WIDTH) throw Unsupported("$cpp*: its width differs across targets")
     }
 
+    /** The C type of each element behind a pointer to the builtin [cpp], which nothing widens. */
+    fun element(cpp: String) = FIXED.getValue(cpp.removePrefix("std::"))
+
     fun isBuiltin(cpp: String) = cpp.removePrefix("std::") in FIXED
 
     fun returnsThroughPointer(c: String) = c == "int64_t" || c == "uint64_t"

@@ -20,53 +20,87 @@ struct JphCharacterContactListener_Upcalls final : ::JPH::CharacterContactListen
     void* mUser = nullptr;
     explicit JphCharacterContactListener_Upcalls(kolt::Upcall call) : mCall(call) {}
     ~JphCharacterContactListener_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    void OnAdjustBodyVelocity(const CharacterVirtual * p0, const Body & p1, Vec3 & p2, Vec3 & p3) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot(kolt::c(&p2)), kolt::slot(kolt::c(&p3))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return;
+        JPH::CharacterContactListener::OnAdjustBodyVelocity(p0, p1, p2, p3);
+    }
     bool OnContactValidate(const CharacterVirtual * p0, const CharacterContact & p1) override {
         const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1))};
         uint64_t result = 0;
-        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return kolt::unslot<bool>(result);
+        if (kolt::upcall(mCall, mUser, this, 1, args, &result)) return kolt::unslot<bool>(result);
         return JPH::CharacterContactListener::OnContactValidate(p0, p1);
     }
     void OnContactAdded(const CharacterVirtual * p0, const CharacterContact & p1, CharacterContactSettings & p2) override {
         const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot(kolt::c(&p2))};
         uint64_t result = 0;
-        if (kolt::upcall(mCall, mUser, this, 1, args, &result)) return;
+        if (kolt::upcall(mCall, mUser, this, 2, args, &result)) return;
         JPH::CharacterContactListener::OnContactAdded(p0, p1, p2);
     }
     void OnContactPersisted(const CharacterVirtual * p0, const CharacterContact & p1, CharacterContactSettings & p2) override {
         const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot(kolt::c(&p2))};
         uint64_t result = 0;
-        if (kolt::upcall(mCall, mUser, this, 2, args, &result)) return;
+        if (kolt::upcall(mCall, mUser, this, 3, args, &result)) return;
         JPH::CharacterContactListener::OnContactPersisted(p0, p1, p2);
     }
     void OnContactRemoved(const CharacterVirtual * p0, const BodyID & p1, const SubShapeID & p2) override {
         const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot((p1).GetIndexAndSequenceNumber()), kolt::slot((p2).GetValue())};
         uint64_t result = 0;
-        if (kolt::upcall(mCall, mUser, this, 3, args, &result)) return;
+        if (kolt::upcall(mCall, mUser, this, 4, args, &result)) return;
         JPH::CharacterContactListener::OnContactRemoved(p0, p1, p2);
     }
     bool OnCharacterContactValidate(const CharacterVirtual * p0, const CharacterContact & p1) override {
         const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1))};
         uint64_t result = 0;
-        if (kolt::upcall(mCall, mUser, this, 4, args, &result)) return kolt::unslot<bool>(result);
+        if (kolt::upcall(mCall, mUser, this, 5, args, &result)) return kolt::unslot<bool>(result);
         return JPH::CharacterContactListener::OnCharacterContactValidate(p0, p1);
     }
     void OnCharacterContactAdded(const CharacterVirtual * p0, const CharacterContact & p1, CharacterContactSettings & p2) override {
         const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot(kolt::c(&p2))};
         uint64_t result = 0;
-        if (kolt::upcall(mCall, mUser, this, 5, args, &result)) return;
+        if (kolt::upcall(mCall, mUser, this, 6, args, &result)) return;
         JPH::CharacterContactListener::OnCharacterContactAdded(p0, p1, p2);
     }
     void OnCharacterContactPersisted(const CharacterVirtual * p0, const CharacterContact & p1, CharacterContactSettings & p2) override {
         const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot(kolt::c(&p2))};
         uint64_t result = 0;
-        if (kolt::upcall(mCall, mUser, this, 6, args, &result)) return;
+        if (kolt::upcall(mCall, mUser, this, 7, args, &result)) return;
         JPH::CharacterContactListener::OnCharacterContactPersisted(p0, p1, p2);
     }
     void OnCharacterContactRemoved(const CharacterVirtual * p0, const CharacterID & p1, const SubShapeID & p2) override {
         const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot((p2).GetValue())};
         uint64_t result = 0;
-        if (kolt::upcall(mCall, mUser, this, 7, args, &result)) return;
+        if (kolt::upcall(mCall, mUser, this, 8, args, &result)) return;
         JPH::CharacterContactListener::OnCharacterContactRemoved(p0, p1, p2);
+    }
+    void OnContactSolve(const CharacterVirtual * p0, const BodyID & p1, const SubShapeID & p2, RVec3Arg p3, Vec3Arg p4, Vec3Arg p5, const PhysicsMaterial * p6, Vec3Arg p7, Vec3 & p8) override {
+        JphVec3 a3;
+        *&a3 = kolt::mirror<JphVec3>(p3);
+        JphVec3 a4;
+        *&a4 = kolt::mirror<JphVec3>(p4);
+        JphVec3 a5;
+        *&a5 = kolt::mirror<JphVec3>(p5);
+        JphVec3 a7;
+        *&a7 = kolt::mirror<JphVec3>(p7);
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot((p1).GetIndexAndSequenceNumber()), kolt::slot((p2).GetValue()), kolt::slot(&a3), kolt::slot(&a4), kolt::slot(&a5), kolt::slot(kolt::c(p6)), kolt::slot(&a7), kolt::slot(kolt::c(&p8))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 9, args, &result)) return;
+        JPH::CharacterContactListener::OnContactSolve(p0, p1, p2, p3, p4, p5, p6, p7, p8);
+    }
+    void OnCharacterContactSolve(const CharacterVirtual * p0, const CharacterVirtual * p1, const SubShapeID & p2, RVec3Arg p3, Vec3Arg p4, Vec3Arg p5, const PhysicsMaterial * p6, Vec3Arg p7, Vec3 & p8) override {
+        JphVec3 a3;
+        *&a3 = kolt::mirror<JphVec3>(p3);
+        JphVec3 a4;
+        *&a4 = kolt::mirror<JphVec3>(p4);
+        JphVec3 a5;
+        *&a5 = kolt::mirror<JphVec3>(p5);
+        JphVec3 a7;
+        *&a7 = kolt::mirror<JphVec3>(p7);
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(p1)), kolt::slot((p2).GetValue()), kolt::slot(&a3), kolt::slot(&a4), kolt::slot(&a5), kolt::slot(kolt::c(p6)), kolt::slot(&a7), kolt::slot(kolt::c(&p8))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 10, args, &result)) return;
+        JPH::CharacterContactListener::OnCharacterContactSolve(p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 };
 } // namespace JPH

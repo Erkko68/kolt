@@ -65,6 +65,9 @@ expect fun writeSlot(result: NativePointer, value: Long)
 /** A copy of [count] floats of an array C owns (a math mirror). */
 expect fun readFloats(ptr: NativePointer, count: Int): FloatArray
 
+/** Writes [values] to an array C owns. */
+expect fun writeFloats(ptr: NativePointer, values: FloatArray)
+
 /** A copy of [count] pointers of an array at [ptr]. */
 expect fun readPointers(ptr: NativePointer, count: Int): List<NativePointer>
 

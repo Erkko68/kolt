@@ -55,6 +55,15 @@ open class Plane internal constructor(internal val planeHandle: NativePointer, o
         get() = JphPlane_GetConstant(planeHandle)
         set(constant) = JphPlane_SetConstant(planeHandle, constant)
 
+    open fun storeFloat4(v: MutableList<Float4>) =
+        interopScope {
+            val vArray = FloatArray(v.size * 4).also { a -> v.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }
+            val vPointer = toInterop(vArray)
+            JphPlane_StoreFloat4(planeHandle, vPointer)
+            vPointer.fromInterop(vArray)
+            for (i in v.indices) v[i] = Float4(vArray.copyOfRange(i * 4, i * 4 + 4))
+        }
+
     open fun offset(distance: Float): Plane =
         run {
             val returned = Plane(JphPlane_create(), owned = true)
@@ -108,6 +117,15 @@ open class Plane internal constructor(internal val planeHandle: NativePointer, o
                 val returned = Plane(JphPlane_create(), owned = true)
                 JphPlane_sFromPointsCCW(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), returned.planeHandle)
                 returned
+            }
+
+        fun intersectPlanes(p1: Plane, p2: Plane, p3: Plane): Pair<Boolean, Vec3> =
+            interopScope {
+                val pointArray = FloatArray(4)
+                val pointPointer = toInterop(pointArray)
+                val nativeResult = JphPlane_sIntersectPlanes(p1.planeHandle, p2.planeHandle, p3.planeHandle, pointPointer)
+                pointPointer.fromInterop(pointArray)
+                Pair(nativeResult, Vec3(pointArray))
             }
     }
 }

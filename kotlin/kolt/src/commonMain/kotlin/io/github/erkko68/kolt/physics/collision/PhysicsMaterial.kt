@@ -48,6 +48,9 @@ open class PhysicsMaterial internal constructor(internal val physicsMaterialHand
     open val rtti: RTTI?
         get() = JphPhysicsMaterial_GetRTTI(physicsMaterialHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
 
+    open fun castTo(rtti: RTTI?): NativePointer =
+        JphPhysicsMaterial_CastTo(physicsMaterialHandle, rtti?.rttiHandle ?: NullPointer)
+
     open val debugName: String?
         get() = stringFromInterop(JphPhysicsMaterial_GetDebugName(physicsMaterialHandle))
 

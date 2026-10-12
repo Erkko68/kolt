@@ -11,7 +11,8 @@ import java.io.File
  * Writes the typed Kotlin API over the externals, from what [c] generated ([cFiles]): a class per record C holds by a
  * handle ([KotlinMembers] says with what in it), an enum class per enum, and a value class per
  * [ApiGenConfig.scalars] type, each in the package of its group ([KotlinValues]). A class extends the first base C
- * upcasts it to, and keeps a handle per level, as a base's pointer needn't be the derived one's; one C destroys, or
+ * upcasts it to, and keeps a handle per level, as a base's pointer needn't be the derived one's; a base it can't
+ * extend besides, it returns itself as (`asPhysicsStepListener()`). One C destroys, or
  * releases a reference of, is [AutoCloseable]. A class with no base extends the interop package's `NativeObject`.
  *
  * A class C can create an overridable object of ([buildlogic.apigen.c.CApiWriter.Bound.Role.UPCALLS]) is one a Kotlin
@@ -66,7 +67,9 @@ internal class KotlinApiWriter(private val c: CApiWriter, private val config: Ap
                     "    /** Creates one whose functions a subclass overrides. */\n    constructor() : this($create(Upcalls.function), owned = true) {\n" +
                         "        if (this::class != $name::class) ${cName}_bindUpcalls($handle, Upcalls.reference(this))\n    }\n"
                 }.orEmpty(),
-            methods.joinToString("\n") { function(it, "    ") } + upcalls?.let { "\n" + dispatcher(cName, it.second) }.orEmpty(),
+            (methods.map { function(it, "    ") } + members.otherBases(cName).map { (base, upcast) ->
+                "    /** This object as its other base, borrowed. */\n    fun as${values.kotlin(base).replace(".", "")}() = ${values.kotlin(base)}($upcast($handle))\n"
+            }).joinToString("\n") + upcalls?.let { "\n" + dispatcher(cName, it.second) }.orEmpty(),
             nested.joinToString("\n") { it.prependIndent("    ") },
             if (static.isEmpty()) "" else "    companion object {\n${static.joinToString("\n") { function(it, "        ") }}    }\n",
         ).filter { it.isNotEmpty() }.joinToString("\n")
@@ -78,13 +81,19 @@ internal class KotlinApiWriter(private val c: CApiWriter, private val config: Ap
     private fun dispatcher(cName: String, upcalls: List<CApiWriter.Upcall>): String {
         val cases = upcalls.mapIndexedNotNull { index, upcall ->
             val (member, sets) = members.wrapping(cName, upcall.signature) ?: return@mapIndexedNotNull null
-            val args = upcall.args.mapIndexed { i, value -> values.fromSlot(value, i) ?: return@mapIndexedNotNull null }
+            val args = upcall.args.mapIndexed { i, value -> values.fromSlot(value, i) ?: return@mapIndexedNotNull null }.filterIndexed { i, _ -> i !in member.untaken }
             val call = when {
                 sets -> "${member.name} = ${args.single()}"
                 member.isProperty -> member.name
                 else -> "${member.name}(${args.joinToString()})"
             }
-            "            $index -> ${upcall.returns?.let { "writeSlot(result, ${values.toSlot(it, call) ?: return@mapIndexedNotNull null})" } ?: call}\n"
+            if (member.outs.isEmpty()) return@mapIndexedNotNull "            $index -> ${upcall.returns?.let { "writeSlot(result, ${values.toSlot(it, call) ?: return@mapIndexedNotNull null})" } ?: call}\n"
+            // What it returns for C++ to take back, after its own result.
+            val own = listOfNotNull(upcall.returns)
+            fun part(k: Int) = if (own.size + member.outs.size == 1) "returned" else "returned.${listOf("first", "second", "third")[k]}"
+            val stores = own.map { "writeSlot(result, ${values.toSlot(it, part(0)) ?: return@mapIndexedNotNull null})" } +
+                member.outs.mapIndexed { k, i -> values.toPointerSlot(upcall.args[i], i, part(own.size + k)) ?: return@mapIndexedNotNull null }
+            "            $index -> {\n                val returned = $call\n${stores.joinToString("") { "                $it\n" }}            }\n"
         }
         return "    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {\n        when (method) {\n" +
             cases.joinToString("") + "            else -> return false\n        }\n        return true\n    }\n"

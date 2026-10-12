@@ -45,6 +45,14 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
     open val settings: SoftBodySharedSettings?
         get() = JphSoftBodyMotionProperties_GetSettings(softBodyMotionPropertiesHandle).takeIf { it != NullPointer }?.let { SoftBodySharedSettings(it) }
 
+    open val vertices: List<SoftBodyVertex>
+        get() = interopScope {
+            val count = JphSoftBodyMotionProperties_GetVertices(softBodyMotionPropertiesHandle, NullPointer, 0)
+            val returned = List(count) { SoftBodyVertex(JphSoftBodyVertex_create(), owned = true) }
+            JphSoftBodyMotionProperties_GetVertices(softBodyMotionPropertiesHandle, toInterop(returned.map { it.softBodyVertexHandle }), count)
+            returned
+        }
+
     open fun getVertex(index: Int): SoftBodyVertex =
         SoftBodyVertex(JphSoftBodyMotionProperties_GetVertex(softBodyMotionPropertiesHandle, index))
 

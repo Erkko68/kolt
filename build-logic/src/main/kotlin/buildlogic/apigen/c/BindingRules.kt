@@ -40,11 +40,11 @@ internal class BindingRules(private val api: CppApi, private val config: ApiGenC
 
     /**
      * The bases C gets an `_as<Base>` upcast to, however far up (JobSystemThreadPool as a JobSystem): C can't upcast,
-     * and a base's functions take the base's handle.
+     * and a base's functions and field accessors take the base's handle.
      */
     fun upcasts(record: CppRecord): List<CppRecord> = if (bridges.uninstantiated(record)) emptyList() else
         ancestors(record).distinct().filter { base ->
-            base !in bridges.twins(record) && !bridges.uninstantiated(base) && base.methods.any { it.isPublic && it.isApi && !it.isDeprecated }
+            base !in bridges.twins(record) && !bridges.uninstantiated(base) && (base.methods.any { it.isPublic && it.isApi && !it.isDeprecated } || fields(base).isNotEmpty())
         }
 
     fun ancestors(record: CppRecord): List<CppRecord> = record.bases.mapNotNull { api.records[it] }.flatMap { listOf(it) + ancestors(it) }

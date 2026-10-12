@@ -10,6 +10,9 @@ internal external fun JphShapeCastSettings_create(): NativePointer
 @ExternalSymbolName("JphShapeCastSettings_destroy")
 internal external fun JphShapeCastSettings_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphShapeCastSettings_asCollideSettingsBase")
+internal external fun JphShapeCastSettings_asCollideSettingsBase(self: NativePointer): NativePointer
+
 @ExternalSymbolName("JphShapeCastSettings_SetBackFaceMode")
 internal external fun JphShapeCastSettings_SetBackFaceMode(self: NativePointer, inMode: Int)
 

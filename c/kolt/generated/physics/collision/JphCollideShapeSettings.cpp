@@ -12,6 +12,10 @@ void JphCollideShapeSettings_destroy(JphCollideShapeSettings* self) {
     delete kolt::cpp(self);
 }
 
+JphCollideSettingsBase* JphCollideShapeSettings_asCollideSettingsBase(JphCollideShapeSettings* self) {
+    return kolt::c(static_cast<JPH::CollideSettingsBase*>(kolt::cpp(self)));
+}
+
 float JphCollideShapeSettings_GetMaxSeparationDistance(const JphCollideShapeSettings* self) {
     return kolt::cpp(self)->mMaxSeparationDistance;
 }

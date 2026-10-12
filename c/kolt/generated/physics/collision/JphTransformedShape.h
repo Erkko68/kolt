@@ -30,8 +30,7 @@ void JphTransformedShape_GetWorldTransform(const JphTransformedShape* self, JphM
 void JphTransformedShape_GetWorldSpaceBounds(const JphTransformedShape* self, JphAABox* out);
 uint32_t JphTransformedShape_MakeSubShapeIDRelativeToShape(const JphTransformedShape* self, uint32_t inSubShapeID);
 void JphTransformedShape_GetWorldSpaceSurfaceNormal(const JphTransformedShape* self, uint32_t inSubShapeID, const JphVec3* inPosition, JphVec3* out);
-// TODO(handwritten) JphTransformedShape_GetSupportingFace: void JPH::TransformedShape::GetSupportingFace(const SubShapeID & inSubShapeID, Vec3Arg inDirection, RVec3Arg inBaseOffset, Shape::SupportingFace & outVertices) const
-//     StaticArray<Vec3, 32>: by non-const reference
+uint32_t JphTransformedShape_GetSupportingFace(const JphTransformedShape* self, uint32_t inSubShapeID, const JphVec3* inDirection, const JphVec3* inBaseOffset, JphVec3* out, uint32_t outCapacity);
 const JphPhysicsMaterial* JphTransformedShape_GetMaterial(const JphTransformedShape* self, uint32_t inSubShapeID);
 void JphTransformedShape_GetSubShapeUserData(const JphTransformedShape* self, uint32_t inSubShapeID, uint64_t* out);
 void JphTransformedShape_GetSubShapeTransformedShape(const JphTransformedShape* self, uint32_t inSubShapeID, uint32_t* outRemainder, JphTransformedShape* out);

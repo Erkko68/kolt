@@ -61,6 +61,18 @@ open class TransformedShape internal constructor(internal val transformedShapeHa
     open fun getTrianglesStart(context: Shape.GetTrianglesContext, box: AABox, baseOffset: Vec3) =
         interopScope { JphTransformedShape_GetTrianglesStart(transformedShapeHandle, context.shapeGetTrianglesContextHandle, box.aaBoxHandle, toInterop(baseOffset.toArray())) }
 
+    open fun getTrianglesNext(context: Shape.GetTrianglesContext, maxTrianglesRequested: Int, triangleVertices: MutableList<Float3>, materials: MutableList<PhysicsMaterial?>): Int =
+        interopScope {
+            val triangleVerticesArray = FloatArray(triangleVertices.size * 3).also { a -> triangleVertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }
+            val triangleVerticesPointer = toInterop(triangleVerticesArray)
+            val materialsPointer = toInterop(materials.map { it?.physicsMaterialHandle ?: NullPointer })
+            val nativeResult = JphTransformedShape_GetTrianglesNext(transformedShapeHandle, context.shapeGetTrianglesContextHandle, maxTrianglesRequested, triangleVerticesPointer, materialsPointer)
+            triangleVerticesPointer.fromInterop(triangleVerticesArray)
+            for (i in triangleVertices.indices) triangleVertices[i] = Float3(triangleVerticesArray.copyOfRange(i * 3, i * 3 + 3))
+            readPointers(materialsPointer, materials.size).forEachIndexed { i, p -> materials[i] = p.takeIf { it != NullPointer }?.let { PhysicsMaterial(it) } }
+            nativeResult
+        }
+
     open var shapeScale: Vec3
         get() = interopScope {
             val returned = FloatArray(4)
@@ -123,6 +135,16 @@ open class TransformedShape internal constructor(internal val transformedShapeHa
             Vec3(returned)
         }
 
+    open fun getSupportingFace(subShapeID: SubShapeID, direction: Vec3, baseOffset: Vec3): List<Vec3> =
+        interopScope {
+            val count = JphTransformedShape_GetSupportingFace(transformedShapeHandle, subShapeID.value, toInterop(direction.toArray()), toInterop(baseOffset.toArray()), NullPointer, 0)
+            val returned = FloatArray(count * 4)
+            val returnedPointer = toInterop(returned)
+            JphTransformedShape_GetSupportingFace(transformedShapeHandle, subShapeID.value, toInterop(direction.toArray()), toInterop(baseOffset.toArray()), returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            List(count) { Vec3(returned.copyOfRange(it * 4, it * 4 + 4)) }
+        }
+
     open fun getMaterial(subShapeID: SubShapeID): PhysicsMaterial? =
         JphTransformedShape_GetMaterial(transformedShapeHandle, subShapeID.value).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
@@ -133,6 +155,17 @@ open class TransformedShape internal constructor(internal val transformedShapeHa
             JphTransformedShape_GetSubShapeUserData(transformedShapeHandle, subShapeID.value, returnedPointer)
             returnedPointer.fromInterop(returned)
             returned[0]
+        }
+
+    open fun getSubShapeTransformedShape(subShapeID: SubShapeID): Pair<TransformedShape, SubShapeID> =
+        interopScope {
+            val remainderArray = IntArray(1)
+            val remainderPointer = toInterop(remainderArray)
+            val returned = TransformedShape(JphTransformedShape_create(), owned = true)
+            JphTransformedShape_GetSubShapeTransformedShape(transformedShapeHandle, subShapeID.value, remainderPointer, returned.transformedShapeHandle)
+            val nativeResult = returned
+            remainderPointer.fromInterop(remainderArray)
+            Pair(nativeResult, SubShapeID(remainderArray[0]))
         }
 
     open var shapePositionCOM: Vec3
@@ -163,8 +196,13 @@ open class TransformedShape internal constructor(internal val transformedShapeHa
         get() = BodyID(JphTransformedShape_GetBodyID(transformedShapeHandle))
         set(value) = JphTransformedShape_SetBodyID(transformedShapeHandle, value.value)
 
-    open fun setSubShapeIDCreator(value: SubShapeIDCreator) =
-        JphTransformedShape_SetSubShapeIDCreator(transformedShapeHandle, value.subShapeIDCreatorHandle)
+    open var subShapeIDCreator: SubShapeIDCreator
+        get() = run {
+            val returned = SubShapeIDCreator(JphSubShapeIDCreator_create(), owned = true)
+            JphTransformedShape_GetSubShapeIDCreator(transformedShapeHandle, returned.subShapeIDCreatorHandle)
+            returned
+        }
+        set(value) = JphTransformedShape_SetSubShapeIDCreator(transformedShapeHandle, value.subShapeIDCreatorHandle)
 
     companion object {
         fun getBodyID(ts: TransformedShape?): BodyID =

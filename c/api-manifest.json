@@ -298,6 +298,8 @@
 {"name":"JphPhysicsSystem_GetBodyActivationListener","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphPhysicsSystem_SetContactListener","returns":"void","params":[["self","ptr"],["inListener","ptr"]]},
 {"name":"JphPhysicsSystem_GetContactListener","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphPhysicsSystem_SetSoftBodyContactListener","returns":"void","params":[["self","ptr"],["inListener","ptr"]]},
+{"name":"JphPhysicsSystem_GetSoftBodyContactListener","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphPhysicsSystem_SetSimShapeFilter","returns":"void","params":[["self","ptr"],["inShapeFilter","ptr"]]},
 {"name":"JphPhysicsSystem_GetSimShapeFilter","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphPhysicsSystem_sDefaultSimCollideBodyVsBody","returns":"void","params":[["inBody1","ptr"],["inBody2","ptr"],["inCenterOfMassTransform1","ptr"],["inCenterOfMassTransform2","ptr"],["ioCollideShapeSettings","ptr"],["ioCollector","ptr"],["inShapeFilter","ptr"]]},
@@ -332,6 +334,8 @@
 {"name":"JphPhysicsSystem_GetNumActiveBodies","returns":"i32","params":[["self","ptr"],["inType","i32"]]},
 {"name":"JphPhysicsSystem_GetMaxBodies","returns":"i32","params":[["self","ptr"]]},
 {"name":"JphPhysicsSystem_GetBodyStats","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphPhysicsSystem_GetBodies","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"JphPhysicsSystem_GetActiveBodies","returns":"i32","params":[["self","ptr"],["inType","i32"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphPhysicsSystem_GetActiveBodiesUnsafe","returns":"ptr","params":[["self","ptr"],["inType","i32"]]},
 {"name":"JphPhysicsSystem_WereBodiesInContact","returns":"bool","params":[["self","ptr"],["inBody1ID","i32"],["inBody2ID","i32"]]},
 {"name":"JphPhysicsSystem_GetBounds","returns":"void","params":[["self","ptr"],["out","ptr"]]}
@@ -912,6 +916,7 @@
 {"name":"JphCharacterSettings_create","returns":"ptr","params":[]},
 {"name":"JphCharacterSettings_addRef","returns":"void","params":[["self","ptr"]]},
 {"name":"JphCharacterSettings_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphCharacterSettings_asCharacterBaseSettings","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphCharacterSettings_GetLayer","returns":"i32","params":[["self","ptr"]]},
 {"name":"JphCharacterSettings_SetLayer","returns":"void","params":[["self","ptr"],["value","i32"]]},
 {"name":"JphCharacterSettings_GetMass","returns":"f32","params":[["self","ptr"]]},
@@ -999,6 +1004,7 @@
 {"name":"JphCharacterVirtualSettings_create","returns":"ptr","params":[]},
 {"name":"JphCharacterVirtualSettings_addRef","returns":"void","params":[["self","ptr"]]},
 {"name":"JphCharacterVirtualSettings_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphCharacterVirtualSettings_asCharacterBaseSettings","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphCharacterVirtualSettings_GetID","returns":"void","params":[["self","ptr"],["out","ptr"]]},
 {"name":"JphCharacterVirtualSettings_SetID","returns":"void","params":[["self","ptr"],["value","ptr"]]},
 {"name":"JphCharacterVirtualSettings_GetMass","returns":"f32","params":[["self","ptr"]]},
@@ -1051,6 +1057,14 @@
 {"name":"JphCharacterVsCharacterCollisionSimple_Remove","returns":"void","params":[["self","ptr"],["inCharacter","ptr"]]},
 {"name":"JphCharacterVsCharacterCollisionSimple_GetCharacters","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphCharacterVsCharacterCollisionSimple_SetCharacters","returns":"void","params":[["self","ptr"],["value","ptr"],["valueCount","i32"]]}
+],
+"kolt/generated/physics/collision/JphAABoxCast.h": [
+{"name":"JphAABoxCast_create","returns":"ptr","params":[]},
+{"name":"JphAABoxCast_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphAABoxCast_GetBox","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphAABoxCast_SetBox","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphAABoxCast_GetDirection","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphAABoxCast_SetDirection","returns":"void","params":[["self","ptr"],["value","ptr"]]}
 ],
 "kolt/generated/physics/collision/JphBroadPhaseCastResult.h": [
 {"name":"JphBroadPhaseCastResult_create","returns":"ptr","params":[]},
@@ -1221,6 +1235,7 @@
 "kolt/generated/physics/collision/JphCollideShapeSettings.h": [
 {"name":"JphCollideShapeSettings_create","returns":"ptr","params":[]},
 {"name":"JphCollideShapeSettings_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphCollideShapeSettings_asCollideSettingsBase","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphCollideShapeSettings_GetMaxSeparationDistance","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphCollideShapeSettings_SetMaxSeparationDistance","returns":"void","params":[["self","ptr"],["value","f32"]]},
 {"name":"JphCollideShapeSettings_GetBackFaceMode","returns":"i32","params":[["self","ptr"]]},
@@ -1486,6 +1501,7 @@
 "kolt/generated/physics/collision/JphShapeCastSettings.h": [
 {"name":"JphShapeCastSettings_create","returns":"ptr","params":[]},
 {"name":"JphShapeCastSettings_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphShapeCastSettings_asCollideSettingsBase","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphShapeCastSettings_SetBackFaceMode","returns":"void","params":[["self","ptr"],["inMode","i32"]]},
 {"name":"JphShapeCastSettings_GetExtraConvexRadius","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphShapeCastSettings_SetExtraConvexRadius","returns":"void","params":[["self","ptr"],["value","f32"]]},
@@ -1542,6 +1558,7 @@
 {"name":"JphTransformedShape_GetWorldSpaceBounds","returns":"void","params":[["self","ptr"],["out","ptr"]]},
 {"name":"JphTransformedShape_MakeSubShapeIDRelativeToShape","returns":"i32","params":[["self","ptr"],["inSubShapeID","i32"]]},
 {"name":"JphTransformedShape_GetWorldSpaceSurfaceNormal","returns":"void","params":[["self","ptr"],["inSubShapeID","i32"],["inPosition","ptr"],["out","ptr"]]},
+{"name":"JphTransformedShape_GetSupportingFace","returns":"i32","params":[["self","ptr"],["inSubShapeID","i32"],["inDirection","ptr"],["inBaseOffset","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphTransformedShape_GetMaterial","returns":"ptr","params":[["self","ptr"],["inSubShapeID","i32"]]},
 {"name":"JphTransformedShape_GetSubShapeUserData","returns":"void","params":[["self","ptr"],["inSubShapeID","i32"],["out","ptr"]]},
 {"name":"JphTransformedShape_GetSubShapeTransformedShape","returns":"void","params":[["self","ptr"],["inSubShapeID","i32"],["outRemainder","ptr"],["out","ptr"]]},
@@ -1609,6 +1626,7 @@
 {"name":"JphBroadPhaseQuery_CollideSphere","returns":"void","params":[["self","ptr"],["inCenter","ptr"],["inRadius","f32"],["ioCollector","ptr"],["inBroadPhaseLayerFilter","ptr"],["inObjectLayerFilter","ptr"]]},
 {"name":"JphBroadPhaseQuery_CollidePoint","returns":"void","params":[["self","ptr"],["inPoint","ptr"],["ioCollector","ptr"],["inBroadPhaseLayerFilter","ptr"],["inObjectLayerFilter","ptr"]]},
 {"name":"JphBroadPhaseQuery_CollideOrientedBox","returns":"void","params":[["self","ptr"],["inBox","ptr"],["ioCollector","ptr"],["inBroadPhaseLayerFilter","ptr"],["inObjectLayerFilter","ptr"]]},
+{"name":"JphBroadPhaseQuery_CastAABox","returns":"void","params":[["self","ptr"],["inBox","ptr"],["ioCollector","ptr"],["inBroadPhaseLayerFilter","ptr"],["inObjectLayerFilter","ptr"]]},
 {"name":"JphBroadPhaseQuery_GetBounds","returns":"void","params":[["self","ptr"],["out","ptr"]]}
 ],
 "kolt/generated/physics/collision/broadphase/JphDefaultBroadPhaseLayerFilter.h": [
@@ -1689,6 +1707,62 @@
 {"name":"JphCapsuleShapeSettings_SetRadius","returns":"void","params":[["self","ptr"],["value","f32"]]},
 {"name":"JphCapsuleShapeSettings_GetHalfHeightOfCylinder","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphCapsuleShapeSettings_SetHalfHeightOfCylinder","returns":"void","params":[["self","ptr"],["value","f32"]]}
+],
+"kolt/generated/physics/collision/shape/JphCompoundShape.h": [
+{"name":"JphCompoundShapeSubShape_create","returns":"ptr","params":[]},
+{"name":"JphCompoundShapeSubShape_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSubShape_SetTransform","returns":"void","params":[["self","ptr"],["inPosition","ptr"],["inRotation","ptr"],["inCenterOfMass","ptr"]]},
+{"name":"JphCompoundShapeSubShape_GetLocalTransformNoScale","returns":"void","params":[["self","ptr"],["inScale","ptr"],["out","ptr"]]},
+{"name":"JphCompoundShapeSubShape_IsValidScale","returns":"bool","params":[["self","ptr"],["inScale","ptr"]]},
+{"name":"JphCompoundShapeSubShape_TransformScale","returns":"void","params":[["self","ptr"],["inScale","ptr"],["out","ptr"]]},
+{"name":"JphCompoundShapeSubShape_SetPositionCOM","returns":"void","params":[["self","ptr"],["inPositionCOM","ptr"]]},
+{"name":"JphCompoundShapeSubShape_GetPositionCOM","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphCompoundShapeSubShape_SetRotation","returns":"void","params":[["self","ptr"],["inRotation","ptr"]]},
+{"name":"JphCompoundShapeSubShape_GetRotation","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphCompoundShapeSubShape_GetShape","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSubShape_SetShape","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphCompoundShapeSubShape_GetUserData","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSubShape_SetUserData","returns":"void","params":[["self","ptr"],["value","i32"]]},
+{"name":"JphCompoundShapeSubShape_GetIsRotationIdentity","returns":"bool","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSubShape_SetIsRotationIdentity","returns":"void","params":[["self","ptr"],["value","bool"]]},
+{"name":"JphCompoundShape_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphCompoundShape_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphCompoundShape_asShape","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphCompoundShape_GetIntersectingSubShapes_AABox_uint_int","returns":"i32","params":[["self","ptr"],["inBox","ptr"],["outSubShapeIndices","ptr"],["inMaxSubShapeIndices","i32"]]},
+{"name":"JphCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int","returns":"i32","params":[["self","ptr"],["inBox","ptr"],["outSubShapeIndices","ptr"],["inMaxSubShapeIndices","i32"]]},
+{"name":"JphCompoundShape_GetSubShapes","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"JphCompoundShape_GetNumSubShapes","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphCompoundShape_GetSubShape","returns":"void","params":[["self","ptr"],["inIdx","i32"],["out","ptr"]]},
+{"name":"JphCompoundShape_GetCompoundUserData","returns":"i32","params":[["self","ptr"],["inIdx","i32"]]},
+{"name":"JphCompoundShape_SetCompoundUserData","returns":"void","params":[["self","ptr"],["inIdx","i32"],["inUserData","i32"]]},
+{"name":"JphCompoundShape_IsSubShapeIDValid","returns":"bool","params":[["self","ptr"],["inSubShapeID","i32"]]},
+{"name":"JphCompoundShape_GetSubShapeIndexFromID","returns":"i32","params":[["self","ptr"],["inSubShapeID","i32"],["outRemainder","ptr"]]},
+{"name":"JphCompoundShape_GetSubShapeIDFromIndex","returns":"void","params":[["self","ptr"],["inIdx","i32"],["inParentSubShapeID","ptr"],["out","ptr"]]},
+{"name":"JphCompoundShape_sRegister","returns":"void","params":[]}
+],
+"kolt/generated/physics/collision/shape/JphCompoundShapeSettings.h": [
+{"name":"JphCompoundShapeSettingsSubShapeSettings_create","returns":"ptr","params":[]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_sCreateRTTI","returns":"void","params":[["inRTTI","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_GetShape","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_SetShape","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_GetShapePtr","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_SetShapePtr","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_GetPosition","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_SetPosition","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_GetRotation","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_SetRotation","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_GetUserData","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSettingsSubShapeSettings_SetUserData","returns":"void","params":[["self","ptr"],["value","i32"]]},
+{"name":"JphCompoundShapeSettings_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSettings_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSettings_asShapeSettings","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSettings_asSerializableObject","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphCompoundShapeSettings_sCreateRTTI","returns":"void","params":[["inRTTI","ptr"]]},
+{"name":"JphCompoundShapeSettings_AddShape_ShapeSettings_uint32","returns":"void","params":[["self","ptr"],["inPosition","ptr"],["inRotation","ptr"],["inShape","ptr"],["inUserData","i32"]]},
+{"name":"JphCompoundShapeSettings_AddShape_Shape_uint32","returns":"void","params":[["self","ptr"],["inPosition","ptr"],["inRotation","ptr"],["inShape","ptr"],["inUserData","i32"]]},
+{"name":"JphCompoundShapeSettings_GetSubShapes","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"JphCompoundShapeSettings_SetSubShapes","returns":"void","params":[["self","ptr"],["value","ptr"],["valueCount","i32"]]}
 ],
 "kolt/generated/physics/collision/shape/JphConvexHullShape.h": [
 {"name":"JphConvexHullShape_create","returns":"ptr","params":[]},
@@ -1779,6 +1853,23 @@
 {"name":"JphCylinderShapeSettings_SetRadius","returns":"void","params":[["self","ptr"],["value","f32"]]},
 {"name":"JphCylinderShapeSettings_GetConvexRadius","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphCylinderShapeSettings_SetConvexRadius","returns":"void","params":[["self","ptr"],["value","f32"]]}
+],
+"kolt/generated/physics/collision/shape/JphDecoratedShape.h": [
+{"name":"JphDecoratedShape_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphDecoratedShape_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphDecoratedShape_asShape","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphDecoratedShape_GetInnerShape","returns":"ptr","params":[["self","ptr"]]}
+],
+"kolt/generated/physics/collision/shape/JphDecoratedShapeSettings.h": [
+{"name":"JphDecoratedShapeSettings_addRef","returns":"void","params":[["self","ptr"]]},
+{"name":"JphDecoratedShapeSettings_release","returns":"void","params":[["self","ptr"]]},
+{"name":"JphDecoratedShapeSettings_asShapeSettings","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphDecoratedShapeSettings_asSerializableObject","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphDecoratedShapeSettings_sCreateRTTI","returns":"void","params":[["inRTTI","ptr"]]},
+{"name":"JphDecoratedShapeSettings_GetInnerShape","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphDecoratedShapeSettings_SetInnerShape","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphDecoratedShapeSettings_GetInnerShapePtr","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphDecoratedShapeSettings_SetInnerShapePtr","returns":"void","params":[["self","ptr"],["value","ptr"]]}
 ],
 "kolt/generated/physics/collision/shape/JphEmptyShape.h": [
 {"name":"JphEmptyShape_create","returns":"ptr","params":[]},
@@ -1897,8 +1988,6 @@
 {"name":"JphMutableCompoundShape_asCompoundShape","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphMutableCompoundShape_asShape","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphMutableCompoundShape_Clone","returns":"ptr","params":[["self","ptr"]]},
-{"name":"JphMutableCompoundShape_GetIntersectingSubShapes_AABox_uint_int","returns":"i32","params":[["self","ptr"],["inBox","ptr"],["outSubShapeIndices","ptr"],["inMaxSubShapeIndices","i32"]]},
-{"name":"JphMutableCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int","returns":"i32","params":[["self","ptr"],["inBox","ptr"],["outSubShapeIndices","ptr"],["inMaxSubShapeIndices","i32"]]},
 {"name":"JphMutableCompoundShape_AddShape","returns":"i32","params":[["self","ptr"],["inPosition","ptr"],["inRotation","ptr"],["inShape","ptr"],["inUserData","i32"],["inIndex","i32"]]},
 {"name":"JphMutableCompoundShape_RemoveShape","returns":"void","params":[["self","ptr"],["inIndex","i32"]]},
 {"name":"JphMutableCompoundShape_ModifyShape","returns":"void","params":[["self","ptr"],["inIndex","i32"],["inPosition","ptr"],["inRotation","ptr"]]},
@@ -2043,6 +2132,7 @@
 {"name":"JphShape_GetLeafShape","returns":"ptr","params":[["self","ptr"],["inSubShapeID","i32"],["outRemainder","ptr"]]},
 {"name":"JphShape_GetMaterial","returns":"ptr","params":[["self","ptr"],["inSubShapeID","i32"]]},
 {"name":"JphShape_GetSurfaceNormal","returns":"void","params":[["self","ptr"],["inSubShapeID","i32"],["inLocalSurfacePosition","ptr"],["out","ptr"]]},
+{"name":"JphShape_GetSupportingFace","returns":"i32","params":[["self","ptr"],["inSubShapeID","i32"],["inDirection","ptr"],["inScale","ptr"],["inCenterOfMassTransform","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphShape_GetSubShapeUserData","returns":"void","params":[["self","ptr"],["inSubShapeID","i32"],["out","ptr"]]},
 {"name":"JphShape_GetSubShapeTransformedShape","returns":"void","params":[["self","ptr"],["inSubShapeID","i32"],["inPositionCOM","ptr"],["inRotation","ptr"],["inScale","ptr"],["outRemainder","ptr"],["out","ptr"]]},
 {"name":"JphShape_GetSubmergedVolume","returns":"void","params":[["self","ptr"],["inCenterOfMassTransform","ptr"],["inScale","ptr"],["inSurface","ptr"],["outTotalVolume","ptr"],["outSubmergedVolume","ptr"],["outCenterOfBuoyancy","ptr"]]},
@@ -2056,6 +2146,8 @@
 {"name":"JphShape_GetTrianglesNext","returns":"i32","params":[["self","ptr"],["ioContext","ptr"],["inMaxTrianglesRequested","i32"],["outTriangleVertices","ptr"],["outMaterials","ptr"]]},
 {"name":"JphShape_SaveBinaryState","returns":"void","params":[["self","ptr"],["inStream","ptr"]]},
 {"name":"JphShape_sRestoreFromBinaryState","returns":"ptr","params":[["inStream","ptr"],["outError","ptr"],["outErrorCapacity","i32"]]},
+{"name":"JphShape_SaveMaterialState","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"JphShape_SaveSubShapeState","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphShape_GetVolume","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphShape_IsValidScale","returns":"bool","params":[["self","ptr"],["inScale","ptr"]]},
 {"name":"JphShape_MakeScaleValid","returns":"void","params":[["self","ptr"],["inScale","ptr"],["out","ptr"]]}
@@ -2107,8 +2199,6 @@
 {"name":"JphStaticCompoundShape_release","returns":"void","params":[["self","ptr"]]},
 {"name":"JphStaticCompoundShape_asCompoundShape","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphStaticCompoundShape_asShape","returns":"ptr","params":[["self","ptr"]]},
-{"name":"JphStaticCompoundShape_GetIntersectingSubShapes_AABox_uint_int","returns":"i32","params":[["self","ptr"],["inBox","ptr"],["outSubShapeIndices","ptr"],["inMaxSubShapeIndices","i32"]]},
-{"name":"JphStaticCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int","returns":"i32","params":[["self","ptr"],["inBox","ptr"],["outSubShapeIndices","ptr"],["inMaxSubShapeIndices","i32"]]},
 {"name":"JphStaticCompoundShape_sRegister","returns":"void","params":[]}
 ],
 "kolt/generated/physics/collision/shape/JphStaticCompoundShapeSettings.h": [
@@ -2120,6 +2210,13 @@
 {"name":"JphStaticCompoundShapeSettings_asSerializableObject","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphStaticCompoundShapeSettings_sCreateRTTI","returns":"void","params":[["inRTTI","ptr"]]},
 {"name":"JphStaticCompoundShapeSettings_Create","returns":"ptr","params":[["self","ptr"],["inTempAllocator","ptr"],["outError","ptr"],["outErrorCapacity","i32"]]}
+],
+"kolt/generated/physics/collision/shape/JphSubShapeIDCreator.h": [
+{"name":"JphSubShapeIDCreator_create","returns":"ptr","params":[]},
+{"name":"JphSubShapeIDCreator_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSubShapeIDCreator_PushID","returns":"void","params":[["self","ptr"],["inValue","i32"],["inBits","i32"],["out","ptr"]]},
+{"name":"JphSubShapeIDCreator_GetID","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphSubShapeIDCreator_GetNumBitsWritten","returns":"i32","params":[["self","ptr"]]}
 ],
 "kolt/generated/physics/collision/shape/JphSubShapeIDPair.h": [
 {"name":"JphSubShapeIDPair_create","returns":"ptr","params":[]},
@@ -2871,6 +2968,26 @@
 {"name":"JphRagdollSettings_GetAdditionalConstraints","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphRagdollSettings_SetAdditionalConstraints","returns":"void","params":[["self","ptr"],["value","ptr"],["valueCount","i32"]]}
 ],
+"kolt/generated/physics/softbody/JphSoftBodyContactListener.h": [
+{"name":"JphSoftBodyContactListener_create","returns":"ptr","params":[]},
+{"name":"JphSoftBodyContactListener_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSoftBodyContactListener_createUpcalls","returns":"ptr","params":[["call","ptr"]]},
+{"name":"JphSoftBodyContactListener_bindUpcalls","returns":"void","params":[["self","ptr"],["userData","ptr"]]},
+{"name":"JphSoftBodyContactListener_OnSoftBodyContactValidate","returns":"i32","params":[["self","ptr"],["inSoftBody","ptr"],["inOtherBody","ptr"],["ioSettings","ptr"]]},
+{"name":"JphSoftBodyContactListener_OnSoftBodyContactAdded","returns":"void","params":[["self","ptr"],["inSoftBody","ptr"],["inManifold","ptr"]]}
+],
+"kolt/generated/physics/softbody/JphSoftBodyContactSettings.h": [
+{"name":"JphSoftBodyContactSettings_create","returns":"ptr","params":[]},
+{"name":"JphSoftBodyContactSettings_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSoftBodyContactSettings_GetInvMassScale1","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphSoftBodyContactSettings_SetInvMassScale1","returns":"void","params":[["self","ptr"],["value","f32"]]},
+{"name":"JphSoftBodyContactSettings_GetInvMassScale2","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphSoftBodyContactSettings_SetInvMassScale2","returns":"void","params":[["self","ptr"],["value","f32"]]},
+{"name":"JphSoftBodyContactSettings_GetInvInertiaScale2","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphSoftBodyContactSettings_SetInvInertiaScale2","returns":"void","params":[["self","ptr"],["value","f32"]]},
+{"name":"JphSoftBodyContactSettings_GetIsSensor","returns":"bool","params":[["self","ptr"]]},
+{"name":"JphSoftBodyContactSettings_SetIsSensor","returns":"void","params":[["self","ptr"],["value","bool"]]}
+],
 "kolt/generated/physics/softbody/JphSoftBodyCreationSettings.h": [
 {"name":"JphSoftBodyCreationSettings_create","returns":"ptr","params":[]},
 {"name":"JphSoftBodyCreationSettings_create_SoftBodySharedSettings_RVec3Arg_QuatArg_ObjectLayer","returns":"ptr","params":[["inSettings","ptr"],["inPosition","ptr"],["inRotation","ptr"],["inObjectLayer","i32"]]},
@@ -2915,12 +3032,22 @@
 {"name":"JphSoftBodyCreationSettings_GetFacesDoubleSided","returns":"bool","params":[["self","ptr"]]},
 {"name":"JphSoftBodyCreationSettings_SetFacesDoubleSided","returns":"void","params":[["self","ptr"],["value","bool"]]}
 ],
+"kolt/generated/physics/softbody/JphSoftBodyManifold.h": [
+{"name":"JphSoftBodyManifold_GetVertices","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
+{"name":"JphSoftBodyManifold_HasContact","returns":"bool","params":[["self","ptr"],["inVertex","ptr"]]},
+{"name":"JphSoftBodyManifold_GetLocalContactPoint","returns":"void","params":[["self","ptr"],["inVertex","ptr"],["out","ptr"]]},
+{"name":"JphSoftBodyManifold_GetContactNormal","returns":"void","params":[["self","ptr"],["inVertex","ptr"],["out","ptr"]]},
+{"name":"JphSoftBodyManifold_GetContactBodyID","returns":"i32","params":[["self","ptr"],["inVertex","ptr"]]},
+{"name":"JphSoftBodyManifold_GetNumSensorContacts","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphSoftBodyManifold_GetSensorContactBodyID","returns":"i32","params":[["self","ptr"],["inIndex","i32"]]}
+],
 "kolt/generated/physics/softbody/JphSoftBodyMotionProperties.h": [
 {"name":"JphSoftBodyMotionProperties_create","returns":"ptr","params":[]},
 {"name":"JphSoftBodyMotionProperties_destroy","returns":"void","params":[["self","ptr"]]},
 {"name":"JphSoftBodyMotionProperties_asMotionProperties","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphSoftBodyMotionProperties_Initialize","returns":"void","params":[["self","ptr"],["inSettings","ptr"]]},
 {"name":"JphSoftBodyMotionProperties_GetSettings","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphSoftBodyMotionProperties_GetVertices","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphSoftBodyMotionProperties_GetVertex","returns":"ptr","params":[["self","ptr"],["inIndex","i32"]]},
 {"name":"JphSoftBodyMotionProperties_GetRodRotation","returns":"void","params":[["self","ptr"],["inIndex","i32"],["out","ptr"]]},
 {"name":"JphSoftBodyMotionProperties_GetRodAngularVelocity","returns":"void","params":[["self","ptr"],["inIndex","i32"],["out","ptr"]]},
@@ -3143,6 +3270,28 @@
 {"name":"JphSoftBodySharedSettings_GetMaterials","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphSoftBodySharedSettings_SetMaterials","returns":"void","params":[["self","ptr"],["value","ptr"],["valueCount","i32"]]}
 ],
+"kolt/generated/physics/softbody/JphSoftBodyVertex.h": [
+{"name":"JphSoftBodyVertex_create","returns":"ptr","params":[]},
+{"name":"JphSoftBodyVertex_destroy","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSoftBodyVertex_ResetCollision","returns":"void","params":[["self","ptr"]]},
+{"name":"JphSoftBodyVertex_MarkCCDContact","returns":"void","params":[["self","ptr"],["inBodyID","i32"],["inContactPlane","ptr"]]},
+{"name":"JphSoftBodyVertex_GetPreviousPosition","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphSoftBodyVertex_SetPreviousPosition","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphSoftBodyVertex_GetPosition","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphSoftBodyVertex_SetPosition","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphSoftBodyVertex_GetVelocity","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphSoftBodyVertex_SetVelocity","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphSoftBodyVertex_GetCollisionPlane","returns":"void","params":[["self","ptr"],["out","ptr"]]},
+{"name":"JphSoftBodyVertex_SetCollisionPlane","returns":"void","params":[["self","ptr"],["value","ptr"]]},
+{"name":"JphSoftBodyVertex_GetCollidingShapeIndex","returns":"i32","params":[["self","ptr"]]},
+{"name":"JphSoftBodyVertex_SetCollidingShapeIndex","returns":"void","params":[["self","ptr"],["value","i32"]]},
+{"name":"JphSoftBodyVertex_GetHasContact","returns":"bool","params":[["self","ptr"]]},
+{"name":"JphSoftBodyVertex_SetHasContact","returns":"void","params":[["self","ptr"],["value","bool"]]},
+{"name":"JphSoftBodyVertex_GetLargestPenetration","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphSoftBodyVertex_SetLargestPenetration","returns":"void","params":[["self","ptr"],["value","f32"]]},
+{"name":"JphSoftBodyVertex_GetInvMass","returns":"f32","params":[["self","ptr"]]},
+{"name":"JphSoftBodyVertex_SetInvMass","returns":"void","params":[["self","ptr"],["value","f32"]]}
+],
 "kolt/generated/physics/vehicle/JphMotorcycleController.h": [
 {"name":"JphMotorcycleController_create","returns":"ptr","params":[["inSettings","ptr"],["inConstraint","ptr"]]},
 {"name":"JphMotorcycleController_destroy","returns":"void","params":[["self","ptr"]]},
@@ -3201,7 +3350,8 @@
 {"name":"JphTrackedVehicleController_SetBrakeInput","returns":"void","params":[["self","ptr"],["inBrake","f32"]]},
 {"name":"JphTrackedVehicleController_GetBrakeInput","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphTrackedVehicleController_GetEngine","returns":"ptr","params":[["self","ptr"]]},
-{"name":"JphTrackedVehicleController_GetTransmission","returns":"ptr","params":[["self","ptr"]]}
+{"name":"JphTrackedVehicleController_GetTransmission","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphTrackedVehicleController_GetTracks","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]}
 ],
 "kolt/generated/physics/vehicle/JphTrackedVehicleControllerSettings.h": [
 {"name":"JphTrackedVehicleControllerSettings_create","returns":"ptr","params":[]},
@@ -3281,10 +3431,12 @@
 {"name":"JphVehicleConstraint_GetWorldUp","returns":"void","params":[["self","ptr"],["out","ptr"]]},
 {"name":"JphVehicleConstraint_GetVehicleBody","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphVehicleConstraint_GetController","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphVehicleConstraint_GetWheels","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphVehicleConstraint_GetWheel","returns":"ptr","params":[["self","ptr"],["inIdx","i32"]]},
 {"name":"JphVehicleConstraint_GetWheelLocalBasis","returns":"void","params":[["self","ptr"],["inWheel","ptr"],["outForward","ptr"],["outUp","ptr"],["outRight","ptr"]]},
 {"name":"JphVehicleConstraint_GetWheelLocalTransform","returns":"void","params":[["self","ptr"],["inWheelIndex","i32"],["inWheelRight","ptr"],["inWheelUp","ptr"],["out","ptr"]]},
 {"name":"JphVehicleConstraint_GetWheelWorldTransform","returns":"void","params":[["self","ptr"],["inWheelIndex","i32"],["inWheelRight","ptr"],["inWheelUp","ptr"],["out","ptr"]]},
+{"name":"JphVehicleConstraint_GetAntiRollBars","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphVehicleConstraint_SetNumStepsBetweenCollisionTestActive","returns":"void","params":[["self","ptr"],["inSteps","i32"]]},
 {"name":"JphVehicleConstraint_GetNumStepsBetweenCollisionTestActive","returns":"i32","params":[["self","ptr"]]},
 {"name":"JphVehicleConstraint_SetNumStepsBetweenCollisionTestInactive","returns":"void","params":[["self","ptr"],["inSteps","i32"]]},
@@ -3601,6 +3753,7 @@
 {"name":"JphWheeledVehicleController_GetHandBrakeInput","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphWheeledVehicleController_GetEngine","returns":"ptr","params":[["self","ptr"]]},
 {"name":"JphWheeledVehicleController_GetTransmission","returns":"ptr","params":[["self","ptr"]]},
+{"name":"JphWheeledVehicleController_GetDifferentials","returns":"i32","params":[["self","ptr"],["out","ptr"],["outCapacity","i32"]]},
 {"name":"JphWheeledVehicleController_GetDifferentialLimitedSlipRatio","returns":"f32","params":[["self","ptr"]]},
 {"name":"JphWheeledVehicleController_SetDifferentialLimitedSlipRatio","returns":"void","params":[["self","ptr"],["inV","f32"]]},
 {"name":"JphWheeledVehicleController_GetWheelSpeedAtClutch","returns":"f32","params":[["self","ptr"]]}

@@ -32,6 +32,7 @@ Jolt/Physics/Character/Character.h
 Jolt/Physics/Character/CharacterBase.h
 Jolt/Physics/Character/CharacterID.h
 Jolt/Physics/Character/CharacterVirtual.h
+Jolt/Physics/Collision/AABoxCast.h
 Jolt/Physics/Collision/BroadPhase/BroadPhaseLayer.h
 Jolt/Physics/Collision/BroadPhase/BroadPhaseLayerInterfaceMask.h
 Jolt/Physics/Collision/BroadPhase/BroadPhaseLayerInterfaceTable.h
@@ -56,9 +57,11 @@ Jolt/Physics/Collision/PhysicsMaterial.h
 Jolt/Physics/Collision/RayCast.h
 Jolt/Physics/Collision/Shape/BoxShape.h
 Jolt/Physics/Collision/Shape/CapsuleShape.h
+Jolt/Physics/Collision/Shape/CompoundShape.h
 Jolt/Physics/Collision/Shape/ConvexHullShape.h
 Jolt/Physics/Collision/Shape/ConvexShape.h
 Jolt/Physics/Collision/Shape/CylinderShape.h
+Jolt/Physics/Collision/Shape/DecoratedShape.h
 Jolt/Physics/Collision/Shape/EmptyShape.h
 Jolt/Physics/Collision/Shape/HeightFieldShape.h
 Jolt/Physics/Collision/Shape/MeshShape.h
@@ -70,6 +73,7 @@ Jolt/Physics/Collision/Shape/ScaledShape.h
 Jolt/Physics/Collision/Shape/Shape.h
 Jolt/Physics/Collision/Shape/SphereShape.h
 Jolt/Physics/Collision/Shape/StaticCompoundShape.h
+Jolt/Physics/Collision/Shape/SubShapeID.h
 Jolt/Physics/Collision/Shape/SubShapeIDPair.h
 Jolt/Physics/Collision/Shape/TaperedCapsuleShape.h
 Jolt/Physics/Collision/Shape/TaperedCylinderShape.h
@@ -95,9 +99,12 @@ Jolt/Physics/Constraints/TwoBodyConstraint.h
 Jolt/Physics/PhysicsSettings.h
 Jolt/Physics/PhysicsSystem.h
 Jolt/Physics/Ragdoll/Ragdoll.h
+Jolt/Physics/SoftBody/SoftBodyContactListener.h
 Jolt/Physics/SoftBody/SoftBodyCreationSettings.h
+Jolt/Physics/SoftBody/SoftBodyManifold.h
 Jolt/Physics/SoftBody/SoftBodyMotionProperties.h
 Jolt/Physics/SoftBody/SoftBodySharedSettings.h
+Jolt/Physics/SoftBody/SoftBodyVertex.h
 Jolt/Physics/Vehicle/MotorcycleController.h
 Jolt/Physics/Vehicle/TrackedVehicleController.h
 Jolt/Physics/Vehicle/VehicleAntiRollBar.h

@@ -17,8 +17,6 @@ void JphMutableCompoundShape_release(const JphMutableCompoundShape* self);
 JphCompoundShape* JphMutableCompoundShape_asCompoundShape(JphMutableCompoundShape* self);
 JphShape* JphMutableCompoundShape_asShape(JphMutableCompoundShape* self);
 JphMutableCompoundShape* JphMutableCompoundShape_Clone(const JphMutableCompoundShape* self);
-int32_t JphMutableCompoundShape_GetIntersectingSubShapes_AABox_uint_int(const JphMutableCompoundShape* self, const JphAABox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices);
-int32_t JphMutableCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int(const JphMutableCompoundShape* self, const JphOrientedBox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices);
 uint32_t JphMutableCompoundShape_AddShape(JphMutableCompoundShape* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphShape* inShape, uint32_t inUserData, uint32_t inIndex);
 void JphMutableCompoundShape_RemoveShape(JphMutableCompoundShape* self, uint32_t inIndex);
 void JphMutableCompoundShape_ModifyShape(JphMutableCompoundShape* self, uint32_t inIndex, const JphVec3* inPosition, const JphQuat* inRotation);

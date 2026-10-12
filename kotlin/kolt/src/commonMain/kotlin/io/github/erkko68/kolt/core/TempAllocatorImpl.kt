@@ -50,4 +50,7 @@ open class TempAllocatorImpl internal constructor(internal val tempAllocatorImpl
 
     open fun canAllocate(size: Int): Boolean =
         JphTempAllocatorImpl_CanAllocate(tempAllocatorImplHandle, size)
+
+    open fun ownsMemory(address: NativePointer): Boolean =
+        JphTempAllocatorImpl_OwnsMemory(tempAllocatorImplHandle, address)
 }

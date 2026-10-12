@@ -78,3 +78,6 @@ actual fun writeSlot(result: NativePointer, value: Long) {
 }
 
 actual fun readFloats(ptr: NativePointer, count: Int): FloatArray = ptr.toCPointer<FloatVar>()!!.let { p -> FloatArray(count) { p[it] } }
+actual fun writeFloats(ptr: NativePointer, values: FloatArray) {
+    ptr.toCPointer<FloatVar>()!!.let { p -> values.forEachIndexed { i, v -> p[i] = v } }
+}

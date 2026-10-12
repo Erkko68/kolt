@@ -33,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollideShapeSettings`. */
-open class CollideShapeSettings internal constructor(internal val collideShapeSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+open class CollideShapeSettings internal constructor(internal val collideShapeSettingsHandle: NativePointer, owned: Boolean = false) : CollideSettingsBase(JphCollideShapeSettings_asCollideSettingsBase(collideShapeSettingsHandle), owned), AutoCloseable {
     constructor() : this(JphCollideShapeSettings_create(), owned = true)
 
     override fun close() =

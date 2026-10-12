@@ -71,6 +71,14 @@ open class ConvexHullShape internal constructor(internal val convexHullShapeHand
     open fun getNumVerticesInFace(faceIndex: Int): Int =
         JphConvexHullShape_GetNumVerticesInFace(convexHullShapeHandle, faceIndex)
 
+    open fun getFaceVertices(faceIndex: Int, maxVertices: Int, vertices: IntArray): Int =
+        interopScope {
+            val verticesPointer = toInterop(vertices)
+            val nativeResult = JphConvexHullShape_GetFaceVertices(convexHullShapeHandle, faceIndex, maxVertices, verticesPointer)
+            verticesPointer.fromInterop(vertices)
+            nativeResult
+        }
+
     companion object {
         fun register() =
             JphConvexHullShape_sRegister()

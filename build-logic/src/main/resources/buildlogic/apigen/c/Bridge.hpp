@@ -193,6 +193,31 @@ uint32_t copy(const V& items, uint32_t capacity, F store) {
     return uint32_t(std::size(items));
 }
 
+// Stands in for a call's result when the callee fills a container it takes by reference instead: copy() then makes
+// what goes in that container's place, the container itself once the callee takes it, and finish() copies out of it.
+struct Pending {};
+
+template<typename F>
+struct Filled {
+    uint32_t capacity;
+    F store;
+    std::shared_ptr<void> storage;
+    uint32_t (*copyOut)(Filled&) = nullptr;
+
+    template<typename C> requires requires(C c) { std::size(c); c[0]; }
+    operator C&() {
+        auto c = std::make_shared<C>();
+        storage = c;
+        copyOut = [](Filled& f) { return apigen::copy(*static_cast<C*>(f.storage.get()), f.capacity, f.store); };
+        return *c;
+    }
+
+    uint32_t finish() { return copyOut ? copyOut(*this) : 0; }
+};
+
+template<typename F>
+Filled<F> copy(Pending, uint32_t capacity, F store) { return { capacity, store }; }
+
 // C's nullable pointer as the std::optional the callee takes; convert(*p) makes its value.
 template<typename T, typename F>
 auto optional(const T* p, F convert) -> std::optional<decltype(convert(*p))> {

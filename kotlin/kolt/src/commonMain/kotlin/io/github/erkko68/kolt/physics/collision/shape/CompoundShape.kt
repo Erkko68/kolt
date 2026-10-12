@@ -33,7 +33,138 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CompoundShape`. */
-open class CompoundShape internal constructor(internal val compoundShapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+open class CompoundShape internal constructor(internal val compoundShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphCompoundShape_asShape(compoundShapeHandle), owned), AutoCloseable {
+    override fun addRef() =
+        own { JphCompoundShape_addRef(compoundShapeHandle) }
+
+    override fun close() =
+        closeOnce { JphCompoundShape_release(compoundShapeHandle) }
+
+    open fun getIntersectingSubShapes(box: AABox, subShapeIndices: IntArray, maxSubShapeIndices: Int): Int =
+        interopScope {
+            val subShapeIndicesPointer = toInterop(subShapeIndices)
+            val nativeResult = JphCompoundShape_GetIntersectingSubShapes_AABox_uint_int(compoundShapeHandle, box.aaBoxHandle, subShapeIndicesPointer, maxSubShapeIndices)
+            subShapeIndicesPointer.fromInterop(subShapeIndices)
+            nativeResult
+        }
+
+    open fun getIntersectingSubShapes(box: OrientedBox, subShapeIndices: IntArray, maxSubShapeIndices: Int): Int =
+        interopScope {
+            val subShapeIndicesPointer = toInterop(subShapeIndices)
+            val nativeResult = JphCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int(compoundShapeHandle, box.orientedBoxHandle, subShapeIndicesPointer, maxSubShapeIndices)
+            subShapeIndicesPointer.fromInterop(subShapeIndices)
+            nativeResult
+        }
+
+    open val subShapes: List<CompoundShape.SubShape>
+        get() = interopScope {
+            val count = JphCompoundShape_GetSubShapes(compoundShapeHandle, NullPointer, 0)
+            val returned = List(count) { CompoundShape.SubShape(JphCompoundShapeSubShape_create(), owned = true) }
+            JphCompoundShape_GetSubShapes(compoundShapeHandle, toInterop(returned.map { it.compoundShapeSubShapeHandle }), count)
+            returned
+        }
+
+    open val numSubShapes: Int
+        get() = JphCompoundShape_GetNumSubShapes(compoundShapeHandle)
+
+    open fun getSubShape(idx: Int): CompoundShape.SubShape =
+        run {
+            val returned = CompoundShape.SubShape(JphCompoundShapeSubShape_create(), owned = true)
+            JphCompoundShape_GetSubShape(compoundShapeHandle, idx, returned.compoundShapeSubShapeHandle)
+            returned
+        }
+
+    open fun getCompoundUserData(idx: Int): Int =
+        JphCompoundShape_GetCompoundUserData(compoundShapeHandle, idx)
+
+    open fun setCompoundUserData(idx: Int, userData: Int) =
+        JphCompoundShape_SetCompoundUserData(compoundShapeHandle, idx, userData)
+
+    open fun isSubShapeIDValid(subShapeID: SubShapeID): Boolean =
+        JphCompoundShape_IsSubShapeIDValid(compoundShapeHandle, subShapeID.value)
+
+    open fun getSubShapeIndexFromID(subShapeID: SubShapeID): Pair<Int, SubShapeID> =
+        interopScope {
+            val remainderArray = IntArray(1)
+            val remainderPointer = toInterop(remainderArray)
+            val nativeResult = JphCompoundShape_GetSubShapeIndexFromID(compoundShapeHandle, subShapeID.value, remainderPointer)
+            remainderPointer.fromInterop(remainderArray)
+            Pair(nativeResult, SubShapeID(remainderArray[0]))
+        }
+
+    open fun getSubShapeIDFromIndex(idx: Int, parentSubShapeID: SubShapeIDCreator): SubShapeIDCreator =
+        run {
+            val returned = SubShapeIDCreator(JphSubShapeIDCreator_create(), owned = true)
+            JphCompoundShape_GetSubShapeIDFromIndex(compoundShapeHandle, idx, parentSubShapeID.subShapeIDCreatorHandle, returned.subShapeIDCreatorHandle)
+            returned
+        }
+
     /** C++ `JPH::CompoundShape::SubShape`. */
-    open class SubShape internal constructor(internal val compoundShapeSubShapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    open class SubShape internal constructor(internal val compoundShapeSubShapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+        constructor() : this(JphCompoundShapeSubShape_create(), owned = true)
+    
+        override fun close() =
+            closeOnce { JphCompoundShapeSubShape_destroy(compoundShapeSubShapeHandle) }
+    
+        open fun setTransform(position: Vec3, rotation: Quat, centerOfMass: Vec3) =
+            interopScope { JphCompoundShapeSubShape_SetTransform(compoundShapeSubShapeHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), toInterop(centerOfMass.toArray())) }
+    
+        open fun getLocalTransformNoScale(scale: Vec3): Mat44 =
+            interopScope {
+                val returned = FloatArray(16)
+                val returnedPointer = toInterop(returned)
+                JphCompoundShapeSubShape_GetLocalTransformNoScale(compoundShapeSubShapeHandle, toInterop(scale.toArray()), returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Mat44(returned)
+            }
+    
+        open fun isValidScale(scale: Vec3): Boolean =
+            interopScope { JphCompoundShapeSubShape_IsValidScale(compoundShapeSubShapeHandle, toInterop(scale.toArray())) }
+    
+        open fun transformScale(scale: Vec3): Vec3 =
+            interopScope {
+                val returned = FloatArray(4)
+                val returnedPointer = toInterop(returned)
+                JphCompoundShapeSubShape_TransformScale(compoundShapeSubShapeHandle, toInterop(scale.toArray()), returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Vec3(returned)
+            }
+    
+        open var positionCOM: Vec3
+            get() = interopScope {
+                val returned = FloatArray(4)
+                val returnedPointer = toInterop(returned)
+                JphCompoundShapeSubShape_GetPositionCOM(compoundShapeSubShapeHandle, returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Vec3(returned)
+            }
+            set(positionCOM) = interopScope { JphCompoundShapeSubShape_SetPositionCOM(compoundShapeSubShapeHandle, toInterop(positionCOM.toArray())) }
+    
+        open var rotation: Quat
+            get() = interopScope {
+                val returned = FloatArray(4)
+                val returnedPointer = toInterop(returned)
+                JphCompoundShapeSubShape_GetRotation(compoundShapeSubShapeHandle, returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Quat(returned)
+            }
+            set(rotation) = interopScope { JphCompoundShapeSubShape_SetRotation(compoundShapeSubShapeHandle, toInterop(rotation.toArray())) }
+    
+        open var shape: Shape?
+            get() = JphCompoundShapeSubShape_GetShape(compoundShapeSubShapeHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+            set(value) = JphCompoundShapeSubShape_SetShape(compoundShapeSubShapeHandle, value?.shapeHandle ?: NullPointer)
+    
+        open var userData: Int
+            get() = JphCompoundShapeSubShape_GetUserData(compoundShapeSubShapeHandle)
+            set(value) = JphCompoundShapeSubShape_SetUserData(compoundShapeSubShapeHandle, value)
+    
+        open var isRotationIdentity: Boolean
+            get() = JphCompoundShapeSubShape_GetIsRotationIdentity(compoundShapeSubShapeHandle)
+            set(value) = JphCompoundShapeSubShape_SetIsRotationIdentity(compoundShapeSubShapeHandle, value)
     }
+    
+    companion object {
+        fun register() =
+            JphCompoundShape_sRegister()
+    }
+}

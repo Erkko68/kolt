@@ -87,6 +87,18 @@ open class Ragdoll internal constructor(internal val ragdollHandle: NativePointe
     open fun addImpulse(impulse: Vec3, lockBodies: Boolean) =
         interopScope { JphRagdoll_AddImpulse(ragdollHandle, toInterop(impulse.toArray()), lockBodies) }
 
+    open fun getRootTransform(lockBodies: Boolean): Pair<Vec3, Quat> =
+        interopScope {
+            val positionArray = FloatArray(4)
+            val positionPointer = toInterop(positionArray)
+            val rotationArray = FloatArray(4)
+            val rotationPointer = toInterop(rotationArray)
+            JphRagdoll_GetRootTransform(ragdollHandle, positionPointer, rotationPointer, lockBodies)
+            positionPointer.fromInterop(positionArray)
+            rotationPointer.fromInterop(rotationArray)
+            Pair(Vec3(positionArray), Quat(rotationArray))
+        }
+
     open val bodyCount: Int
         get() = JphRagdoll_GetBodyCount(ragdollHandle)
 
