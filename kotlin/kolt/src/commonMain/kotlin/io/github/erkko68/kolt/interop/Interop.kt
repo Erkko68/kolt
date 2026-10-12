@@ -1,12 +1,15 @@
 package io.github.erkko68.kolt.interop
 
 // The API calls the Jph* C API through the `external fun`s of capi/, named like the C symbol. Kotlin/Native binds
-// them through [ExternalSymbolName].
+// them through [ExternalSymbolName]; on the JVM they're JNI methods of the library [loadNativeLibrary] loads.
 
 /** Address of a native object. */
 expect class NativePointer
 
 expect val NullPointer: NativePointer
+
+/** Loads the C API where it isn't linked into the binary; before the first call into it. */
+expect fun loadNativeLibrary()
 
 /** The C symbol a common `external fun` binds to (`@SymbolName` on Kotlin/Native, absent elsewhere). */
 @OptIn(ExperimentalMultiplatform::class)
@@ -14,7 +17,7 @@ expect val NullPointer: NativePointer
 expect annotation class ExternalSymbolName(val name: String)
 
 /**
- * Hands Kotlin arrays to C for the duration of one call: pinned on Native. Empty and null arrays map to [NullPointer].
+ * Hands Kotlin arrays to C for the duration of one call: pinned on Native, copied on the JVM. Empty and null arrays map to [NullPointer].
  * Use through [interopScope].
  */
 expect class InteropScope() {

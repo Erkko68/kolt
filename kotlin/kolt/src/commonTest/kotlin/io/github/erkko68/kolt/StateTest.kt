@@ -88,5 +88,6 @@ class StateTest {
         bodies.removeBody(ball)
         bodies.destroyBody(ball)
         listOf(skeleton, stream, recorder, sphere, listener, system, objectVsBroadPhase, layerPairs, broadPhaseLayers, jobs, temp).forEach { it.close() }
+        Jolt.shutdown()
     }
 }

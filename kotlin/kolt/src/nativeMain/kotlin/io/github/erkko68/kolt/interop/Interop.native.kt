@@ -27,6 +27,8 @@ actual val NullPointer: NativePointer = 0L
 
 actual typealias ExternalSymbolName = kotlin.native.SymbolName
 
+actual fun loadNativeLibrary() {}
+
 actual class InteropScope actual constructor() {
     private val pinned = ArrayList<Pinned<*>>(2)
 
