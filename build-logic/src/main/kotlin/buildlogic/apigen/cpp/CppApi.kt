@@ -46,10 +46,10 @@ class CppApi(
                 alias, template.header, template.exported, template.accessible, template = false, template.bases,
                 template.methods.map { m ->
                     CppMethod(alias, m.name, m.header, null, substitute(m.returns), params(m.params), m.isStatic, m.isConst, m.isPublic, m.isDeprecated, m.isApi,
-                        m.isOverride, m.isVirtual, m.isPure, m.isFinal, m.templateParameters, m.guard)
+                        m.isOverride, m.isVirtual, m.isPure, m.isFinal, m.templateParameters, m.guard, m.doc)
                 },
-                template.fields.map { CppField(it.name, substitute(it.type), it.default, it.isPublic, it.isDeprecated) },
-                template.constructors.map(::params), template.destructible, template.allocatable, template.copyable, template.declaredDestructor, template.derivable,
+                template.fields.map { CppField(it.name, substitute(it.type), it.default, it.isPublic, it.isDeprecated, it.doc) },
+                template.constructors.map(::params), template.destructible, template.allocatable, template.copyable, template.declaredDestructor, template.derivable, template.doc,
             )
         }
         return CppApi(records + made.associateBy { it.name }, enums, aliases - instances.keys, constants, publicConstants, functions, skipped)
@@ -183,6 +183,8 @@ class CppRecord(
     val declaredDestructor: Boolean = false,
     /** A class deriving from it can be created without arguments: it isn't `final`, and has a default constructor one can call. */
     val derivable: Boolean = false,
+    /** Its documentation comment ([doc]), as every `doc` here. */
+    val doc: String? = null,
 ) {
     val defaultConstructible get() = constructors.any { ctor -> ctor.all { it.default != null } }
 }
@@ -212,6 +214,7 @@ class CppMethod(
     val templateParameters: List<String>? = null,
     /** The header's `#if` condition around the declaration (e.g. `UTILS_HAS_THREADING`), or null. */
     val guard: String? = null,
+    val doc: String? = null,
 ) {
     val isTemplate get() = templateParameters != null
 
@@ -222,7 +225,7 @@ class CppMethod(
                 ?.let { a -> CppType(t.spelling.replace(Regex("\\b${t.decl!!.substringAfterLast("::")}\\b"), a.spelling), a.decl, a.kind, a.args) } ?: t
         }
         return CppMethod(owner, name, header, mangled, substitute(returns), params.map { CppParam(it.name, substitute(it.type), it.default) },
-            isStatic, isConst, isPublic, isDeprecated, isApi, isOverride, isVirtual, isPure, isFinal, guard = guard)
+            isStatic, isConst, isPublic, isDeprecated, isApi, isOverride, isVirtual, isPure, isFinal, guard = guard, doc = doc)
     }
 
     override fun toString() = (if (isStatic) "static " else "") + "$returns $owner::$name(${params.joinToString()})" +
@@ -233,9 +236,13 @@ class CppParam(val name: String, val type: CppType, val default: CppValue?) {
     override fun toString() = "$type $name" + (default?.let { " = $it" } ?: "")
 }
 
-class CppField(val name: String, val type: CppType, val default: CppValue?, val isPublic: Boolean, val isDeprecated: Boolean)
+class CppField(val name: String, val type: CppType, val default: CppValue?, val isPublic: Boolean, val isDeprecated: Boolean, val doc: String? = null)
 
-class CppEnum(val name: String, val header: String?, val underlying: String?, val constants: List<Pair<String, BigInteger>>)
+/** [constantDocs]: by constant, for the documented ones. */
+class CppEnum(
+    val name: String, val header: String?, val underlying: String?, val constants: List<Pair<String, BigInteger>>,
+    val doc: String? = null, val constantDocs: Map<String, String> = emptyMap(),
+)
 
 /** A default argument or field initializer, folded as far as the AST allows. */
 sealed interface CppValue {

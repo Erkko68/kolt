@@ -144,11 +144,11 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
                 "FieldDecl" -> (child["name"] as? String)?.let { name ->
                     val type = scopes.resolve(spelledType(child), qualified)
                     val deprecated = child.children().any { it["kind"] == "DeprecatedAttr" }
-                    fields += CppField(name, type, initializer(child)?.let { values.of(it, qualified) }, isPublic, deprecated)
+                    fields += CppField(name, type, initializer(child)?.let { values.of(it, qualified) }, isPublic, deprecated, child.doc())
                 }
                 // An anonymous union or struct's members are the record's own (MaterialKey's UV fields).
                 "CXXRecordDecl" if child["name"] == null -> anonymousFields(child).forEach { field ->
-                    fields += CppField(field["name"] as String, scopes.resolve(spelledType(field), qualified), null, isPublic, false)
+                    fields += CppField(field["name"] as String, scopes.resolve(spelledType(field), qualified), null, isPublic, false, field.doc())
                 }
                 // `class Frustum getFrustum()` declares Frustum in the namespace, though clang lists it here.
                 "CXXRecordDecl", "ClassTemplateDecl" -> if (child["parentDeclContextId"] == null)
@@ -160,6 +160,7 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
         records[qualified] = CppRecord(
             qualified, locationOf[node]?.header, public, accessible, template, publicBases, methods, fields, constructors, destructible, allocatable, copyable, declaredDestructor,
             derivable = qualified !in withoutDefault && children.none { it["kind"] == "FinalAttr" },
+            doc = node.doc(),
         )
     }
 
@@ -204,6 +205,7 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
             isFinal = node.children().any { it["kind"] == "FinalAttr" },
             templateParameters = templateParameters,
             guard = locationOf[node]?.let { l -> l.header?.let { guards.at(it, l.line) } },
+            doc = node.doc(),
         )
     }
 
@@ -217,7 +219,8 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
             constant["name"] as String to value
         }
         val underlying = (node["fixedUnderlyingType"] as? Map<*, *>)?.get("qualType") as? String
-        enums[qualified] = CppEnum(qualified, locationOf[node]?.header, underlying, constants)
+        val constantDocs = node.children().mapNotNull { c -> c.doc()?.let { c["name"] as String to it } }.toMap()
+        enums[qualified] = CppEnum(qualified, locationOf[node]?.header, underlying, constants, node.doc(), constantDocs)
     }
 
     /** A declaration's initializer: its one child that isn't a comment or an attribute. */

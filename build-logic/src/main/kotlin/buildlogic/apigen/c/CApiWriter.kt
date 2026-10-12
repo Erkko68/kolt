@@ -49,6 +49,8 @@ internal class CApiWriter(
         val signature: String? = null,
         /** For [Role.UPCALLS]: the virtual functions the created object passes on, by index. */
         val upcalls: List<Upcall> = emptyList(),
+        /** The C++ member's documentation comment. */
+        val doc: String? = null,
     ) {
         /**
          * [UPCALLS] creates an object of a generated subclass, whose virtual functions call the `Upcall` it's given
@@ -291,7 +293,7 @@ internal class CApiWriter(
         val explicit = if (templateArguments.isEmpty()) "" else templateArguments.joinToString(prefix = "<", postfix = ">")
         val passed = params.iterator()
         val call = "$target${method.name}$explicit(${method.params.joinToString { p -> if (filled != null && p === out) "filled" else passed.next().let { (n, b) -> b.convert(n) } }})"
-        val bound = Bound(Bound.Role.METHOD, method.owner, method.name, params, returns, method.isStatic, signature = virtualSignature(method))
+        val bound = Bound(Bound.Role.METHOD, method.owner, method.name, params, returns, method.isStatic, signature = virtualSignature(method), doc = method.doc)
         return when {
             filled != null -> Forwarder("uint32_t $name(${cParams(self, params, trailing(filled))})",
                 "auto filled = ${filled.convert("$h::Pending()")};\n    $call;\n    return filled.finish();", bound)
@@ -310,7 +312,7 @@ internal class CApiWriter(
         if (getter !in functionNames) emit(getter, cpp, section) {
             val result = bridges.result(field.type, lvalue = true)
             val read = "$h::cpp(self)->${field.name}"
-            val bound = Bound(Bound.Role.GETTER, record.name, getter.removePrefix("${self}_"), returns = result)
+            val bound = Bound(Bound.Role.GETTER, record.name, getter.removePrefix("${self}_"), returns = result, doc = field.doc)
             if (result.out) Forwarder("void $getter(const $self* self, ${result.c}* out)", result.store(read, "out"), bound)
             else Forwarder("${result.c} $getter(${cParams("const $self* self", emptyList(), trailing(result))})", "return ${result.convert(read)};", bound)
         }
@@ -324,7 +326,7 @@ internal class CApiWriter(
             if (bridges.borrowsPointer(field.type)) throw Unsupported("${field.type.spelling}: the struct would keep the caller's pointer")
             val param = bridges.param(field.type)
             Forwarder("void $setter(${cParams("$self* self", listOf("value" to param))})", param.assign("$h::cpp(self)->${field.name}", "value"),
-                Bound(Bound.Role.SETTER, record.name, setter.removePrefix("${self}_"), listOf("value" to param)))
+                Bound(Bound.Role.SETTER, record.name, setter.removePrefix("${self}_"), listOf("value" to param), doc = field.doc))
         }
     }
 

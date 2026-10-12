@@ -17,6 +17,8 @@ internal class Member(
     val signature: String? = null,
     /** The C++ parameters, by index, whose values it returns after its own result; and of those, the ones it doesn't take. */
     val outs: List<Int> = emptyList(), val untaken: Set<Int> = emptySet(),
+    /** The C++ member's documentation comment, its parameters named as here. */
+    val doc: String? = null,
 ) {
     /** A subclass overrides it: a derived class's wrapper, or a Kotlin class whose override C++ calls. */
     var open = false
@@ -105,7 +107,7 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
                 else -> return@mapNotNull null
             }
             val set = members.singleOrNull { it.name == sets && !it.isStatic }?.takeIf { it.returns == "Unit" && it.params.map { p -> p.second } == listOf(m.returns) }
-            m to Member(name, emptyList(), m.returns, m.body, m.role, isStatic = false, isProperty = true, setter = set, signature = m.signature, outs = m.outs, untaken = m.untaken)
+            m to Member(name, emptyList(), m.returns, m.body, m.role, isStatic = false, isProperty = true, setter = set, signature = m.signature, outs = m.outs, untaken = m.untaken, doc = m.doc ?: set?.doc)
         }.toMap()
         val setters = properties.values.mapNotNull { it.setter }.toSet()
         return members.filter { it !in setters }.map { properties[it] ?: it }
@@ -150,8 +152,14 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
             b.isStatic -> values.escape(values.lowerCamel(staticPrefix.replace(b.name, "").ifEmpty { b.name }))
             else -> values.escape(values.lowerCamel(b.name))
         }
+        // A parameter's comment names it as Kotlin does; that of one only returned describes a result, after the function's own.
+        val taken = b.params.map { it.first }.zip(params).mapNotNull { (cpp, p) -> p.first.takeIf { _ -> p.second.taken }?.let { cpp to it } }.toMap()
+        val doc = b.doc?.lines()?.map { line ->
+            val (parameter, text) = PARAM.matchEntire(line)?.destructured ?: return@map false to line
+            taken[parameter]?.let { false to "@param $it $text" } ?: (true to "@return $text")
+        }?.sortedBy { it.first }?.joinToString("\n") { it.second }
         return Member(name, params.filter { it.second.taken }.map { (n, p) -> n to p.type }, type, body, b.role, b.role != Role.CREATE && (b.isStatic || self.isEmpty()),
-            signature = b.signature, outs = params.indices.filter { params[it].second.returned != null }, untaken = params.indices.filterTo(HashSet()) { !params[it].second.taken })
+            signature = b.signature, outs = params.indices.filter { params[it].second.returned != null }, untaken = params.indices.filterTo(HashSet()) { !params[it].second.taken }, doc = doc)
     }
 
     /** [parts] as one: itself, a Pair or a Triple, with its arguments between [open] and [close]; null for more. */
@@ -172,5 +180,9 @@ internal class KotlinMembers(private val values: KotlinValues, private val confi
         fun ancestors(r: CppRecord): List<String> = r.bases.mapNotNull { c.api.records[it] }.flatMap { listOf(names.type(it.name)) + ancestors(it) }
         val bases = ancestors(record).filter { it in upcasts && it in values.records && it != cName }
         return (bases.firstOrNull { it in byOwner } ?: bases.lastOrNull())?.let { it to upcasts.getValue(it) }
+    }
+
+    private companion object {
+        val PARAM = Regex("""@param (\S+) (.*)""")
     }
 }

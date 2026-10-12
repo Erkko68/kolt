@@ -36,7 +36,7 @@ internal class KotlinApiWriter(private val c: CApiWriter, private val config: Ap
         values.records.filterKeys { it !in values.outer }.forEach { (cName, record) -> file(record.header, values.kotlin(cName), text(cName)) }
         values.enums.filterKeys { it !in values.outer }.forEach { (cName, enum) -> file(enum.header, values.kotlin(cName), text(cName)) }
         values.scalars.forEach { (cName, decl) ->
-            file(c.api.records[decl]?.header, values.kotlin(cName), "/** C++ `$decl`. */\n@kotlin.jvm.JvmInline\nvalue class ${values.kotlin(cName)}(val value: Int)\n")
+            file(c.api.records[decl]?.header, values.kotlin(cName), kdoc(c.api.records[decl]?.doc, "", "C++ `$decl`.") + "@kotlin.jvm.JvmInline\nvalue class ${values.kotlin(cName)}(val value: Int)\n")
         }
         // A namespace's functions, in the module's own package.
         members.functions().ifEmpty { null }?.let { functions -> file(null, config.name, functions.joinToString("\n") { function(it, "") }) }
@@ -75,7 +75,7 @@ internal class KotlinApiWriter(private val c: CApiWriter, private val config: Ap
         ).filter { it.isNotEmpty() }.joinToString("\n")
         // Open to the classes extending it, and to a Kotlin subclass when C++ calls its overrides; nothing calls another's.
         val open = if (upcalls != null || cName in members.extended) "open " else ""
-        return "/** C++ `${record.name}`. */\n${open}class ${values.simpleName(cName)} internal constructor(internal val $handle: NativePointer, owned: Boolean = false)" +
+        return kdoc(record.doc, "", "C++ `${record.name}`.") + "${open}class ${values.simpleName(cName)} internal constructor(internal val $handle: NativePointer, owned: Boolean = false)" +
             " : ${supertypes.joinToString()}" + if (body.isEmpty()) "\n" else " {\n$body}\n"
     }
 
@@ -108,23 +108,38 @@ internal class KotlinApiWriter(private val c: CApiWriter, private val config: Ap
             else -> ""
         }
         fun body(text: String) = text.replace("\n", "\n$indent    ")
-        if (m.isProperty) return "$indent$modifier${if (m.setter == null) "val" else "var"} ${m.name}: ${m.returns}\n$indent    get() = ${body(m.body)}\n" +
+        if (m.isProperty) return kdoc(m.doc, indent) + "$indent$modifier${if (m.setter == null) "val" else "var"} ${m.name}: ${m.returns}\n$indent    get() = ${body(m.body)}\n" +
             m.setter?.let { "$indent    set(${it.params.single().first}) = ${body(it.body)}\n" }.orEmpty()
-        return "$indent${modifier}fun ${m.name}(${parameters(m)})${if (m.returns == "Unit") "" else ": ${m.returns}"} =\n$indent    ${body(m.body)}\n"
+        return kdoc(m.doc, indent) + "$indent${modifier}fun ${m.name}(${parameters(m)})${if (m.returns == "Unit") "" else ": ${m.returns}"} =\n$indent    ${body(m.body)}\n"
     }
 
     private fun parameters(m: Member) = m.params.joinToString { (name, type) -> "$name: $type" }
 
     /** An enum class; for [ApiGenConfig.flagEnums], a value class of the bits, which `or` combines. */
     private fun enum(cName: String, enum: CppEnum) = if (enum.name in config.flagEnums) values.simpleName(cName).let { name ->
-        "/** C++ `${enum.name}`: flags, which [or] combines. */\n@kotlin.jvm.JvmInline\nvalue class $name internal constructor(internal val value: Int) {\n" +
+        kdoc(enum.doc, "", "C++ `${enum.name}`: flags, which [or] combines.") + "@kotlin.jvm.JvmInline\nvalue class $name internal constructor(internal val value: Int) {\n" +
             "    infix fun or(other: $name) = $name(value or other.value)\n    operator fun contains(flags: $name) = value and flags.value == flags.value\n\n" +
-            "    companion object {\n" + enum.constants.joinToString("") { (constant, value) -> "        val ${values.escape(constant)} = $name(${value.toInt()})\n" } +
+            "    companion object {\n" + enum.constants.joinToString("") { (constant, value) -> kdoc(enum.constantDocs[constant], "        ") + "        val ${values.escape(constant)} = $name(${value.toInt()})\n" } +
             "\n        internal fun of(value: Int) = $name(value)\n    }\n}\n"
     } else
-        "/** C++ `${enum.name}`. */\nenum class ${values.simpleName(cName)}(internal val value: Int) {\n" +
-            enum.constants.joinToString(",\n", postfix = ";\n") { (constant, value) -> "    ${values.escape(constant)}(${value.toInt()})" } +
+        kdoc(enum.doc, "", "C++ `${enum.name}`.") + "enum class ${values.simpleName(cName)}(internal val value: Int) {\n" +
+            enum.constants.joinToString(",\n", postfix = ";\n") { (constant, value) -> kdoc(enum.constantDocs[constant], "    ") + "    ${values.escape(constant)}(${value.toInt()})" } +
             "\n    internal companion object {\n        fun of(value: Int) = entries.first { it.value == value }\n    }\n}\n"
+
+    /** [doc] (a [buildlogic.apigen.cpp.doc]) as a KDoc comment on lines of its own, [note] its last paragraph; nothing for neither. */
+    private fun kdoc(doc: String?, indent: String, note: String? = null): String {
+        // Comments nest in Kotlin, and KDoc reads brackets as links, but in a code block.
+        // ponytail: escapes inside `code spans` too, where the backslash shows; skip those once it bothers.
+        val (tags, text) = doc.orEmpty().replace("*/", "*&#47;").replace("/*", "/&#42;").lines()
+            .map { if (it.startsWith("    ")) it else it.replace("[", "\\[").replace("]", "\\]") }.partition { it.startsWith("@") }
+        val body = text.dropWhile { it.isEmpty() }.dropLastWhile { it.isEmpty() }
+        val lines = body + (if (note != null && body.isNotEmpty()) listOf("") else emptyList()) + listOfNotNull(note) + tags
+        return when (lines.size) {
+            0 -> ""
+            1 -> "$indent/** ${lines[0]} */\n"
+            else -> "$indent/**\n" + lines.joinToString("") { "$indent *${if (it.isEmpty()) "" else " $it"}\n" } + "$indent */\n"
+        }
+    }
 
     companion object {
         /** A generated file's first line: what `generateKotlinApi` may replace. */
