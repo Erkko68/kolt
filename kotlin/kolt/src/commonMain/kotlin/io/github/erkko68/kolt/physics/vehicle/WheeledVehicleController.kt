@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,41 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::WheeledVehicleController`. */
-open class WheeledVehicleController internal constructor(internal val wheeledVehicleControllerHandle: NativePointer)
+open class WheeledVehicleController internal constructor(internal val wheeledVehicleControllerHandle: NativePointer, owned: Boolean = false) : VehicleController(JphWheeledVehicleController_asVehicleController(wheeledVehicleControllerHandle), owned), AutoCloseable {
+    constructor(settings: WheeledVehicleControllerSettings, constraint: VehicleConstraint) : this(JphWheeledVehicleController_create(settings.wheeledVehicleControllerSettingsHandle, constraint.vehicleConstraintHandle), owned = true)
+
+    override fun close() =
+        closeOnce { JphWheeledVehicleController_destroy(wheeledVehicleControllerHandle) }
+
+    open fun setDriverInput(forward: Float, right: Float, brake: Float, handBrake: Float) =
+        JphWheeledVehicleController_SetDriverInput(wheeledVehicleControllerHandle, forward, right, brake, handBrake)
+
+    open var forwardInput: Float
+        get() = JphWheeledVehicleController_GetForwardInput(wheeledVehicleControllerHandle)
+        set(forward) = JphWheeledVehicleController_SetForwardInput(wheeledVehicleControllerHandle, forward)
+
+    open var rightInput: Float
+        get() = JphWheeledVehicleController_GetRightInput(wheeledVehicleControllerHandle)
+        set(right) = JphWheeledVehicleController_SetRightInput(wheeledVehicleControllerHandle, right)
+
+    open var brakeInput: Float
+        get() = JphWheeledVehicleController_GetBrakeInput(wheeledVehicleControllerHandle)
+        set(brake) = JphWheeledVehicleController_SetBrakeInput(wheeledVehicleControllerHandle, brake)
+
+    open var handBrakeInput: Float
+        get() = JphWheeledVehicleController_GetHandBrakeInput(wheeledVehicleControllerHandle)
+        set(handBrake) = JphWheeledVehicleController_SetHandBrakeInput(wheeledVehicleControllerHandle, handBrake)
+
+    open val engine: VehicleEngine
+        get() = VehicleEngine(JphWheeledVehicleController_GetEngine(wheeledVehicleControllerHandle))
+
+    open val transmission: VehicleTransmission
+        get() = VehicleTransmission(JphWheeledVehicleController_GetTransmission(wheeledVehicleControllerHandle))
+
+    open var differentialLimitedSlipRatio: Float
+        get() = JphWheeledVehicleController_GetDifferentialLimitedSlipRatio(wheeledVehicleControllerHandle)
+        set(v) = JphWheeledVehicleController_SetDifferentialLimitedSlipRatio(wheeledVehicleControllerHandle, v)
+
+    open val wheelSpeedAtClutch: Float
+        get() = JphWheeledVehicleController_GetWheelSpeedAtClutch(wheeledVehicleControllerHandle)
+}

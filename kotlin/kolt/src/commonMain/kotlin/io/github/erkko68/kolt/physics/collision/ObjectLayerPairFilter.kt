@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,23 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ObjectLayerPairFilter`. */
-open class ObjectLayerPairFilter internal constructor(internal val objectLayerPairFilterHandle: NativePointer)
+open class ObjectLayerPairFilter internal constructor(internal val objectLayerPairFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphObjectLayerPairFilter_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != ObjectLayerPairFilter::class) JphObjectLayerPairFilter_bindUpcalls(objectLayerPairFilterHandle, Upcalls.reference(this))
+    }
+
+    override fun close() =
+        closeOnce { JphObjectLayerPairFilter_destroy(objectLayerPairFilterHandle) }
+
+    open fun shouldCollide(layer1: Int, layer2: Int): Boolean =
+        JphObjectLayerPairFilter_ShouldCollide(objectLayerPairFilterHandle, layer1, layer2)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, if (shouldCollide(readSlot(args, 0).toInt(), readSlot(args, 1).toInt())) 1L else 0L)
+            else -> return false
+        }
+        return true
+    }
+}

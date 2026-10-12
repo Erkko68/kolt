@@ -21,6 +21,7 @@ registerApiGenTasks(
         droppedNamespaces = setOf("JPH"),
         memberPrefix = "^m(?=[A-Z])",
         parameterPrefix = "^(in|out|io)(?=[A-Z])",
+        staticPrefix = "^s(?=[A-Z])",
         helpers = "kolt",
         bridgeHeader = "../manual/JphBridge.hpp",
         // IDs and layers are their value.
@@ -37,6 +38,7 @@ registerApiGenTasks(
             "JPH::Float2" to Mirror("float", 2), "JPH::Float3" to Mirror("float", 3), "JPH::Float4" to Mirror("float", 4),
             "JPH::Double3" to Mirror("double", 3),
         ),
+        flagEnums = setOf("JPH::EAllowedDOFs"),
         sequences = setOf("JPH::Array", "JPH::StaticArray"),
         // JPH::String is a std::basic_string with Jolt's allocator.
         strings = mapOf("std::basic_string" to "JPH::String"),
@@ -46,6 +48,17 @@ registerApiGenTasks(
             get = "GetPtr", addRef = "AddRef", release = "Release",
         ),
         results = setOf("JPH::Result"),
+        // The collectors of a query's hits: Jolt names each by an alias of CollisionCollector.
+        aliasInstantiations = mapOf(
+            "JPH::CastRayCollector" to mapOf("ResultTypeArg" to "JPH::RayCastResult", "TraitsType" to "JPH::CollisionCollectorTraitsCastRay"),
+            "JPH::CastShapeCollector" to mapOf("ResultTypeArg" to "JPH::ShapeCastResult", "TraitsType" to "JPH::CollisionCollectorTraitsCastShape"),
+            "JPH::CollidePointCollector" to mapOf("ResultTypeArg" to "JPH::CollidePointResult", "TraitsType" to "JPH::CollisionCollectorTraitsCollidePoint"),
+            "JPH::CollideShapeCollector" to mapOf("ResultTypeArg" to "JPH::CollideShapeResult", "TraitsType" to "JPH::CollisionCollectorTraitsCollideShape"),
+            "JPH::TransformedShapeCollector" to mapOf("ResultTypeArg" to "JPH::TransformedShape", "TraitsType" to "JPH::CollisionCollectorTraitsCollideShape"),
+            "JPH::RayCastBodyCollector" to mapOf("ResultTypeArg" to "JPH::BroadPhaseCastResult", "TraitsType" to "JPH::CollisionCollectorTraitsCastRay"),
+            "JPH::CastShapeBodyCollector" to mapOf("ResultTypeArg" to "JPH::BroadPhaseCastResult", "TraitsType" to "JPH::CollisionCollectorTraitsCastShape"),
+            "JPH::CollideShapeBodyCollector" to mapOf("ResultTypeArg" to "JPH::BodyID", "TraitsType" to "JPH::CollisionCollectorTraitsCollideShape"),
+        ),
         kotlin = KotlinBindings(
             packages = mapOf("kolt" to "io.github.erkko68.kolt.capi"),
             interop = "io.github.erkko68.kolt.interop",

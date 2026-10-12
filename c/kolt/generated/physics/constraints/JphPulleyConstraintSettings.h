@@ -15,11 +15,7 @@ void JphPulleyConstraintSettings_release(const JphPulleyConstraintSettings* self
 JphTwoBodyConstraintSettings* JphPulleyConstraintSettings_asTwoBodyConstraintSettings(JphPulleyConstraintSettings* self);
 JphConstraintSettings* JphPulleyConstraintSettings_asConstraintSettings(JphPulleyConstraintSettings* self);
 JphSerializableObject* JphPulleyConstraintSettings_asSerializableObject(JphPulleyConstraintSettings* self);
-const JphRTTI* JphPulleyConstraintSettings_GetRTTI(const JphPulleyConstraintSettings* self);
-const void* JphPulleyConstraintSettings_CastTo(const JphPulleyConstraintSettings* self, const JphRTTI* inRTTI);
 void JphPulleyConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
-void JphPulleyConstraintSettings_SaveBinaryState(const JphPulleyConstraintSettings* self, JphStreamOut* inStream);
-JphTwoBodyConstraint* JphPulleyConstraintSettings_Create(const JphPulleyConstraintSettings* self, JphBody* inBody1, JphBody* inBody2);
 JphEConstraintSpace JphPulleyConstraintSettings_GetSpace(const JphPulleyConstraintSettings* self);
 void JphPulleyConstraintSettings_SetSpace(JphPulleyConstraintSettings* self, JphEConstraintSpace value);
 void JphPulleyConstraintSettings_GetBodyPoint1(const JphPulleyConstraintSettings* self, JphVec3* out);

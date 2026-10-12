@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,34 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TwoBodyConstraint`. */
-open class TwoBodyConstraint internal constructor(internal val twoBodyConstraintHandle: NativePointer)
+open class TwoBodyConstraint internal constructor(internal val twoBodyConstraintHandle: NativePointer, owned: Boolean = false) : Constraint(JphTwoBodyConstraint_asConstraint(twoBodyConstraintHandle), owned), AutoCloseable {
+    override fun addRef() =
+        own { JphTwoBodyConstraint_addRef(twoBodyConstraintHandle) }
+
+    override fun close() =
+        closeOnce { JphTwoBodyConstraint_release(twoBodyConstraintHandle) }
+
+    open val body1: Body?
+        get() = JphTwoBodyConstraint_GetBody1(twoBodyConstraintHandle).takeIf { it != NullPointer }?.let { Body(it) }
+
+    open val body2: Body?
+        get() = JphTwoBodyConstraint_GetBody2(twoBodyConstraintHandle).takeIf { it != NullPointer }?.let { Body(it) }
+
+    open val constraintToBody1Matrix: Mat44
+        get() = interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphTwoBodyConstraint_GetConstraintToBody1Matrix(twoBodyConstraintHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+
+    open val constraintToBody2Matrix: Mat44
+        get() = interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphTwoBodyConstraint_GetConstraintToBody2Matrix(twoBodyConstraintHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+}

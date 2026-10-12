@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,10 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::JobSystemWithBarrier`. */
-open class JobSystemWithBarrier internal constructor(internal val jobSystemWithBarrierHandle: NativePointer)
+open class JobSystemWithBarrier internal constructor(internal val jobSystemWithBarrierHandle: NativePointer, owned: Boolean = false) : JobSystem(JphJobSystemWithBarrier_asJobSystem(jobSystemWithBarrierHandle), owned), AutoCloseable {
+    override fun close() =
+        closeOnce { JphJobSystemWithBarrier_destroy(jobSystemWithBarrierHandle) }
+
+    open fun init(maxBarriers: Int) =
+        JphJobSystemWithBarrier_Init(jobSystemWithBarrierHandle, maxBarriers)
+}

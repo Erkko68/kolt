@@ -34,8 +34,5 @@ internal external fun JphTriangleShape_GetVertex3(self: NativePointer, out: Nati
 @ExternalSymbolName("JphTriangleShape_GetConvexRadius")
 internal external fun JphTriangleShape_GetConvexRadius(self: NativePointer): Float
 
-@ExternalSymbolName("JphTriangleShape_GetSupportFunction")
-internal external fun JphTriangleShape_GetSupportFunction(self: NativePointer, inMode: Int, inBuffer: NativePointer, inScale: NativePointer): NativePointer
-
 @ExternalSymbolName("JphTriangleShape_sRegister")
 internal external fun JphTriangleShape_sRegister()

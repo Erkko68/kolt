@@ -22,8 +22,5 @@ internal external fun JphJobSystemThreadPool_asJobSystem(self: NativePointer): N
 @ExternalSymbolName("JphJobSystemThreadPool_Init")
 internal external fun JphJobSystemThreadPool_Init(self: NativePointer, inMaxJobs: Int, inMaxBarriers: Int, inNumThreads: Int)
 
-@ExternalSymbolName("JphJobSystemThreadPool_GetMaxConcurrency")
-internal external fun JphJobSystemThreadPool_GetMaxConcurrency(self: NativePointer): Int
-
 @ExternalSymbolName("JphJobSystemThreadPool_SetNumThreads")
 internal external fun JphJobSystemThreadPool_SetNumThreads(self: NativePointer, inNumThreads: Int)

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,21 +33,26 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PlaneShapeSettings`. */
-open class PlaneShapeSettings internal constructor(internal val planeShapeSettingsHandle: NativePointer) : ShapeSettings(JphPlaneShapeSettings_asShapeSettings(planeShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphPlaneShapeSettings_create())
-    constructor(plane: Plane, material: PhysicsMaterial?, halfExtent: Float) : this(JphPlaneShapeSettings_create_Plane_PhysicsMaterial_float(plane.planeHandle, material?.physicsMaterialHandle ?: NullPointer, halfExtent))
+open class PlaneShapeSettings internal constructor(internal val planeShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphPlaneShapeSettings_asShapeSettings(planeShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphPlaneShapeSettings_create(), owned = true)
+    constructor(plane: Plane, material: PhysicsMaterial?, halfExtent: Float) : this(JphPlaneShapeSettings_create_Plane_PhysicsMaterial_float(plane.planeHandle, material?.physicsMaterialHandle ?: NullPointer, halfExtent), owned = true)
 
     override fun addRef() =
-        JphPlaneShapeSettings_addRef(planeShapeSettingsHandle)
+        own { JphPlaneShapeSettings_addRef(planeShapeSettingsHandle) }
 
     override fun close() =
-        JphPlaneShapeSettings_release(planeShapeSettingsHandle)
+        closeOnce { JphPlaneShapeSettings_release(planeShapeSettingsHandle) }
 
-    open fun setPlane(value: Plane) =
-        JphPlaneShapeSettings_SetPlane(planeShapeSettingsHandle, value.planeHandle)
+    open var plane: Plane
+        get() = run {
+            val returned = Plane(JphPlane_create(), owned = true)
+            JphPlaneShapeSettings_GetPlane(planeShapeSettingsHandle, returned.planeHandle)
+            returned
+        }
+        set(value) = JphPlaneShapeSettings_SetPlane(planeShapeSettingsHandle, value.planeHandle)
 
     open var material: PhysicsMaterial?
-        get() = JphPlaneShapeSettings_GetMaterial(planeShapeSettingsHandle).takeIf { it != NullPointer }?.let(::PhysicsMaterial)
+        get() = JphPlaneShapeSettings_GetMaterial(planeShapeSettingsHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(value) = JphPlaneShapeSettings_SetMaterial(planeShapeSettingsHandle, value?.physicsMaterialHandle ?: NullPointer)
 
     open var halfExtent: Float
@@ -54,7 +60,7 @@ open class PlaneShapeSettings internal constructor(internal val planeShapeSettin
         set(value) = JphPlaneShapeSettings_SetHalfExtent(planeShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphPlaneShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollideShapeSettings`. */
-open class CollideShapeSettings internal constructor(internal val collideShapeSettingsHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphCollideShapeSettings_create())
+open class CollideShapeSettings internal constructor(internal val collideShapeSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCollideShapeSettings_create(), owned = true)
 
     override fun close() =
-        JphCollideShapeSettings_destroy(collideShapeSettingsHandle)
+        closeOnce { JphCollideShapeSettings_destroy(collideShapeSettingsHandle) }
 
     open var maxSeparationDistance: Float
         get() = JphCollideShapeSettings_GetMaxSeparationDistance(collideShapeSettingsHandle)

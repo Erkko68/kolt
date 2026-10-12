@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TwoBodyConstraintSettings`. */
-open class TwoBodyConstraintSettings internal constructor(internal val twoBodyConstraintSettingsHandle: NativePointer)
+open class TwoBodyConstraintSettings internal constructor(internal val twoBodyConstraintSettingsHandle: NativePointer, owned: Boolean = false) : ConstraintSettings(JphTwoBodyConstraintSettings_asConstraintSettings(twoBodyConstraintSettingsHandle), owned), AutoCloseable {
+    override fun addRef() =
+        own { JphTwoBodyConstraintSettings_addRef(twoBodyConstraintSettingsHandle) }
+
+    override fun close() =
+        closeOnce { JphTwoBodyConstraintSettings_release(twoBodyConstraintSettingsHandle) }
+
+    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
+        JphTwoBodyConstraintSettings_Create(twoBodyConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphTwoBodyConstraintSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

@@ -16,7 +16,6 @@ void JphConvexHullShape_addRef(const JphConvexHullShape* self);
 void JphConvexHullShape_release(const JphConvexHullShape* self);
 JphConvexShape* JphConvexHullShape_asConvexShape(JphConvexHullShape* self);
 JphShape* JphConvexHullShape_asShape(JphConvexHullShape* self);
-const JphConvexShapeSupport* JphConvexHullShape_GetSupportFunction(const JphConvexHullShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale);
 float JphConvexHullShape_GetConvexRadius(const JphConvexHullShape* self);
 uint32_t JphConvexHullShape_GetPlanes(const JphConvexHullShape* self, JphPlane* const* out, uint32_t outCapacity);
 uint32_t JphConvexHullShape_GetNumPoints(const JphConvexHullShape* self);

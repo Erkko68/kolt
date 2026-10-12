@@ -21,6 +21,3 @@ internal external fun JphObjectLayerPairFilterTable_DisableCollision(self: Nativ
 
 @ExternalSymbolName("JphObjectLayerPairFilterTable_EnableCollision")
 internal external fun JphObjectLayerPairFilterTable_EnableCollision(self: NativePointer, inLayer1: Int, inLayer2: Int)
-
-@ExternalSymbolName("JphObjectLayerPairFilterTable_ShouldCollide")
-internal external fun JphObjectLayerPairFilterTable_ShouldCollide(self: NativePointer, inObject1: Int, inObject2: Int): Boolean

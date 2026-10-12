@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,51 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::IndexedTriangleNoMaterial`. */
-open class IndexedTriangleNoMaterial internal constructor(internal val indexedTriangleNoMaterialHandle: NativePointer)
+open class IndexedTriangleNoMaterial internal constructor(internal val indexedTriangleNoMaterialHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphIndexedTriangleNoMaterial_create(), owned = true)
+    constructor(i1: Int, i2: Int, i3: Int) : this(JphIndexedTriangleNoMaterial_create_uint32_uint32_uint32(i1, i2, i3), owned = true)
+
+    override fun close() =
+        closeOnce { JphIndexedTriangleNoMaterial_destroy(indexedTriangleNoMaterialHandle) }
+
+    open fun isEquivalent(rhs: IndexedTriangleNoMaterial): Boolean =
+        JphIndexedTriangleNoMaterial_IsEquivalent(indexedTriangleNoMaterialHandle, rhs.indexedTriangleNoMaterialHandle)
+
+    open fun isOpposite(rhs: IndexedTriangleNoMaterial): Boolean =
+        JphIndexedTriangleNoMaterial_IsOpposite(indexedTriangleNoMaterialHandle, rhs.indexedTriangleNoMaterialHandle)
+
+    open fun isDegenerate(vertices: List<Float3>): Boolean =
+        interopScope { JphIndexedTriangleNoMaterial_IsDegenerate(indexedTriangleNoMaterialHandle, toInterop(FloatArray(vertices.size * 3).also { a -> vertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), vertices.size) }
+
+    open fun rotate() =
+        JphIndexedTriangleNoMaterial_Rotate(indexedTriangleNoMaterialHandle)
+
+    open fun getCentroid(vertices: List<Float3>): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphIndexedTriangleNoMaterial_GetCentroid(indexedTriangleNoMaterialHandle, toInterop(FloatArray(vertices.size * 3).also { a -> vertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), vertices.size, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val hash: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphIndexedTriangleNoMaterial_GetHash(indexedTriangleNoMaterialHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+
+    open var idx: IntArray
+        get() = interopScope {
+            val count = JphIndexedTriangleNoMaterial_GetIdx(indexedTriangleNoMaterialHandle, NullPointer, 0)
+            val returned = IntArray(count)
+            val returnedPointer = toInterop(returned)
+            JphIndexedTriangleNoMaterial_GetIdx(indexedTriangleNoMaterialHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned
+        }
+        set(value) = interopScope { JphIndexedTriangleNoMaterial_SetIdx(indexedTriangleNoMaterialHandle, toInterop(value), value.size) }
+}

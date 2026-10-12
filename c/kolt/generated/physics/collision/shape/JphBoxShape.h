@@ -18,7 +18,6 @@ void JphBoxShape_release(const JphBoxShape* self);
 JphConvexShape* JphBoxShape_asConvexShape(JphBoxShape* self);
 JphShape* JphBoxShape_asShape(JphBoxShape* self);
 void JphBoxShape_GetHalfExtent(const JphBoxShape* self, JphVec3* out);
-const JphConvexShapeSupport* JphBoxShape_GetSupportFunction(const JphBoxShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale);
 float JphBoxShape_GetConvexRadius(const JphBoxShape* self);
 void JphBoxShape_sRegister(void);
 

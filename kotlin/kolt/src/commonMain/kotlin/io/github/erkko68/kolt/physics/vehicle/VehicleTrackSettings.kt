@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,51 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleTrackSettings`. */
-open class VehicleTrackSettings internal constructor(internal val vehicleTrackSettingsHandle: NativePointer)
+open class VehicleTrackSettings internal constructor(internal val vehicleTrackSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphVehicleTrackSettings_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphVehicleTrackSettings_destroy(vehicleTrackSettingsHandle) }
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphVehicleTrackSettings_SaveBinaryState(vehicleTrackSettingsHandle, stream.streamOutHandle)
+
+    open fun restoreBinaryState(stream: StreamIn) =
+        JphVehicleTrackSettings_RestoreBinaryState(vehicleTrackSettingsHandle, stream.streamInHandle)
+
+    open var drivenWheel: Int
+        get() = JphVehicleTrackSettings_GetDrivenWheel(vehicleTrackSettingsHandle)
+        set(value) = JphVehicleTrackSettings_SetDrivenWheel(vehicleTrackSettingsHandle, value)
+
+    open var wheels: IntArray
+        get() = interopScope {
+            val count = JphVehicleTrackSettings_GetWheels(vehicleTrackSettingsHandle, NullPointer, 0)
+            val returned = IntArray(count)
+            val returnedPointer = toInterop(returned)
+            JphVehicleTrackSettings_GetWheels(vehicleTrackSettingsHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned
+        }
+        set(value) = interopScope { JphVehicleTrackSettings_SetWheels(vehicleTrackSettingsHandle, toInterop(value), value.size) }
+
+    open var inertia: Float
+        get() = JphVehicleTrackSettings_GetInertia(vehicleTrackSettingsHandle)
+        set(value) = JphVehicleTrackSettings_SetInertia(vehicleTrackSettingsHandle, value)
+
+    open var angularDamping: Float
+        get() = JphVehicleTrackSettings_GetAngularDamping(vehicleTrackSettingsHandle)
+        set(value) = JphVehicleTrackSettings_SetAngularDamping(vehicleTrackSettingsHandle, value)
+
+    open var maxBrakeTorque: Float
+        get() = JphVehicleTrackSettings_GetMaxBrakeTorque(vehicleTrackSettingsHandle)
+        set(value) = JphVehicleTrackSettings_SetMaxBrakeTorque(vehicleTrackSettingsHandle, value)
+
+    open var differentialRatio: Float
+        get() = JphVehicleTrackSettings_GetDifferentialRatio(vehicleTrackSettingsHandle)
+        set(value) = JphVehicleTrackSettings_SetDifferentialRatio(vehicleTrackSettingsHandle, value)
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphVehicleTrackSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

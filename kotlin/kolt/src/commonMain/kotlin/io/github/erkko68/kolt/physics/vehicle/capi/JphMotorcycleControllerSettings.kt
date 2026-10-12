@@ -13,6 +13,12 @@ internal external fun JphMotorcycleControllerSettings_addRef(self: NativePointer
 @ExternalSymbolName("JphMotorcycleControllerSettings_release")
 internal external fun JphMotorcycleControllerSettings_release(self: NativePointer)
 
+@ExternalSymbolName("JphMotorcycleControllerSettings_createUpcalls")
+internal external fun JphMotorcycleControllerSettings_createUpcalls(call: NativePointer): NativePointer
+
+@ExternalSymbolName("JphMotorcycleControllerSettings_bindUpcalls")
+internal external fun JphMotorcycleControllerSettings_bindUpcalls(self: NativePointer, userData: NativePointer)
+
 @ExternalSymbolName("JphMotorcycleControllerSettings_asWheeledVehicleControllerSettings")
 internal external fun JphMotorcycleControllerSettings_asWheeledVehicleControllerSettings(self: NativePointer): NativePointer
 
@@ -22,23 +28,8 @@ internal external fun JphMotorcycleControllerSettings_asVehicleControllerSetting
 @ExternalSymbolName("JphMotorcycleControllerSettings_asSerializableObject")
 internal external fun JphMotorcycleControllerSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphMotorcycleControllerSettings_GetRTTI")
-internal external fun JphMotorcycleControllerSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphMotorcycleControllerSettings_CastTo")
-internal external fun JphMotorcycleControllerSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
 @ExternalSymbolName("JphMotorcycleControllerSettings_sCreateRTTI")
 internal external fun JphMotorcycleControllerSettings_sCreateRTTI(inRTTI: NativePointer)
-
-@ExternalSymbolName("JphMotorcycleControllerSettings_ConstructController")
-internal external fun JphMotorcycleControllerSettings_ConstructController(self: NativePointer, inConstraint: NativePointer): NativePointer
-
-@ExternalSymbolName("JphMotorcycleControllerSettings_SaveBinaryState")
-internal external fun JphMotorcycleControllerSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphMotorcycleControllerSettings_RestoreBinaryState")
-internal external fun JphMotorcycleControllerSettings_RestoreBinaryState(self: NativePointer, inStream: NativePointer)
 
 @ExternalSymbolName("JphMotorcycleControllerSettings_GetMaxLeanAngle")
 internal external fun JphMotorcycleControllerSettings_GetMaxLeanAngle(self: NativePointer): Float

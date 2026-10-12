@@ -12,15 +12,12 @@ extern "C" {
 JphMotorcycleControllerSettings* JphMotorcycleControllerSettings_create(void);
 void JphMotorcycleControllerSettings_addRef(const JphMotorcycleControllerSettings* self);
 void JphMotorcycleControllerSettings_release(const JphMotorcycleControllerSettings* self);
+JphMotorcycleControllerSettings* JphMotorcycleControllerSettings_createUpcalls(JphUpcall call);
+void JphMotorcycleControllerSettings_bindUpcalls(JphMotorcycleControllerSettings* self, void* userData);
 JphWheeledVehicleControllerSettings* JphMotorcycleControllerSettings_asWheeledVehicleControllerSettings(JphMotorcycleControllerSettings* self);
 JphVehicleControllerSettings* JphMotorcycleControllerSettings_asVehicleControllerSettings(JphMotorcycleControllerSettings* self);
 JphSerializableObject* JphMotorcycleControllerSettings_asSerializableObject(JphMotorcycleControllerSettings* self);
-const JphRTTI* JphMotorcycleControllerSettings_GetRTTI(const JphMotorcycleControllerSettings* self);
-const void* JphMotorcycleControllerSettings_CastTo(const JphMotorcycleControllerSettings* self, const JphRTTI* inRTTI);
 void JphMotorcycleControllerSettings_sCreateRTTI(JphRTTI* inRTTI);
-JphVehicleController* JphMotorcycleControllerSettings_ConstructController(const JphMotorcycleControllerSettings* self, JphVehicleConstraint* inConstraint);
-void JphMotorcycleControllerSettings_SaveBinaryState(const JphMotorcycleControllerSettings* self, JphStreamOut* inStream);
-void JphMotorcycleControllerSettings_RestoreBinaryState(JphMotorcycleControllerSettings* self, JphStreamIn* inStream);
 float JphMotorcycleControllerSettings_GetMaxLeanAngle(const JphMotorcycleControllerSettings* self);
 void JphMotorcycleControllerSettings_SetMaxLeanAngle(JphMotorcycleControllerSettings* self, float value);
 float JphMotorcycleControllerSettings_GetLeanSpringConstant(const JphMotorcycleControllerSettings* self);

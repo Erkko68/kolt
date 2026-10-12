@@ -19,7 +19,6 @@ JphConvexShape* JphCylinderShape_asConvexShape(JphCylinderShape* self);
 JphShape* JphCylinderShape_asShape(JphCylinderShape* self);
 float JphCylinderShape_GetHalfHeight(const JphCylinderShape* self);
 float JphCylinderShape_GetRadius(const JphCylinderShape* self);
-const JphConvexShapeSupport* JphCylinderShape_GetSupportFunction(const JphCylinderShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale);
 float JphCylinderShape_GetConvexRadius(const JphCylinderShape* self);
 void JphCylinderShape_sRegister(void);
 

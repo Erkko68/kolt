@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConeConstraintSettings`. */
-open class ConeConstraintSettings internal constructor(internal val coneConstraintSettingsHandle: NativePointer) : SerializableObject(JphConeConstraintSettings_asSerializableObject(coneConstraintSettingsHandle)), AutoCloseable {
-    constructor() : this(JphConeConstraintSettings_create())
+open class ConeConstraintSettings internal constructor(internal val coneConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphConeConstraintSettings_asTwoBodyConstraintSettings(coneConstraintSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphConeConstraintSettings_create(), owned = true)
 
-    open fun addRef() =
-        JphConeConstraintSettings_addRef(coneConstraintSettingsHandle)
+    override fun addRef() =
+        own { JphConeConstraintSettings_addRef(coneConstraintSettingsHandle) }
 
     override fun close() =
-        JphConeConstraintSettings_release(coneConstraintSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphConeConstraintSettings_GetRTTI(coneConstraintSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphConeConstraintSettings_SaveBinaryState(coneConstraintSettingsHandle, stream.streamOutHandle)
-
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
-        JphConeConstraintSettings_Create(coneConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        closeOnce { JphConeConstraintSettings_release(coneConstraintSettingsHandle) }
 
     open var space: EConstraintSpace
         get() = EConstraintSpace.of(JphConeConstraintSettings_GetSpace(coneConstraintSettingsHandle))
@@ -99,7 +91,7 @@ open class ConeConstraintSettings internal constructor(internal val coneConstrai
         set(value) = JphConeConstraintSettings_SetHalfConeAngle(coneConstraintSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphConeConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

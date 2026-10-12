@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,266 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MotionProperties`. */
-open class MotionProperties internal constructor(internal val motionPropertiesHandle: NativePointer)
+open class MotionProperties internal constructor(internal val motionPropertiesHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphMotionProperties_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphMotionProperties_destroy(motionPropertiesHandle) }
+
+    open val motionQuality: EMotionQuality
+        get() = EMotionQuality.of(JphMotionProperties_GetMotionQuality(motionPropertiesHandle))
+
+    open val allowedDOFs: EAllowedDOFs
+        get() = EAllowedDOFs.of(JphMotionProperties_GetAllowedDOFs(motionPropertiesHandle))
+
+    open val allowSleeping: Boolean
+        get() = JphMotionProperties_GetAllowSleeping(motionPropertiesHandle)
+
+    open var linearVelocity: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetLinearVelocity(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(linearVelocity) = interopScope { JphMotionProperties_SetLinearVelocity(motionPropertiesHandle, toInterop(linearVelocity.toArray())) }
+
+    open fun setLinearVelocityClamped(linearVelocity: Vec3) =
+        interopScope { JphMotionProperties_SetLinearVelocityClamped(motionPropertiesHandle, toInterop(linearVelocity.toArray())) }
+
+    open var angularVelocity: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetAngularVelocity(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(angularVelocity) = interopScope { JphMotionProperties_SetAngularVelocity(motionPropertiesHandle, toInterop(angularVelocity.toArray())) }
+
+    open fun setAngularVelocityClamped(angularVelocity: Vec3) =
+        interopScope { JphMotionProperties_SetAngularVelocityClamped(motionPropertiesHandle, toInterop(angularVelocity.toArray())) }
+
+    open fun moveKinematic(deltaPosition: Vec3, deltaRotation: Quat, deltaTime: Float) =
+        interopScope { JphMotionProperties_MoveKinematic(motionPropertiesHandle, toInterop(deltaPosition.toArray()), toInterop(deltaRotation.toArray()), deltaTime) }
+
+    open var maxLinearVelocity: Float
+        get() = JphMotionProperties_GetMaxLinearVelocity(motionPropertiesHandle)
+        set(linearVelocity) = JphMotionProperties_SetMaxLinearVelocity(motionPropertiesHandle, linearVelocity)
+
+    open var maxAngularVelocity: Float
+        get() = JphMotionProperties_GetMaxAngularVelocity(motionPropertiesHandle)
+        set(angularVelocity) = JphMotionProperties_SetMaxAngularVelocity(motionPropertiesHandle, angularVelocity)
+
+    open fun clampLinearVelocity() =
+        JphMotionProperties_ClampLinearVelocity(motionPropertiesHandle)
+
+    open fun clampAngularVelocity() =
+        JphMotionProperties_ClampAngularVelocity(motionPropertiesHandle)
+
+    open var linearDamping: Float
+        get() = JphMotionProperties_GetLinearDamping(motionPropertiesHandle)
+        set(linearDamping) = JphMotionProperties_SetLinearDamping(motionPropertiesHandle, linearDamping)
+
+    open var angularDamping: Float
+        get() = JphMotionProperties_GetAngularDamping(motionPropertiesHandle)
+        set(angularDamping) = JphMotionProperties_SetAngularDamping(motionPropertiesHandle, angularDamping)
+
+    open var gravityFactor: Float
+        get() = JphMotionProperties_GetGravityFactor(motionPropertiesHandle)
+        set(gravityFactor) = JphMotionProperties_SetGravityFactor(motionPropertiesHandle, gravityFactor)
+
+    open fun setMassProperties(allowedDOFs: EAllowedDOFs, massProperties: MassProperties) =
+        JphMotionProperties_SetMassProperties(motionPropertiesHandle, allowedDOFs.value, massProperties.massPropertiesHandle)
+
+    open var inverseMass: Float
+        get() = JphMotionProperties_GetInverseMass(motionPropertiesHandle)
+        set(inverseMass) = JphMotionProperties_SetInverseMass(motionPropertiesHandle, inverseMass)
+
+    open val inverseMassUnchecked: Float
+        get() = JphMotionProperties_GetInverseMassUnchecked(motionPropertiesHandle)
+
+    open val inverseInertiaDiagonal: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetInverseInertiaDiagonal(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val inertiaRotation: Quat
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetInertiaRotation(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Quat(returned)
+        }
+
+    open fun setInverseInertia(diagonal: Vec3, rot: Quat) =
+        interopScope { JphMotionProperties_SetInverseInertia(motionPropertiesHandle, toInterop(diagonal.toArray()), toInterop(rot.toArray())) }
+
+    open fun scaleToMass(mass: Float) =
+        JphMotionProperties_ScaleToMass(motionPropertiesHandle, mass)
+
+    open val localSpaceInverseInertia: Mat44
+        get() = interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetLocalSpaceInverseInertia(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+
+    open val localSpaceInverseInertiaUnchecked: Mat44
+        get() = interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetLocalSpaceInverseInertiaUnchecked(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+
+    open fun getInverseInertiaForRotation(rotation: Mat44): Mat44 =
+        interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetInverseInertiaForRotation(motionPropertiesHandle, toInterop(rotation.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+
+    open fun multiplyWorldSpaceInverseInertiaByVector(bodyRotation: Quat, v: Vec3): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_MultiplyWorldSpaceInverseInertiaByVector(motionPropertiesHandle, toInterop(bodyRotation.toArray()), toInterop(v.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open fun getPointVelocityCOM(pointRelativeToCOM: Vec3): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetPointVelocityCOM(motionPropertiesHandle, toInterop(pointRelativeToCOM.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val accumulatedForce: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetAccumulatedForce(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val accumulatedTorque: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetAccumulatedTorque(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open fun resetForce() =
+        JphMotionProperties_ResetForce(motionPropertiesHandle)
+
+    open fun resetTorque() =
+        JphMotionProperties_ResetTorque(motionPropertiesHandle)
+
+    open fun resetMotion() =
+        JphMotionProperties_ResetMotion(motionPropertiesHandle)
+
+    open val linearDOFsMask: UVec4
+        get() = interopScope {
+            val returned = IntArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetLinearDOFsMask(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            UVec4(returned)
+        }
+
+    open fun lockTranslation(v: Vec3): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_LockTranslation(motionPropertiesHandle, toInterop(v.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val angularDOFsMask: UVec4
+        get() = interopScope {
+            val returned = IntArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_GetAngularDOFsMask(motionPropertiesHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            UVec4(returned)
+        }
+
+    open fun lockAngular(v: Vec3): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphMotionProperties_LockAngular(motionPropertiesHandle, toInterop(v.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open var numVelocityStepsOverride: Int
+        get() = JphMotionProperties_GetNumVelocityStepsOverride(motionPropertiesHandle)
+        set(n) = JphMotionProperties_SetNumVelocityStepsOverride(motionPropertiesHandle, n)
+
+    open var numPositionStepsOverride: Int
+        get() = JphMotionProperties_GetNumPositionStepsOverride(motionPropertiesHandle)
+        set(n) = JphMotionProperties_SetNumPositionStepsOverride(motionPropertiesHandle, n)
+
+    open fun applyLinearVelocityStep(linearVelocity: Vec3) =
+        interopScope { JphMotionProperties_ApplyLinearVelocityStep(motionPropertiesHandle, toInterop(linearVelocity.toArray())) }
+
+    open fun addLinearVelocityStep(linearVelocityChange: Vec3) =
+        interopScope { JphMotionProperties_AddLinearVelocityStep(motionPropertiesHandle, toInterop(linearVelocityChange.toArray())) }
+
+    open fun subLinearVelocityStep(linearVelocityChange: Vec3) =
+        interopScope { JphMotionProperties_SubLinearVelocityStep(motionPropertiesHandle, toInterop(linearVelocityChange.toArray())) }
+
+    open fun applyAngularVelocityStep(angularVelocity: Vec3) =
+        interopScope { JphMotionProperties_ApplyAngularVelocityStep(motionPropertiesHandle, toInterop(angularVelocity.toArray())) }
+
+    open fun addAngularVelocityStep(angularVelocityChange: Vec3) =
+        interopScope { JphMotionProperties_AddAngularVelocityStep(motionPropertiesHandle, toInterop(angularVelocityChange.toArray())) }
+
+    open fun subAngularVelocityStep(angularVelocityChange: Vec3) =
+        interopScope { JphMotionProperties_SubAngularVelocityStep(motionPropertiesHandle, toInterop(angularVelocityChange.toArray())) }
+
+    open fun applyGyroscopicForceInternal(bodyRotation: Quat, deltaTime: Float) =
+        interopScope { JphMotionProperties_ApplyGyroscopicForceInternal(motionPropertiesHandle, toInterop(bodyRotation.toArray()), deltaTime) }
+
+    open fun applyForceTorqueAndDragInternal(bodyRotation: Quat, gravity: Vec3, deltaTime: Float) =
+        interopScope { JphMotionProperties_ApplyForceTorqueAndDragInternal(motionPropertiesHandle, toInterop(bodyRotation.toArray()), toInterop(gravity.toArray()), deltaTime) }
+
+    open var islandIndexInternal: Int
+        get() = JphMotionProperties_GetIslandIndexInternal(motionPropertiesHandle)
+        set(index) = JphMotionProperties_SetIslandIndexInternal(motionPropertiesHandle, index)
+
+    open val indexInActiveBodiesInternal: Int
+        get() = JphMotionProperties_GetIndexInActiveBodiesInternal(motionPropertiesHandle)
+
+    open fun resetSleepTestTimer() =
+        JphMotionProperties_ResetSleepTestTimer(motionPropertiesHandle)
+
+    open fun accumulateSleepTime(deltaTime: Float, timeBeforeSleep: Float): ECanSleep =
+        ECanSleep.of(JphMotionProperties_AccumulateSleepTime(motionPropertiesHandle, deltaTime, timeBeforeSleep))
+
+    open fun saveState(stream: StateRecorder) =
+        JphMotionProperties_SaveState(motionPropertiesHandle, stream.stateRecorderHandle)
+
+    open fun restoreState(stream: StateRecorder) =
+        JphMotionProperties_RestoreState(motionPropertiesHandle, stream.stateRecorderHandle)
+}

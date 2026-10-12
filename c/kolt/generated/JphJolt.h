@@ -10,6 +10,8 @@ extern "C" {
 
 // JPH
 void Jph_EstimateCollisionResponse(const JphBody* inBody1, const JphBody* inBody2, const JphContactManifold* inManifold, JphCollisionEstimationResult* outResult, float inCombinedFriction, float inCombinedRestitution, float inMinVelocityForRestitution, uint32_t inNumIterations);
+bool Jph_IsVelocityMotor(JphEMotorState inMotorState);
+bool Jph_IsPositionMotor(JphEMotorState inMotorState);
 bool Jph_VerifyJoltVersionIDInternal(uint64_t inVersionID);
 bool Jph_VerifyJoltVersionID(void);
 void Jph_RegisterTypesInternal(uint64_t inVersionID);

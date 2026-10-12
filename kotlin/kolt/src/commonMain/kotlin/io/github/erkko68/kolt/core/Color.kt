@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,63 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Color`. */
-open class Color internal constructor(internal val colorHandle: NativePointer)
+open class Color internal constructor(internal val colorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphColor_create(), owned = true)
+    constructor(color: Int) : this(JphColor_create_uint32(color), owned = true)
+    constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(JphColor_create_uint8_uint8_uint8_uint8(red, green, blue, alpha), owned = true)
+    constructor(rhs: Color, alpha: Int) : this(JphColor_create_ColorArg_uint8(rhs.colorHandle, alpha), owned = true)
+
+    override fun close() =
+        closeOnce { JphColor_destroy(colorHandle) }
+
+    open val uInt32: Int
+        get() = JphColor_GetUInt32(colorHandle)
+
+    open fun toVec4(): Vec4 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphColor_ToVec4(colorHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec4(returned)
+        }
+
+    open val intensity: Int
+        get() = JphColor_GetIntensity(colorHandle)
+
+    open var u32: Int
+        get() = JphColor_GetU32(colorHandle)
+        set(value) = JphColor_SetU32(colorHandle, value)
+
+    open var r: Int
+        get() = JphColor_GetR(colorHandle)
+        set(value) = JphColor_SetR(colorHandle, value)
+
+    open var g: Int
+        get() = JphColor_GetG(colorHandle)
+        set(value) = JphColor_SetG(colorHandle, value)
+
+    open var b: Int
+        get() = JphColor_GetB(colorHandle)
+        set(value) = JphColor_SetB(colorHandle, value)
+
+    open var a: Int
+        get() = JphColor_GetA(colorHandle)
+        set(value) = JphColor_SetA(colorHandle, value)
+
+    companion object {
+        fun getDistinctColor(index: Int): Color =
+            run {
+                val returned = Color(JphColor_create(), owned = true)
+                JphColor_sGetDistinctColor(index, returned.colorHandle)
+                returned
+            }
+
+        fun greenRedGradient(value: Float): Color =
+            run {
+                val returned = Color(JphColor_create(), owned = true)
+                JphColor_sGreenRedGradient(value, returned.colorHandle)
+                returned
+            }
+    }
+}

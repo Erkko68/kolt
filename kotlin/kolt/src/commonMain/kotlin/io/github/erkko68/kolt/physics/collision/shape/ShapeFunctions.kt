@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,22 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ShapeFunctions`. */
-open class ShapeFunctions internal constructor(internal val shapeFunctionsHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphShapeFunctions_create())
+open class ShapeFunctions internal constructor(internal val shapeFunctionsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphShapeFunctions_create(), owned = true)
 
     override fun close() =
-        JphShapeFunctions_destroy(shapeFunctionsHandle)
+        closeOnce { JphShapeFunctions_destroy(shapeFunctionsHandle) }
 
-    open fun setColor(value: Color) =
-        JphShapeFunctions_SetColor(shapeFunctionsHandle, value.colorHandle)
+    open var color: Color
+        get() = run {
+            val returned = Color(JphColor_create(), owned = true)
+            JphShapeFunctions_GetColor(shapeFunctionsHandle, returned.colorHandle)
+            returned
+        }
+        set(value) = JphShapeFunctions_SetColor(shapeFunctionsHandle, value.colorHandle)
 
     companion object {
-        fun sGet(subType: EShapeSubType): ShapeFunctions =
+        fun get(subType: EShapeSubType): ShapeFunctions =
             ShapeFunctions(JphShapeFunctions_sGet(subType.value))
     }
 }

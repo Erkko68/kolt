@@ -19,12 +19,6 @@ internal external fun JphGroupFilterTable_asGroupFilter(self: NativePointer): Na
 @ExternalSymbolName("JphGroupFilterTable_asSerializableObject")
 internal external fun JphGroupFilterTable_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphGroupFilterTable_GetRTTI")
-internal external fun JphGroupFilterTable_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphGroupFilterTable_CastTo")
-internal external fun JphGroupFilterTable_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
 @ExternalSymbolName("JphGroupFilterTable_sCreateRTTI")
 internal external fun JphGroupFilterTable_sCreateRTTI(inRTTI: NativePointer)
 
@@ -36,9 +30,3 @@ internal external fun JphGroupFilterTable_EnableCollision(self: NativePointer, i
 
 @ExternalSymbolName("JphGroupFilterTable_IsCollisionEnabled")
 internal external fun JphGroupFilterTable_IsCollisionEnabled(self: NativePointer, inSubGroup1: Int, inSubGroup2: Int): Boolean
-
-@ExternalSymbolName("JphGroupFilterTable_CanCollide")
-internal external fun JphGroupFilterTable_CanCollide(self: NativePointer, inGroup1: NativePointer, inGroup2: NativePointer): Boolean
-
-@ExternalSymbolName("JphGroupFilterTable_SaveBinaryState")
-internal external fun JphGroupFilterTable_SaveBinaryState(self: NativePointer, inStream: NativePointer)

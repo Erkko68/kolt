@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodyMotionProperties`. */
-open class SoftBodyMotionProperties internal constructor(internal val softBodyMotionPropertiesHandle: NativePointer) : MotionProperties(JphSoftBodyMotionProperties_asMotionProperties(softBodyMotionPropertiesHandle)), AutoCloseable {
-    constructor() : this(JphSoftBodyMotionProperties_create())
+open class SoftBodyMotionProperties internal constructor(internal val softBodyMotionPropertiesHandle: NativePointer, owned: Boolean = false) : MotionProperties(JphSoftBodyMotionProperties_asMotionProperties(softBodyMotionPropertiesHandle), owned), AutoCloseable {
+    constructor() : this(JphSoftBodyMotionProperties_create(), owned = true)
 
     override fun close() =
-        JphSoftBodyMotionProperties_destroy(softBodyMotionPropertiesHandle)
+        closeOnce { JphSoftBodyMotionProperties_destroy(softBodyMotionPropertiesHandle) }
 
     open fun initialize(settings: SoftBodyCreationSettings) =
         JphSoftBodyMotionProperties_Initialize(softBodyMotionPropertiesHandle, settings.softBodyCreationSettingsHandle)
 
     open val settings: SoftBodySharedSettings?
-        get() = JphSoftBodyMotionProperties_GetSettings(softBodyMotionPropertiesHandle).takeIf { it != NullPointer }?.let(::SoftBodySharedSettings)
+        get() = JphSoftBodyMotionProperties_GetSettings(softBodyMotionPropertiesHandle).takeIf { it != NullPointer }?.let { SoftBodySharedSettings(it) }
 
     open fun getVertex(index: Int): SoftBodyVertex =
         SoftBodyVertex(JphSoftBodyMotionProperties_GetVertex(softBodyMotionPropertiesHandle, index))
@@ -63,6 +64,29 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
             JphSoftBodyMotionProperties_GetRodAngularVelocity(softBodyMotionPropertiesHandle, index, returnedPointer)
             returnedPointer.fromInterop(returned)
             Vec3(returned)
+        }
+
+    open val materials: List<PhysicsMaterial>
+        get() = interopScope {
+            val count = JphSoftBodyMotionProperties_GetMaterials(softBodyMotionPropertiesHandle, NullPointer, 0)
+            val returnedPointer = toInterop(List(count) { NullPointer })
+            JphSoftBodyMotionProperties_GetMaterials(softBodyMotionPropertiesHandle, returnedPointer, count)
+            readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
+        }
+
+    open val faces: List<SoftBodySharedSettings.Face>
+        get() = interopScope {
+            val count = JphSoftBodyMotionProperties_GetFaces(softBodyMotionPropertiesHandle, NullPointer, 0)
+            val returned = List(count) { SoftBodySharedSettings.Face(JphSoftBodySharedSettingsFace_create(), owned = true) }
+            JphSoftBodyMotionProperties_GetFaces(softBodyMotionPropertiesHandle, toInterop(returned.map { it.softBodySharedSettingsFaceHandle }), count)
+            returned
+        }
+
+    open fun getFace(index: Int): SoftBodySharedSettings.Face =
+        run {
+            val returned = SoftBodySharedSettings.Face(JphSoftBodySharedSettingsFace_create(), owned = true)
+            JphSoftBodyMotionProperties_GetFace(softBodyMotionPropertiesHandle, index, returned.softBodySharedSettingsFaceHandle)
+            returned
         }
 
     open var numIterations: Int
@@ -93,16 +117,23 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
         get() = JphSoftBodyMotionProperties_GetVertexRadius(softBodyMotionPropertiesHandle)
         set(vertexRadius) = JphSoftBodyMotionProperties_SetVertexRadius(softBodyMotionPropertiesHandle, vertexRadius)
 
+    open val localBounds: AABox
+        get() = run {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphSoftBodyMotionProperties_GetLocalBounds(softBodyMotionPropertiesHandle, returned.aaBoxHandle)
+            returned
+        }
+
     open val volume: Float
         get() = JphSoftBodyMotionProperties_GetVolume(softBodyMotionPropertiesHandle)
 
     open fun calculateMassAndInertia() =
         JphSoftBodyMotionProperties_CalculateMassAndInertia(softBodyMotionPropertiesHandle)
 
-    open fun saveState(stream: StateRecorder) =
+    override fun saveState(stream: StateRecorder) =
         JphSoftBodyMotionProperties_SaveState(softBodyMotionPropertiesHandle, stream.stateRecorderHandle)
 
-    open fun restoreState(stream: StateRecorder) =
+    override fun restoreState(stream: StateRecorder) =
         JphSoftBodyMotionProperties_RestoreState(softBodyMotionPropertiesHandle, stream.stateRecorderHandle)
 
     open fun customUpdate(deltaTime: Float, softBody: Body, system: PhysicsSystem) =
@@ -114,12 +145,23 @@ open class SoftBodyMotionProperties internal constructor(internal val softBodyMo
     open fun determineCollidingShapes(context: SoftBodyUpdateContext, system: PhysicsSystem, bodyLockInterface: BodyLockInterface) =
         JphSoftBodyMotionProperties_DetermineCollidingShapes(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, system.physicsSystemHandle, bodyLockInterface.bodyLockInterfaceHandle)
 
-    open fun parallelUpdate(context: SoftBodyUpdateContext, physicsSettings: PhysicsSettings): SoftBodyMotionPropertiesEStatus =
-        SoftBodyMotionPropertiesEStatus.of(JphSoftBodyMotionProperties_ParallelUpdate(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, physicsSettings.physicsSettingsHandle))
+    open fun parallelUpdate(context: SoftBodyUpdateContext, physicsSettings: PhysicsSettings): SoftBodyMotionProperties.EStatus =
+        SoftBodyMotionProperties.EStatus.of(JphSoftBodyMotionProperties_ParallelUpdate(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, physicsSettings.physicsSettingsHandle))
 
     open fun updateRigidBodyVelocities(context: SoftBodyUpdateContext, bodyInterface: BodyInterface) =
         JphSoftBodyMotionProperties_UpdateRigidBodyVelocities(softBodyMotionPropertiesHandle, context.softBodyUpdateContextHandle, bodyInterface.bodyInterfaceHandle)
 
     open fun requestContactCallback() =
         JphSoftBodyMotionProperties_RequestContactCallback(softBodyMotionPropertiesHandle)
-}
+
+    /** C++ `JPH::SoftBodyMotionProperties::EStatus`. */
+    enum class EStatus(internal val value: Int) {
+        NoWork(1),
+        DidWork(2),
+        Done(4);
+    
+        internal companion object {
+            fun of(value: Int) = entries.first { it.value == value }
+        }
+    }
+    }

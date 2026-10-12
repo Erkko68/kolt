@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,9 +33,9 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TempAllocatorMalloc`. */
-open class TempAllocatorMalloc internal constructor(internal val tempAllocatorMallocHandle: NativePointer) : TempAllocator(JphTempAllocatorMalloc_asTempAllocator(tempAllocatorMallocHandle)), AutoCloseable {
-    constructor() : this(JphTempAllocatorMalloc_create())
+open class TempAllocatorMalloc internal constructor(internal val tempAllocatorMallocHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorMalloc_asTempAllocator(tempAllocatorMallocHandle), owned), AutoCloseable {
+    constructor() : this(JphTempAllocatorMalloc_create(), owned = true)
 
     override fun close() =
-        JphTempAllocatorMalloc_destroy(tempAllocatorMallocHandle)
+        closeOnce { JphTempAllocatorMalloc_destroy(tempAllocatorMallocHandle) }
 }

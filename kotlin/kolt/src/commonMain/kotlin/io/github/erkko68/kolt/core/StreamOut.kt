@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::StreamOut`. */
-open class StreamOut internal constructor(internal val streamOutHandle: NativePointer)
+open class StreamOut internal constructor(internal val streamOutHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

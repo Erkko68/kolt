@@ -24,54 +24,6 @@ JphConstraint* JphSwingTwistConstraint_asConstraint(JphSwingTwistConstraint* sel
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
-JphEConstraintSubType JphSwingTwistConstraint_GetSubType(const JphSwingTwistConstraint* self) {
-    return static_cast<JphEConstraintSubType>(kolt::cpp(self)->GetSubType());
-}
-
-void JphSwingTwistConstraint_NotifyShapeChanged(JphSwingTwistConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM) {
-    kolt::cpp(self)->NotifyShapeChanged(JPH::BodyID(inBodyID), kolt::math<JPH::Vec3>(*inDeltaCOM));
-}
-
-void JphSwingTwistConstraint_SetupVelocityConstraint(JphSwingTwistConstraint* self, float inDeltaTime) {
-    kolt::cpp(self)->SetupVelocityConstraint(inDeltaTime);
-}
-
-void JphSwingTwistConstraint_ResetWarmStart(JphSwingTwistConstraint* self) {
-    kolt::cpp(self)->ResetWarmStart();
-}
-
-void JphSwingTwistConstraint_WarmStartVelocityConstraint(JphSwingTwistConstraint* self, float inWarmStartImpulseRatio) {
-    kolt::cpp(self)->WarmStartVelocityConstraint(inWarmStartImpulseRatio);
-}
-
-bool JphSwingTwistConstraint_SolveVelocityConstraint(JphSwingTwistConstraint* self, float inDeltaTime) {
-    return kolt::cpp(self)->SolveVelocityConstraint(inDeltaTime);
-}
-
-bool JphSwingTwistConstraint_SolvePositionConstraint(JphSwingTwistConstraint* self, float inDeltaTime, float inBaumgarte) {
-    return kolt::cpp(self)->SolvePositionConstraint(inDeltaTime, inBaumgarte);
-}
-
-void JphSwingTwistConstraint_SaveState(const JphSwingTwistConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
-}
-
-void JphSwingTwistConstraint_RestoreState(JphSwingTwistConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
-}
-
-JphConstraintSettings* JphSwingTwistConstraint_GetConstraintSettings(const JphSwingTwistConstraint* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetConstraintSettings()));
-}
-
-void JphSwingTwistConstraint_GetConstraintToBody1Matrix(const JphSwingTwistConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody1Matrix());
-}
-
-void JphSwingTwistConstraint_GetConstraintToBody2Matrix(const JphSwingTwistConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody2Matrix());
-}
-
 void JphSwingTwistConstraint_GetLocalSpacePosition1(const JphSwingTwistConstraint* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetLocalSpacePosition1());
 }

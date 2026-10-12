@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,62 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::HingeConstraint`. */
-open class HingeConstraint internal constructor(internal val hingeConstraintHandle: NativePointer) : Constraint(JphHingeConstraint_asConstraint(hingeConstraintHandle)), AutoCloseable {
-    constructor(body1: Body, body2: Body, settings: HingeConstraintSettings) : this(JphHingeConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.hingeConstraintSettingsHandle))
+open class HingeConstraint internal constructor(internal val hingeConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphHingeConstraint_asTwoBodyConstraint(hingeConstraintHandle), owned), AutoCloseable {
+    constructor(body1: Body, body2: Body, settings: HingeConstraintSettings) : this(JphHingeConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.hingeConstraintSettingsHandle), owned = true)
 
-    open fun addRef() =
-        JphHingeConstraint_addRef(hingeConstraintHandle)
+    override fun addRef() =
+        own { JphHingeConstraint_addRef(hingeConstraintHandle) }
 
     override fun close() =
-        JphHingeConstraint_release(hingeConstraintHandle)
-
-    open val subType: EConstraintSubType
-        get() = EConstraintSubType.of(JphHingeConstraint_GetSubType(hingeConstraintHandle))
-
-    open fun notifyShapeChanged(bodyID: BodyID, deltaCOM: Vec3) =
-        interopScope { JphHingeConstraint_NotifyShapeChanged(hingeConstraintHandle, bodyID.value, toInterop(deltaCOM.toArray())) }
-
-    open fun setupVelocityConstraint(deltaTime: Float) =
-        JphHingeConstraint_SetupVelocityConstraint(hingeConstraintHandle, deltaTime)
-
-    open fun resetWarmStart() =
-        JphHingeConstraint_ResetWarmStart(hingeConstraintHandle)
-
-    open fun warmStartVelocityConstraint(warmStartImpulseRatio: Float) =
-        JphHingeConstraint_WarmStartVelocityConstraint(hingeConstraintHandle, warmStartImpulseRatio)
-
-    open fun solveVelocityConstraint(deltaTime: Float): Boolean =
-        JphHingeConstraint_SolveVelocityConstraint(hingeConstraintHandle, deltaTime)
-
-    open fun solvePositionConstraint(deltaTime: Float, baumgarte: Float): Boolean =
-        JphHingeConstraint_SolvePositionConstraint(hingeConstraintHandle, deltaTime, baumgarte)
-
-    open fun saveState(stream: StateRecorder) =
-        JphHingeConstraint_SaveState(hingeConstraintHandle, stream.stateRecorderHandle)
-
-    open fun restoreState(stream: StateRecorder) =
-        JphHingeConstraint_RestoreState(hingeConstraintHandle, stream.stateRecorderHandle)
-
-    open val constraintSettings: ConstraintSettings?
-        get() = JphHingeConstraint_GetConstraintSettings(hingeConstraintHandle).takeIf { it != NullPointer }?.let(::ConstraintSettings)
-
-    open val constraintToBody1Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphHingeConstraint_GetConstraintToBody1Matrix(hingeConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
-
-    open val constraintToBody2Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphHingeConstraint_GetConstraintToBody2Matrix(hingeConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
+        closeOnce { JphHingeConstraint_release(hingeConstraintHandle) }
 
     open val localSpacePoint1: Vec3
         get() = interopScope {

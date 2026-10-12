@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,71 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::LinearCurve`. */
-open class LinearCurve internal constructor(internal val linearCurveHandle: NativePointer)
+open class LinearCurve internal constructor(internal val linearCurveHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphLinearCurve_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphLinearCurve_destroy(linearCurveHandle) }
+
+    open fun clear() =
+        JphLinearCurve_Clear(linearCurveHandle)
+
+    open fun reserve(numPoints: Int) =
+        JphLinearCurve_Reserve(linearCurveHandle, numPoints)
+
+    open fun addPoint(x: Float, y: Float) =
+        JphLinearCurve_AddPoint(linearCurveHandle, x, y)
+
+    open fun sort() =
+        JphLinearCurve_Sort(linearCurveHandle)
+
+    open val minX: Float
+        get() = JphLinearCurve_GetMinX(linearCurveHandle)
+
+    open val maxX: Float
+        get() = JphLinearCurve_GetMaxX(linearCurveHandle)
+
+    open fun getValue(x: Float): Float =
+        JphLinearCurve_GetValue(linearCurveHandle, x)
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphLinearCurve_SaveBinaryState(linearCurveHandle, stream.streamOutHandle)
+
+    open fun restoreBinaryState(stream: StreamIn) =
+        JphLinearCurve_RestoreBinaryState(linearCurveHandle, stream.streamInHandle)
+
+    open var points: List<LinearCurve.Point>
+        get() = interopScope {
+            val count = JphLinearCurve_GetPoints(linearCurveHandle, NullPointer, 0)
+            val returned = List(count) { LinearCurve.Point(JphLinearCurvePoint_create(), owned = true) }
+            JphLinearCurve_GetPoints(linearCurveHandle, toInterop(returned.map { it.linearCurvePointHandle }), count)
+            returned
+        }
+        set(value) = interopScope { JphLinearCurve_SetPoints(linearCurveHandle, toInterop(value.map { it.linearCurvePointHandle }), value.size) }
+
+    /** C++ `JPH::LinearCurve::Point`. */
+    open class Point internal constructor(internal val linearCurvePointHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+        constructor() : this(JphLinearCurvePoint_create(), owned = true)
+    
+        override fun close() =
+            closeOnce { JphLinearCurvePoint_destroy(linearCurvePointHandle) }
+    
+        open var x: Float
+            get() = JphLinearCurvePoint_GetX(linearCurvePointHandle)
+            set(value) = JphLinearCurvePoint_SetX(linearCurvePointHandle, value)
+    
+        open var y: Float
+            get() = JphLinearCurvePoint_GetY(linearCurvePointHandle)
+            set(value) = JphLinearCurvePoint_SetY(linearCurvePointHandle, value)
+    
+        companion object {
+            fun createRTTI(rtti: RTTI) =
+                JphLinearCurvePoint_sCreateRTTI(rtti.rttiHandle)
+        }
+    }
+    
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphLinearCurve_sCreateRTTI(rtti.rttiHandle)
+    }
+}

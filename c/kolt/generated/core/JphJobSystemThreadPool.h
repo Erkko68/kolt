@@ -19,9 +19,6 @@ JphJobSystem* JphJobSystemThreadPool_asJobSystem(JphJobSystemThreadPool* self);
 // TODO(handwritten) JphJobSystemThreadPool_SetThreadExitFunction: void JPH::JobSystemThreadPool::SetThreadExitFunction(const InitExitFunction & inExitFunction)
 //     const InitExitFunction &: unresolved
 void JphJobSystemThreadPool_Init(JphJobSystemThreadPool* self, uint32_t inMaxJobs, uint32_t inMaxBarriers, int32_t inNumThreads);
-int32_t JphJobSystemThreadPool_GetMaxConcurrency(const JphJobSystemThreadPool* self);
-// TODO(handwritten) JphJobSystemThreadPool_CreateJob: JobHandle JPH::JobSystemThreadPool::CreateJob(const char * inName, ColorArg inColor, const JobFunction & inJobFunction, uint32 inNumDependencies)
-//     JPH::JobSystem::JobHandle by value
 void JphJobSystemThreadPool_SetNumThreads(JphJobSystemThreadPool* self, int32_t inNumThreads);
 
 

@@ -21,7 +21,6 @@ void JphTriangleShape_GetVertex1(const JphTriangleShape* self, JphVec3* out);
 void JphTriangleShape_GetVertex2(const JphTriangleShape* self, JphVec3* out);
 void JphTriangleShape_GetVertex3(const JphTriangleShape* self, JphVec3* out);
 float JphTriangleShape_GetConvexRadius(const JphTriangleShape* self);
-const JphConvexShapeSupport* JphTriangleShape_GetSupportFunction(const JphTriangleShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale);
 void JphTriangleShape_sRegister(void);
 
 

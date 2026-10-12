@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::StaticCompoundShapeSettings`. */
-open class StaticCompoundShapeSettings internal constructor(internal val staticCompoundShapeSettingsHandle: NativePointer) : ShapeSettings(JphStaticCompoundShapeSettings_asShapeSettings(staticCompoundShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphStaticCompoundShapeSettings_create())
+open class StaticCompoundShapeSettings internal constructor(internal val staticCompoundShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphStaticCompoundShapeSettings_asShapeSettings(staticCompoundShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphStaticCompoundShapeSettings_create(), owned = true)
 
     override fun addRef() =
-        JphStaticCompoundShapeSettings_addRef(staticCompoundShapeSettingsHandle)
+        own { JphStaticCompoundShapeSettings_addRef(staticCompoundShapeSettingsHandle) }
 
     override fun close() =
-        JphStaticCompoundShapeSettings_release(staticCompoundShapeSettingsHandle)
+        closeOnce { JphStaticCompoundShapeSettings_release(staticCompoundShapeSettingsHandle) }
+
+    open fun create(tempAllocator: TempAllocator): Shape =
+        interopScope {
+            val error = ByteArray(256)
+            val errorPointer = toInterop(error)
+            val returned = JphStaticCompoundShapeSettings_Create(staticCompoundShapeSettingsHandle, tempAllocator.tempAllocatorHandle, errorPointer, error.size)
+            errorPointer.fromInterop(error)
+            if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
+            Shape(returned, owned = true)
+        }
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphStaticCompoundShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

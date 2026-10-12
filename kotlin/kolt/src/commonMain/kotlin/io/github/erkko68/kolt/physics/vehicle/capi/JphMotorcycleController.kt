@@ -60,6 +60,3 @@ internal external fun JphMotorcycleController_SetLeanSmoothingFactor(self: Nativ
 
 @ExternalSymbolName("JphMotorcycleController_GetLeanSmoothingFactor")
 internal external fun JphMotorcycleController_GetLeanSmoothingFactor(self: NativePointer): Float
-
-@ExternalSymbolName("JphMotorcycleController_GetSettings")
-internal external fun JphMotorcycleController_GetSettings(self: NativePointer): NativePointer

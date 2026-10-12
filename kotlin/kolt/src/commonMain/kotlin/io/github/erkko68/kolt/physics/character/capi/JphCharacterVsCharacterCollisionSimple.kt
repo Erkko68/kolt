@@ -10,6 +10,12 @@ internal external fun JphCharacterVsCharacterCollisionSimple_create(): NativePoi
 @ExternalSymbolName("JphCharacterVsCharacterCollisionSimple_destroy")
 internal external fun JphCharacterVsCharacterCollisionSimple_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphCharacterVsCharacterCollisionSimple_createUpcalls")
+internal external fun JphCharacterVsCharacterCollisionSimple_createUpcalls(call: NativePointer): NativePointer
+
+@ExternalSymbolName("JphCharacterVsCharacterCollisionSimple_bindUpcalls")
+internal external fun JphCharacterVsCharacterCollisionSimple_bindUpcalls(self: NativePointer, userData: NativePointer)
+
 @ExternalSymbolName("JphCharacterVsCharacterCollisionSimple_asCharacterVsCharacterCollision")
 internal external fun JphCharacterVsCharacterCollisionSimple_asCharacterVsCharacterCollision(self: NativePointer): NativePointer
 

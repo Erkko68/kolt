@@ -32,10 +32,6 @@ void JphBoxShape_GetHalfExtent(const JphBoxShape* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetHalfExtent());
 }
 
-const JphConvexShapeSupport* JphBoxShape_GetSupportFunction(const JphBoxShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale) {
-    return kolt::c(kolt::cpp(self)->GetSupportFunction(static_cast<JPH::ConvexShape::ESupportMode>(inMode), *kolt::cpp(inBuffer), kolt::math<JPH::Vec3>(*inScale)));
-}
-
 float JphBoxShape_GetConvexRadius(const JphBoxShape* self) {
     return kolt::cpp(self)->GetConvexRadius();
 }

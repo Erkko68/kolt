@@ -19,42 +19,6 @@ internal external fun JphSwingTwistConstraint_asTwoBodyConstraint(self: NativePo
 @ExternalSymbolName("JphSwingTwistConstraint_asConstraint")
 internal external fun JphSwingTwistConstraint_asConstraint(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphSwingTwistConstraint_GetSubType")
-internal external fun JphSwingTwistConstraint_GetSubType(self: NativePointer): Int
-
-@ExternalSymbolName("JphSwingTwistConstraint_NotifyShapeChanged")
-internal external fun JphSwingTwistConstraint_NotifyShapeChanged(self: NativePointer, inBodyID: Int, inDeltaCOM: NativePointer)
-
-@ExternalSymbolName("JphSwingTwistConstraint_SetupVelocityConstraint")
-internal external fun JphSwingTwistConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphSwingTwistConstraint_ResetWarmStart")
-internal external fun JphSwingTwistConstraint_ResetWarmStart(self: NativePointer)
-
-@ExternalSymbolName("JphSwingTwistConstraint_WarmStartVelocityConstraint")
-internal external fun JphSwingTwistConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphSwingTwistConstraint_SolveVelocityConstraint")
-internal external fun JphSwingTwistConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphSwingTwistConstraint_SolvePositionConstraint")
-internal external fun JphSwingTwistConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphSwingTwistConstraint_SaveState")
-internal external fun JphSwingTwistConstraint_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphSwingTwistConstraint_RestoreState")
-internal external fun JphSwingTwistConstraint_RestoreState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphSwingTwistConstraint_GetConstraintSettings")
-internal external fun JphSwingTwistConstraint_GetConstraintSettings(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphSwingTwistConstraint_GetConstraintToBody1Matrix")
-internal external fun JphSwingTwistConstraint_GetConstraintToBody1Matrix(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphSwingTwistConstraint_GetConstraintToBody2Matrix")
-internal external fun JphSwingTwistConstraint_GetConstraintToBody2Matrix(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphSwingTwistConstraint_GetLocalSpacePosition1")
 internal external fun JphSwingTwistConstraint_GetLocalSpacePosition1(self: NativePointer, out: NativePointer)
 

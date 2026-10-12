@@ -15,11 +15,7 @@ void JphSixDOFConstraintSettings_release(const JphSixDOFConstraintSettings* self
 JphTwoBodyConstraintSettings* JphSixDOFConstraintSettings_asTwoBodyConstraintSettings(JphSixDOFConstraintSettings* self);
 JphConstraintSettings* JphSixDOFConstraintSettings_asConstraintSettings(JphSixDOFConstraintSettings* self);
 JphSerializableObject* JphSixDOFConstraintSettings_asSerializableObject(JphSixDOFConstraintSettings* self);
-const JphRTTI* JphSixDOFConstraintSettings_GetRTTI(const JphSixDOFConstraintSettings* self);
-const void* JphSixDOFConstraintSettings_CastTo(const JphSixDOFConstraintSettings* self, const JphRTTI* inRTTI);
 void JphSixDOFConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
-void JphSixDOFConstraintSettings_SaveBinaryState(const JphSixDOFConstraintSettings* self, JphStreamOut* inStream);
-JphTwoBodyConstraint* JphSixDOFConstraintSettings_Create(const JphSixDOFConstraintSettings* self, JphBody* inBody1, JphBody* inBody2);
 void JphSixDOFConstraintSettings_MakeFreeAxis(JphSixDOFConstraintSettings* self, JphSixDOFConstraintSettingsEAxis inAxis);
 bool JphSixDOFConstraintSettings_IsFreeAxis(const JphSixDOFConstraintSettings* self, JphSixDOFConstraintSettingsEAxis inAxis);
 void JphSixDOFConstraintSettings_MakeFixedAxis(JphSixDOFConstraintSettings* self, JphSixDOFConstraintSettingsEAxis inAxis);

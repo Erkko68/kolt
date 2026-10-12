@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,62 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SliderConstraint`. */
-open class SliderConstraint internal constructor(internal val sliderConstraintHandle: NativePointer) : Constraint(JphSliderConstraint_asConstraint(sliderConstraintHandle)), AutoCloseable {
-    constructor(body1: Body, body2: Body, settings: SliderConstraintSettings) : this(JphSliderConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.sliderConstraintSettingsHandle))
+open class SliderConstraint internal constructor(internal val sliderConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSliderConstraint_asTwoBodyConstraint(sliderConstraintHandle), owned), AutoCloseable {
+    constructor(body1: Body, body2: Body, settings: SliderConstraintSettings) : this(JphSliderConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.sliderConstraintSettingsHandle), owned = true)
 
-    open fun addRef() =
-        JphSliderConstraint_addRef(sliderConstraintHandle)
+    override fun addRef() =
+        own { JphSliderConstraint_addRef(sliderConstraintHandle) }
 
     override fun close() =
-        JphSliderConstraint_release(sliderConstraintHandle)
-
-    open val subType: EConstraintSubType
-        get() = EConstraintSubType.of(JphSliderConstraint_GetSubType(sliderConstraintHandle))
-
-    open fun notifyShapeChanged(bodyID: BodyID, deltaCOM: Vec3) =
-        interopScope { JphSliderConstraint_NotifyShapeChanged(sliderConstraintHandle, bodyID.value, toInterop(deltaCOM.toArray())) }
-
-    open fun setupVelocityConstraint(deltaTime: Float) =
-        JphSliderConstraint_SetupVelocityConstraint(sliderConstraintHandle, deltaTime)
-
-    open fun resetWarmStart() =
-        JphSliderConstraint_ResetWarmStart(sliderConstraintHandle)
-
-    open fun warmStartVelocityConstraint(warmStartImpulseRatio: Float) =
-        JphSliderConstraint_WarmStartVelocityConstraint(sliderConstraintHandle, warmStartImpulseRatio)
-
-    open fun solveVelocityConstraint(deltaTime: Float): Boolean =
-        JphSliderConstraint_SolveVelocityConstraint(sliderConstraintHandle, deltaTime)
-
-    open fun solvePositionConstraint(deltaTime: Float, baumgarte: Float): Boolean =
-        JphSliderConstraint_SolvePositionConstraint(sliderConstraintHandle, deltaTime, baumgarte)
-
-    open fun saveState(stream: StateRecorder) =
-        JphSliderConstraint_SaveState(sliderConstraintHandle, stream.stateRecorderHandle)
-
-    open fun restoreState(stream: StateRecorder) =
-        JphSliderConstraint_RestoreState(sliderConstraintHandle, stream.stateRecorderHandle)
-
-    open val constraintSettings: ConstraintSettings?
-        get() = JphSliderConstraint_GetConstraintSettings(sliderConstraintHandle).takeIf { it != NullPointer }?.let(::ConstraintSettings)
-
-    open val constraintToBody1Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphSliderConstraint_GetConstraintToBody1Matrix(sliderConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
-
-    open val constraintToBody2Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphSliderConstraint_GetConstraintToBody2Matrix(sliderConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
+        closeOnce { JphSliderConstraint_release(sliderConstraintHandle) }
 
     open val currentPosition: Float
         get() = JphSliderConstraint_GetCurrentPosition(sliderConstraintHandle)

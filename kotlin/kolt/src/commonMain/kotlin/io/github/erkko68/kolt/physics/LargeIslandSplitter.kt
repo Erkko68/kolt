@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::LargeIslandSplitter`. */
-open class LargeIslandSplitter internal constructor(internal val largeIslandSplitterHandle: NativePointer)
+open class LargeIslandSplitter internal constructor(internal val largeIslandSplitterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+    /** C++ `JPH::LargeIslandSplitter::EStatus`. */
+    enum class EStatus(internal val value: Int) {
+        WaitingForBatch(0),
+        BatchRetrieved(1),
+        AllBatchesDone(2);
+    
+        internal companion object {
+            fun of(value: Int) = entries.first { it.value == value }
+        }
+    }
+    }

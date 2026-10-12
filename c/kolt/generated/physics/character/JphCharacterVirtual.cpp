@@ -260,16 +260,12 @@ void JphCharacterVirtual_GetTransformedShape(const JphCharacterVirtual* self, Jp
     *kolt::cpp(out) = kolt::cpp(self)->GetTransformedShape();
 }
 
+void JphCharacterVirtual_CheckCollision(const JphCharacterVirtual* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphVec3* inMovementDirection, float inMaxSeparationDistance, const JphShape* inShape, const JphVec3* inBaseOffset, JphCollideShapeCollector* ioCollector, const JphBroadPhaseLayerFilter* inBroadPhaseLayerFilter, const JphObjectLayerFilter* inObjectLayerFilter, const JphBodyFilter* inBodyFilter, const JphShapeFilter* inShapeFilter) {
+    kolt::cpp(self)->CheckCollision(kolt::math<JPH::Vec3>(*inPosition), kolt::math<JPH::Quat>(*inRotation), kolt::math<JPH::Vec3>(*inMovementDirection), inMaxSeparationDistance, kolt::cpp(inShape), kolt::math<JPH::Vec3>(*inBaseOffset), *kolt::cpp(ioCollector), *kolt::cpp(inBroadPhaseLayerFilter), *kolt::cpp(inObjectLayerFilter), *kolt::cpp(inBodyFilter), *kolt::cpp(inShapeFilter));
+}
+
 void JphCharacterVirtual_GetCharacterVirtualSettings(const JphCharacterVirtual* self, JphCharacterVirtualSettings* out) {
     *kolt::cpp(out) = kolt::cpp(self)->GetCharacterVirtualSettings();
-}
-
-void JphCharacterVirtual_SaveState(const JphCharacterVirtual* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
-}
-
-void JphCharacterVirtual_RestoreState(JphCharacterVirtual* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
 }
 
 uint32_t JphCharacterVirtual_GetActiveContacts(const JphCharacterVirtual* self, JphCharacterContact* const* out, uint32_t outCapacity) {

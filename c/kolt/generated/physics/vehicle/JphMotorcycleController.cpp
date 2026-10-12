@@ -80,8 +80,4 @@ float JphMotorcycleController_GetLeanSmoothingFactor(const JphMotorcycleControll
     return kolt::cpp(self)->GetLeanSmoothingFactor();
 }
 
-JphVehicleControllerSettings* JphMotorcycleController_GetSettings(const JphMotorcycleController* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetSettings()));
-}
-
 } // extern "C"

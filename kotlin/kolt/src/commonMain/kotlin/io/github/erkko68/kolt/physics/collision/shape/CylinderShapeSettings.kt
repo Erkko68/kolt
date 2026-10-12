@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CylinderShapeSettings`. */
-open class CylinderShapeSettings internal constructor(internal val cylinderShapeSettingsHandle: NativePointer) : ShapeSettings(JphCylinderShapeSettings_asShapeSettings(cylinderShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphCylinderShapeSettings_create())
-    constructor(halfHeight: Float, radius: Float, convexRadius: Float, material: PhysicsMaterial?) : this(JphCylinderShapeSettings_create_float_float_float_PhysicsMaterial(halfHeight, radius, convexRadius, material?.physicsMaterialHandle ?: NullPointer))
+open class CylinderShapeSettings internal constructor(internal val cylinderShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphCylinderShapeSettings_asConvexShapeSettings(cylinderShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphCylinderShapeSettings_create(), owned = true)
+    constructor(halfHeight: Float, radius: Float, convexRadius: Float, material: PhysicsMaterial?) : this(JphCylinderShapeSettings_create_float_float_float_PhysicsMaterial(halfHeight, radius, convexRadius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
     override fun addRef() =
-        JphCylinderShapeSettings_addRef(cylinderShapeSettingsHandle)
+        own { JphCylinderShapeSettings_addRef(cylinderShapeSettingsHandle) }
 
     override fun close() =
-        JphCylinderShapeSettings_release(cylinderShapeSettingsHandle)
+        closeOnce { JphCylinderShapeSettings_release(cylinderShapeSettingsHandle) }
 
     open var halfHeight: Float
         get() = JphCylinderShapeSettings_GetHalfHeight(cylinderShapeSettingsHandle)
@@ -55,7 +56,7 @@ open class CylinderShapeSettings internal constructor(internal val cylinderShape
         set(value) = JphCylinderShapeSettings_SetConvexRadius(cylinderShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphCylinderShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

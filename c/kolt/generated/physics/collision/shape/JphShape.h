@@ -46,16 +46,12 @@ void JphShape_GetSubShapeUserData(const JphShape* self, uint32_t inSubShapeID, u
 void JphShape_GetSubShapeTransformedShape(const JphShape* self, uint32_t inSubShapeID, const JphVec3* inPositionCOM, const JphQuat* inRotation, const JphVec3* inScale, uint32_t* outRemainder, JphTransformedShape* out);
 void JphShape_GetSubmergedVolume(const JphShape* self, const JphMat44* inCenterOfMassTransform, const JphVec3* inScale, const JphPlane* inSurface, float* outTotalVolume, float* outSubmergedVolume, JphVec3* outCenterOfBuoyancy);
 bool JphShape_CastRay_SubShapeIDCreator_RayCastResult(const JphShape* self, const JphRayCast* inRay, const JphSubShapeIDCreator* inSubShapeIDCreator, JphRayCastResult* ioHit);
-// TODO(handwritten) JphShape_CastRay_RayCastSettings_SubShapeIDCreator_CastRayCollector_ShapeFilter: void JPH::Shape::CastRay(const RayCast & inRay, const RayCastSettings & inRayCastSettings, const SubShapeIDCreator & inSubShapeIDCreator, CastRayCollector & ioCollector, const ShapeFilter & inShapeFilter) const
-//     CollisionCollector<RayCastResult, CollisionCollectorTraitsCastRay>: class template
-// TODO(handwritten) JphShape_CollidePoint: void JPH::Shape::CollidePoint(Vec3Arg inPoint, const SubShapeIDCreator & inSubShapeIDCreator, CollidePointCollector & ioCollector, const ShapeFilter & inShapeFilter) const
-//     CollisionCollector<CollidePointResult, CollisionCollectorTraitsCollidePoint>: class template
+void JphShape_CastRay_RayCastSettings_SubShapeIDCreator_CastRayCollector_ShapeFilter(const JphShape* self, const JphRayCast* inRay, const JphRayCastSettings* inRayCastSettings, const JphSubShapeIDCreator* inSubShapeIDCreator, JphCastRayCollector* ioCollector, const JphShapeFilter* inShapeFilter);
+void JphShape_CollidePoint(const JphShape* self, const JphVec3* inPoint, const JphSubShapeIDCreator* inSubShapeIDCreator, JphCollidePointCollector* ioCollector, const JphShapeFilter* inShapeFilter);
 // TODO(handwritten) JphShape_CollideSoftBodyVertices: void JPH::Shape::CollideSoftBodyVertices(Mat44Arg inCenterOfMassTransform, Vec3Arg inScale, const CollideSoftBodyVertexIterator & inVertices, uint inNumVertices, int inCollidingShapeIndex) const
 //     const CollideSoftBodyVertexIterator &: JPH::CollideSoftBodyVertexIterator
-// TODO(handwritten) JphShape_CollectTransformedShapes: void JPH::Shape::CollectTransformedShapes(const AABox & inBox, Vec3Arg inPositionCOM, QuatArg inRotation, Vec3Arg inScale, const SubShapeIDCreator & inSubShapeIDCreator, TransformedShapeCollector & ioCollector, const ShapeFilter & inShapeFilter) const
-//     CollisionCollector<TransformedShape, CollisionCollectorTraitsCollideShape>: class template
-// TODO(handwritten) JphShape_TransformShape: void JPH::Shape::TransformShape(Mat44Arg inCenterOfMassTransform, TransformedShapeCollector & ioCollector) const
-//     CollisionCollector<TransformedShape, CollisionCollectorTraitsCollideShape>: class template
+void JphShape_CollectTransformedShapes(const JphShape* self, const JphAABox* inBox, const JphVec3* inPositionCOM, const JphQuat* inRotation, const JphVec3* inScale, const JphSubShapeIDCreator* inSubShapeIDCreator, JphTransformedShapeCollector* ioCollector, const JphShapeFilter* inShapeFilter);
+void JphShape_TransformShape(const JphShape* self, const JphMat44* inCenterOfMassTransform, JphTransformedShapeCollector* ioCollector);
 JphShape* JphShape_ScaleShape(const JphShape* self, const JphVec3* inScale, char* outError, uint32_t outErrorCapacity);
 void JphShape_GetTrianglesStart(const JphShape* self, JphShapeGetTrianglesContext* ioContext, const JphAABox* inBox, const JphVec3* inPositionCOM, const JphQuat* inRotation, const JphVec3* inScale);
 int32_t JphShape_GetTrianglesNext(const JphShape* self, JphShapeGetTrianglesContext* ioContext, int32_t inMaxTrianglesRequested, JphFloat3* outTriangleVertices, const JphPhysicsMaterial** outMaterials);

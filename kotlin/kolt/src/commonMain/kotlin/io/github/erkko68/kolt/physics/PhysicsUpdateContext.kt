@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PhysicsUpdateContext`. */
-open class PhysicsUpdateContext internal constructor(internal val physicsUpdateContextHandle: NativePointer)
+open class PhysicsUpdateContext internal constructor(internal val physicsUpdateContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+    /** C++ `JPH::PhysicsUpdateContext::Step`. */
+    open class Step internal constructor(internal val physicsUpdateContextStepHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+        /** C++ `JPH::PhysicsUpdateContext::Step::CCDBody`. */
+        open class CCDBody internal constructor(internal val physicsUpdateContextStepCCDBodyHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+        }
+    
+    /** C++ `JPH::PhysicsUpdateContext::BodyPairQueue`. */
+    open class BodyPairQueue internal constructor(internal val physicsUpdateContextBodyPairQueueHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    }

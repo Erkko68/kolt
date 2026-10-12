@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,74 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConstraintSettings`. */
-open class ConstraintSettings internal constructor(internal val constraintSettingsHandle: NativePointer)
+open class ConstraintSettings internal constructor(internal val constraintSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphConstraintSettings_asSerializableObject(constraintSettingsHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphConstraintSettings_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != ConstraintSettings::class) JphConstraintSettings_bindUpcalls(constraintSettingsHandle, Upcalls.reference(this))
+    }
+
+    open fun addRef() =
+        own { JphConstraintSettings_addRef(constraintSettingsHandle) }
+
+    override fun close() =
+        closeOnce { JphConstraintSettings_release(constraintSettingsHandle) }
+
+    open val rtti: RTTI?
+        get() = JphConstraintSettings_GetRTTI(constraintSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphConstraintSettings_SaveBinaryState(constraintSettingsHandle, stream.streamOutHandle)
+
+    open var enabled: Boolean
+        get() = JphConstraintSettings_GetEnabled(constraintSettingsHandle)
+        set(value) = JphConstraintSettings_SetEnabled(constraintSettingsHandle, value)
+
+    open var constraintPriority: Int
+        get() = JphConstraintSettings_GetConstraintPriority(constraintSettingsHandle)
+        set(value) = JphConstraintSettings_SetConstraintPriority(constraintSettingsHandle, value)
+
+    open var numVelocityStepsOverride: Int
+        get() = JphConstraintSettings_GetNumVelocityStepsOverride(constraintSettingsHandle)
+        set(value) = JphConstraintSettings_SetNumVelocityStepsOverride(constraintSettingsHandle, value)
+
+    open var numPositionStepsOverride: Int
+        get() = JphConstraintSettings_GetNumPositionStepsOverride(constraintSettingsHandle)
+        set(value) = JphConstraintSettings_SetNumPositionStepsOverride(constraintSettingsHandle, value)
+
+    open var drawConstraintSize: Float
+        get() = JphConstraintSettings_GetDrawConstraintSize(constraintSettingsHandle)
+        set(value) = JphConstraintSettings_SetDrawConstraintSize(constraintSettingsHandle, value)
+
+    open var userData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphConstraintSettings_GetUserData(constraintSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+        set(value) = JphConstraintSettings_SetUserData(constraintSettingsHandle, value)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphConstraintSettings_sCreateRTTI(rtti.rttiHandle)
+
+        fun restoreFromBinaryState(stream: StreamIn): ConstraintSettings =
+            interopScope {
+                val error = ByteArray(256)
+                val errorPointer = toInterop(error)
+                val returned = JphConstraintSettings_sRestoreFromBinaryState(stream.streamInHandle, errorPointer, error.size)
+                errorPointer.fromInterop(error)
+                if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
+                ConstraintSettings(returned, owned = true)
+            }
+    }
+}

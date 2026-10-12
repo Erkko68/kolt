@@ -19,42 +19,6 @@ internal external fun JphConeConstraint_asTwoBodyConstraint(self: NativePointer)
 @ExternalSymbolName("JphConeConstraint_asConstraint")
 internal external fun JphConeConstraint_asConstraint(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphConeConstraint_GetSubType")
-internal external fun JphConeConstraint_GetSubType(self: NativePointer): Int
-
-@ExternalSymbolName("JphConeConstraint_NotifyShapeChanged")
-internal external fun JphConeConstraint_NotifyShapeChanged(self: NativePointer, inBodyID: Int, inDeltaCOM: NativePointer)
-
-@ExternalSymbolName("JphConeConstraint_SetupVelocityConstraint")
-internal external fun JphConeConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphConeConstraint_ResetWarmStart")
-internal external fun JphConeConstraint_ResetWarmStart(self: NativePointer)
-
-@ExternalSymbolName("JphConeConstraint_WarmStartVelocityConstraint")
-internal external fun JphConeConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphConeConstraint_SolveVelocityConstraint")
-internal external fun JphConeConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphConeConstraint_SolvePositionConstraint")
-internal external fun JphConeConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphConeConstraint_SaveState")
-internal external fun JphConeConstraint_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphConeConstraint_RestoreState")
-internal external fun JphConeConstraint_RestoreState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphConeConstraint_GetConstraintSettings")
-internal external fun JphConeConstraint_GetConstraintSettings(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphConeConstraint_GetConstraintToBody1Matrix")
-internal external fun JphConeConstraint_GetConstraintToBody1Matrix(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphConeConstraint_GetConstraintToBody2Matrix")
-internal external fun JphConeConstraint_GetConstraintToBody2Matrix(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphConeConstraint_SetHalfConeAngle")
 internal external fun JphConeConstraint_SetHalfConeAngle(self: NativePointer, inHalfConeAngle: Float)
 

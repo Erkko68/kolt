@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,14 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Ragdoll`. */
-open class Ragdoll internal constructor(internal val ragdollHandle: NativePointer) : AutoCloseable {
-    constructor(system: PhysicsSystem?) : this(JphRagdoll_create(system?.physicsSystemHandle ?: NullPointer))
+open class Ragdoll internal constructor(internal val ragdollHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor(system: PhysicsSystem?) : this(JphRagdoll_create(system?.physicsSystemHandle ?: NullPointer), owned = true)
 
     open fun addRef() =
-        JphRagdoll_addRef(ragdollHandle)
+        own { JphRagdoll_addRef(ragdollHandle) }
 
     override fun close() =
-        JphRagdoll_release(ragdollHandle)
+        closeOnce { JphRagdoll_release(ragdollHandle) }
 
     open fun addToPhysicsSystem(activationMode: EActivation, lockBodies: Boolean) =
         JphRagdoll_AddToPhysicsSystem(ragdollHandle, activationMode.value, lockBodies)
@@ -92,12 +93,29 @@ open class Ragdoll internal constructor(internal val ragdollHandle: NativePointe
     open fun getBodyID(bodyIndex: Int): BodyID =
         BodyID(JphRagdoll_GetBodyID(ragdollHandle, bodyIndex))
 
+    open val bodyIDs: List<BodyID>
+        get() = interopScope {
+            val count = JphRagdoll_GetBodyIDs(ragdollHandle, NullPointer, 0)
+            val returned = IntArray(count)
+            val returnedPointer = toInterop(returned)
+            JphRagdoll_GetBodyIDs(ragdollHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned.map { BodyID(it) }
+        }
+
     open val constraintCount: Int
         get() = JphRagdoll_GetConstraintCount(ragdollHandle)
 
     open fun getConstraint(constraintIndex: Int): TwoBodyConstraint? =
-        JphRagdoll_GetConstraint(ragdollHandle, constraintIndex).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        JphRagdoll_GetConstraint(ragdollHandle, constraintIndex).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
+
+    open fun getWorldSpaceBounds(lockBodies: Boolean): AABox =
+        run {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphRagdoll_GetWorldSpaceBounds(ragdollHandle, lockBodies, returned.aaBoxHandle)
+            returned
+        }
 
     open val ragdollSettings: RagdollSettings?
-        get() = JphRagdoll_GetRagdollSettings(ragdollHandle).takeIf { it != NullPointer }?.let(::RagdollSettings)
+        get() = JphRagdoll_GetRagdollSettings(ragdollHandle).takeIf { it != NullPointer }?.let { RagdollSettings(it) }
 }

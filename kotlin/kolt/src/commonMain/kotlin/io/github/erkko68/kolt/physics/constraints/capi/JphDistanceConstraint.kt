@@ -19,42 +19,6 @@ internal external fun JphDistanceConstraint_asTwoBodyConstraint(self: NativePoin
 @ExternalSymbolName("JphDistanceConstraint_asConstraint")
 internal external fun JphDistanceConstraint_asConstraint(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphDistanceConstraint_GetSubType")
-internal external fun JphDistanceConstraint_GetSubType(self: NativePointer): Int
-
-@ExternalSymbolName("JphDistanceConstraint_NotifyShapeChanged")
-internal external fun JphDistanceConstraint_NotifyShapeChanged(self: NativePointer, inBodyID: Int, inDeltaCOM: NativePointer)
-
-@ExternalSymbolName("JphDistanceConstraint_SetupVelocityConstraint")
-internal external fun JphDistanceConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphDistanceConstraint_ResetWarmStart")
-internal external fun JphDistanceConstraint_ResetWarmStart(self: NativePointer)
-
-@ExternalSymbolName("JphDistanceConstraint_WarmStartVelocityConstraint")
-internal external fun JphDistanceConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphDistanceConstraint_SolveVelocityConstraint")
-internal external fun JphDistanceConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphDistanceConstraint_SolvePositionConstraint")
-internal external fun JphDistanceConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphDistanceConstraint_SaveState")
-internal external fun JphDistanceConstraint_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphDistanceConstraint_RestoreState")
-internal external fun JphDistanceConstraint_RestoreState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphDistanceConstraint_GetConstraintSettings")
-internal external fun JphDistanceConstraint_GetConstraintSettings(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphDistanceConstraint_GetConstraintToBody1Matrix")
-internal external fun JphDistanceConstraint_GetConstraintToBody1Matrix(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphDistanceConstraint_GetConstraintToBody2Matrix")
-internal external fun JphDistanceConstraint_GetConstraintToBody2Matrix(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphDistanceConstraint_SetDistance")
 internal external fun JphDistanceConstraint_SetDistance(self: NativePointer, inMinDistance: Float, inMaxDistance: Float)
 

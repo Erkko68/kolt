@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::GearConstraintSettings`. */
-open class GearConstraintSettings internal constructor(internal val gearConstraintSettingsHandle: NativePointer) : SerializableObject(JphGearConstraintSettings_asSerializableObject(gearConstraintSettingsHandle)), AutoCloseable {
-    constructor() : this(JphGearConstraintSettings_create())
+open class GearConstraintSettings internal constructor(internal val gearConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphGearConstraintSettings_asTwoBodyConstraintSettings(gearConstraintSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphGearConstraintSettings_create(), owned = true)
 
-    open fun addRef() =
-        JphGearConstraintSettings_addRef(gearConstraintSettingsHandle)
+    override fun addRef() =
+        own { JphGearConstraintSettings_addRef(gearConstraintSettingsHandle) }
 
     override fun close() =
-        JphGearConstraintSettings_release(gearConstraintSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphGearConstraintSettings_GetRTTI(gearConstraintSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphGearConstraintSettings_SaveBinaryState(gearConstraintSettingsHandle, stream.streamOutHandle)
-
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
-        JphGearConstraintSettings_Create(gearConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        closeOnce { JphGearConstraintSettings_release(gearConstraintSettingsHandle) }
 
     open fun setRatio(numTeethGear1: Int, numTeethGear2: Int) =
         JphGearConstraintSettings_SetRatio(gearConstraintSettingsHandle, numTeethGear1, numTeethGear2)
@@ -81,7 +73,7 @@ open class GearConstraintSettings internal constructor(internal val gearConstrai
         get() = JphGearConstraintSettings_GetRatio(gearConstraintSettingsHandle)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphGearConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

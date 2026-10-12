@@ -12,13 +12,11 @@ extern "C" {
 JphWheelSettingsTV* JphWheelSettingsTV_create(void);
 void JphWheelSettingsTV_addRef(const JphWheelSettingsTV* self);
 void JphWheelSettingsTV_release(const JphWheelSettingsTV* self);
+JphWheelSettingsTV* JphWheelSettingsTV_createUpcalls(JphUpcall call);
+void JphWheelSettingsTV_bindUpcalls(JphWheelSettingsTV* self, void* userData);
 JphWheelSettings* JphWheelSettingsTV_asWheelSettings(JphWheelSettingsTV* self);
 JphSerializableObject* JphWheelSettingsTV_asSerializableObject(JphWheelSettingsTV* self);
-const JphRTTI* JphWheelSettingsTV_GetRTTI(const JphWheelSettingsTV* self);
-const void* JphWheelSettingsTV_CastTo(const JphWheelSettingsTV* self, const JphRTTI* inRTTI);
 void JphWheelSettingsTV_sCreateRTTI(JphRTTI* inRTTI);
-void JphWheelSettingsTV_SaveBinaryState(const JphWheelSettingsTV* self, JphStreamOut* inStream);
-void JphWheelSettingsTV_RestoreBinaryState(JphWheelSettingsTV* self, JphStreamIn* inStream);
 float JphWheelSettingsTV_GetLongitudinalFriction(const JphWheelSettingsTV* self);
 void JphWheelSettingsTV_SetLongitudinalFriction(JphWheelSettingsTV* self, float value);
 float JphWheelSettingsTV_GetLateralFriction(const JphWheelSettingsTV* self);

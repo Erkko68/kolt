@@ -22,20 +22,8 @@ internal external fun JphHingeConstraintSettings_asConstraintSettings(self: Nati
 @ExternalSymbolName("JphHingeConstraintSettings_asSerializableObject")
 internal external fun JphHingeConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphHingeConstraintSettings_GetRTTI")
-internal external fun JphHingeConstraintSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphHingeConstraintSettings_CastTo")
-internal external fun JphHingeConstraintSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
 @ExternalSymbolName("JphHingeConstraintSettings_sCreateRTTI")
 internal external fun JphHingeConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
-@ExternalSymbolName("JphHingeConstraintSettings_SaveBinaryState")
-internal external fun JphHingeConstraintSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphHingeConstraintSettings_Create")
-internal external fun JphHingeConstraintSettings_Create(self: NativePointer, inBody1: NativePointer, inBody2: NativePointer): NativePointer
 
 @ExternalSymbolName("JphHingeConstraintSettings_GetSpace")
 internal external fun JphHingeConstraintSettings_GetSpace(self: NativePointer): Int

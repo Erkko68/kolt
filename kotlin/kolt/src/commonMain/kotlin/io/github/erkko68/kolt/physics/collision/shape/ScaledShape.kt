@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ScaledShape`. */
-open class ScaledShape internal constructor(internal val scaledShapeHandle: NativePointer) : Shape(JphScaledShape_asShape(scaledShapeHandle)), AutoCloseable {
-    constructor() : this(JphScaledShape_create())
-    constructor(shape: Shape?, scale: Vec3) : this(interopScope { JphScaledShape_create_Shape_Vec3Arg(shape?.shapeHandle ?: NullPointer, toInterop(scale.toArray())) })
+open class ScaledShape internal constructor(internal val scaledShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphScaledShape_asShape(scaledShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphScaledShape_create(), owned = true)
+    constructor(shape: Shape?, scale: Vec3) : this(interopScope { JphScaledShape_create_Shape_Vec3Arg(shape?.shapeHandle ?: NullPointer, toInterop(scale.toArray())) }, owned = true)
 
     override fun addRef() =
-        JphScaledShape_addRef(scaledShapeHandle)
+        own { JphScaledShape_addRef(scaledShapeHandle) }
 
     override fun close() =
-        JphScaledShape_release(scaledShapeHandle)
+        closeOnce { JphScaledShape_release(scaledShapeHandle) }
 
     open val scale: Vec3
         get() = interopScope {
@@ -52,7 +53,7 @@ open class ScaledShape internal constructor(internal val scaledShapeHandle: Nati
         }
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphScaledShape_sRegister()
     }
 }

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,141 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TransformedShape`. */
-open class TransformedShape internal constructor(internal val transformedShapeHandle: NativePointer)
+open class TransformedShape internal constructor(internal val transformedShapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphTransformedShape_create(), owned = true)
+    constructor(positionCOM: Vec3, rotation: Quat, shape: Shape?, bodyID: BodyID, subShapeIDCreator: SubShapeIDCreator) : this(interopScope { JphTransformedShape_create_RVec3Arg_QuatArg_Shape_BodyID_SubShapeIDCreator(toInterop(positionCOM.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer, bodyID.value, subShapeIDCreator.subShapeIDCreatorHandle) }, owned = true)
+
+    override fun close() =
+        closeOnce { JphTransformedShape_destroy(transformedShapeHandle) }
+
+    open fun castRay(ray: RRayCast, hit: RayCastResult): Boolean =
+        JphTransformedShape_CastRay_RayCastResult(transformedShapeHandle, ray.rRayCastHandle, hit.rayCastResultHandle)
+
+    open fun castRay(ray: RRayCast, rayCastSettings: RayCastSettings, collector: CastRayCollector, shapeFilter: ShapeFilter) =
+        JphTransformedShape_CastRay_RayCastSettings_CastRayCollector_ShapeFilter(transformedShapeHandle, ray.rRayCastHandle, rayCastSettings.rayCastSettingsHandle, collector.castRayCollectorHandle, shapeFilter.shapeFilterHandle)
+
+    open fun collidePoint(point: Vec3, collector: CollidePointCollector, shapeFilter: ShapeFilter) =
+        interopScope { JphTransformedShape_CollidePoint(transformedShapeHandle, toInterop(point.toArray()), collector.collidePointCollectorHandle, shapeFilter.shapeFilterHandle) }
+
+    open fun collideShape(shape: Shape?, shapeScale: Vec3, centerOfMassTransform: Mat44, collideShapeSettings: CollideShapeSettings, baseOffset: Vec3, collector: CollideShapeCollector, shapeFilter: ShapeFilter) =
+        interopScope { JphTransformedShape_CollideShape(transformedShapeHandle, shape?.shapeHandle ?: NullPointer, toInterop(shapeScale.toArray()), toInterop(centerOfMassTransform.toArray()), collideShapeSettings.collideShapeSettingsHandle, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle, shapeFilter.shapeFilterHandle) }
+
+    open fun castShape(shapeCast: RShapeCast, shapeCastSettings: ShapeCastSettings, baseOffset: Vec3, collector: CastShapeCollector, shapeFilter: ShapeFilter) =
+        interopScope { JphTransformedShape_CastShape(transformedShapeHandle, shapeCast.rShapeCastHandle, shapeCastSettings.shapeCastSettingsHandle, toInterop(baseOffset.toArray()), collector.castShapeCollectorHandle, shapeFilter.shapeFilterHandle) }
+
+    open fun collectTransformedShapes(box: AABox, collector: TransformedShapeCollector, shapeFilter: ShapeFilter) =
+        JphTransformedShape_CollectTransformedShapes(transformedShapeHandle, box.aaBoxHandle, collector.transformedShapeCollectorHandle, shapeFilter.shapeFilterHandle)
+
+    open fun getTrianglesStart(context: Shape.GetTrianglesContext, box: AABox, baseOffset: Vec3) =
+        interopScope { JphTransformedShape_GetTrianglesStart(transformedShapeHandle, context.shapeGetTrianglesContextHandle, box.aaBoxHandle, toInterop(baseOffset.toArray())) }
+
+    open var shapeScale: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphTransformedShape_GetShapeScale(transformedShapeHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(scale) = interopScope { JphTransformedShape_SetShapeScale(transformedShapeHandle, toInterop(scale.toArray())) }
+
+    open val centerOfMassTransform: Mat44
+        get() = interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphTransformedShape_GetCenterOfMassTransform(transformedShapeHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+
+    open val inverseCenterOfMassTransform: Mat44
+        get() = interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphTransformedShape_GetInverseCenterOfMassTransform(transformedShapeHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+
+    open fun setWorldTransform(position: Vec3, rotation: Quat, scale: Vec3) =
+        interopScope { JphTransformedShape_SetWorldTransform_RVec3Arg_QuatArg_Vec3Arg(transformedShapeHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), toInterop(scale.toArray())) }
+
+    open fun setWorldTransform(transform: Mat44) =
+        interopScope { JphTransformedShape_SetWorldTransform_RMat44Arg(transformedShapeHandle, toInterop(transform.toArray())) }
+
+    open val worldTransform: Mat44
+        get() = interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphTransformedShape_GetWorldTransform(transformedShapeHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+
+    open val worldSpaceBounds: AABox
+        get() = run {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphTransformedShape_GetWorldSpaceBounds(transformedShapeHandle, returned.aaBoxHandle)
+            returned
+        }
+
+    open fun makeSubShapeIDRelativeToShape(subShapeID: SubShapeID): SubShapeID =
+        SubShapeID(JphTransformedShape_MakeSubShapeIDRelativeToShape(transformedShapeHandle, subShapeID.value))
+
+    open fun getWorldSpaceSurfaceNormal(subShapeID: SubShapeID, position: Vec3): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphTransformedShape_GetWorldSpaceSurfaceNormal(transformedShapeHandle, subShapeID.value, toInterop(position.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open fun getMaterial(subShapeID: SubShapeID): PhysicsMaterial? =
+        JphTransformedShape_GetMaterial(transformedShapeHandle, subShapeID.value).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
+
+    open fun getSubShapeUserData(subShapeID: SubShapeID): Long =
+        interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphTransformedShape_GetSubShapeUserData(transformedShapeHandle, subShapeID.value, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+
+    open var shapePositionCOM: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphTransformedShape_GetShapePositionCOM(transformedShapeHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphTransformedShape_SetShapePositionCOM(transformedShapeHandle, toInterop(value.toArray())) }
+
+    open var shapeRotation: Quat
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphTransformedShape_GetShapeRotation(transformedShapeHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Quat(returned)
+        }
+        set(value) = interopScope { JphTransformedShape_SetShapeRotation(transformedShapeHandle, toInterop(value.toArray())) }
+
+    open var shape: Shape?
+        get() = JphTransformedShape_GetShape(transformedShapeHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        set(value) = JphTransformedShape_SetShape(transformedShapeHandle, value?.shapeHandle ?: NullPointer)
+
+    open var bodyID: BodyID
+        get() = BodyID(JphTransformedShape_GetBodyID(transformedShapeHandle))
+        set(value) = JphTransformedShape_SetBodyID(transformedShapeHandle, value.value)
+
+    open fun setSubShapeIDCreator(value: SubShapeIDCreator) =
+        JphTransformedShape_SetSubShapeIDCreator(transformedShapeHandle, value.subShapeIDCreatorHandle)
+
+    companion object {
+        fun getBodyID(ts: TransformedShape?): BodyID =
+            BodyID(JphTransformedShape_sGetBodyID(ts?.transformedShapeHandle ?: NullPointer))
+    }
+}

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,22 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollideShapeResult`. */
-open class CollideShapeResult internal constructor(internal val collideShapeResultHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphCollideShapeResult_create())
-    constructor(contactPointOn1: Vec3, contactPointOn2: Vec3, penetrationAxis: Vec3, penetrationDepth: Float, subShapeID1: SubShapeID, subShapeID2: SubShapeID, bodyID2: BodyID) : this(interopScope { JphCollideShapeResult_create_Vec3Arg_Vec3Arg_Vec3Arg_float_SubShapeID_SubShapeID_BodyID(toInterop(contactPointOn1.toArray()), toInterop(contactPointOn2.toArray()), toInterop(penetrationAxis.toArray()), penetrationDepth, subShapeID1.value, subShapeID2.value, bodyID2.value) })
+open class CollideShapeResult internal constructor(internal val collideShapeResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCollideShapeResult_create(), owned = true)
+    constructor(contactPointOn1: Vec3, contactPointOn2: Vec3, penetrationAxis: Vec3, penetrationDepth: Float, subShapeID1: SubShapeID, subShapeID2: SubShapeID, bodyID2: BodyID) : this(interopScope { JphCollideShapeResult_create_Vec3Arg_Vec3Arg_Vec3Arg_float_SubShapeID_SubShapeID_BodyID(toInterop(contactPointOn1.toArray()), toInterop(contactPointOn2.toArray()), toInterop(penetrationAxis.toArray()), penetrationDepth, subShapeID1.value, subShapeID2.value, bodyID2.value) }, owned = true)
 
     override fun close() =
-        JphCollideShapeResult_destroy(collideShapeResultHandle)
+        closeOnce { JphCollideShapeResult_destroy(collideShapeResultHandle) }
 
     open val earlyOutFraction: Float
         get() = JphCollideShapeResult_GetEarlyOutFraction(collideShapeResultHandle)
+
+    open fun reversed(): CollideShapeResult =
+        run {
+            val returned = CollideShapeResult(JphCollideShapeResult_create(), owned = true)
+            JphCollideShapeResult_Reversed(collideShapeResultHandle, returned.collideShapeResultHandle)
+            returned
+        }
 
     open var contactPointOn1: Vec3
         get() = interopScope {
@@ -87,4 +95,26 @@ open class CollideShapeResult internal constructor(internal val collideShapeResu
     open var bodyID2: BodyID
         get() = BodyID(JphCollideShapeResult_GetBodyID2(collideShapeResultHandle))
         set(value) = JphCollideShapeResult_SetBodyID2(collideShapeResultHandle, value.value)
+
+    open var shape1Face: List<Vec3>
+        get() = interopScope {
+            val count = JphCollideShapeResult_GetShape1Face(collideShapeResultHandle, NullPointer, 0)
+            val returned = FloatArray(count * 4)
+            val returnedPointer = toInterop(returned)
+            JphCollideShapeResult_GetShape1Face(collideShapeResultHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            List(count) { Vec3(returned.copyOfRange(it * 4, it * 4 + 4)) }
+        }
+        set(value) = interopScope { JphCollideShapeResult_SetShape1Face(collideShapeResultHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
+
+    open var shape2Face: List<Vec3>
+        get() = interopScope {
+            val count = JphCollideShapeResult_GetShape2Face(collideShapeResultHandle, NullPointer, 0)
+            val returned = FloatArray(count * 4)
+            val returnedPointer = toInterop(returned)
+            JphCollideShapeResult_GetShape2Face(collideShapeResultHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            List(count) { Vec3(returned.copyOfRange(it * 4, it * 4 + 4)) }
+        }
+        set(value) = interopScope { JphCollideShapeResult_SetShape2Face(collideShapeResultHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
 }

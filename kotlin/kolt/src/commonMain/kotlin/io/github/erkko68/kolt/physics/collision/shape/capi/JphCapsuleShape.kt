@@ -28,8 +28,5 @@ internal external fun JphCapsuleShape_GetRadius(self: NativePointer): Float
 @ExternalSymbolName("JphCapsuleShape_GetHalfHeightOfCylinder")
 internal external fun JphCapsuleShape_GetHalfHeightOfCylinder(self: NativePointer): Float
 
-@ExternalSymbolName("JphCapsuleShape_GetSupportFunction")
-internal external fun JphCapsuleShape_GetSupportFunction(self: NativePointer, inMode: Int, inBuffer: NativePointer, inScale: NativePointer): NativePointer
-
 @ExternalSymbolName("JphCapsuleShape_sRegister")
 internal external fun JphCapsuleShape_sRegister()

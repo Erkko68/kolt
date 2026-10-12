@@ -12,7 +12,6 @@ extern "C" {
 JphObjectVsBroadPhaseLayerFilterTable* JphObjectVsBroadPhaseLayerFilterTable_create(const JphBroadPhaseLayerInterface* inBroadPhaseLayerInterface, uint32_t inNumBroadPhaseLayers, const JphObjectLayerPairFilter* inObjectLayerPairFilter, uint32_t inNumObjectLayers);
 void JphObjectVsBroadPhaseLayerFilterTable_destroy(JphObjectVsBroadPhaseLayerFilterTable* self);
 JphObjectVsBroadPhaseLayerFilter* JphObjectVsBroadPhaseLayerFilterTable_asObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterTable* self);
-bool JphObjectVsBroadPhaseLayerFilterTable_ShouldCollide(const JphObjectVsBroadPhaseLayerFilterTable* self, uint32_t inLayer1, uint32_t inLayer2);
 
 
 #ifdef __cplusplus

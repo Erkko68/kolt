@@ -28,24 +28,8 @@ JphSerializableObject* JphFixedConstraintSettings_asSerializableObject(JphFixedC
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphFixedConstraintSettings_GetRTTI(const JphFixedConstraintSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphFixedConstraintSettings_CastTo(const JphFixedConstraintSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphFixedConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::FixedConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-void JphFixedConstraintSettings_SaveBinaryState(const JphFixedConstraintSettings* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-JphTwoBodyConstraint* JphFixedConstraintSettings_Create(const JphFixedConstraintSettings* self, JphBody* inBody1, JphBody* inBody2) {
-    return kolt::c(kolt::cpp(self)->Create(*kolt::cpp(inBody1), *kolt::cpp(inBody2)));
 }
 
 JphEConstraintSpace JphFixedConstraintSettings_GetSpace(const JphFixedConstraintSettings* self) {

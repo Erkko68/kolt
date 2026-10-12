@@ -14,14 +14,10 @@ void JphGroupFilterTable_addRef(const JphGroupFilterTable* self);
 void JphGroupFilterTable_release(const JphGroupFilterTable* self);
 JphGroupFilter* JphGroupFilterTable_asGroupFilter(JphGroupFilterTable* self);
 JphSerializableObject* JphGroupFilterTable_asSerializableObject(JphGroupFilterTable* self);
-const JphRTTI* JphGroupFilterTable_GetRTTI(const JphGroupFilterTable* self);
-const void* JphGroupFilterTable_CastTo(const JphGroupFilterTable* self, const JphRTTI* inRTTI);
 void JphGroupFilterTable_sCreateRTTI(JphRTTI* inRTTI);
 void JphGroupFilterTable_DisableCollision(JphGroupFilterTable* self, uint32_t inSubGroup1, uint32_t inSubGroup2);
 void JphGroupFilterTable_EnableCollision(JphGroupFilterTable* self, uint32_t inSubGroup1, uint32_t inSubGroup2);
 bool JphGroupFilterTable_IsCollisionEnabled(const JphGroupFilterTable* self, uint32_t inSubGroup1, uint32_t inSubGroup2);
-bool JphGroupFilterTable_CanCollide(const JphGroupFilterTable* self, const JphCollisionGroup* inGroup1, const JphCollisionGroup* inGroup2);
-void JphGroupFilterTable_SaveBinaryState(const JphGroupFilterTable* self, JphStreamOut* inStream);
 
 
 #ifdef __cplusplus

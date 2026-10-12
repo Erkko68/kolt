@@ -24,54 +24,6 @@ JphConstraint* JphSixDOFConstraint_asConstraint(JphSixDOFConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
-JphEConstraintSubType JphSixDOFConstraint_GetSubType(const JphSixDOFConstraint* self) {
-    return static_cast<JphEConstraintSubType>(kolt::cpp(self)->GetSubType());
-}
-
-void JphSixDOFConstraint_NotifyShapeChanged(JphSixDOFConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM) {
-    kolt::cpp(self)->NotifyShapeChanged(JPH::BodyID(inBodyID), kolt::math<JPH::Vec3>(*inDeltaCOM));
-}
-
-void JphSixDOFConstraint_SetupVelocityConstraint(JphSixDOFConstraint* self, float inDeltaTime) {
-    kolt::cpp(self)->SetupVelocityConstraint(inDeltaTime);
-}
-
-void JphSixDOFConstraint_ResetWarmStart(JphSixDOFConstraint* self) {
-    kolt::cpp(self)->ResetWarmStart();
-}
-
-void JphSixDOFConstraint_WarmStartVelocityConstraint(JphSixDOFConstraint* self, float inWarmStartImpulseRatio) {
-    kolt::cpp(self)->WarmStartVelocityConstraint(inWarmStartImpulseRatio);
-}
-
-bool JphSixDOFConstraint_SolveVelocityConstraint(JphSixDOFConstraint* self, float inDeltaTime) {
-    return kolt::cpp(self)->SolveVelocityConstraint(inDeltaTime);
-}
-
-bool JphSixDOFConstraint_SolvePositionConstraint(JphSixDOFConstraint* self, float inDeltaTime, float inBaumgarte) {
-    return kolt::cpp(self)->SolvePositionConstraint(inDeltaTime, inBaumgarte);
-}
-
-void JphSixDOFConstraint_SaveState(const JphSixDOFConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
-}
-
-void JphSixDOFConstraint_RestoreState(JphSixDOFConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
-}
-
-JphConstraintSettings* JphSixDOFConstraint_GetConstraintSettings(const JphSixDOFConstraint* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetConstraintSettings()));
-}
-
-void JphSixDOFConstraint_GetConstraintToBody1Matrix(const JphSixDOFConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody1Matrix());
-}
-
-void JphSixDOFConstraint_GetConstraintToBody2Matrix(const JphSixDOFConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody2Matrix());
-}
-
 void JphSixDOFConstraint_SetTranslationLimits(JphSixDOFConstraint* self, const JphVec3* inLimitMin, const JphVec3* inLimitMax) {
     kolt::cpp(self)->SetTranslationLimits(kolt::math<JPH::Vec3>(*inLimitMin), kolt::math<JPH::Vec3>(*inLimitMax));
 }

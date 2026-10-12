@@ -11,6 +11,7 @@
 #include <iterator>
 #include <memory>
 #include <optional>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -20,6 +21,38 @@ namespace kolt {
 [[noreturn]] inline void unavailable(const char* name) {
     std::fprintf(stderr, "%s is unavailable on this platform\n", name);
     std::abort();
+}
+
+// A virtual function a class written outside C++ overrides: the generated subclass packs the arguments into 64-bit
+// slots and calls this with the function's index; it returns 0 for one the target leaves to the base class. Index -1
+// says the object is gone.
+using Upcall = int32_t (*)(void* user, int32_t method, const uint64_t* args, uint64_t* result);
+
+template <class T> uint64_t slot(T value) {
+    if constexpr (std::is_pointer_v<T>) return static_cast<uint64_t>(reinterpret_cast<uintptr_t>(value));
+    else if constexpr (std::is_floating_point_v<T>) { uint64_t bits = 0; std::memcpy(&bits, &value, sizeof(T)); return bits; }
+    else return static_cast<uint64_t>(static_cast<int64_t>(value));
+}
+
+template <class T> T unslot(uint64_t bits) {
+    if constexpr (std::is_floating_point_v<T>) { T value; std::memcpy(&value, &bits, sizeof(T)); return value; }
+    else return static_cast<T>(bits);
+}
+
+// Whether the target ran `method` of `self`. Not when it's already running it on this thread: its default
+// implementation called back into C++ for the base class's.
+inline bool upcall(Upcall call, void* user, const void* self, int32_t method, const uint64_t* args, uint64_t* result) {
+    static thread_local const void* activeSelf = nullptr;
+    static thread_local int32_t activeMethod = -1;
+    if (!call || !user || (activeSelf == self && activeMethod == method)) return false;
+    const void* outerSelf = activeSelf;
+    int32_t outerMethod = activeMethod;
+    activeSelf = self;
+    activeMethod = method;
+    bool handled = call(user, method, args, result) != 0;
+    activeSelf = outerSelf;
+    activeMethod = outerMethod;
+    return handled;
 }
 
 // C and C++ types naming one object (a handle, a math mirror): cpp() and c() convert pointers between them.

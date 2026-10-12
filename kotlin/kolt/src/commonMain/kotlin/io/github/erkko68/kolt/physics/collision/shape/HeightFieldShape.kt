@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::HeightFieldShape`. */
-open class HeightFieldShape internal constructor(internal val heightFieldShapeHandle: NativePointer) : Shape(JphHeightFieldShape_asShape(heightFieldShapeHandle)), AutoCloseable {
-    constructor() : this(JphHeightFieldShape_create())
+open class HeightFieldShape internal constructor(internal val heightFieldShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphHeightFieldShape_asShape(heightFieldShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphHeightFieldShape_create(), owned = true)
 
     override fun addRef() =
-        JphHeightFieldShape_addRef(heightFieldShapeHandle)
+        own { JphHeightFieldShape_addRef(heightFieldShapeHandle) }
 
     override fun close() =
-        JphHeightFieldShape_release(heightFieldShapeHandle)
+        closeOnce { JphHeightFieldShape_release(heightFieldShapeHandle) }
 
     open fun clone(): HeightFieldShape? =
-        JphHeightFieldShape_Clone(heightFieldShapeHandle).takeIf { it != NullPointer }?.let(::HeightFieldShape)
+        JphHeightFieldShape_Clone(heightFieldShapeHandle).takeIf { it != NullPointer }?.let { HeightFieldShape(it, owned = true) }
 
     open val sampleCount: Int
         get() = JphHeightFieldShape_GetSampleCount(heightFieldShapeHandle)
@@ -51,7 +52,7 @@ open class HeightFieldShape internal constructor(internal val heightFieldShapeHa
         get() = JphHeightFieldShape_GetBlockSize(heightFieldShapeHandle)
 
     open fun getMaterial(x: Int, y: Int): PhysicsMaterial? =
-        JphHeightFieldShape_GetMaterial(heightFieldShapeHandle, x, y).takeIf { it != NullPointer }?.let(::PhysicsMaterial)
+        JphHeightFieldShape_GetMaterial(heightFieldShapeHandle, x, y).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
     open fun getPosition(x: Int, y: Int): Vec3 =
         interopScope {
@@ -71,8 +72,16 @@ open class HeightFieldShape internal constructor(internal val heightFieldShapeHa
     open val maxHeightValue: Float
         get() = JphHeightFieldShape_GetMaxHeightValue(heightFieldShapeHandle)
 
+    open val materialList: List<PhysicsMaterial>
+        get() = interopScope {
+            val count = JphHeightFieldShape_GetMaterialList(heightFieldShapeHandle, NullPointer, 0)
+            val returnedPointer = toInterop(List(count) { NullPointer })
+            JphHeightFieldShape_GetMaterialList(heightFieldShapeHandle, returnedPointer, count)
+            readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
+        }
+
     companion object {
-        fun sRegister() =
+        fun register() =
             JphHeightFieldShape_sRegister()
     }
 }

@@ -12,6 +12,75 @@ void JphCharacterContactListener_destroy(JphCharacterContactListener* self) {
     delete kolt::cpp(self);
 }
 
+} // extern "C"
+
+namespace JPH {
+struct JphCharacterContactListener_Upcalls final : ::JPH::CharacterContactListener {
+    kolt::Upcall mCall;
+    void* mUser = nullptr;
+    explicit JphCharacterContactListener_Upcalls(kolt::Upcall call) : mCall(call) {}
+    ~JphCharacterContactListener_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    bool OnContactValidate(const CharacterVirtual * p0, const CharacterContact & p1) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return kolt::unslot<bool>(result);
+        return JPH::CharacterContactListener::OnContactValidate(p0, p1);
+    }
+    void OnContactAdded(const CharacterVirtual * p0, const CharacterContact & p1, CharacterContactSettings & p2) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot(kolt::c(&p2))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 1, args, &result)) return;
+        JPH::CharacterContactListener::OnContactAdded(p0, p1, p2);
+    }
+    void OnContactPersisted(const CharacterVirtual * p0, const CharacterContact & p1, CharacterContactSettings & p2) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot(kolt::c(&p2))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 2, args, &result)) return;
+        JPH::CharacterContactListener::OnContactPersisted(p0, p1, p2);
+    }
+    void OnContactRemoved(const CharacterVirtual * p0, const BodyID & p1, const SubShapeID & p2) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot((p1).GetIndexAndSequenceNumber()), kolt::slot((p2).GetValue())};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 3, args, &result)) return;
+        JPH::CharacterContactListener::OnContactRemoved(p0, p1, p2);
+    }
+    bool OnCharacterContactValidate(const CharacterVirtual * p0, const CharacterContact & p1) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 4, args, &result)) return kolt::unslot<bool>(result);
+        return JPH::CharacterContactListener::OnCharacterContactValidate(p0, p1);
+    }
+    void OnCharacterContactAdded(const CharacterVirtual * p0, const CharacterContact & p1, CharacterContactSettings & p2) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot(kolt::c(&p2))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 5, args, &result)) return;
+        JPH::CharacterContactListener::OnCharacterContactAdded(p0, p1, p2);
+    }
+    void OnCharacterContactPersisted(const CharacterVirtual * p0, const CharacterContact & p1, CharacterContactSettings & p2) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot(kolt::c(&p2))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 6, args, &result)) return;
+        JPH::CharacterContactListener::OnCharacterContactPersisted(p0, p1, p2);
+    }
+    void OnCharacterContactRemoved(const CharacterVirtual * p0, const CharacterID & p1, const SubShapeID & p2) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(kolt::c(&p1)), kolt::slot((p2).GetValue())};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 7, args, &result)) return;
+        JPH::CharacterContactListener::OnCharacterContactRemoved(p0, p1, p2);
+    }
+};
+} // namespace JPH
+
+extern "C" {
+
+JphCharacterContactListener* JphCharacterContactListener_createUpcalls(JphUpcall call) {
+    return kolt::c(static_cast<::JPH::CharacterContactListener*>(new ::JPH::JphCharacterContactListener_Upcalls(call)));
+}
+
+void JphCharacterContactListener_bindUpcalls(JphCharacterContactListener* self, void* userData) {
+    static_cast<::JPH::JphCharacterContactListener_Upcalls*>(kolt::cpp(self))->mUser = userData;
+}
+
 void JphCharacterContactListener_OnAdjustBodyVelocity(JphCharacterContactListener* self, const JphCharacterVirtual* inCharacter, const JphBody* inBody2, JphVec3* ioLinearVelocity, JphVec3* ioAngularVelocity) {
     kolt::cpp(self)->OnAdjustBodyVelocity(kolt::cpp(inCharacter), *kolt::cpp(inBody2), kolt::InOut<JPH::Vec3, JphVec3>(ioLinearVelocity), kolt::InOut<JPH::Vec3, JphVec3>(ioAngularVelocity));
 }

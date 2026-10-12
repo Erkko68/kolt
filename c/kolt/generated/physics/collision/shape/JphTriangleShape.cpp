@@ -44,10 +44,6 @@ float JphTriangleShape_GetConvexRadius(const JphTriangleShape* self) {
     return kolt::cpp(self)->GetConvexRadius();
 }
 
-const JphConvexShapeSupport* JphTriangleShape_GetSupportFunction(const JphTriangleShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale) {
-    return kolt::c(kolt::cpp(self)->GetSupportFunction(static_cast<JPH::ConvexShape::ESupportMode>(inMode), *kolt::cpp(inBuffer), kolt::math<JPH::Vec3>(*inScale)));
-}
-
 void JphTriangleShape_sRegister(void) {
     JPH::TriangleShape::sRegister();
 }

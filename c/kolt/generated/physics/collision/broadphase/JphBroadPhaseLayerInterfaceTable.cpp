@@ -20,12 +20,4 @@ void JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer(JphBroadPhaseLa
     kolt::cpp(self)->MapObjectToBroadPhaseLayer(static_cast<uint16_t>(inObjectLayer), JPH::BroadPhaseLayer(JPH::BroadPhaseLayer::Type(inBroadPhaseLayer)));
 }
 
-uint32_t JphBroadPhaseLayerInterfaceTable_GetNumBroadPhaseLayers(const JphBroadPhaseLayerInterfaceTable* self) {
-    return static_cast<uint32_t>(kolt::cpp(self)->GetNumBroadPhaseLayers());
-}
-
-uint32_t JphBroadPhaseLayerInterfaceTable_GetBroadPhaseLayer(const JphBroadPhaseLayerInterfaceTable* self, uint32_t inLayer) {
-    return uint32_t((kolt::cpp(self)->GetBroadPhaseLayer(static_cast<uint16_t>(inLayer))).GetValue());
-}
-
 } // extern "C"

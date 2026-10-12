@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,26 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleCollisionTester`. */
-open class VehicleCollisionTester internal constructor(internal val vehicleCollisionTesterHandle: NativePointer)
+open class VehicleCollisionTester internal constructor(internal val vehicleCollisionTesterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    open fun addRef() =
+        own { JphVehicleCollisionTester_addRef(vehicleCollisionTesterHandle) }
+
+    override fun close() =
+        closeOnce { JphVehicleCollisionTester_release(vehicleCollisionTesterHandle) }
+
+    open var objectLayer: Int
+        get() = JphVehicleCollisionTester_GetObjectLayer(vehicleCollisionTesterHandle)
+        set(objectLayer) = JphVehicleCollisionTester_SetObjectLayer(vehicleCollisionTesterHandle, objectLayer)
+
+    open var broadPhaseLayerFilter: BroadPhaseLayerFilter?
+        get() = JphVehicleCollisionTester_GetBroadPhaseLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { BroadPhaseLayerFilter(it) }
+        set(filter) = JphVehicleCollisionTester_SetBroadPhaseLayerFilter(vehicleCollisionTesterHandle, filter?.broadPhaseLayerFilterHandle ?: NullPointer)
+
+    open var objectLayerFilter: ObjectLayerFilter?
+        get() = JphVehicleCollisionTester_GetObjectLayerFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { ObjectLayerFilter(it) }
+        set(filter) = JphVehicleCollisionTester_SetObjectLayerFilter(vehicleCollisionTesterHandle, filter?.objectLayerFilterHandle ?: NullPointer)
+
+    open var bodyFilter: BodyFilter?
+        get() = JphVehicleCollisionTester_GetBodyFilter(vehicleCollisionTesterHandle).takeIf { it != NullPointer }?.let { BodyFilter(it) }
+        set(filter) = JphVehicleCollisionTester_SetBodyFilter(vehicleCollisionTesterHandle, filter?.bodyFilterHandle ?: NullPointer)
+}

@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,18 +33,29 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Factory`. */
-open class Factory internal constructor(internal val factoryHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphFactory_create())
+open class Factory internal constructor(internal val factoryHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphFactory_create(), owned = true)
 
     override fun close() =
-        JphFactory_destroy(factoryHandle)
+        closeOnce { JphFactory_destroy(factoryHandle) }
+
+    open fun find(name: String?): RTTI? =
+        interopScope { JphFactory_Find_char(factoryHandle, toInterop(name)).takeIf { it != NullPointer }?.let { RTTI(it) } }
 
     open fun find(hash: Int): RTTI? =
-        JphFactory_Find_uint32(factoryHandle, hash).takeIf { it != NullPointer }?.let(::RTTI)
+        JphFactory_Find_uint32(factoryHandle, hash).takeIf { it != NullPointer }?.let { RTTI(it) }
 
     open fun register(rtti: RTTI?): Boolean =
         JphFactory_Register_RTTI(factoryHandle, rtti?.rttiHandle ?: NullPointer)
 
     open fun clear() =
         JphFactory_Clear(factoryHandle)
+
+    open val allClasses: List<RTTI>
+        get() = interopScope {
+            val count = JphFactory_GetAllClasses(factoryHandle, NullPointer, 0)
+            val returnedPointer = toInterop(List(count) { NullPointer })
+            JphFactory_GetAllClasses(factoryHandle, returnedPointer, count)
+            readPointers(returnedPointer, count).map { RTTI(it) }
+        }
 }

@@ -24,54 +24,6 @@ JphConstraint* JphPulleyConstraint_asConstraint(JphPulleyConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
-JphEConstraintSubType JphPulleyConstraint_GetSubType(const JphPulleyConstraint* self) {
-    return static_cast<JphEConstraintSubType>(kolt::cpp(self)->GetSubType());
-}
-
-void JphPulleyConstraint_NotifyShapeChanged(JphPulleyConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM) {
-    kolt::cpp(self)->NotifyShapeChanged(JPH::BodyID(inBodyID), kolt::math<JPH::Vec3>(*inDeltaCOM));
-}
-
-void JphPulleyConstraint_SetupVelocityConstraint(JphPulleyConstraint* self, float inDeltaTime) {
-    kolt::cpp(self)->SetupVelocityConstraint(inDeltaTime);
-}
-
-void JphPulleyConstraint_ResetWarmStart(JphPulleyConstraint* self) {
-    kolt::cpp(self)->ResetWarmStart();
-}
-
-void JphPulleyConstraint_WarmStartVelocityConstraint(JphPulleyConstraint* self, float inWarmStartImpulseRatio) {
-    kolt::cpp(self)->WarmStartVelocityConstraint(inWarmStartImpulseRatio);
-}
-
-bool JphPulleyConstraint_SolveVelocityConstraint(JphPulleyConstraint* self, float inDeltaTime) {
-    return kolt::cpp(self)->SolveVelocityConstraint(inDeltaTime);
-}
-
-bool JphPulleyConstraint_SolvePositionConstraint(JphPulleyConstraint* self, float inDeltaTime, float inBaumgarte) {
-    return kolt::cpp(self)->SolvePositionConstraint(inDeltaTime, inBaumgarte);
-}
-
-void JphPulleyConstraint_SaveState(const JphPulleyConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
-}
-
-void JphPulleyConstraint_RestoreState(JphPulleyConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
-}
-
-JphConstraintSettings* JphPulleyConstraint_GetConstraintSettings(const JphPulleyConstraint* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetConstraintSettings()));
-}
-
-void JphPulleyConstraint_GetConstraintToBody1Matrix(const JphPulleyConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody1Matrix());
-}
-
-void JphPulleyConstraint_GetConstraintToBody2Matrix(const JphPulleyConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody2Matrix());
-}
-
 void JphPulleyConstraint_SetLength(JphPulleyConstraint* self, float inMinLength, float inMaxLength) {
     kolt::cpp(self)->SetLength(inMinLength, inMaxLength);
 }

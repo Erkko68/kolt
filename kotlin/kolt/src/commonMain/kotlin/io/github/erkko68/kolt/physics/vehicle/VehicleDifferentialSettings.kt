@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,44 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleDifferentialSettings`. */
-open class VehicleDifferentialSettings internal constructor(internal val vehicleDifferentialSettingsHandle: NativePointer)
+open class VehicleDifferentialSettings internal constructor(internal val vehicleDifferentialSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphVehicleDifferentialSettings_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphVehicleDifferentialSettings_destroy(vehicleDifferentialSettingsHandle) }
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphVehicleDifferentialSettings_SaveBinaryState(vehicleDifferentialSettingsHandle, stream.streamOutHandle)
+
+    open fun restoreBinaryState(stream: StreamIn) =
+        JphVehicleDifferentialSettings_RestoreBinaryState(vehicleDifferentialSettingsHandle, stream.streamInHandle)
+
+    open var leftWheel: Int
+        get() = JphVehicleDifferentialSettings_GetLeftWheel(vehicleDifferentialSettingsHandle)
+        set(value) = JphVehicleDifferentialSettings_SetLeftWheel(vehicleDifferentialSettingsHandle, value)
+
+    open var rightWheel: Int
+        get() = JphVehicleDifferentialSettings_GetRightWheel(vehicleDifferentialSettingsHandle)
+        set(value) = JphVehicleDifferentialSettings_SetRightWheel(vehicleDifferentialSettingsHandle, value)
+
+    open var differentialRatio: Float
+        get() = JphVehicleDifferentialSettings_GetDifferentialRatio(vehicleDifferentialSettingsHandle)
+        set(value) = JphVehicleDifferentialSettings_SetDifferentialRatio(vehicleDifferentialSettingsHandle, value)
+
+    open var leftRightSplit: Float
+        get() = JphVehicleDifferentialSettings_GetLeftRightSplit(vehicleDifferentialSettingsHandle)
+        set(value) = JphVehicleDifferentialSettings_SetLeftRightSplit(vehicleDifferentialSettingsHandle, value)
+
+    open var limitedSlipRatio: Float
+        get() = JphVehicleDifferentialSettings_GetLimitedSlipRatio(vehicleDifferentialSettingsHandle)
+        set(value) = JphVehicleDifferentialSettings_SetLimitedSlipRatio(vehicleDifferentialSettingsHandle, value)
+
+    open var engineTorqueRatio: Float
+        get() = JphVehicleDifferentialSettings_GetEngineTorqueRatio(vehicleDifferentialSettingsHandle)
+        set(value) = JphVehicleDifferentialSettings_SetEngineTorqueRatio(vehicleDifferentialSettingsHandle, value)
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphVehicleDifferentialSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

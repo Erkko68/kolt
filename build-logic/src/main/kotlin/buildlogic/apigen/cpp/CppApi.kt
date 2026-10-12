@@ -25,6 +25,36 @@ class CppApi(
 ) {
     fun skipping(names: Set<String>) = CppApi(records, enums, aliases, constants, publicConstants, functions, names)
 
+    /**
+     * This API with each alias in [instances] (alias → the template's parameter → its argument) as a record of its
+     * own: the class template the alias instantiates, with the arguments in place of the parameters. Code names the
+     * alias, so that is what gets bound (CastRayCollector, a CollisionCollector<RayCastResult, …>).
+     */
+    fun instantiating(instances: Map<String, Map<String, String>>): CppApi {
+        val made = instances.map { (alias, arguments) ->
+            val template = checkNotNull(aliases[alias]?.decl?.let(records::get)?.takeIf { it.template }) { "aliasInstantiations: $alias isn't an alias of a class template" }
+            fun substitute(t: CppType): CppType {
+                // Through the template's own aliases of its parameters too (`using ResultType = ResultType`).
+                val parameter = generateSequence(t) { it.decl?.takeIf { d -> d.startsWith("${template.name}::") }?.let(aliases::get) }.last()
+                val argument = parameter.decl?.takeIf { parameter.kind == CppType.Kind.TEMPLATE_PARAMETER && it.startsWith("${template.name}::") }
+                    ?.let { arguments[it.removePrefix("${template.name}::")] } ?: return CppType(t.spelling, t.decl, t.kind, t.args.map(::substitute))
+                val kind = if (argument in records || argument in enums || argument in aliases) CppType.Kind.DECLARED else CppType.Kind.EXTERNAL
+                return CppType(t.spelling.replace(Regex("\\b${t.decl!!.substringAfterLast("::")}\\b"), argument), argument, kind)
+            }
+            fun params(params: List<CppParam>) = params.map { CppParam(it.name, substitute(it.type), it.default) }
+            CppRecord(
+                alias, template.header, template.exported, template.accessible, template = false, template.bases,
+                template.methods.map { m ->
+                    CppMethod(alias, m.name, m.header, null, substitute(m.returns), params(m.params), m.isStatic, m.isConst, m.isPublic, m.isDeprecated, m.isApi,
+                        m.isOverride, m.isVirtual, m.isPure, m.isFinal, m.templateParameters, m.guard)
+                },
+                template.fields.map { CppField(it.name, substitute(it.type), it.default, it.isPublic, it.isDeprecated) },
+                template.constructors.map(::params), template.destructible, template.allocatable, template.copyable, template.declaredDestructor, template.derivable,
+            )
+        }
+        return CppApi(records + made.associateBy { it.name }, enums, aliases - instances.keys, constants, publicConstants, functions, skipped)
+    }
+
     private val patterns = skipped.map(::Regex)
     private val skips = HashMap<String, String>()
 
@@ -148,6 +178,8 @@ class CppRecord(
     val allocatable: Boolean,
     val copyable: Boolean,
     val declaredDestructor: Boolean = false,
+    /** A class deriving from it can be created without arguments: it isn't `final`, and has a default constructor one can call. */
+    val derivable: Boolean = false,
 ) {
     val defaultConstructible get() = constructors.any { ctor -> ctor.all { it.default != null } }
 }
@@ -169,6 +201,10 @@ class CppMethod(
     val isDeprecated: Boolean,
     val isApi: Boolean,
     val isOverride: Boolean = false,
+    /** Declared `virtual` (an override needn't be: [isOverride]); [isPure]: `= 0`; [isFinal]: no class overrides it. */
+    val isVirtual: Boolean = false,
+    val isPure: Boolean = false,
+    val isFinal: Boolean = false,
     /** A function template's named parameters, in order; null for a plain function. */
     val templateParameters: List<String>? = null,
     /** The header's `#if` condition around the declaration (e.g. `UTILS_HAS_THREADING`), or null. */
@@ -183,7 +219,7 @@ class CppMethod(
                 ?.let { a -> CppType(t.spelling.replace(Regex("\\b${t.decl!!.substringAfterLast("::")}\\b"), a.spelling), a.decl, a.kind, a.args) } ?: t
         }
         return CppMethod(owner, name, header, mangled, substitute(returns), params.map { CppParam(it.name, substitute(it.type), it.default) },
-            isStatic, isConst, isPublic, isDeprecated, isApi, isOverride, guard = guard)
+            isStatic, isConst, isPublic, isDeprecated, isApi, isOverride, isVirtual, isPure, isFinal, guard = guard)
     }
 
     override fun toString() = (if (isStatic) "static " else "") + "$returns $owner::$name(${params.joinToString()})" +

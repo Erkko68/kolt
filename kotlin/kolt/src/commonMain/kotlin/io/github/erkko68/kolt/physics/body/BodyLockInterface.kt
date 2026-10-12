@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,43 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyLockInterface`. */
-open class BodyLockInterface internal constructor(internal val bodyLockInterfaceHandle: NativePointer)
+open class BodyLockInterface internal constructor(internal val bodyLockInterfaceHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    override fun close() =
+        closeOnce { JphBodyLockInterface_destroy(bodyLockInterfaceHandle) }
+
+    open fun lockRead(bodyID: BodyID): SharedMutex? =
+        JphBodyLockInterface_LockRead_BodyID(bodyLockInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { SharedMutex(it) }
+
+    open fun lockRead(mutexMask: Long) =
+        JphBodyLockInterface_LockRead_MutexMask(bodyLockInterfaceHandle, mutexMask)
+
+    open fun unlockRead(mutex: SharedMutex?) =
+        JphBodyLockInterface_UnlockRead_SharedMutex(bodyLockInterfaceHandle, mutex?.sharedMutexHandle ?: NullPointer)
+
+    open fun unlockRead(mutexMask: Long) =
+        JphBodyLockInterface_UnlockRead_MutexMask(bodyLockInterfaceHandle, mutexMask)
+
+    open fun lockWrite(bodyID: BodyID): SharedMutex? =
+        JphBodyLockInterface_LockWrite_BodyID(bodyLockInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { SharedMutex(it) }
+
+    open fun lockWrite(mutexMask: Long) =
+        JphBodyLockInterface_LockWrite_MutexMask(bodyLockInterfaceHandle, mutexMask)
+
+    open fun unlockWrite(mutex: SharedMutex?) =
+        JphBodyLockInterface_UnlockWrite_SharedMutex(bodyLockInterfaceHandle, mutex?.sharedMutexHandle ?: NullPointer)
+
+    open fun unlockWrite(mutexMask: Long) =
+        JphBodyLockInterface_UnlockWrite_MutexMask(bodyLockInterfaceHandle, mutexMask)
+
+    open val allBodiesMutexMask: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphBodyLockInterface_GetAllBodiesMutexMask(bodyLockInterfaceHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+
+    open fun tryGetBody(bodyID: BodyID): Body? =
+        JphBodyLockInterface_TryGetBody(bodyLockInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { Body(it) }
+}

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,100 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleConstraint`. */
-open class VehicleConstraint internal constructor(internal val vehicleConstraintHandle: NativePointer)
+open class VehicleConstraint internal constructor(internal val vehicleConstraintHandle: NativePointer, owned: Boolean = false) : Constraint(JphVehicleConstraint_asConstraint(vehicleConstraintHandle), owned), AutoCloseable {
+    constructor(vehicleBody: Body, settings: VehicleConstraintSettings) : this(JphVehicleConstraint_create(vehicleBody.bodyHandle, settings.vehicleConstraintSettingsHandle), owned = true)
+
+    override fun addRef() =
+        own { JphVehicleConstraint_addRef(vehicleConstraintHandle) }
+
+    override fun close() =
+        closeOnce { JphVehicleConstraint_release(vehicleConstraintHandle) }
+
+    open var maxPitchRollAngle: Float
+        get() = JphVehicleConstraint_GetMaxPitchRollAngle(vehicleConstraintHandle)
+        set(maxPitchRollAngle) = JphVehicleConstraint_SetMaxPitchRollAngle(vehicleConstraintHandle, maxPitchRollAngle)
+
+    open var vehicleCollisionTester: VehicleCollisionTester?
+        get() = JphVehicleConstraint_GetVehicleCollisionTester(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleCollisionTester(it) }
+        set(tester) = JphVehicleConstraint_SetVehicleCollisionTester(vehicleConstraintHandle, tester?.vehicleCollisionTesterHandle ?: NullPointer)
+
+    open fun overrideGravity(gravity: Vec3) =
+        interopScope { JphVehicleConstraint_OverrideGravity(vehicleConstraintHandle, toInterop(gravity.toArray())) }
+
+    open val isGravityOverridden: Boolean
+        get() = JphVehicleConstraint_IsGravityOverridden(vehicleConstraintHandle)
+
+    open val gravityOverride: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphVehicleConstraint_GetGravityOverride(vehicleConstraintHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open fun resetGravityOverride() =
+        JphVehicleConstraint_ResetGravityOverride(vehicleConstraintHandle)
+
+    open val localForward: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphVehicleConstraint_GetLocalForward(vehicleConstraintHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val localUp: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphVehicleConstraint_GetLocalUp(vehicleConstraintHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val worldUp: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphVehicleConstraint_GetWorldUp(vehicleConstraintHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val vehicleBody: Body?
+        get() = JphVehicleConstraint_GetVehicleBody(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { Body(it) }
+
+    open val controller: VehicleController?
+        get() = JphVehicleConstraint_GetController(vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleController(it) }
+
+    open fun getWheel(idx: Int): Wheel? =
+        JphVehicleConstraint_GetWheel(vehicleConstraintHandle, idx).takeIf { it != NullPointer }?.let { Wheel(it) }
+
+    open fun getWheelLocalTransform(wheelIndex: Int, wheelRight: Vec3, wheelUp: Vec3): Mat44 =
+        interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphVehicleConstraint_GetWheelLocalTransform(vehicleConstraintHandle, wheelIndex, toInterop(wheelRight.toArray()), toInterop(wheelUp.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+
+    open fun getWheelWorldTransform(wheelIndex: Int, wheelRight: Vec3, wheelUp: Vec3): Mat44 =
+        interopScope {
+            val returned = FloatArray(16)
+            val returnedPointer = toInterop(returned)
+            JphVehicleConstraint_GetWheelWorldTransform(vehicleConstraintHandle, wheelIndex, toInterop(wheelRight.toArray()), toInterop(wheelUp.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Mat44(returned)
+        }
+
+    open var numStepsBetweenCollisionTestActive: Int
+        get() = JphVehicleConstraint_GetNumStepsBetweenCollisionTestActive(vehicleConstraintHandle)
+        set(steps) = JphVehicleConstraint_SetNumStepsBetweenCollisionTestActive(vehicleConstraintHandle, steps)
+
+    open var numStepsBetweenCollisionTestInactive: Int
+        get() = JphVehicleConstraint_GetNumStepsBetweenCollisionTestInactive(vehicleConstraintHandle)
+        set(steps) = JphVehicleConstraint_SetNumStepsBetweenCollisionTestInactive(vehicleConstraintHandle, steps)
+}

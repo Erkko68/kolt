@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,57 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ContactSettings`. */
-open class ContactSettings internal constructor(internal val contactSettingsHandle: NativePointer)
+open class ContactSettings internal constructor(internal val contactSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphContactSettings_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphContactSettings_destroy(contactSettingsHandle) }
+
+    open var combinedFriction: Float
+        get() = JphContactSettings_GetCombinedFriction(contactSettingsHandle)
+        set(value) = JphContactSettings_SetCombinedFriction(contactSettingsHandle, value)
+
+    open var combinedRestitution: Float
+        get() = JphContactSettings_GetCombinedRestitution(contactSettingsHandle)
+        set(value) = JphContactSettings_SetCombinedRestitution(contactSettingsHandle, value)
+
+    open var invMassScale1: Float
+        get() = JphContactSettings_GetInvMassScale1(contactSettingsHandle)
+        set(value) = JphContactSettings_SetInvMassScale1(contactSettingsHandle, value)
+
+    open var invInertiaScale1: Float
+        get() = JphContactSettings_GetInvInertiaScale1(contactSettingsHandle)
+        set(value) = JphContactSettings_SetInvInertiaScale1(contactSettingsHandle, value)
+
+    open var invMassScale2: Float
+        get() = JphContactSettings_GetInvMassScale2(contactSettingsHandle)
+        set(value) = JphContactSettings_SetInvMassScale2(contactSettingsHandle, value)
+
+    open var invInertiaScale2: Float
+        get() = JphContactSettings_GetInvInertiaScale2(contactSettingsHandle)
+        set(value) = JphContactSettings_SetInvInertiaScale2(contactSettingsHandle, value)
+
+    open var isSensor: Boolean
+        get() = JphContactSettings_GetIsSensor(contactSettingsHandle)
+        set(value) = JphContactSettings_SetIsSensor(contactSettingsHandle, value)
+
+    open var relativeLinearSurfaceVelocity: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphContactSettings_GetRelativeLinearSurfaceVelocity(contactSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphContactSettings_SetRelativeLinearSurfaceVelocity(contactSettingsHandle, toInterop(value.toArray())) }
+
+    open var relativeAngularSurfaceVelocity: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphContactSettings_GetRelativeAngularSurfaceVelocity(contactSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphContactSettings_SetRelativeAngularSurfaceVelocity(contactSettingsHandle, toInterop(value.toArray())) }
+}

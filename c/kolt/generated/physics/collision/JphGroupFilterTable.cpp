@@ -24,14 +24,6 @@ JphSerializableObject* JphGroupFilterTable_asSerializableObject(JphGroupFilterTa
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphGroupFilterTable_GetRTTI(const JphGroupFilterTable* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphGroupFilterTable_CastTo(const JphGroupFilterTable* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphGroupFilterTable_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::GroupFilterTable::sCreateRTTI(*kolt::cpp(inRTTI));
 }
@@ -46,14 +38,6 @@ void JphGroupFilterTable_EnableCollision(JphGroupFilterTable* self, uint32_t inS
 
 bool JphGroupFilterTable_IsCollisionEnabled(const JphGroupFilterTable* self, uint32_t inSubGroup1, uint32_t inSubGroup2) {
     return kolt::cpp(self)->IsCollisionEnabled(inSubGroup1, inSubGroup2);
-}
-
-bool JphGroupFilterTable_CanCollide(const JphGroupFilterTable* self, const JphCollisionGroup* inGroup1, const JphCollisionGroup* inGroup2) {
-    return kolt::cpp(self)->CanCollide(*kolt::cpp(inGroup1), *kolt::cpp(inGroup2));
-}
-
-void JphGroupFilterTable_SaveBinaryState(const JphGroupFilterTable* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
 }
 
 } // extern "C"

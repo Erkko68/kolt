@@ -28,24 +28,8 @@ JphSerializableObject* JphGearConstraintSettings_asSerializableObject(JphGearCon
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphGearConstraintSettings_GetRTTI(const JphGearConstraintSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphGearConstraintSettings_CastTo(const JphGearConstraintSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphGearConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::GearConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-void JphGearConstraintSettings_SaveBinaryState(const JphGearConstraintSettings* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-JphTwoBodyConstraint* JphGearConstraintSettings_Create(const JphGearConstraintSettings* self, JphBody* inBody1, JphBody* inBody2) {
-    return kolt::c(kolt::cpp(self)->Create(*kolt::cpp(inBody1), *kolt::cpp(inBody2)));
 }
 
 void JphGearConstraintSettings_SetRatio(JphGearConstraintSettings* self, int32_t inNumTeethGear1, int32_t inNumTeethGear2) {

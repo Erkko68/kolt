@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TaperedCapsuleShapeSettings`. */
-open class TaperedCapsuleShapeSettings internal constructor(internal val taperedCapsuleShapeSettingsHandle: NativePointer) : ShapeSettings(JphTaperedCapsuleShapeSettings_asShapeSettings(taperedCapsuleShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphTaperedCapsuleShapeSettings_create())
-    constructor(halfHeightOfTaperedCylinder: Float, topRadius: Float, bottomRadius: Float, material: PhysicsMaterial?) : this(JphTaperedCapsuleShapeSettings_create_float_float_float_PhysicsMaterial(halfHeightOfTaperedCylinder, topRadius, bottomRadius, material?.physicsMaterialHandle ?: NullPointer))
+open class TaperedCapsuleShapeSettings internal constructor(internal val taperedCapsuleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTaperedCapsuleShapeSettings_asConvexShapeSettings(taperedCapsuleShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphTaperedCapsuleShapeSettings_create(), owned = true)
+    constructor(halfHeightOfTaperedCylinder: Float, topRadius: Float, bottomRadius: Float, material: PhysicsMaterial?) : this(JphTaperedCapsuleShapeSettings_create_float_float_float_PhysicsMaterial(halfHeightOfTaperedCylinder, topRadius, bottomRadius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
     override fun addRef() =
-        JphTaperedCapsuleShapeSettings_addRef(taperedCapsuleShapeSettingsHandle)
+        own { JphTaperedCapsuleShapeSettings_addRef(taperedCapsuleShapeSettingsHandle) }
 
     override fun close() =
-        JphTaperedCapsuleShapeSettings_release(taperedCapsuleShapeSettingsHandle)
+        closeOnce { JphTaperedCapsuleShapeSettings_release(taperedCapsuleShapeSettingsHandle) }
 
     open val isValid: Boolean
         get() = JphTaperedCapsuleShapeSettings_IsValid(taperedCapsuleShapeSettingsHandle)
@@ -61,7 +62,7 @@ open class TaperedCapsuleShapeSettings internal constructor(internal val tapered
         set(value) = JphTaperedCapsuleShapeSettings_SetBottomRadius(taperedCapsuleShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphTaperedCapsuleShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

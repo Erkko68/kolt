@@ -17,8 +17,7 @@ void JphStaticCompoundShape_release(const JphStaticCompoundShape* self);
 JphCompoundShape* JphStaticCompoundShape_asCompoundShape(JphStaticCompoundShape* self);
 JphShape* JphStaticCompoundShape_asShape(JphStaticCompoundShape* self);
 int32_t JphStaticCompoundShape_GetIntersectingSubShapes_AABox_uint_int(const JphStaticCompoundShape* self, const JphAABox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices);
-// TODO(handwritten) JphStaticCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int: int JPH::StaticCompoundShape::GetIntersectingSubShapes(const OrientedBox & inBox, uint * outSubShapeIndices, int inMaxSubShapeIndices) const
-//     const OrientedBox &: JPH::OrientedBox
+int32_t JphStaticCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int(const JphStaticCompoundShape* self, const JphOrientedBox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices);
 void JphStaticCompoundShape_sRegister(void);
 
 

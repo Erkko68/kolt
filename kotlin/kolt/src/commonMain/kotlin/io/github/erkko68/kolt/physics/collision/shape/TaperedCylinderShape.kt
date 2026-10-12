@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,14 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TaperedCylinderShape`. */
-open class TaperedCylinderShape internal constructor(internal val taperedCylinderShapeHandle: NativePointer) : Shape(JphTaperedCylinderShape_asShape(taperedCylinderShapeHandle)), AutoCloseable {
-    constructor() : this(JphTaperedCylinderShape_create())
+open class TaperedCylinderShape internal constructor(internal val taperedCylinderShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTaperedCylinderShape_asConvexShape(taperedCylinderShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphTaperedCylinderShape_create(), owned = true)
 
     override fun addRef() =
-        JphTaperedCylinderShape_addRef(taperedCylinderShapeHandle)
+        own { JphTaperedCylinderShape_addRef(taperedCylinderShapeHandle) }
 
     override fun close() =
-        JphTaperedCylinderShape_release(taperedCylinderShapeHandle)
+        closeOnce { JphTaperedCylinderShape_release(taperedCylinderShapeHandle) }
 
     open val topRadius: Float
         get() = JphTaperedCylinderShape_GetTopRadius(taperedCylinderShapeHandle)
@@ -53,11 +54,8 @@ open class TaperedCylinderShape internal constructor(internal val taperedCylinde
     open val halfHeight: Float
         get() = JphTaperedCylinderShape_GetHalfHeight(taperedCylinderShapeHandle)
 
-    open fun getSupportFunction(mode: ConvexShapeESupportMode, buffer: ConvexShapeSupportBuffer, scale: Vec3): ConvexShapeSupport? =
-        interopScope { JphTaperedCylinderShape_GetSupportFunction(taperedCylinderShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let(::ConvexShapeSupport) }
-
     companion object {
-        fun sRegister() =
+        fun register() =
             JphTaperedCylinderShape_sRegister()
     }
 }

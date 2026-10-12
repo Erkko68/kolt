@@ -20,14 +20,6 @@ void JphBroadPhaseLayerInterfaceMask_ConfigureLayer(JphBroadPhaseLayerInterfaceM
     kolt::cpp(self)->ConfigureLayer(JPH::BroadPhaseLayer(JPH::BroadPhaseLayer::Type(inBroadPhaseLayer)), inGroupsToInclude, inGroupsToExclude);
 }
 
-uint32_t JphBroadPhaseLayerInterfaceMask_GetNumBroadPhaseLayers(const JphBroadPhaseLayerInterfaceMask* self) {
-    return static_cast<uint32_t>(kolt::cpp(self)->GetNumBroadPhaseLayers());
-}
-
-uint32_t JphBroadPhaseLayerInterfaceMask_GetBroadPhaseLayer(const JphBroadPhaseLayerInterfaceMask* self, uint32_t inLayer) {
-    return uint32_t((kolt::cpp(self)->GetBroadPhaseLayer(static_cast<uint16_t>(inLayer))).GetValue());
-}
-
 bool JphBroadPhaseLayerInterfaceMask_ShouldCollide(const JphBroadPhaseLayerInterfaceMask* self, uint32_t inLayer1, uint32_t inLayer2) {
     return kolt::cpp(self)->ShouldCollide(static_cast<uint16_t>(inLayer1), JPH::BroadPhaseLayer(JPH::BroadPhaseLayer::Type(inLayer2)));
 }

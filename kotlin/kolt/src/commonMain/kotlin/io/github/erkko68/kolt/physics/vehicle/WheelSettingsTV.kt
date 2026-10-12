@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::WheelSettingsTV`. */
-open class WheelSettingsTV internal constructor(internal val wheelSettingsTVHandle: NativePointer) : SerializableObject(JphWheelSettingsTV_asSerializableObject(wheelSettingsTVHandle)), AutoCloseable {
-    constructor() : this(JphWheelSettingsTV_create())
+open class WheelSettingsTV internal constructor(internal val wheelSettingsTVHandle: NativePointer, owned: Boolean = false) : WheelSettings(JphWheelSettingsTV_asWheelSettings(wheelSettingsTVHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphWheelSettingsTV_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != WheelSettingsTV::class) JphWheelSettingsTV_bindUpcalls(wheelSettingsTVHandle, Upcalls.reference(this))
+    }
 
-    open fun addRef() =
-        JphWheelSettingsTV_addRef(wheelSettingsTVHandle)
+    override fun addRef() =
+        own { JphWheelSettingsTV_addRef(wheelSettingsTVHandle) }
 
     override fun close() =
-        JphWheelSettingsTV_release(wheelSettingsTVHandle)
-
-    open val rtti: RTTI?
-        get() = JphWheelSettingsTV_GetRTTI(wheelSettingsTVHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphWheelSettingsTV_SaveBinaryState(wheelSettingsTVHandle, stream.streamOutHandle)
-
-    open fun restoreBinaryState(stream: StreamIn) =
-        JphWheelSettingsTV_RestoreBinaryState(wheelSettingsTVHandle, stream.streamInHandle)
+        closeOnce { JphWheelSettingsTV_release(wheelSettingsTVHandle) }
 
     open var longitudinalFriction: Float
         get() = JphWheelSettingsTV_GetLongitudinalFriction(wheelSettingsTVHandle)
@@ -58,8 +53,17 @@ open class WheelSettingsTV internal constructor(internal val wheelSettingsTVHand
         get() = JphWheelSettingsTV_GetLateralFriction(wheelSettingsTVHandle)
         set(value) = JphWheelSettingsTV_SetLateralFriction(wheelSettingsTVHandle, value)
 
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            1 -> restoreBinaryState(StreamIn(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
+
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphWheelSettingsTV_sCreateRTTI(rtti.rttiHandle)
     }
 }

@@ -12,6 +12,33 @@ void JphSimShapeFilter_destroy(JphSimShapeFilter* self) {
     delete kolt::cpp(self);
 }
 
+} // extern "C"
+
+namespace JPH {
+struct JphSimShapeFilter_Upcalls final : ::JPH::SimShapeFilter {
+    kolt::Upcall mCall;
+    void* mUser = nullptr;
+    explicit JphSimShapeFilter_Upcalls(kolt::Upcall call) : mCall(call) {}
+    ~JphSimShapeFilter_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    bool ShouldCollide(const Body & p0, const Shape * p1, const SubShapeID & p2, const Body & p3, const Shape * p4, const SubShapeID & p5) const override {
+        const uint64_t args[] = {kolt::slot(kolt::c(&p0)), kolt::slot(kolt::c(p1)), kolt::slot((p2).GetValue()), kolt::slot(kolt::c(&p3)), kolt::slot(kolt::c(p4)), kolt::slot((p5).GetValue())};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return kolt::unslot<bool>(result);
+        return JPH::SimShapeFilter::ShouldCollide(p0, p1, p2, p3, p4, p5);
+    }
+};
+} // namespace JPH
+
+extern "C" {
+
+JphSimShapeFilter* JphSimShapeFilter_createUpcalls(JphUpcall call) {
+    return kolt::c(static_cast<::JPH::SimShapeFilter*>(new ::JPH::JphSimShapeFilter_Upcalls(call)));
+}
+
+void JphSimShapeFilter_bindUpcalls(JphSimShapeFilter* self, void* userData) {
+    static_cast<::JPH::JphSimShapeFilter_Upcalls*>(kolt::cpp(self))->mUser = userData;
+}
+
 bool JphSimShapeFilter_ShouldCollide(const JphSimShapeFilter* self, const JphBody* inBody1, const JphShape* inShape1, uint32_t inSubShapeIDOfShape1, const JphBody* inBody2, const JphShape* inShape2, uint32_t inSubShapeIDOfShape2) {
     return kolt::cpp(self)->ShouldCollide(*kolt::cpp(inBody1), kolt::cpp(inShape1), kolt::subShapeID(inSubShapeIDOfShape1), *kolt::cpp(inBody2), kolt::cpp(inShape2), kolt::subShapeID(inSubShapeIDOfShape2));
 }

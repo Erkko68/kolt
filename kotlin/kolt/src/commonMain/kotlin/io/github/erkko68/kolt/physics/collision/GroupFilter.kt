@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,48 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::GroupFilter`. */
-open class GroupFilter internal constructor(internal val groupFilterHandle: NativePointer)
+open class GroupFilter internal constructor(internal val groupFilterHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphGroupFilter_asSerializableObject(groupFilterHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphGroupFilter_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != GroupFilter::class) JphGroupFilter_bindUpcalls(groupFilterHandle, Upcalls.reference(this))
+    }
+
+    open fun addRef() =
+        own { JphGroupFilter_addRef(groupFilterHandle) }
+
+    override fun close() =
+        closeOnce { JphGroupFilter_release(groupFilterHandle) }
+
+    open val rtti: RTTI?
+        get() = JphGroupFilter_GetRTTI(groupFilterHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
+
+    open fun canCollide(group1: CollisionGroup, group2: CollisionGroup): Boolean =
+        JphGroupFilter_CanCollide(groupFilterHandle, group1.collisionGroupHandle, group2.collisionGroupHandle)
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphGroupFilter_SaveBinaryState(groupFilterHandle, stream.streamOutHandle)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, if (canCollide(CollisionGroup(readPointerSlot(args, 0)), CollisionGroup(readPointerSlot(args, 1)))) 1L else 0L)
+            1 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphGroupFilter_sCreateRTTI(rtti.rttiHandle)
+
+        fun restoreFromBinaryState(stream: StreamIn): GroupFilter =
+            interopScope {
+                val error = ByteArray(256)
+                val errorPointer = toInterop(error)
+                val returned = JphGroupFilter_sRestoreFromBinaryState(stream.streamInHandle, errorPointer, error.size)
+                errorPointer.fromInterop(error)
+                if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
+                GroupFilter(returned, owned = true)
+            }
+    }
+}

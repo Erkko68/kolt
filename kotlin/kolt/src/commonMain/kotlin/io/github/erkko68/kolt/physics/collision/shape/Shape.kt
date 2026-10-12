@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,12 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Shape`. */
-open class Shape internal constructor(internal val shapeHandle: NativePointer) : AutoCloseable {
+open class Shape internal constructor(internal val shapeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     open fun addRef() =
-        JphShape_addRef(shapeHandle)
+        own { JphShape_addRef(shapeHandle) }
 
     override fun close() =
-        JphShape_release(shapeHandle)
+        closeOnce { JphShape_release(shapeHandle) }
 
     open val type: EShapeType
         get() = EShapeType.of(JphShape_GetType(shapeHandle))
@@ -45,8 +46,15 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer) :
     open val subType: EShapeSubType
         get() = EShapeSubType.of(JphShape_GetSubType(shapeHandle))
 
-    open fun setUserData(userData: Long) =
-        JphShape_SetUserData(shapeHandle, userData)
+    open var userData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphShape_GetUserData(shapeHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+        set(userData) = JphShape_SetUserData(shapeHandle, userData)
 
     open fun mustBeStatic(): Boolean =
         JphShape_MustBeStatic(shapeHandle)
@@ -60,14 +68,42 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer) :
             Vec3(returned)
         }
 
+    open val localBounds: AABox
+        get() = run {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphShape_GetLocalBounds(shapeHandle, returned.aaBoxHandle)
+            returned
+        }
+
     open val subShapeIDBitsRecursive: Int
         get() = JphShape_GetSubShapeIDBitsRecursive(shapeHandle)
+
+    open fun getWorldSpaceBounds(centerOfMassTransform: Mat44, scale: Vec3): AABox =
+        interopScope {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphShape_GetWorldSpaceBounds_Mat44Arg_Vec3Arg(shapeHandle, toInterop(centerOfMassTransform.toArray()), toInterop(scale.toArray()), returned.aaBoxHandle)
+            returned
+        }
+
+    open fun getWorldSpaceBounds(centerOfMassTransform: DMat44, scale: Vec3): AABox =
+        interopScope {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphShape_GetWorldSpaceBounds_DMat44Arg_Vec3Arg(shapeHandle, centerOfMassTransform.dMat44Handle, toInterop(scale.toArray()), returned.aaBoxHandle)
+            returned
+        }
 
     open val innerRadius: Float
         get() = JphShape_GetInnerRadius(shapeHandle)
 
+    open val massProperties: MassProperties
+        get() = run {
+            val returned = MassProperties(JphMassProperties_create(), owned = true)
+            JphShape_GetMassProperties(shapeHandle, returned.massPropertiesHandle)
+            returned
+        }
+
     open fun getMaterial(subShapeID: SubShapeID): PhysicsMaterial? =
-        JphShape_GetMaterial(shapeHandle, subShapeID.value).takeIf { it != NullPointer }?.let(::PhysicsMaterial)
+        JphShape_GetMaterial(shapeHandle, subShapeID.value).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
     open fun getSurfaceNormal(subShapeID: SubShapeID, localSurfacePosition: Vec3): Vec3 =
         interopScope {
@@ -78,10 +114,41 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer) :
             Vec3(returned)
         }
 
+    open fun getSubShapeUserData(subShapeID: SubShapeID): Long =
+        interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphShape_GetSubShapeUserData(shapeHandle, subShapeID.value, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+
     open fun castRay(ray: RayCast, subShapeIDCreator: SubShapeIDCreator, hit: RayCastResult): Boolean =
         JphShape_CastRay_SubShapeIDCreator_RayCastResult(shapeHandle, ray.rayCastHandle, subShapeIDCreator.subShapeIDCreatorHandle, hit.rayCastResultHandle)
 
-    open fun getTrianglesStart(context: ShapeGetTrianglesContext, box: AABox, positionCOM: Vec3, rotation: Quat, scale: Vec3) =
+    open fun castRay(ray: RayCast, rayCastSettings: RayCastSettings, subShapeIDCreator: SubShapeIDCreator, collector: CastRayCollector, shapeFilter: ShapeFilter) =
+        JphShape_CastRay_RayCastSettings_SubShapeIDCreator_CastRayCollector_ShapeFilter(shapeHandle, ray.rayCastHandle, rayCastSettings.rayCastSettingsHandle, subShapeIDCreator.subShapeIDCreatorHandle, collector.castRayCollectorHandle, shapeFilter.shapeFilterHandle)
+
+    open fun collidePoint(point: Vec3, subShapeIDCreator: SubShapeIDCreator, collector: CollidePointCollector, shapeFilter: ShapeFilter) =
+        interopScope { JphShape_CollidePoint(shapeHandle, toInterop(point.toArray()), subShapeIDCreator.subShapeIDCreatorHandle, collector.collidePointCollectorHandle, shapeFilter.shapeFilterHandle) }
+
+    open fun collectTransformedShapes(box: AABox, positionCOM: Vec3, rotation: Quat, scale: Vec3, subShapeIDCreator: SubShapeIDCreator, collector: TransformedShapeCollector, shapeFilter: ShapeFilter) =
+        interopScope { JphShape_CollectTransformedShapes(shapeHandle, box.aaBoxHandle, toInterop(positionCOM.toArray()), toInterop(rotation.toArray()), toInterop(scale.toArray()), subShapeIDCreator.subShapeIDCreatorHandle, collector.transformedShapeCollectorHandle, shapeFilter.shapeFilterHandle) }
+
+    open fun transformShape(centerOfMassTransform: Mat44, collector: TransformedShapeCollector) =
+        interopScope { JphShape_TransformShape(shapeHandle, toInterop(centerOfMassTransform.toArray()), collector.transformedShapeCollectorHandle) }
+
+    open fun scaleShape(scale: Vec3): Shape =
+        interopScope {
+            val error = ByteArray(256)
+            val errorPointer = toInterop(error)
+            val returned = JphShape_ScaleShape(shapeHandle, toInterop(scale.toArray()), errorPointer, error.size)
+            errorPointer.fromInterop(error)
+            if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
+            Shape(returned, owned = true)
+        }
+
+    open fun getTrianglesStart(context: Shape.GetTrianglesContext, box: AABox, positionCOM: Vec3, rotation: Quat, scale: Vec3) =
         interopScope { JphShape_GetTrianglesStart(shapeHandle, context.shapeGetTrianglesContextHandle, box.aaBoxHandle, toInterop(positionCOM.toArray()), toInterop(rotation.toArray()), toInterop(scale.toArray())) }
 
     open fun saveBinaryState(stream: StreamOut) =
@@ -101,4 +168,51 @@ open class Shape internal constructor(internal val shapeHandle: NativePointer) :
             returnedPointer.fromInterop(returned)
             Vec3(returned)
         }
+
+    /** C++ `JPH::Shape::GetTrianglesContext`. */
+    open class GetTrianglesContext internal constructor(internal val shapeGetTrianglesContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+        constructor() : this(JphShapeGetTrianglesContext_create(), owned = true)
+    
+        override fun close() =
+            closeOnce { JphShapeGetTrianglesContext_destroy(shapeGetTrianglesContextHandle) }
+    
+        open var data: IntArray
+            get() = interopScope {
+                val count = JphShapeGetTrianglesContext_GetData(shapeGetTrianglesContextHandle, NullPointer, 0)
+                val returned = IntArray(count)
+                val returnedPointer = toInterop(returned)
+                JphShapeGetTrianglesContext_GetData(shapeGetTrianglesContextHandle, returnedPointer, count)
+                returnedPointer.fromInterop(returned)
+                returned
+            }
+            set(value) = interopScope { JphShapeGetTrianglesContext_SetData(shapeGetTrianglesContextHandle, toInterop(value), value.size) }
+    }
+    
+    /** C++ `JPH::Shape::Stats`. */
+    open class Stats internal constructor(internal val shapeStatsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+        constructor(sizeBytes: Int, numTriangles: Int) : this(JphShapeStats_create(sizeBytes, numTriangles), owned = true)
+    
+        override fun close() =
+            closeOnce { JphShapeStats_destroy(shapeStatsHandle) }
+    
+        open var sizeBytes: Int
+            get() = JphShapeStats_GetSizeBytes(shapeStatsHandle)
+            set(value) = JphShapeStats_SetSizeBytes(shapeStatsHandle, value)
+    
+        open var numTriangles: Int
+            get() = JphShapeStats_GetNumTriangles(shapeStatsHandle)
+            set(value) = JphShapeStats_SetNumTriangles(shapeStatsHandle, value)
+    }
+    
+    companion object {
+        fun restoreFromBinaryState(stream: StreamIn): Shape =
+            interopScope {
+                val error = ByteArray(256)
+                val errorPointer = toInterop(error)
+                val returned = JphShape_sRestoreFromBinaryState(stream.streamInHandle, errorPointer, error.size)
+                errorPointer.fromInterop(error)
+                if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
+                Shape(returned, owned = true)
+            }
+    }
 }

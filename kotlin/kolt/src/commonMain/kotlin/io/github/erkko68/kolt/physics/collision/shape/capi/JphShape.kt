@@ -97,6 +97,18 @@ internal external fun JphShape_GetSubmergedVolume(self: NativePointer, inCenterO
 @ExternalSymbolName("JphShape_CastRay_SubShapeIDCreator_RayCastResult")
 internal external fun JphShape_CastRay_SubShapeIDCreator_RayCastResult(self: NativePointer, inRay: NativePointer, inSubShapeIDCreator: NativePointer, ioHit: NativePointer): Boolean
 
+@ExternalSymbolName("JphShape_CastRay_RayCastSettings_SubShapeIDCreator_CastRayCollector_ShapeFilter")
+internal external fun JphShape_CastRay_RayCastSettings_SubShapeIDCreator_CastRayCollector_ShapeFilter(self: NativePointer, inRay: NativePointer, inRayCastSettings: NativePointer, inSubShapeIDCreator: NativePointer, ioCollector: NativePointer, inShapeFilter: NativePointer)
+
+@ExternalSymbolName("JphShape_CollidePoint")
+internal external fun JphShape_CollidePoint(self: NativePointer, inPoint: NativePointer, inSubShapeIDCreator: NativePointer, ioCollector: NativePointer, inShapeFilter: NativePointer)
+
+@ExternalSymbolName("JphShape_CollectTransformedShapes")
+internal external fun JphShape_CollectTransformedShapes(self: NativePointer, inBox: NativePointer, inPositionCOM: NativePointer, inRotation: NativePointer, inScale: NativePointer, inSubShapeIDCreator: NativePointer, ioCollector: NativePointer, inShapeFilter: NativePointer)
+
+@ExternalSymbolName("JphShape_TransformShape")
+internal external fun JphShape_TransformShape(self: NativePointer, inCenterOfMassTransform: NativePointer, ioCollector: NativePointer)
+
 @ExternalSymbolName("JphShape_ScaleShape")
 internal external fun JphShape_ScaleShape(self: NativePointer, inScale: NativePointer, outError: NativePointer, outErrorCapacity: Int): NativePointer
 

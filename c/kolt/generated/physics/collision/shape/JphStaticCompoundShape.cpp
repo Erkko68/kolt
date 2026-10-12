@@ -28,6 +28,10 @@ int32_t JphStaticCompoundShape_GetIntersectingSubShapes_AABox_uint_int(const Jph
     return static_cast<int32_t>(kolt::cpp(self)->GetIntersectingSubShapes(*kolt::cpp(inBox), outSubShapeIndices, static_cast<int>(inMaxSubShapeIndices)));
 }
 
+int32_t JphStaticCompoundShape_GetIntersectingSubShapes_OrientedBox_uint_int(const JphStaticCompoundShape* self, const JphOrientedBox* inBox, unsigned int* outSubShapeIndices, int32_t inMaxSubShapeIndices) {
+    return static_cast<int32_t>(kolt::cpp(self)->GetIntersectingSubShapes(*kolt::cpp(inBox), outSubShapeIndices, static_cast<int>(inMaxSubShapeIndices)));
+}
+
 void JphStaticCompoundShape_sRegister(void) {
     JPH::StaticCompoundShape::sRegister();
 }

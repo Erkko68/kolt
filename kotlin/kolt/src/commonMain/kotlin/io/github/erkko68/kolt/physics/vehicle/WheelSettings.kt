@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,130 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::WheelSettings`. */
-open class WheelSettings internal constructor(internal val wheelSettingsHandle: NativePointer)
+open class WheelSettings internal constructor(internal val wheelSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphWheelSettings_asSerializableObject(wheelSettingsHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphWheelSettings_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != WheelSettings::class) JphWheelSettings_bindUpcalls(wheelSettingsHandle, Upcalls.reference(this))
+    }
+
+    open fun addRef() =
+        own { JphWheelSettings_addRef(wheelSettingsHandle) }
+
+    override fun close() =
+        closeOnce { JphWheelSettings_release(wheelSettingsHandle) }
+
+    open val rtti: RTTI?
+        get() = JphWheelSettings_GetRTTI(wheelSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphWheelSettings_SaveBinaryState(wheelSettingsHandle, stream.streamOutHandle)
+
+    open fun restoreBinaryState(stream: StreamIn) =
+        JphWheelSettings_RestoreBinaryState(wheelSettingsHandle, stream.streamInHandle)
+
+    open var position: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphWheelSettings_GetPosition(wheelSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphWheelSettings_SetPosition(wheelSettingsHandle, toInterop(value.toArray())) }
+
+    open var suspensionForcePoint: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphWheelSettings_GetSuspensionForcePoint(wheelSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphWheelSettings_SetSuspensionForcePoint(wheelSettingsHandle, toInterop(value.toArray())) }
+
+    open var suspensionDirection: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphWheelSettings_GetSuspensionDirection(wheelSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphWheelSettings_SetSuspensionDirection(wheelSettingsHandle, toInterop(value.toArray())) }
+
+    open var steeringAxis: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphWheelSettings_GetSteeringAxis(wheelSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphWheelSettings_SetSteeringAxis(wheelSettingsHandle, toInterop(value.toArray())) }
+
+    open var wheelUp: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphWheelSettings_GetWheelUp(wheelSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphWheelSettings_SetWheelUp(wheelSettingsHandle, toInterop(value.toArray())) }
+
+    open var wheelForward: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphWheelSettings_GetWheelForward(wheelSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphWheelSettings_SetWheelForward(wheelSettingsHandle, toInterop(value.toArray())) }
+
+    open var suspensionMinLength: Float
+        get() = JphWheelSettings_GetSuspensionMinLength(wheelSettingsHandle)
+        set(value) = JphWheelSettings_SetSuspensionMinLength(wheelSettingsHandle, value)
+
+    open var suspensionMaxLength: Float
+        get() = JphWheelSettings_GetSuspensionMaxLength(wheelSettingsHandle)
+        set(value) = JphWheelSettings_SetSuspensionMaxLength(wheelSettingsHandle, value)
+
+    open var suspensionPreloadLength: Float
+        get() = JphWheelSettings_GetSuspensionPreloadLength(wheelSettingsHandle)
+        set(value) = JphWheelSettings_SetSuspensionPreloadLength(wheelSettingsHandle, value)
+
+    open var suspensionSpring: SpringSettings
+        get() = run {
+            val returned = SpringSettings(JphSpringSettings_create(), owned = true)
+            JphWheelSettings_GetSuspensionSpring(wheelSettingsHandle, returned.springSettingsHandle)
+            returned
+        }
+        set(value) = JphWheelSettings_SetSuspensionSpring(wheelSettingsHandle, value.springSettingsHandle)
+
+    open var radius: Float
+        get() = JphWheelSettings_GetRadius(wheelSettingsHandle)
+        set(value) = JphWheelSettings_SetRadius(wheelSettingsHandle, value)
+
+    open var width: Float
+        get() = JphWheelSettings_GetWidth(wheelSettingsHandle)
+        set(value) = JphWheelSettings_SetWidth(wheelSettingsHandle, value)
+
+    open var enableSuspensionForcePoint: Boolean
+        get() = JphWheelSettings_GetEnableSuspensionForcePoint(wheelSettingsHandle)
+        set(value) = JphWheelSettings_SetEnableSuspensionForcePoint(wheelSettingsHandle, value)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            1 -> restoreBinaryState(StreamIn(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphWheelSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

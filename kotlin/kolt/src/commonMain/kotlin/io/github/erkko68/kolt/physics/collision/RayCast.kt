@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,10 +33,10 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RayCast`. */
-open class RayCast internal constructor(internal val rayCastHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphRayCast_create())
-    constructor(arg0: Vec3, arg1: Vec3) : this(interopScope { JphRayCast_create_ArgType_Vec3Arg(toInterop(arg0.toArray()), toInterop(arg1.toArray())) })
+open class RayCast internal constructor(internal val rayCastHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphRayCast_create(), owned = true)
+    constructor(arg0: Vec3, arg1: Vec3) : this(interopScope { JphRayCast_create_ArgType_Vec3Arg(toInterop(arg0.toArray()), toInterop(arg1.toArray())) }, owned = true)
 
     override fun close() =
-        JphRayCast_destroy(rayCastHandle)
+        closeOnce { JphRayCast_destroy(rayCastHandle) }
 }

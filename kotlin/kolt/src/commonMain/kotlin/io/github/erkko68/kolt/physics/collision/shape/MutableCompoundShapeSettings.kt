@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MutableCompoundShapeSettings`. */
-open class MutableCompoundShapeSettings internal constructor(internal val mutableCompoundShapeSettingsHandle: NativePointer) : ShapeSettings(JphMutableCompoundShapeSettings_asShapeSettings(mutableCompoundShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphMutableCompoundShapeSettings_create())
+open class MutableCompoundShapeSettings internal constructor(internal val mutableCompoundShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphMutableCompoundShapeSettings_asShapeSettings(mutableCompoundShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphMutableCompoundShapeSettings_create(), owned = true)
 
     override fun addRef() =
-        JphMutableCompoundShapeSettings_addRef(mutableCompoundShapeSettingsHandle)
+        own { JphMutableCompoundShapeSettings_addRef(mutableCompoundShapeSettingsHandle) }
 
     override fun close() =
-        JphMutableCompoundShapeSettings_release(mutableCompoundShapeSettingsHandle)
+        closeOnce { JphMutableCompoundShapeSettings_release(mutableCompoundShapeSettingsHandle) }
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphMutableCompoundShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

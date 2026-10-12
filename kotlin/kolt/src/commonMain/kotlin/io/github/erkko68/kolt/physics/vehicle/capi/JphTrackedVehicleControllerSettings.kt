@@ -13,29 +13,20 @@ internal external fun JphTrackedVehicleControllerSettings_addRef(self: NativePoi
 @ExternalSymbolName("JphTrackedVehicleControllerSettings_release")
 internal external fun JphTrackedVehicleControllerSettings_release(self: NativePointer)
 
+@ExternalSymbolName("JphTrackedVehicleControllerSettings_createUpcalls")
+internal external fun JphTrackedVehicleControllerSettings_createUpcalls(call: NativePointer): NativePointer
+
+@ExternalSymbolName("JphTrackedVehicleControllerSettings_bindUpcalls")
+internal external fun JphTrackedVehicleControllerSettings_bindUpcalls(self: NativePointer, userData: NativePointer)
+
 @ExternalSymbolName("JphTrackedVehicleControllerSettings_asVehicleControllerSettings")
 internal external fun JphTrackedVehicleControllerSettings_asVehicleControllerSettings(self: NativePointer): NativePointer
 
 @ExternalSymbolName("JphTrackedVehicleControllerSettings_asSerializableObject")
 internal external fun JphTrackedVehicleControllerSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphTrackedVehicleControllerSettings_GetRTTI")
-internal external fun JphTrackedVehicleControllerSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphTrackedVehicleControllerSettings_CastTo")
-internal external fun JphTrackedVehicleControllerSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
 @ExternalSymbolName("JphTrackedVehicleControllerSettings_sCreateRTTI")
 internal external fun JphTrackedVehicleControllerSettings_sCreateRTTI(inRTTI: NativePointer)
-
-@ExternalSymbolName("JphTrackedVehicleControllerSettings_ConstructController")
-internal external fun JphTrackedVehicleControllerSettings_ConstructController(self: NativePointer, inConstraint: NativePointer): NativePointer
-
-@ExternalSymbolName("JphTrackedVehicleControllerSettings_SaveBinaryState")
-internal external fun JphTrackedVehicleControllerSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphTrackedVehicleControllerSettings_RestoreBinaryState")
-internal external fun JphTrackedVehicleControllerSettings_RestoreBinaryState(self: NativePointer, inStream: NativePointer)
 
 @ExternalSymbolName("JphTrackedVehicleControllerSettings_GetEngine")
 internal external fun JphTrackedVehicleControllerSettings_GetEngine(self: NativePointer, out: NativePointer)

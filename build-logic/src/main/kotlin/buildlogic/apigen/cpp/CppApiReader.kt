@@ -85,6 +85,9 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
         }
     }
 
+    /** Records a derived one can't default-construct: they declare constructors, none callable without arguments, or a base is one. */
+    private val withoutDefault = HashSet<String>()
+
     private fun visitRecord(node: Map<*, *>, qualified: String, exported: Boolean, accessible: Boolean, template: Boolean) {
         val children = node.children()
         @Suppress("UNCHECKED_CAST")
@@ -98,7 +101,9 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
         val abstract = dd?.get("isAbstract") == true
         val constructors = ArrayList<List<CppParam>>()
         // A base with constructors but no default one deletes the implicit default (ShapeCast, which inherits ShapeCastT's).
-        val implicitDefault = publicBases.none { base -> records[base]?.let { it.constructors.isNotEmpty() && !it.defaultConstructible } == true }
+        val implicitDefault = publicBases.none { it in withoutDefault }
+        var declaresDefault = false
+        var declaresConstructor = false
         if (!abstract && implicitDefault && (dd?.get("defaultCtor") as? Map<*, *>)?.get("needsImplicit") == true) constructors += emptyList<CppParam>()
         var destructible = true
         var declaredDestructor = false
@@ -120,6 +125,11 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
                     val params = method(child, qualified, isPublic).params
                     val usable = isPublic && child["explicitlyDeleted"] != true
                     val self = params.singleOrNull()?.type?.takeIf { it.decl == qualified }
+                    // An abstract record's, and protected ones, too: a derived record's implicit default calls them.
+                    if (child["isImplicit"] != true && self == null && child["explicitlyDeleted"] != true && access != "private") {
+                        declaresConstructor = true
+                        if (params.all { it.default != null }) declaresDefault = true
+                    }
                     if (self != null && "&&" !in self.spelling && !usable) copyable = false
                     // Copies and moves take the record itself; C holds handles, never copies. Implicit ones count: an
                     // aggregate's default constructor is declared once a header uses it.
@@ -146,8 +156,10 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
                 else -> visit(child, qualified, exported = false, accessible = accessible && isPublic)
             }
         }
+        if (if (declaresConstructor) !declaresDefault else !implicitDefault) withoutDefault += qualified
         records[qualified] = CppRecord(
             qualified, locationOf[node]?.header, public, accessible, template, publicBases, methods, fields, constructors, destructible, allocatable, copyable, declaredDestructor,
+            derivable = qualified !in withoutDefault && children.none { it["kind"] == "FinalAttr" },
         )
     }
 
@@ -187,6 +199,9 @@ internal class CppApiReader(private val config: ApiGenConfig, private val workDi
             isDeprecated = node.children().any { it["kind"] == "DeprecatedAttr" },
             isApi = node["isImplicit"] != true && node["explicitlyDeleted"] != true && (!name.startsWith("operator") || name == "operator()"),
             isOverride = node.children().any { it["kind"] == "OverrideAttr" || it["kind"] == "FinalAttr" },
+            isVirtual = node["virtual"] == true,
+            isPure = node["pure"] == true,
+            isFinal = node.children().any { it["kind"] == "FinalAttr" },
             templateParameters = templateParameters,
             guard = locationOf[node]?.let { l -> l.header?.let { guards.at(it, l.line) } },
         )

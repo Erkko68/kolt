@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,18 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BroadPhaseLayerInterfaceTable`. */
-open class BroadPhaseLayerInterfaceTable internal constructor(internal val broadPhaseLayerInterfaceTableHandle: NativePointer) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceTableHandle)), AutoCloseable {
-    constructor(numObjectLayers: Int, numBroadPhaseLayers: Int) : this(JphBroadPhaseLayerInterfaceTable_create(numObjectLayers, numBroadPhaseLayers))
+open class BroadPhaseLayerInterfaceTable internal constructor(internal val broadPhaseLayerInterfaceTableHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceTableHandle), owned), AutoCloseable {
+    constructor(numObjectLayers: Int, numBroadPhaseLayers: Int) : this(JphBroadPhaseLayerInterfaceTable_create(numObjectLayers, numBroadPhaseLayers), owned = true)
 
     override fun close() =
-        JphBroadPhaseLayerInterfaceTable_destroy(broadPhaseLayerInterfaceTableHandle)
+        closeOnce { JphBroadPhaseLayerInterfaceTable_destroy(broadPhaseLayerInterfaceTableHandle) }
 
     open fun mapObjectToBroadPhaseLayer(objectLayer: Int, broadPhaseLayer: BroadPhaseLayer) =
         JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer(broadPhaseLayerInterfaceTableHandle, objectLayer, broadPhaseLayer.value)
-
-    open val numBroadPhaseLayers: Int
-        get() = JphBroadPhaseLayerInterfaceTable_GetNumBroadPhaseLayers(broadPhaseLayerInterfaceTableHandle)
-
-    open fun getBroadPhaseLayer(layer: Int): BroadPhaseLayer =
-        BroadPhaseLayer(JphBroadPhaseLayerInterfaceTable_GetBroadPhaseLayer(broadPhaseLayerInterfaceTableHandle, layer))
 }

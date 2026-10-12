@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,13 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleController`. */
-open class VehicleController internal constructor(internal val vehicleControllerHandle: NativePointer)
+open class VehicleController internal constructor(internal val vehicleControllerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    override fun close() =
+        closeOnce { JphVehicleController_destroy(vehicleControllerHandle) }
+
+    open val constraint: VehicleConstraint
+        get() = VehicleConstraint(JphVehicleController_GetConstraint(vehicleControllerHandle))
+
+    open val settings: VehicleControllerSettings?
+        get() = JphVehicleController_GetSettings(vehicleControllerHandle).takeIf { it != NullPointer }?.let { VehicleControllerSettings(it, owned = true) }
+}

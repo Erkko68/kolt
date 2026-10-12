@@ -28,7 +28,6 @@ void JphMotorcycleController_SetLeanSpringIntegrationCoefficientDecay(JphMotorcy
 float JphMotorcycleController_GetLeanSpringIntegrationCoefficientDecay(const JphMotorcycleController* self);
 void JphMotorcycleController_SetLeanSmoothingFactor(JphMotorcycleController* self, float inFactor);
 float JphMotorcycleController_GetLeanSmoothingFactor(const JphMotorcycleController* self);
-JphVehicleControllerSettings* JphMotorcycleController_GetSettings(const JphMotorcycleController* self);
 
 
 #ifdef __cplusplus

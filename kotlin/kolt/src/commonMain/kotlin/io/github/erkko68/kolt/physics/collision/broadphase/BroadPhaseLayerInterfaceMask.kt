@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,20 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BroadPhaseLayerInterfaceMask`. */
-open class BroadPhaseLayerInterfaceMask internal constructor(internal val broadPhaseLayerInterfaceMaskHandle: NativePointer) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceMaskHandle)), AutoCloseable {
-    constructor(numBroadPhaseLayers: Int) : this(JphBroadPhaseLayerInterfaceMask_create(numBroadPhaseLayers))
+open class BroadPhaseLayerInterfaceMask internal constructor(internal val broadPhaseLayerInterfaceMaskHandle: NativePointer, owned: Boolean = false) : BroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface(broadPhaseLayerInterfaceMaskHandle), owned), AutoCloseable {
+    constructor(numBroadPhaseLayers: Int) : this(JphBroadPhaseLayerInterfaceMask_create(numBroadPhaseLayers), owned = true)
 
     override fun close() =
-        JphBroadPhaseLayerInterfaceMask_destroy(broadPhaseLayerInterfaceMaskHandle)
+        closeOnce { JphBroadPhaseLayerInterfaceMask_destroy(broadPhaseLayerInterfaceMaskHandle) }
 
     open fun configureLayer(broadPhaseLayer: BroadPhaseLayer, groupsToInclude: Int, groupsToExclude: Int) =
         JphBroadPhaseLayerInterfaceMask_ConfigureLayer(broadPhaseLayerInterfaceMaskHandle, broadPhaseLayer.value, groupsToInclude, groupsToExclude)
-
-    open val numBroadPhaseLayers: Int
-        get() = JphBroadPhaseLayerInterfaceMask_GetNumBroadPhaseLayers(broadPhaseLayerInterfaceMaskHandle)
-
-    open fun getBroadPhaseLayer(layer: Int): BroadPhaseLayer =
-        BroadPhaseLayer(JphBroadPhaseLayerInterfaceMask_GetBroadPhaseLayer(broadPhaseLayerInterfaceMaskHandle, layer))
 
     open fun shouldCollide(layer1: Int, layer2: BroadPhaseLayer): Boolean =
         JphBroadPhaseLayerInterfaceMask_ShouldCollide(broadPhaseLayerInterfaceMaskHandle, layer1, layer2.value)

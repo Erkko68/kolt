@@ -40,10 +40,6 @@ float JphTaperedCylinderShape_GetHalfHeight(const JphTaperedCylinderShape* self)
     return kolt::cpp(self)->GetHalfHeight();
 }
 
-const JphConvexShapeSupport* JphTaperedCylinderShape_GetSupportFunction(const JphTaperedCylinderShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale) {
-    return kolt::c(kolt::cpp(self)->GetSupportFunction(static_cast<JPH::ConvexShape::ESupportMode>(inMode), *kolt::cpp(inBuffer), kolt::math<JPH::Vec3>(*inScale)));
-}
-
 void JphTaperedCylinderShape_sRegister(void) {
     JPH::TaperedCylinderShape::sRegister();
 }

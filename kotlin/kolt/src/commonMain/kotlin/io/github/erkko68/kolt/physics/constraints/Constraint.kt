@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,78 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Constraint`. */
-open class Constraint internal constructor(internal val constraintHandle: NativePointer)
+open class Constraint internal constructor(internal val constraintHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    open fun addRef() =
+        own { JphConstraint_addRef(constraintHandle) }
+
+    override fun close() =
+        closeOnce { JphConstraint_release(constraintHandle) }
+
+    open val type: EConstraintType
+        get() = EConstraintType.of(JphConstraint_GetType(constraintHandle))
+
+    open val subType: EConstraintSubType
+        get() = EConstraintSubType.of(JphConstraint_GetSubType(constraintHandle))
+
+    open var constraintPriority: Int
+        get() = JphConstraint_GetConstraintPriority(constraintHandle)
+        set(priority) = JphConstraint_SetConstraintPriority(constraintHandle, priority)
+
+    open var numVelocityStepsOverride: Int
+        get() = JphConstraint_GetNumVelocityStepsOverride(constraintHandle)
+        set(n) = JphConstraint_SetNumVelocityStepsOverride(constraintHandle, n)
+
+    open var numPositionStepsOverride: Int
+        get() = JphConstraint_GetNumPositionStepsOverride(constraintHandle)
+        set(n) = JphConstraint_SetNumPositionStepsOverride(constraintHandle, n)
+
+    open var enabled: Boolean
+        get() = JphConstraint_GetEnabled(constraintHandle)
+        set(enabled) = JphConstraint_SetEnabled(constraintHandle, enabled)
+
+    open var userData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphConstraint_GetUserData(constraintHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+        set(userData) = JphConstraint_SetUserData(constraintHandle, userData)
+
+    open fun notifyShapeChanged(bodyID: BodyID, deltaCOM: Vec3) =
+        interopScope { JphConstraint_NotifyShapeChanged(constraintHandle, bodyID.value, toInterop(deltaCOM.toArray())) }
+
+    open fun resetWarmStart() =
+        JphConstraint_ResetWarmStart(constraintHandle)
+
+    open val isActive: Boolean
+        get() = JphConstraint_IsActive(constraintHandle)
+
+    open fun setupVelocityConstraint(deltaTime: Float) =
+        JphConstraint_SetupVelocityConstraint(constraintHandle, deltaTime)
+
+    open fun warmStartVelocityConstraint(warmStartImpulseRatio: Float) =
+        JphConstraint_WarmStartVelocityConstraint(constraintHandle, warmStartImpulseRatio)
+
+    open fun solveVelocityConstraint(deltaTime: Float): Boolean =
+        JphConstraint_SolveVelocityConstraint(constraintHandle, deltaTime)
+
+    open fun solvePositionConstraint(deltaTime: Float, baumgarte: Float): Boolean =
+        JphConstraint_SolvePositionConstraint(constraintHandle, deltaTime, baumgarte)
+
+    open fun buildIslands(constraintIndex: Int, builder: IslandBuilder, bodyManager: BodyManager) =
+        JphConstraint_BuildIslands(constraintHandle, constraintIndex, builder.islandBuilderHandle, bodyManager.bodyManagerHandle)
+
+    open fun buildIslandSplits(splitter: LargeIslandSplitter): Int =
+        JphConstraint_BuildIslandSplits(constraintHandle, splitter.largeIslandSplitterHandle)
+
+    open fun saveState(stream: StateRecorder) =
+        JphConstraint_SaveState(constraintHandle, stream.stateRecorderHandle)
+
+    open fun restoreState(stream: StateRecorder) =
+        JphConstraint_RestoreState(constraintHandle, stream.stateRecorderHandle)
+
+    open val constraintSettings: ConstraintSettings?
+        get() = JphConstraint_GetConstraintSettings(constraintHandle).takeIf { it != NullPointer }?.let { ConstraintSettings(it, owned = true) }
+}

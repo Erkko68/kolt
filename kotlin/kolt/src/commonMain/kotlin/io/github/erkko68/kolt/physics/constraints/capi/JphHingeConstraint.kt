@@ -19,42 +19,6 @@ internal external fun JphHingeConstraint_asTwoBodyConstraint(self: NativePointer
 @ExternalSymbolName("JphHingeConstraint_asConstraint")
 internal external fun JphHingeConstraint_asConstraint(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphHingeConstraint_GetSubType")
-internal external fun JphHingeConstraint_GetSubType(self: NativePointer): Int
-
-@ExternalSymbolName("JphHingeConstraint_NotifyShapeChanged")
-internal external fun JphHingeConstraint_NotifyShapeChanged(self: NativePointer, inBodyID: Int, inDeltaCOM: NativePointer)
-
-@ExternalSymbolName("JphHingeConstraint_SetupVelocityConstraint")
-internal external fun JphHingeConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphHingeConstraint_ResetWarmStart")
-internal external fun JphHingeConstraint_ResetWarmStart(self: NativePointer)
-
-@ExternalSymbolName("JphHingeConstraint_WarmStartVelocityConstraint")
-internal external fun JphHingeConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphHingeConstraint_SolveVelocityConstraint")
-internal external fun JphHingeConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphHingeConstraint_SolvePositionConstraint")
-internal external fun JphHingeConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphHingeConstraint_SaveState")
-internal external fun JphHingeConstraint_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphHingeConstraint_RestoreState")
-internal external fun JphHingeConstraint_RestoreState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphHingeConstraint_GetConstraintSettings")
-internal external fun JphHingeConstraint_GetConstraintSettings(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphHingeConstraint_GetConstraintToBody1Matrix")
-internal external fun JphHingeConstraint_GetConstraintToBody1Matrix(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphHingeConstraint_GetConstraintToBody2Matrix")
-internal external fun JphHingeConstraint_GetConstraintToBody2Matrix(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphHingeConstraint_GetLocalSpacePoint1")
 internal external fun JphHingeConstraint_GetLocalSpacePoint1(self: NativePointer, out: NativePointer)
 

@@ -10,10 +10,14 @@
 extern "C" {
 #endif
 
+typedef struct JphDVec3 { double v[4]; } JphDVec3;
 typedef struct JphFloat3 { float v[3]; } JphFloat3;
+typedef struct JphFloat4 { float v[4]; } JphFloat4;
 typedef struct JphMat44 { float v[16]; } JphMat44;
 typedef struct JphQuat { float v[4]; } JphQuat;
+typedef struct JphUVec4 { uint32_t v[4]; } JphUVec4;
 typedef struct JphVec3 { float v[4]; } JphVec3;
+typedef struct JphVec4 { float v[4]; } JphVec4;
 
 typedef struct JphAABox JphAABox;
 typedef struct JphBody JphBody;
@@ -26,6 +30,8 @@ typedef struct JphBodyLockInterfaceLocking JphBodyLockInterfaceLocking;
 typedef struct JphBodyLockInterfaceNoLock JphBodyLockInterfaceNoLock;
 typedef struct JphBodyLockMultiRead JphBodyLockMultiRead;
 typedef struct JphBodyLockMultiWrite JphBodyLockMultiWrite;
+typedef struct JphBodyLockRead JphBodyLockRead;
+typedef struct JphBodyLockWrite JphBodyLockWrite;
 typedef struct JphBodyManager JphBodyManager;
 typedef struct JphBodyManagerBodyStats JphBodyManagerBodyStats;
 typedef struct JphBodyPair JphBodyPair;
@@ -41,6 +47,10 @@ typedef struct JphBroadPhaseLayerInterfaceTable JphBroadPhaseLayerInterfaceTable
 typedef struct JphBroadPhaseQuery JphBroadPhaseQuery;
 typedef struct JphCapsuleShape JphCapsuleShape;
 typedef struct JphCapsuleShapeSettings JphCapsuleShapeSettings;
+typedef struct JphCastRayCollector JphCastRayCollector;
+typedef struct JphCastShapeBodyCollector JphCastShapeBodyCollector;
+typedef struct JphCastShapeCollector JphCastShapeCollector;
+typedef struct JphCharacter JphCharacter;
 typedef struct JphCharacterBase JphCharacterBase;
 typedef struct JphCharacterBaseSettings JphCharacterBaseSettings;
 typedef struct JphCharacterContact JphCharacterContact;
@@ -48,13 +58,17 @@ typedef struct JphCharacterContactKey JphCharacterContactKey;
 typedef struct JphCharacterContactListener JphCharacterContactListener;
 typedef struct JphCharacterContactSettings JphCharacterContactSettings;
 typedef struct JphCharacterID JphCharacterID;
+typedef struct JphCharacterSettings JphCharacterSettings;
 typedef struct JphCharacterVirtual JphCharacterVirtual;
 typedef struct JphCharacterVirtualExtendedUpdateSettings JphCharacterVirtualExtendedUpdateSettings;
 typedef struct JphCharacterVirtualSettings JphCharacterVirtualSettings;
 typedef struct JphCharacterVsCharacterCollision JphCharacterVsCharacterCollision;
 typedef struct JphCharacterVsCharacterCollisionSimple JphCharacterVsCharacterCollisionSimple;
+typedef struct JphCollidePointCollector JphCollidePointCollector;
 typedef struct JphCollidePointResult JphCollidePointResult;
 typedef struct JphCollideSettingsBase JphCollideSettingsBase;
+typedef struct JphCollideShapeBodyCollector JphCollideShapeBodyCollector;
+typedef struct JphCollideShapeCollector JphCollideShapeCollector;
 typedef struct JphCollideShapeResult JphCollideShapeResult;
 typedef struct JphCollideShapeSettings JphCollideShapeSettings;
 typedef struct JphCollisionCollectorTraitsCastRay JphCollisionCollectorTraitsCastRay;
@@ -104,6 +118,9 @@ typedef struct JphHeightFieldShape JphHeightFieldShape;
 typedef struct JphHeightFieldShapeSettings JphHeightFieldShapeSettings;
 typedef struct JphHingeConstraint JphHingeConstraint;
 typedef struct JphHingeConstraintSettings JphHingeConstraintSettings;
+typedef struct JphIgnoreMultipleBodiesFilter JphIgnoreMultipleBodiesFilter;
+typedef struct JphIgnoreSingleBodyFilter JphIgnoreSingleBodyFilter;
+typedef struct JphIgnoreSingleBodyFilterChained JphIgnoreSingleBodyFilterChained;
 typedef struct JphIndexedTriangle JphIndexedTriangle;
 typedef struct JphIndexedTriangleNoMaterial JphIndexedTriangleNoMaterial;
 typedef struct JphIslandBuilder JphIslandBuilder;
@@ -136,6 +153,7 @@ typedef struct JphObjectVsBroadPhaseLayerFilterMask JphObjectVsBroadPhaseLayerFi
 typedef struct JphObjectVsBroadPhaseLayerFilterTable JphObjectVsBroadPhaseLayerFilterTable;
 typedef struct JphOffsetCenterOfMassShape JphOffsetCenterOfMassShape;
 typedef struct JphOffsetCenterOfMassShapeSettings JphOffsetCenterOfMassShapeSettings;
+typedef struct JphOrientedBox JphOrientedBox;
 typedef struct JphPhysicsMaterial JphPhysicsMaterial;
 typedef struct JphPhysicsSettings JphPhysicsSettings;
 typedef struct JphPhysicsStepListener JphPhysicsStepListener;
@@ -160,8 +178,10 @@ typedef struct JphRagdollSettings JphRagdollSettings;
 typedef struct JphRagdollSettingsAdditionalConstraint JphRagdollSettingsAdditionalConstraint;
 typedef struct JphRagdollSettingsPart JphRagdollSettingsPart;
 typedef struct JphRayCast JphRayCast;
+typedef struct JphRayCastBodyCollector JphRayCastBodyCollector;
 typedef struct JphRayCastResult JphRayCastResult;
 typedef struct JphRayCastSettings JphRayCastSettings;
+typedef struct JphReversedShapeFilter JphReversedShapeFilter;
 typedef struct JphRotatedTranslatedShape JphRotatedTranslatedShape;
 typedef struct JphRotatedTranslatedShapeSettings JphRotatedTranslatedShapeSettings;
 typedef struct JphScaledShape JphScaledShape;
@@ -204,6 +224,8 @@ typedef struct JphSoftBodySharedSettingsVertexAttributes JphSoftBodySharedSettin
 typedef struct JphSoftBodySharedSettingsVolume JphSoftBodySharedSettingsVolume;
 typedef struct JphSoftBodyUpdateContext JphSoftBodyUpdateContext;
 typedef struct JphSoftBodyVertex JphSoftBodyVertex;
+typedef struct JphSpecifiedBroadPhaseLayerFilter JphSpecifiedBroadPhaseLayerFilter;
+typedef struct JphSpecifiedObjectLayerFilter JphSpecifiedObjectLayerFilter;
 typedef struct JphSphereShape JphSphereShape;
 typedef struct JphSphereShapeSettings JphSphereShapeSettings;
 typedef struct JphSpringSettings JphSpringSettings;
@@ -228,6 +250,7 @@ typedef struct JphTempAllocatorMalloc JphTempAllocatorMalloc;
 typedef struct JphTrackedVehicleController JphTrackedVehicleController;
 typedef struct JphTrackedVehicleControllerSettings JphTrackedVehicleControllerSettings;
 typedef struct JphTransformedShape JphTransformedShape;
+typedef struct JphTransformedShapeCollector JphTransformedShapeCollector;
 typedef struct JphTriangle JphTriangle;
 typedef struct JphTriangleShape JphTriangleShape;
 typedef struct JphTriangleShapeSettings JphTriangleShapeSettings;
@@ -235,7 +258,11 @@ typedef struct JphTwoBodyConstraint JphTwoBodyConstraint;
 typedef struct JphTwoBodyConstraintSettings JphTwoBodyConstraintSettings;
 typedef struct JphVehicleAntiRollBar JphVehicleAntiRollBar;
 typedef struct JphVehicleCollisionTester JphVehicleCollisionTester;
+typedef struct JphVehicleCollisionTesterCastCylinder JphVehicleCollisionTesterCastCylinder;
+typedef struct JphVehicleCollisionTesterCastSphere JphVehicleCollisionTesterCastSphere;
+typedef struct JphVehicleCollisionTesterRay JphVehicleCollisionTesterRay;
 typedef struct JphVehicleConstraint JphVehicleConstraint;
+typedef struct JphVehicleConstraintSettings JphVehicleConstraintSettings;
 typedef struct JphVehicleController JphVehicleController;
 typedef struct JphVehicleControllerSettings JphVehicleControllerSettings;
 typedef struct JphVehicleDifferentialSettings JphVehicleDifferentialSettings;
@@ -248,7 +275,9 @@ typedef struct JphVehicleTransmissionSettings JphVehicleTransmissionSettings;
 typedef struct JphWheel JphWheel;
 typedef struct JphWheelSettings JphWheelSettings;
 typedef struct JphWheelSettingsTV JphWheelSettingsTV;
+typedef struct JphWheelSettingsWV JphWheelSettingsWV;
 typedef struct JphWheelTV JphWheelTV;
+typedef struct JphWheelWV JphWheelWV;
 typedef struct JphWheeledVehicleController JphWheeledVehicleController;
 typedef struct JphWheeledVehicleControllerSettings JphWheeledVehicleControllerSettings;
 
@@ -522,7 +551,7 @@ typedef enum JphValidateResult {
     JPH_VALIDATE_RESULT_REJECT_ALL_CONTACTS_FOR_THIS_BODY_PAIR = 3,
 } JphValidateResult;
 
-
+typedef int32_t (*JphUpcall)(void* userData, int32_t method, const uint64_t* args, uint64_t* result);
 
 #ifdef __cplusplus
 }

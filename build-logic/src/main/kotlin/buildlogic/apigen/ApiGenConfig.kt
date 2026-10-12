@@ -38,6 +38,8 @@ data class ApiGenConfig(
     val memberPrefix: String = "",
     /** A regex of what parameter names start with that a typed wrapper's drop (`^(in|out|io)(?=[A-Z])` for `inRadius`), or empty. */
     val parameterPrefix: String = "",
+    /** A regex of what static function names start with that a typed wrapper's drop (`^s(?=[A-Z])` for `sCreate`), or empty. */
+    val staticPrefix: String = "",
     /** The verbs of a field's accessors, named as the library names methods. */
     val getter: String = "Get",
     val setter: String = "Set",
@@ -69,6 +71,8 @@ data class ApiGenConfig(
     val views: Set<String> = emptySet(),
     /** The library's string types, each with the spelling that constructs one from a `const char*`. */
     val strings: Map<String, String> = emptyMap(),
+    /** Enums whose values combine as bit flags, by qualified name: a typed wrapper's can hold any combination. */
+    val flagEnums: Set<String> = emptySet(),
     val refs: RefCounting? = null,
     /** Value-or-error types: [bridgeHeader] declares `result(r, error, capacity, convert)` for them. */
     val results: Set<String> = emptySet(),
@@ -76,6 +80,11 @@ data class ApiGenConfig(
     val literalOnly: Set<String> = emptySet(),
     /** The class templates' instantiations C binds, by template, named without the arguments: parameter → argument. */
     val instantiations: Map<String, Map<String, String>> = emptyMap(),
+    /**
+     * Aliases of a class template's instantiation that C binds as a class of the alias's name, each with the
+     * template's parameters → arguments: for a template the library only ever names through such aliases.
+     */
+    val aliasInstantiations: Map<String, Map<String, String>> = emptyMap(),
     /**
      * The function templates' instantiations C binds, by template: each maps template parameters to arguments; ones
      * left out take their defaults. C names them by the types that tell them apart, like overloads.

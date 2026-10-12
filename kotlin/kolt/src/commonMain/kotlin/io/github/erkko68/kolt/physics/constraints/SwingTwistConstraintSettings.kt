@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SwingTwistConstraintSettings`. */
-open class SwingTwistConstraintSettings internal constructor(internal val swingTwistConstraintSettingsHandle: NativePointer) : SerializableObject(JphSwingTwistConstraintSettings_asSerializableObject(swingTwistConstraintSettingsHandle)), AutoCloseable {
-    constructor() : this(JphSwingTwistConstraintSettings_create())
+open class SwingTwistConstraintSettings internal constructor(internal val swingTwistConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSwingTwistConstraintSettings_asTwoBodyConstraintSettings(swingTwistConstraintSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphSwingTwistConstraintSettings_create(), owned = true)
 
-    open fun addRef() =
-        JphSwingTwistConstraintSettings_addRef(swingTwistConstraintSettingsHandle)
+    override fun addRef() =
+        own { JphSwingTwistConstraintSettings_addRef(swingTwistConstraintSettingsHandle) }
 
     override fun close() =
-        JphSwingTwistConstraintSettings_release(swingTwistConstraintSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphSwingTwistConstraintSettings_GetRTTI(swingTwistConstraintSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphSwingTwistConstraintSettings_SaveBinaryState(swingTwistConstraintSettingsHandle, stream.streamOutHandle)
-
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
-        JphSwingTwistConstraintSettings_Create(swingTwistConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        closeOnce { JphSwingTwistConstraintSettings_release(swingTwistConstraintSettingsHandle) }
 
     open var space: EConstraintSpace
         get() = EConstraintSpace.of(JphSwingTwistConstraintSettings_GetSpace(swingTwistConstraintSettingsHandle))
@@ -138,14 +130,24 @@ open class SwingTwistConstraintSettings internal constructor(internal val swingT
         get() = JphSwingTwistConstraintSettings_GetMaxFrictionTorque(swingTwistConstraintSettingsHandle)
         set(value) = JphSwingTwistConstraintSettings_SetMaxFrictionTorque(swingTwistConstraintSettingsHandle, value)
 
-    open fun setSwingMotorSettings(value: MotorSettings) =
-        JphSwingTwistConstraintSettings_SetSwingMotorSettings(swingTwistConstraintSettingsHandle, value.motorSettingsHandle)
+    open var swingMotorSettings: MotorSettings
+        get() = run {
+            val returned = MotorSettings(JphMotorSettings_create(), owned = true)
+            JphSwingTwistConstraintSettings_GetSwingMotorSettings(swingTwistConstraintSettingsHandle, returned.motorSettingsHandle)
+            returned
+        }
+        set(value) = JphSwingTwistConstraintSettings_SetSwingMotorSettings(swingTwistConstraintSettingsHandle, value.motorSettingsHandle)
 
-    open fun setTwistMotorSettings(value: MotorSettings) =
-        JphSwingTwistConstraintSettings_SetTwistMotorSettings(swingTwistConstraintSettingsHandle, value.motorSettingsHandle)
+    open var twistMotorSettings: MotorSettings
+        get() = run {
+            val returned = MotorSettings(JphMotorSettings_create(), owned = true)
+            JphSwingTwistConstraintSettings_GetTwistMotorSettings(swingTwistConstraintSettingsHandle, returned.motorSettingsHandle)
+            returned
+        }
+        set(value) = JphSwingTwistConstraintSettings_SetTwistMotorSettings(swingTwistConstraintSettingsHandle, value.motorSettingsHandle)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphSwingTwistConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

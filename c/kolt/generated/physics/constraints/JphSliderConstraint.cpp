@@ -24,54 +24,6 @@ JphConstraint* JphSliderConstraint_asConstraint(JphSliderConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
-JphEConstraintSubType JphSliderConstraint_GetSubType(const JphSliderConstraint* self) {
-    return static_cast<JphEConstraintSubType>(kolt::cpp(self)->GetSubType());
-}
-
-void JphSliderConstraint_NotifyShapeChanged(JphSliderConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM) {
-    kolt::cpp(self)->NotifyShapeChanged(JPH::BodyID(inBodyID), kolt::math<JPH::Vec3>(*inDeltaCOM));
-}
-
-void JphSliderConstraint_SetupVelocityConstraint(JphSliderConstraint* self, float inDeltaTime) {
-    kolt::cpp(self)->SetupVelocityConstraint(inDeltaTime);
-}
-
-void JphSliderConstraint_ResetWarmStart(JphSliderConstraint* self) {
-    kolt::cpp(self)->ResetWarmStart();
-}
-
-void JphSliderConstraint_WarmStartVelocityConstraint(JphSliderConstraint* self, float inWarmStartImpulseRatio) {
-    kolt::cpp(self)->WarmStartVelocityConstraint(inWarmStartImpulseRatio);
-}
-
-bool JphSliderConstraint_SolveVelocityConstraint(JphSliderConstraint* self, float inDeltaTime) {
-    return kolt::cpp(self)->SolveVelocityConstraint(inDeltaTime);
-}
-
-bool JphSliderConstraint_SolvePositionConstraint(JphSliderConstraint* self, float inDeltaTime, float inBaumgarte) {
-    return kolt::cpp(self)->SolvePositionConstraint(inDeltaTime, inBaumgarte);
-}
-
-void JphSliderConstraint_SaveState(const JphSliderConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
-}
-
-void JphSliderConstraint_RestoreState(JphSliderConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
-}
-
-JphConstraintSettings* JphSliderConstraint_GetConstraintSettings(const JphSliderConstraint* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetConstraintSettings()));
-}
-
-void JphSliderConstraint_GetConstraintToBody1Matrix(const JphSliderConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody1Matrix());
-}
-
-void JphSliderConstraint_GetConstraintToBody2Matrix(const JphSliderConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody2Matrix());
-}
-
 float JphSliderConstraint_GetCurrentPosition(const JphSliderConstraint* self) {
     return kolt::cpp(self)->GetCurrentPosition();
 }

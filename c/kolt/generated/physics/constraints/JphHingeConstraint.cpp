@@ -24,54 +24,6 @@ JphConstraint* JphHingeConstraint_asConstraint(JphHingeConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
-JphEConstraintSubType JphHingeConstraint_GetSubType(const JphHingeConstraint* self) {
-    return static_cast<JphEConstraintSubType>(kolt::cpp(self)->GetSubType());
-}
-
-void JphHingeConstraint_NotifyShapeChanged(JphHingeConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM) {
-    kolt::cpp(self)->NotifyShapeChanged(JPH::BodyID(inBodyID), kolt::math<JPH::Vec3>(*inDeltaCOM));
-}
-
-void JphHingeConstraint_SetupVelocityConstraint(JphHingeConstraint* self, float inDeltaTime) {
-    kolt::cpp(self)->SetupVelocityConstraint(inDeltaTime);
-}
-
-void JphHingeConstraint_ResetWarmStart(JphHingeConstraint* self) {
-    kolt::cpp(self)->ResetWarmStart();
-}
-
-void JphHingeConstraint_WarmStartVelocityConstraint(JphHingeConstraint* self, float inWarmStartImpulseRatio) {
-    kolt::cpp(self)->WarmStartVelocityConstraint(inWarmStartImpulseRatio);
-}
-
-bool JphHingeConstraint_SolveVelocityConstraint(JphHingeConstraint* self, float inDeltaTime) {
-    return kolt::cpp(self)->SolveVelocityConstraint(inDeltaTime);
-}
-
-bool JphHingeConstraint_SolvePositionConstraint(JphHingeConstraint* self, float inDeltaTime, float inBaumgarte) {
-    return kolt::cpp(self)->SolvePositionConstraint(inDeltaTime, inBaumgarte);
-}
-
-void JphHingeConstraint_SaveState(const JphHingeConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
-}
-
-void JphHingeConstraint_RestoreState(JphHingeConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
-}
-
-JphConstraintSettings* JphHingeConstraint_GetConstraintSettings(const JphHingeConstraint* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetConstraintSettings()));
-}
-
-void JphHingeConstraint_GetConstraintToBody1Matrix(const JphHingeConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody1Matrix());
-}
-
-void JphHingeConstraint_GetConstraintToBody2Matrix(const JphHingeConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody2Matrix());
-}
-
 void JphHingeConstraint_GetLocalSpacePoint1(const JphHingeConstraint* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetLocalSpacePoint1());
 }

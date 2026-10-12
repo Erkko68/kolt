@@ -35,15 +35,36 @@ class CBridge(
 sealed interface CValue {
     val c: String
 
-    /** A number or bool C passes as it is. */
+    /** A number or bool C passes as it is; a result [CBridge.out] returns through a pointer. */
     data class Builtin(override val c: String) : CValue
     data class Enum(override val c: String) : CValue
     /** An [ApiGenConfig.scalars] type, crossing as the integer [scalar]; [c] is the name C would give the type. */
     data class Scalar(override val c: String, val scalar: String) : CValue
+    /** A NUL-terminated UTF-8 string: `const char*`. */
+    data object Text : CValue {
+        override val c get() = "const char*"
+    }
+    /**
+     * A result that's [value], or NULL with the error's message copied into the trailing `outError`, up to
+     * `outErrorCapacity`.
+     */
+    data class Fallible(val value: CValue) : CValue {
+        override val c get() = value.c
+    }
+    /**
+     * An array of [element]s and its count. A parameter's `Count` follows it. A result returns how many there are, and
+     * fills `out` up to `outCapacity`: with the elements, or, [created], by copying each into the handle at its index.
+     */
+    data class Sequence(val element: CValue, val created: Boolean = false) : CValue {
+        override val c get() = element.c
+    }
     /** An [ApiGenConfig.mirrors] type by value: C passes a pointer to its [count] [element]s, which a result fills. */
     data class Mirror(override val c: String, val element: String, val count: Int) : CValue
-    /** A record's handle; [nullable]: C++ takes or returns a pointer, not a reference. */
-    data class Handle(override val c: String, val nullable: Boolean) : CValue
+    /**
+     * A record's handle; [nullable]: C++ takes or returns a pointer, not a reference. [owned]: a result hands the caller
+     * a reference to release. A result [CBridge.out] is copied into one the caller created.
+     */
+    data class Handle(override val c: String, val nullable: Boolean, val owned: Boolean = false) : CValue
 }
 
 private fun isArray(type: CppType) = type.spelling.trim().endsWith("]")
@@ -211,7 +232,7 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         val value = CValue.Handle(name, nullable = true)
         return when {
             !bridge.result -> CBridge(c, { "$h::cpp($it)" }, value = value)
-            bridge.indirection == null && !bridge.lvalue -> CBridge(c, { "$h::c($h::retain($it))" }, value = value)
+            bridge.indirection == null && !bridge.lvalue -> CBridge(c, { "$h::c($h::retain($it))" }, value = value.copy(owned = true))
             else -> CBridge(c, { "$h::c(($it).${refs.get}())" }, value = value)
         }
     }
@@ -228,7 +249,8 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
         if (value.out) return CBridge("bool", { call -> "$h::result($call, outError, outErrorCapacity, [&](auto& v) { ${value.store("v", "out")} return true; })" },
             extra = listOf("${value.c}*" to "out") + error)
         if (!value.c.endsWith("*")) throw Unsupported("${type.spelling}: no value says it failed")
-        return CBridge(value.c, { call -> "$h::result($call, outError, outErrorCapacity, [&](auto& v) { return ${value.convert("v")}; })" }, extra = error)
+        return CBridge(value.c, { call -> "$h::result($call, outError, outErrorCapacity, [&](auto& v) { return ${value.convert("v")}; })" }, extra = error,
+            value = value.value?.let { CValue.Fallible(it) })
     }
 
     /**
@@ -253,7 +275,8 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
             val item = { n: String -> if (mirror) "($n + i)" else "$n[i]" }
             val convert = { n: String -> "$h::items(${n}Count, [&](uint32_t i) { return ${e.convert(item(n))}; })" }
             return CBridge(items, convert, extra = listOf("uint32_t" to "Count"),
-                assign = { field, v -> if (isArray(type)) "$h::assign($field, ${convert(v)});" else "$field = ${convert(v)};" })
+                assign = { field, v -> if (isArray(type)) "$h::assign($field, ${convert(v)});" else "$field = ${convert(v)};" },
+                value = e.value?.let { CValue.Sequence(it) })
         }
         val handles = e.out && !mirror && resolved in api.records
         val store = if (handles) e.store("x", "out[i]") else "out[i] = ${e.convert("x")};"
@@ -261,6 +284,7 @@ internal class CBridges(private val api: CppApi, private val config: ApiGenConfi
             "uint32_t",
             { call -> "$h::copy($call, outCapacity, [&](auto& x, uint32_t i) { $store })" },
             extra = listOf((if (handles) "${e.c}* const*" else "${e.c}*") to "out", "uint32_t" to "outCapacity"),
+            value = e.value?.let { CValue.Sequence(it, created = handles) },
         )
     }
 

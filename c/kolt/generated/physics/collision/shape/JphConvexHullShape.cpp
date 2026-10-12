@@ -24,10 +24,6 @@ JphShape* JphConvexHullShape_asShape(JphConvexHullShape* self) {
     return kolt::c(static_cast<JPH::Shape*>(kolt::cpp(self)));
 }
 
-const JphConvexShapeSupport* JphConvexHullShape_GetSupportFunction(const JphConvexHullShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale) {
-    return kolt::c(kolt::cpp(self)->GetSupportFunction(static_cast<JPH::ConvexShape::ESupportMode>(inMode), *kolt::cpp(inBuffer), kolt::math<JPH::Vec3>(*inScale)));
-}
-
 float JphConvexHullShape_GetConvexRadius(const JphConvexHullShape* self) {
     return kolt::cpp(self)->GetConvexRadius();
 }

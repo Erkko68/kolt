@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,31 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ObjectLayerPairFilterMask`. */
-open class ObjectLayerPairFilterMask internal constructor(internal val objectLayerPairFilterMaskHandle: NativePointer) : ObjectLayerPairFilter(JphObjectLayerPairFilterMask_asObjectLayerPairFilter(objectLayerPairFilterMaskHandle)), AutoCloseable {
-    constructor() : this(JphObjectLayerPairFilterMask_create())
+open class ObjectLayerPairFilterMask internal constructor(internal val objectLayerPairFilterMaskHandle: NativePointer, owned: Boolean = false) : ObjectLayerPairFilter(JphObjectLayerPairFilterMask_asObjectLayerPairFilter(objectLayerPairFilterMaskHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphObjectLayerPairFilterMask_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != ObjectLayerPairFilterMask::class) JphObjectLayerPairFilterMask_bindUpcalls(objectLayerPairFilterMaskHandle, Upcalls.reference(this))
+    }
 
     override fun close() =
-        JphObjectLayerPairFilterMask_destroy(objectLayerPairFilterMaskHandle)
+        closeOnce { JphObjectLayerPairFilterMask_destroy(objectLayerPairFilterMaskHandle) }
 
-    open fun shouldCollide(object1: Int, object2: Int): Boolean =
-        JphObjectLayerPairFilterMask_ShouldCollide(objectLayerPairFilterMaskHandle, object1, object2)
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, if (shouldCollide(readSlot(args, 0).toInt(), readSlot(args, 1).toInt())) 1L else 0L)
+            else -> return false
+        }
+        return true
+    }
 
     companion object {
-        fun sGetObjectLayer(group: Int, mask: Int): Int =
+        fun getObjectLayer(group: Int, mask: Int): Int =
             JphObjectLayerPairFilterMask_sGetObjectLayer(group, mask)
 
-        fun sGetGroup(objectLayer: Int): Int =
+        fun getGroup(objectLayer: Int): Int =
             JphObjectLayerPairFilterMask_sGetGroup(objectLayer)
 
-        fun sGetMask(objectLayer: Int): Int =
+        fun getMask(objectLayer: Int): Int =
             JphObjectLayerPairFilterMask_sGetMask(objectLayer)
     }
 }

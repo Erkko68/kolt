@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RotatedTranslatedShape`. */
-open class RotatedTranslatedShape internal constructor(internal val rotatedTranslatedShapeHandle: NativePointer) : Shape(JphRotatedTranslatedShape_asShape(rotatedTranslatedShapeHandle)), AutoCloseable {
-    constructor() : this(JphRotatedTranslatedShape_create())
-    constructor(position: Vec3, rotation: Quat, shape: Shape?) : this(interopScope { JphRotatedTranslatedShape_create_Vec3Arg_QuatArg_Shape(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) })
+open class RotatedTranslatedShape internal constructor(internal val rotatedTranslatedShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphRotatedTranslatedShape_asShape(rotatedTranslatedShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphRotatedTranslatedShape_create(), owned = true)
+    constructor(position: Vec3, rotation: Quat, shape: Shape?) : this(interopScope { JphRotatedTranslatedShape_create_Vec3Arg_QuatArg_Shape(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) }, owned = true)
 
     override fun addRef() =
-        JphRotatedTranslatedShape_addRef(rotatedTranslatedShapeHandle)
+        own { JphRotatedTranslatedShape_addRef(rotatedTranslatedShapeHandle) }
 
     override fun close() =
-        JphRotatedTranslatedShape_release(rotatedTranslatedShapeHandle)
+        closeOnce { JphRotatedTranslatedShape_release(rotatedTranslatedShapeHandle) }
 
     open val rotation: Quat
         get() = interopScope {
@@ -70,7 +71,7 @@ open class RotatedTranslatedShape internal constructor(internal val rotatedTrans
         }
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphRotatedTranslatedShape_sRegister()
     }
 }

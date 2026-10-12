@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PhysicsStepListenerContext`. */
-open class PhysicsStepListenerContext internal constructor(internal val physicsStepListenerContextHandle: NativePointer)
+open class PhysicsStepListenerContext internal constructor(internal val physicsStepListenerContextHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

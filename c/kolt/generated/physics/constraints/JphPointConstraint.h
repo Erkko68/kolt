@@ -14,22 +14,10 @@ void JphPointConstraint_addRef(const JphPointConstraint* self);
 void JphPointConstraint_release(const JphPointConstraint* self);
 JphTwoBodyConstraint* JphPointConstraint_asTwoBodyConstraint(JphPointConstraint* self);
 JphConstraint* JphPointConstraint_asConstraint(JphPointConstraint* self);
-JphEConstraintSubType JphPointConstraint_GetSubType(const JphPointConstraint* self);
-void JphPointConstraint_NotifyShapeChanged(JphPointConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM);
-void JphPointConstraint_SetupVelocityConstraint(JphPointConstraint* self, float inDeltaTime);
-void JphPointConstraint_ResetWarmStart(JphPointConstraint* self);
-void JphPointConstraint_WarmStartVelocityConstraint(JphPointConstraint* self, float inWarmStartImpulseRatio);
-bool JphPointConstraint_SolveVelocityConstraint(JphPointConstraint* self, float inDeltaTime);
-bool JphPointConstraint_SolvePositionConstraint(JphPointConstraint* self, float inDeltaTime, float inBaumgarte);
-void JphPointConstraint_SaveState(const JphPointConstraint* self, JphStateRecorder* inStream);
-void JphPointConstraint_RestoreState(JphPointConstraint* self, JphStateRecorder* inStream);
-JphConstraintSettings* JphPointConstraint_GetConstraintSettings(const JphPointConstraint* self);
 void JphPointConstraint_SetPoint1(JphPointConstraint* self, JphEConstraintSpace inSpace, const JphVec3* inPoint1);
 void JphPointConstraint_SetPoint2(JphPointConstraint* self, JphEConstraintSpace inSpace, const JphVec3* inPoint2);
 void JphPointConstraint_GetLocalSpacePoint1(const JphPointConstraint* self, JphVec3* out);
 void JphPointConstraint_GetLocalSpacePoint2(const JphPointConstraint* self, JphVec3* out);
-void JphPointConstraint_GetConstraintToBody1Matrix(const JphPointConstraint* self, JphMat44* out);
-void JphPointConstraint_GetConstraintToBody2Matrix(const JphPointConstraint* self, JphMat44* out);
 void JphPointConstraint_GetTotalLambdaPosition(const JphPointConstraint* self, JphVec3* out);
 
 

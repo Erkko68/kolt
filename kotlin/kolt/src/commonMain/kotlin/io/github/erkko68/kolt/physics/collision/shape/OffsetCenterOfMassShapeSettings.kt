@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,16 +33,16 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::OffsetCenterOfMassShapeSettings`. */
-open class OffsetCenterOfMassShapeSettings internal constructor(internal val offsetCenterOfMassShapeSettingsHandle: NativePointer) : ShapeSettings(JphOffsetCenterOfMassShapeSettings_asShapeSettings(offsetCenterOfMassShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphOffsetCenterOfMassShapeSettings_create())
-    constructor(offset: Vec3, shape: ShapeSettings?) : this(interopScope { JphOffsetCenterOfMassShapeSettings_create_Vec3Arg_ShapeSettings(toInterop(offset.toArray()), shape?.shapeSettingsHandle ?: NullPointer) })
-    constructor(offset: Vec3, shape: Shape?) : this(interopScope { JphOffsetCenterOfMassShapeSettings_create_Vec3Arg_Shape(toInterop(offset.toArray()), shape?.shapeHandle ?: NullPointer) })
+open class OffsetCenterOfMassShapeSettings internal constructor(internal val offsetCenterOfMassShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphOffsetCenterOfMassShapeSettings_asShapeSettings(offsetCenterOfMassShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphOffsetCenterOfMassShapeSettings_create(), owned = true)
+    constructor(offset: Vec3, shape: ShapeSettings?) : this(interopScope { JphOffsetCenterOfMassShapeSettings_create_Vec3Arg_ShapeSettings(toInterop(offset.toArray()), shape?.shapeSettingsHandle ?: NullPointer) }, owned = true)
+    constructor(offset: Vec3, shape: Shape?) : this(interopScope { JphOffsetCenterOfMassShapeSettings_create_Vec3Arg_Shape(toInterop(offset.toArray()), shape?.shapeHandle ?: NullPointer) }, owned = true)
 
     override fun addRef() =
-        JphOffsetCenterOfMassShapeSettings_addRef(offsetCenterOfMassShapeSettingsHandle)
+        own { JphOffsetCenterOfMassShapeSettings_addRef(offsetCenterOfMassShapeSettingsHandle) }
 
     override fun close() =
-        JphOffsetCenterOfMassShapeSettings_release(offsetCenterOfMassShapeSettingsHandle)
+        closeOnce { JphOffsetCenterOfMassShapeSettings_release(offsetCenterOfMassShapeSettingsHandle) }
 
     open var offset: Vec3
         get() = interopScope {
@@ -54,7 +55,7 @@ open class OffsetCenterOfMassShapeSettings internal constructor(internal val off
         set(value) = interopScope { JphOffsetCenterOfMassShapeSettings_SetOffset(offsetCenterOfMassShapeSettingsHandle, toInterop(value.toArray())) }
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphOffsetCenterOfMassShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

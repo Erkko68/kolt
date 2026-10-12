@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyManager`. */
-open class BodyManager internal constructor(internal val bodyManagerHandle: NativePointer)
+open class BodyManager internal constructor(internal val bodyManagerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+    /** C++ `JPH::BodyManager::BodyStats`. */
+    open class BodyStats internal constructor(internal val bodyManagerBodyStatsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    }

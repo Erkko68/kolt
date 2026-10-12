@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MutableCompoundShape`. */
-open class MutableCompoundShape internal constructor(internal val mutableCompoundShapeHandle: NativePointer) : Shape(JphMutableCompoundShape_asShape(mutableCompoundShapeHandle)), AutoCloseable {
-    constructor() : this(JphMutableCompoundShape_create())
+open class MutableCompoundShape internal constructor(internal val mutableCompoundShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphMutableCompoundShape_asShape(mutableCompoundShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphMutableCompoundShape_create(), owned = true)
 
     override fun addRef() =
-        JphMutableCompoundShape_addRef(mutableCompoundShapeHandle)
+        own { JphMutableCompoundShape_addRef(mutableCompoundShapeHandle) }
 
     override fun close() =
-        JphMutableCompoundShape_release(mutableCompoundShapeHandle)
+        closeOnce { JphMutableCompoundShape_release(mutableCompoundShapeHandle) }
 
     open fun clone(): MutableCompoundShape? =
-        JphMutableCompoundShape_Clone(mutableCompoundShapeHandle).takeIf { it != NullPointer }?.let(::MutableCompoundShape)
+        JphMutableCompoundShape_Clone(mutableCompoundShapeHandle).takeIf { it != NullPointer }?.let { MutableCompoundShape(it, owned = true) }
 
     open fun addShape(position: Vec3, rotation: Quat, shape: Shape?, userData: Int, index: Int): Int =
         interopScope { JphMutableCompoundShape_AddShape(mutableCompoundShapeHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer, userData, index) }
@@ -60,7 +61,7 @@ open class MutableCompoundShape internal constructor(internal val mutableCompoun
         JphMutableCompoundShape_AdjustCenterOfMass(mutableCompoundShapeHandle)
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphMutableCompoundShape_sRegister()
     }
 }

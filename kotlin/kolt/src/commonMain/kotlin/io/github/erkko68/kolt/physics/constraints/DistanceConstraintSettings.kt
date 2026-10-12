@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DistanceConstraintSettings`. */
-open class DistanceConstraintSettings internal constructor(internal val distanceConstraintSettingsHandle: NativePointer) : SerializableObject(JphDistanceConstraintSettings_asSerializableObject(distanceConstraintSettingsHandle)), AutoCloseable {
-    constructor() : this(JphDistanceConstraintSettings_create())
+open class DistanceConstraintSettings internal constructor(internal val distanceConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphDistanceConstraintSettings_asTwoBodyConstraintSettings(distanceConstraintSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphDistanceConstraintSettings_create(), owned = true)
 
-    open fun addRef() =
-        JphDistanceConstraintSettings_addRef(distanceConstraintSettingsHandle)
+    override fun addRef() =
+        own { JphDistanceConstraintSettings_addRef(distanceConstraintSettingsHandle) }
 
     override fun close() =
-        JphDistanceConstraintSettings_release(distanceConstraintSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphDistanceConstraintSettings_GetRTTI(distanceConstraintSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphDistanceConstraintSettings_SaveBinaryState(distanceConstraintSettingsHandle, stream.streamOutHandle)
-
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
-        JphDistanceConstraintSettings_Create(distanceConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        closeOnce { JphDistanceConstraintSettings_release(distanceConstraintSettingsHandle) }
 
     open var space: EConstraintSpace
         get() = EConstraintSpace.of(JphDistanceConstraintSettings_GetSpace(distanceConstraintSettingsHandle))
@@ -82,11 +74,16 @@ open class DistanceConstraintSettings internal constructor(internal val distance
         get() = JphDistanceConstraintSettings_GetMaxDistance(distanceConstraintSettingsHandle)
         set(value) = JphDistanceConstraintSettings_SetMaxDistance(distanceConstraintSettingsHandle, value)
 
-    open fun setLimitsSpringSettings(value: SpringSettings) =
-        JphDistanceConstraintSettings_SetLimitsSpringSettings(distanceConstraintSettingsHandle, value.springSettingsHandle)
+    open var limitsSpringSettings: SpringSettings
+        get() = run {
+            val returned = SpringSettings(JphSpringSettings_create(), owned = true)
+            JphDistanceConstraintSettings_GetLimitsSpringSettings(distanceConstraintSettingsHandle, returned.springSettingsHandle)
+            returned
+        }
+        set(value) = JphDistanceConstraintSettings_SetLimitsSpringSettings(distanceConstraintSettingsHandle, value.springSettingsHandle)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphDistanceConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

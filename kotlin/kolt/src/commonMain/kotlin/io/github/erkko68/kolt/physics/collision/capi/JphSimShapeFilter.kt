@@ -10,5 +10,11 @@ internal external fun JphSimShapeFilter_create(): NativePointer
 @ExternalSymbolName("JphSimShapeFilter_destroy")
 internal external fun JphSimShapeFilter_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphSimShapeFilter_createUpcalls")
+internal external fun JphSimShapeFilter_createUpcalls(call: NativePointer): NativePointer
+
+@ExternalSymbolName("JphSimShapeFilter_bindUpcalls")
+internal external fun JphSimShapeFilter_bindUpcalls(self: NativePointer, userData: NativePointer)
+
 @ExternalSymbolName("JphSimShapeFilter_ShouldCollide")
 internal external fun JphSimShapeFilter_ShouldCollide(self: NativePointer, inBody1: NativePointer, inShape1: NativePointer, inSubShapeIDOfShape1: Int, inBody2: NativePointer, inShape2: NativePointer, inSubShapeIDOfShape2: Int): Boolean

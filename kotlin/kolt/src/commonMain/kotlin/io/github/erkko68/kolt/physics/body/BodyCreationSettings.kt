@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,24 +33,41 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyCreationSettings`. */
-open class BodyCreationSettings internal constructor(internal val bodyCreationSettingsHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphBodyCreationSettings_create())
-    constructor(shape: ShapeSettings?, position: Vec3, rotation: Quat, motionType: EMotionType, objectLayer: Int) : this(interopScope { JphBodyCreationSettings_create_ShapeSettings_RVec3Arg_QuatArg_EMotionType_ObjectLayer(shape?.shapeSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), motionType.value, objectLayer) })
-    constructor(shape: Shape?, position: Vec3, rotation: Quat, motionType: EMotionType, objectLayer: Int) : this(interopScope { JphBodyCreationSettings_create_Shape_RVec3Arg_QuatArg_EMotionType_ObjectLayer(shape?.shapeHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), motionType.value, objectLayer) })
+open class BodyCreationSettings internal constructor(internal val bodyCreationSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphBodyCreationSettings_create(), owned = true)
+    constructor(shape: ShapeSettings?, position: Vec3, rotation: Quat, motionType: EMotionType, objectLayer: Int) : this(interopScope { JphBodyCreationSettings_create_ShapeSettings_RVec3Arg_QuatArg_EMotionType_ObjectLayer(shape?.shapeSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), motionType.value, objectLayer) }, owned = true)
+    constructor(shape: Shape?, position: Vec3, rotation: Quat, motionType: EMotionType, objectLayer: Int) : this(interopScope { JphBodyCreationSettings_create_Shape_RVec3Arg_QuatArg_EMotionType_ObjectLayer(shape?.shapeHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), motionType.value, objectLayer) }, owned = true)
 
     override fun close() =
-        JphBodyCreationSettings_destroy(bodyCreationSettingsHandle)
+        closeOnce { JphBodyCreationSettings_destroy(bodyCreationSettingsHandle) }
 
     open var shapeSettings: ShapeSettings?
-        get() = JphBodyCreationSettings_GetShapeSettings(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let(::ShapeSettings)
+        get() = JphBodyCreationSettings_GetShapeSettings(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { ShapeSettings(it) }
         set(shape) = JphBodyCreationSettings_SetShapeSettings(bodyCreationSettingsHandle, shape?.shapeSettingsHandle ?: NullPointer)
 
+    open fun convertShapeSettings(): Shape =
+        interopScope {
+            val error = ByteArray(256)
+            val errorPointer = toInterop(error)
+            val returned = JphBodyCreationSettings_ConvertShapeSettings(bodyCreationSettingsHandle, errorPointer, error.size)
+            errorPointer.fromInterop(error)
+            if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
+            Shape(returned, owned = true)
+        }
+
     open var shape: Shape?
-        get() = JphBodyCreationSettings_GetShape(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let(::Shape)
+        get() = JphBodyCreationSettings_GetShape(bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(shape) = JphBodyCreationSettings_SetShape(bodyCreationSettingsHandle, shape?.shapeHandle ?: NullPointer)
 
     open fun hasMassProperties(): Boolean =
         JphBodyCreationSettings_HasMassProperties(bodyCreationSettingsHandle)
+
+    open val massProperties: MassProperties
+        get() = run {
+            val returned = MassProperties(JphMassProperties_create(), owned = true)
+            JphBodyCreationSettings_GetMassProperties(bodyCreationSettingsHandle, returned.massPropertiesHandle)
+            returned
+        }
 
     open fun saveBinaryState(stream: StreamOut) =
         JphBodyCreationSettings_SaveBinaryState(bodyCreationSettingsHandle, stream.streamOutHandle)
@@ -97,15 +115,27 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         }
         set(value) = interopScope { JphBodyCreationSettings_SetAngularVelocity(bodyCreationSettingsHandle, toInterop(value.toArray())) }
 
-    open fun setUserData(value: Long) =
-        JphBodyCreationSettings_SetUserData(bodyCreationSettingsHandle, value)
+    open var userData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphBodyCreationSettings_GetUserData(bodyCreationSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+        set(value) = JphBodyCreationSettings_SetUserData(bodyCreationSettingsHandle, value)
 
     open var objectLayer: Int
         get() = JphBodyCreationSettings_GetObjectLayer(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetObjectLayer(bodyCreationSettingsHandle, value)
 
-    open fun setCollisionGroup(value: CollisionGroup) =
-        JphBodyCreationSettings_SetCollisionGroup(bodyCreationSettingsHandle, value.collisionGroupHandle)
+    open var collisionGroup: CollisionGroup
+        get() = run {
+            val returned = CollisionGroup(JphCollisionGroup_create(), owned = true)
+            JphBodyCreationSettings_GetCollisionGroup(bodyCreationSettingsHandle, returned.collisionGroupHandle)
+            returned
+        }
+        set(value) = JphBodyCreationSettings_SetCollisionGroup(bodyCreationSettingsHandle, value.collisionGroupHandle)
 
     open var motionType: EMotionType
         get() = EMotionType.of(JphBodyCreationSettings_GetMotionType(bodyCreationSettingsHandle))
@@ -191,11 +221,16 @@ open class BodyCreationSettings internal constructor(internal val bodyCreationSe
         get() = JphBodyCreationSettings_GetInertiaMultiplier(bodyCreationSettingsHandle)
         set(value) = JphBodyCreationSettings_SetInertiaMultiplier(bodyCreationSettingsHandle, value)
 
-    open fun setMassPropertiesOverride(value: MassProperties) =
-        JphBodyCreationSettings_SetMassPropertiesOverride(bodyCreationSettingsHandle, value.massPropertiesHandle)
+    open var massPropertiesOverride: MassProperties
+        get() = run {
+            val returned = MassProperties(JphMassProperties_create(), owned = true)
+            JphBodyCreationSettings_GetMassPropertiesOverride(bodyCreationSettingsHandle, returned.massPropertiesHandle)
+            returned
+        }
+        set(value) = JphBodyCreationSettings_SetMassPropertiesOverride(bodyCreationSettingsHandle, value.massPropertiesHandle)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphBodyCreationSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

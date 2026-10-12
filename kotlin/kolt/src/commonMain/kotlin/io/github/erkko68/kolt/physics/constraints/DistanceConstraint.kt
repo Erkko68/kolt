@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,62 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DistanceConstraint`. */
-open class DistanceConstraint internal constructor(internal val distanceConstraintHandle: NativePointer) : Constraint(JphDistanceConstraint_asConstraint(distanceConstraintHandle)), AutoCloseable {
-    constructor(body1: Body, body2: Body, settings: DistanceConstraintSettings) : this(JphDistanceConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.distanceConstraintSettingsHandle))
+open class DistanceConstraint internal constructor(internal val distanceConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphDistanceConstraint_asTwoBodyConstraint(distanceConstraintHandle), owned), AutoCloseable {
+    constructor(body1: Body, body2: Body, settings: DistanceConstraintSettings) : this(JphDistanceConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.distanceConstraintSettingsHandle), owned = true)
 
-    open fun addRef() =
-        JphDistanceConstraint_addRef(distanceConstraintHandle)
+    override fun addRef() =
+        own { JphDistanceConstraint_addRef(distanceConstraintHandle) }
 
     override fun close() =
-        JphDistanceConstraint_release(distanceConstraintHandle)
-
-    open val subType: EConstraintSubType
-        get() = EConstraintSubType.of(JphDistanceConstraint_GetSubType(distanceConstraintHandle))
-
-    open fun notifyShapeChanged(bodyID: BodyID, deltaCOM: Vec3) =
-        interopScope { JphDistanceConstraint_NotifyShapeChanged(distanceConstraintHandle, bodyID.value, toInterop(deltaCOM.toArray())) }
-
-    open fun setupVelocityConstraint(deltaTime: Float) =
-        JphDistanceConstraint_SetupVelocityConstraint(distanceConstraintHandle, deltaTime)
-
-    open fun resetWarmStart() =
-        JphDistanceConstraint_ResetWarmStart(distanceConstraintHandle)
-
-    open fun warmStartVelocityConstraint(warmStartImpulseRatio: Float) =
-        JphDistanceConstraint_WarmStartVelocityConstraint(distanceConstraintHandle, warmStartImpulseRatio)
-
-    open fun solveVelocityConstraint(deltaTime: Float): Boolean =
-        JphDistanceConstraint_SolveVelocityConstraint(distanceConstraintHandle, deltaTime)
-
-    open fun solvePositionConstraint(deltaTime: Float, baumgarte: Float): Boolean =
-        JphDistanceConstraint_SolvePositionConstraint(distanceConstraintHandle, deltaTime, baumgarte)
-
-    open fun saveState(stream: StateRecorder) =
-        JphDistanceConstraint_SaveState(distanceConstraintHandle, stream.stateRecorderHandle)
-
-    open fun restoreState(stream: StateRecorder) =
-        JphDistanceConstraint_RestoreState(distanceConstraintHandle, stream.stateRecorderHandle)
-
-    open val constraintSettings: ConstraintSettings?
-        get() = JphDistanceConstraint_GetConstraintSettings(distanceConstraintHandle).takeIf { it != NullPointer }?.let(::ConstraintSettings)
-
-    open val constraintToBody1Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphDistanceConstraint_GetConstraintToBody1Matrix(distanceConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
-
-    open val constraintToBody2Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphDistanceConstraint_GetConstraintToBody2Matrix(distanceConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
+        closeOnce { JphDistanceConstraint_release(distanceConstraintHandle) }
 
     open fun setDistance(minDistance: Float, maxDistance: Float) =
         JphDistanceConstraint_SetDistance(distanceConstraintHandle, minDistance, maxDistance)

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollidePointResult`. */
-open class CollidePointResult internal constructor(internal val collidePointResultHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphCollidePointResult_create())
+open class CollidePointResult internal constructor(internal val collidePointResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCollidePointResult_create(), owned = true)
 
     override fun close() =
-        JphCollidePointResult_destroy(collidePointResultHandle)
+        closeOnce { JphCollidePointResult_destroy(collidePointResultHandle) }
 
     open val earlyOutFraction: Float
         get() = JphCollidePointResult_GetEarlyOutFraction(collidePointResultHandle)

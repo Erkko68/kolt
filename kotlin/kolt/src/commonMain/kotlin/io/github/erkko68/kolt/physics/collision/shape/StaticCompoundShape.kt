@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::StaticCompoundShape`. */
-open class StaticCompoundShape internal constructor(internal val staticCompoundShapeHandle: NativePointer) : Shape(JphStaticCompoundShape_asShape(staticCompoundShapeHandle)), AutoCloseable {
-    constructor() : this(JphStaticCompoundShape_create())
+open class StaticCompoundShape internal constructor(internal val staticCompoundShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphStaticCompoundShape_asShape(staticCompoundShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphStaticCompoundShape_create(), owned = true)
 
     override fun addRef() =
-        JphStaticCompoundShape_addRef(staticCompoundShapeHandle)
+        own { JphStaticCompoundShape_addRef(staticCompoundShapeHandle) }
 
     override fun close() =
-        JphStaticCompoundShape_release(staticCompoundShapeHandle)
+        closeOnce { JphStaticCompoundShape_release(staticCompoundShapeHandle) }
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphStaticCompoundShape_sRegister()
     }
 }

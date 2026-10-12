@@ -9,3 +9,54 @@ void JphCharacterVsCharacterCollision_destroy(JphCharacterVsCharacterCollision* 
 }
 
 } // extern "C"
+
+namespace JPH {
+struct JphCharacterVsCharacterCollision_Upcalls final : ::JPH::CharacterVsCharacterCollision {
+    kolt::Upcall mCall;
+    void* mUser = nullptr;
+    explicit JphCharacterVsCharacterCollision_Upcalls(kolt::Upcall call) : mCall(call) {}
+    ~JphCharacterVsCharacterCollision_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    void CollideCharacter(const CharacterVirtual * p0, RMat44Arg p1, const CollideShapeSettings & p2, RVec3Arg p3, CollideShapeCollector & p4) const override {
+        JphMat44 a1;
+        *&a1 = kolt::mirror<JphMat44>(p1);
+        JphVec3 a3;
+        *&a3 = kolt::mirror<JphVec3>(p3);
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(&a1), kolt::slot(kolt::c(&p2)), kolt::slot(&a3), kolt::slot(kolt::c(&p4))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return;
+        kolt::unavailable("JPH::CharacterVsCharacterCollision::CollideCharacter");
+    }
+    void CastCharacter(const CharacterVirtual * p0, RMat44Arg p1, Vec3Arg p2, const ShapeCastSettings & p3, RVec3Arg p4, CastShapeCollector & p5) const override {
+        JphMat44 a1;
+        *&a1 = kolt::mirror<JphMat44>(p1);
+        JphVec3 a2;
+        *&a2 = kolt::mirror<JphVec3>(p2);
+        JphVec3 a4;
+        *&a4 = kolt::mirror<JphVec3>(p4);
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(&a1), kolt::slot(&a2), kolt::slot(kolt::c(&p3)), kolt::slot(&a4), kolt::slot(kolt::c(&p5))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 1, args, &result)) return;
+        kolt::unavailable("JPH::CharacterVsCharacterCollision::CastCharacter");
+    }
+};
+} // namespace JPH
+
+extern "C" {
+
+JphCharacterVsCharacterCollision* JphCharacterVsCharacterCollision_createUpcalls(JphUpcall call) {
+    return kolt::c(static_cast<::JPH::CharacterVsCharacterCollision*>(new ::JPH::JphCharacterVsCharacterCollision_Upcalls(call)));
+}
+
+void JphCharacterVsCharacterCollision_bindUpcalls(JphCharacterVsCharacterCollision* self, void* userData) {
+    static_cast<::JPH::JphCharacterVsCharacterCollision_Upcalls*>(kolt::cpp(self))->mUser = userData;
+}
+
+void JphCharacterVsCharacterCollision_CollideCharacter(const JphCharacterVsCharacterCollision* self, const JphCharacterVirtual* inCharacter, const JphMat44* inCenterOfMassTransform, const JphCollideShapeSettings* inCollideShapeSettings, const JphVec3* inBaseOffset, JphCollideShapeCollector* ioCollector) {
+    kolt::cpp(self)->CollideCharacter(kolt::cpp(inCharacter), kolt::math<JPH::Mat44>(*inCenterOfMassTransform), *kolt::cpp(inCollideShapeSettings), kolt::math<JPH::Vec3>(*inBaseOffset), *kolt::cpp(ioCollector));
+}
+
+void JphCharacterVsCharacterCollision_CastCharacter(const JphCharacterVsCharacterCollision* self, const JphCharacterVirtual* inCharacter, const JphMat44* inCenterOfMassTransform, const JphVec3* inDirection, const JphShapeCastSettings* inShapeCastSettings, const JphVec3* inBaseOffset, JphCastShapeCollector* ioCollector) {
+    kolt::cpp(self)->CastCharacter(kolt::cpp(inCharacter), kolt::math<JPH::Mat44>(*inCenterOfMassTransform), kolt::math<JPH::Vec3>(*inDirection), *kolt::cpp(inShapeCastSettings), kolt::math<JPH::Vec3>(*inBaseOffset), *kolt::cpp(ioCollector));
+}
+
+} // extern "C"

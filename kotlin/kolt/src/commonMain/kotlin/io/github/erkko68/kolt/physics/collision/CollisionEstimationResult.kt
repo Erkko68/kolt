@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollisionEstimationResult`. */
-open class CollisionEstimationResult internal constructor(internal val collisionEstimationResultHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphCollisionEstimationResult_create())
+open class CollisionEstimationResult internal constructor(internal val collisionEstimationResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCollisionEstimationResult_create(), owned = true)
 
     override fun close() =
-        JphCollisionEstimationResult_destroy(collisionEstimationResultHandle)
+        closeOnce { JphCollisionEstimationResult_destroy(collisionEstimationResultHandle) }
 
     open var linearVelocity1: Vec3
         get() = interopScope {
@@ -119,4 +120,15 @@ open class CollisionEstimationResult internal constructor(internal val collision
     open var angularFrictionImpulse: Float
         get() = JphCollisionEstimationResult_GetAngularFrictionImpulse(collisionEstimationResultHandle)
         set(value) = JphCollisionEstimationResult_SetAngularFrictionImpulse(collisionEstimationResultHandle, value)
+
+    open var contactImpulse: FloatArray
+        get() = interopScope {
+            val count = JphCollisionEstimationResult_GetContactImpulse(collisionEstimationResultHandle, NullPointer, 0)
+            val returned = FloatArray(count)
+            val returnedPointer = toInterop(returned)
+            JphCollisionEstimationResult_GetContactImpulse(collisionEstimationResultHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned
+        }
+        set(value) = interopScope { JphCollisionEstimationResult_SetContactImpulse(collisionEstimationResultHandle, toInterop(value), value.size) }
 }

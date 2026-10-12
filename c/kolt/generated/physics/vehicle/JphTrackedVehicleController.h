@@ -25,7 +25,6 @@ JphVehicleEngine* JphTrackedVehicleController_GetEngine(JphTrackedVehicleControl
 JphVehicleTransmission* JphTrackedVehicleController_GetTransmission(JphTrackedVehicleController* self);
 // TODO(handwritten) JphTrackedVehicleController_GetTracks: VehicleTracks & JPH::TrackedVehicleController::GetTracks()
 //     VehicleTrack[2]: by non-const reference
-JphVehicleControllerSettings* JphTrackedVehicleController_GetSettings(const JphTrackedVehicleController* self);
 
 
 #ifdef __cplusplus

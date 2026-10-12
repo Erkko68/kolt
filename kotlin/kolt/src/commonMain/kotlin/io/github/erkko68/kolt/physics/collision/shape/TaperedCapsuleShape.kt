@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,14 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TaperedCapsuleShape`. */
-open class TaperedCapsuleShape internal constructor(internal val taperedCapsuleShapeHandle: NativePointer) : Shape(JphTaperedCapsuleShape_asShape(taperedCapsuleShapeHandle)), AutoCloseable {
-    constructor() : this(JphTaperedCapsuleShape_create())
+open class TaperedCapsuleShape internal constructor(internal val taperedCapsuleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphTaperedCapsuleShape_asConvexShape(taperedCapsuleShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphTaperedCapsuleShape_create(), owned = true)
 
     override fun addRef() =
-        JphTaperedCapsuleShape_addRef(taperedCapsuleShapeHandle)
+        own { JphTaperedCapsuleShape_addRef(taperedCapsuleShapeHandle) }
 
     override fun close() =
-        JphTaperedCapsuleShape_release(taperedCapsuleShapeHandle)
+        closeOnce { JphTaperedCapsuleShape_release(taperedCapsuleShapeHandle) }
 
     open val topRadius: Float
         get() = JphTaperedCapsuleShape_GetTopRadius(taperedCapsuleShapeHandle)
@@ -50,11 +51,8 @@ open class TaperedCapsuleShape internal constructor(internal val taperedCapsuleS
     open val halfHeight: Float
         get() = JphTaperedCapsuleShape_GetHalfHeight(taperedCapsuleShapeHandle)
 
-    open fun getSupportFunction(mode: ConvexShapeESupportMode, buffer: ConvexShapeSupportBuffer, scale: Vec3): ConvexShapeSupport? =
-        interopScope { JphTaperedCapsuleShape_GetSupportFunction(taperedCapsuleShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let(::ConvexShapeSupport) }
-
     companion object {
-        fun sRegister() =
+        fun register() =
             JphTaperedCapsuleShape_sRegister()
     }
 }

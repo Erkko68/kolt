@@ -12,6 +12,3 @@ internal external fun JphObjectVsBroadPhaseLayerFilterTable_destroy(self: Native
 
 @ExternalSymbolName("JphObjectVsBroadPhaseLayerFilterTable_asObjectVsBroadPhaseLayerFilter")
 internal external fun JphObjectVsBroadPhaseLayerFilterTable_asObjectVsBroadPhaseLayerFilter(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphObjectVsBroadPhaseLayerFilterTable_ShouldCollide")
-internal external fun JphObjectVsBroadPhaseLayerFilterTable_ShouldCollide(self: NativePointer, inLayer1: Int, inLayer2: Int): Boolean

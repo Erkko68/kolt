@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,48 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleEngineSettings`. */
-open class VehicleEngineSettings internal constructor(internal val vehicleEngineSettingsHandle: NativePointer)
+open class VehicleEngineSettings internal constructor(internal val vehicleEngineSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphVehicleEngineSettings_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphVehicleEngineSettings_destroy(vehicleEngineSettingsHandle) }
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphVehicleEngineSettings_SaveBinaryState(vehicleEngineSettingsHandle, stream.streamOutHandle)
+
+    open fun restoreBinaryState(stream: StreamIn) =
+        JphVehicleEngineSettings_RestoreBinaryState(vehicleEngineSettingsHandle, stream.streamInHandle)
+
+    open var maxTorque: Float
+        get() = JphVehicleEngineSettings_GetMaxTorque(vehicleEngineSettingsHandle)
+        set(value) = JphVehicleEngineSettings_SetMaxTorque(vehicleEngineSettingsHandle, value)
+
+    open var minRPM: Float
+        get() = JphVehicleEngineSettings_GetMinRPM(vehicleEngineSettingsHandle)
+        set(value) = JphVehicleEngineSettings_SetMinRPM(vehicleEngineSettingsHandle, value)
+
+    open var maxRPM: Float
+        get() = JphVehicleEngineSettings_GetMaxRPM(vehicleEngineSettingsHandle)
+        set(value) = JphVehicleEngineSettings_SetMaxRPM(vehicleEngineSettingsHandle, value)
+
+    open var normalizedTorque: LinearCurve
+        get() = run {
+            val returned = LinearCurve(JphLinearCurve_create(), owned = true)
+            JphVehicleEngineSettings_GetNormalizedTorque(vehicleEngineSettingsHandle, returned.linearCurveHandle)
+            returned
+        }
+        set(value) = JphVehicleEngineSettings_SetNormalizedTorque(vehicleEngineSettingsHandle, value.linearCurveHandle)
+
+    open var inertia: Float
+        get() = JphVehicleEngineSettings_GetInertia(vehicleEngineSettingsHandle)
+        set(value) = JphVehicleEngineSettings_SetInertia(vehicleEngineSettingsHandle, value)
+
+    open var angularDamping: Float
+        get() = JphVehicleEngineSettings_GetAngularDamping(vehicleEngineSettingsHandle)
+        set(value) = JphVehicleEngineSettings_SetAngularDamping(vehicleEngineSettingsHandle, value)
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphVehicleEngineSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

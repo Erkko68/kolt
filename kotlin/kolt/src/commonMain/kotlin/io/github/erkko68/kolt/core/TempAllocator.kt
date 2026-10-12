@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TempAllocator`. */
-open class TempAllocator internal constructor(internal val tempAllocatorHandle: NativePointer) : AutoCloseable {
+open class TempAllocator internal constructor(internal val tempAllocatorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
     override fun close() =
-        JphTempAllocator_destroy(tempAllocatorHandle)
+        closeOnce { JphTempAllocator_destroy(tempAllocatorHandle) }
 }

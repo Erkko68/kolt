@@ -14,18 +14,6 @@ void JphFixedConstraint_addRef(const JphFixedConstraint* self);
 void JphFixedConstraint_release(const JphFixedConstraint* self);
 JphTwoBodyConstraint* JphFixedConstraint_asTwoBodyConstraint(JphFixedConstraint* self);
 JphConstraint* JphFixedConstraint_asConstraint(JphFixedConstraint* self);
-JphEConstraintSubType JphFixedConstraint_GetSubType(const JphFixedConstraint* self);
-void JphFixedConstraint_NotifyShapeChanged(JphFixedConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM);
-void JphFixedConstraint_SetupVelocityConstraint(JphFixedConstraint* self, float inDeltaTime);
-void JphFixedConstraint_ResetWarmStart(JphFixedConstraint* self);
-void JphFixedConstraint_WarmStartVelocityConstraint(JphFixedConstraint* self, float inWarmStartImpulseRatio);
-bool JphFixedConstraint_SolveVelocityConstraint(JphFixedConstraint* self, float inDeltaTime);
-bool JphFixedConstraint_SolvePositionConstraint(JphFixedConstraint* self, float inDeltaTime, float inBaumgarte);
-void JphFixedConstraint_SaveState(const JphFixedConstraint* self, JphStateRecorder* inStream);
-void JphFixedConstraint_RestoreState(JphFixedConstraint* self, JphStateRecorder* inStream);
-JphConstraintSettings* JphFixedConstraint_GetConstraintSettings(const JphFixedConstraint* self);
-void JphFixedConstraint_GetConstraintToBody1Matrix(const JphFixedConstraint* self, JphMat44* out);
-void JphFixedConstraint_GetConstraintToBody2Matrix(const JphFixedConstraint* self, JphMat44* out);
 void JphFixedConstraint_GetTotalLambdaPosition(const JphFixedConstraint* self, JphVec3* out);
 void JphFixedConstraint_GetTotalLambdaRotation(const JphFixedConstraint* self, JphVec3* out);
 

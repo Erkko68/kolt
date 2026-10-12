@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,20 +33,25 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConvexHullShape`. */
-open class ConvexHullShape internal constructor(internal val convexHullShapeHandle: NativePointer) : Shape(JphConvexHullShape_asShape(convexHullShapeHandle)), AutoCloseable {
-    constructor() : this(JphConvexHullShape_create())
+open class ConvexHullShape internal constructor(internal val convexHullShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphConvexHullShape_asConvexShape(convexHullShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphConvexHullShape_create(), owned = true)
 
     override fun addRef() =
-        JphConvexHullShape_addRef(convexHullShapeHandle)
+        own { JphConvexHullShape_addRef(convexHullShapeHandle) }
 
     override fun close() =
-        JphConvexHullShape_release(convexHullShapeHandle)
-
-    open fun getSupportFunction(mode: ConvexShapeESupportMode, buffer: ConvexShapeSupportBuffer, scale: Vec3): ConvexShapeSupport? =
-        interopScope { JphConvexHullShape_GetSupportFunction(convexHullShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let(::ConvexShapeSupport) }
+        closeOnce { JphConvexHullShape_release(convexHullShapeHandle) }
 
     open val convexRadius: Float
         get() = JphConvexHullShape_GetConvexRadius(convexHullShapeHandle)
+
+    open val planes: List<Plane>
+        get() = interopScope {
+            val count = JphConvexHullShape_GetPlanes(convexHullShapeHandle, NullPointer, 0)
+            val returned = List(count) { Plane(JphPlane_create(), owned = true) }
+            JphConvexHullShape_GetPlanes(convexHullShapeHandle, toInterop(returned.map { it.planeHandle }), count)
+            returned
+        }
 
     open val numPoints: Int
         get() = JphConvexHullShape_GetNumPoints(convexHullShapeHandle)
@@ -66,7 +72,7 @@ open class ConvexHullShape internal constructor(internal val convexHullShapeHand
         JphConvexHullShape_GetNumVerticesInFace(convexHullShapeHandle, faceIndex)
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphConvexHullShape_sRegister()
     }
 }

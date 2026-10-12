@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ContactConstraintManager`. */
-open class ContactConstraintManager internal constructor(internal val contactConstraintManagerHandle: NativePointer)
+open class ContactConstraintManager internal constructor(internal val contactConstraintManagerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
+    /** C++ `JPH::ContactConstraintManager::ContactAllocator`. */
+    open class ContactAllocator internal constructor(internal val contactConstraintManagerContactAllocatorHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)
+    }

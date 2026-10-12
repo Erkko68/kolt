@@ -15,11 +15,7 @@ void JphSwingTwistConstraintSettings_release(const JphSwingTwistConstraintSettin
 JphTwoBodyConstraintSettings* JphSwingTwistConstraintSettings_asTwoBodyConstraintSettings(JphSwingTwistConstraintSettings* self);
 JphConstraintSettings* JphSwingTwistConstraintSettings_asConstraintSettings(JphSwingTwistConstraintSettings* self);
 JphSerializableObject* JphSwingTwistConstraintSettings_asSerializableObject(JphSwingTwistConstraintSettings* self);
-const JphRTTI* JphSwingTwistConstraintSettings_GetRTTI(const JphSwingTwistConstraintSettings* self);
-const void* JphSwingTwistConstraintSettings_CastTo(const JphSwingTwistConstraintSettings* self, const JphRTTI* inRTTI);
 void JphSwingTwistConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
-void JphSwingTwistConstraintSettings_SaveBinaryState(const JphSwingTwistConstraintSettings* self, JphStreamOut* inStream);
-JphTwoBodyConstraint* JphSwingTwistConstraintSettings_Create(const JphSwingTwistConstraintSettings* self, JphBody* inBody1, JphBody* inBody2);
 JphEConstraintSpace JphSwingTwistConstraintSettings_GetSpace(const JphSwingTwistConstraintSettings* self);
 void JphSwingTwistConstraintSettings_SetSpace(JphSwingTwistConstraintSettings* self, JphEConstraintSpace value);
 void JphSwingTwistConstraintSettings_GetPosition1(const JphSwingTwistConstraintSettings* self, JphVec3* out);

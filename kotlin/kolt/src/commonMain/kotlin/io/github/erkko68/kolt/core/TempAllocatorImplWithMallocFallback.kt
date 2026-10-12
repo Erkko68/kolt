@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,9 +33,9 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TempAllocatorImplWithMallocFallback`. */
-open class TempAllocatorImplWithMallocFallback internal constructor(internal val tempAllocatorImplWithMallocFallbackHandle: NativePointer) : TempAllocator(JphTempAllocatorImplWithMallocFallback_asTempAllocator(tempAllocatorImplWithMallocFallbackHandle)), AutoCloseable {
-    constructor(size: Int) : this(JphTempAllocatorImplWithMallocFallback_create(size))
+open class TempAllocatorImplWithMallocFallback internal constructor(internal val tempAllocatorImplWithMallocFallbackHandle: NativePointer, owned: Boolean = false) : TempAllocator(JphTempAllocatorImplWithMallocFallback_asTempAllocator(tempAllocatorImplWithMallocFallbackHandle), owned), AutoCloseable {
+    constructor(size: Int) : this(JphTempAllocatorImplWithMallocFallback_create(size), owned = true)
 
     override fun close() =
-        JphTempAllocatorImplWithMallocFallback_destroy(tempAllocatorImplWithMallocFallbackHandle)
+        closeOnce { JphTempAllocatorImplWithMallocFallback_destroy(tempAllocatorImplWithMallocFallbackHandle) }
 }

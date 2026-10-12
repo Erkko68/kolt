@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SliderConstraintSettings`. */
-open class SliderConstraintSettings internal constructor(internal val sliderConstraintSettingsHandle: NativePointer) : SerializableObject(JphSliderConstraintSettings_asSerializableObject(sliderConstraintSettingsHandle)), AutoCloseable {
-    constructor() : this(JphSliderConstraintSettings_create())
+open class SliderConstraintSettings internal constructor(internal val sliderConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphSliderConstraintSettings_asTwoBodyConstraintSettings(sliderConstraintSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphSliderConstraintSettings_create(), owned = true)
 
-    open fun addRef() =
-        JphSliderConstraintSettings_addRef(sliderConstraintSettingsHandle)
+    override fun addRef() =
+        own { JphSliderConstraintSettings_addRef(sliderConstraintSettingsHandle) }
 
     override fun close() =
-        JphSliderConstraintSettings_release(sliderConstraintSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphSliderConstraintSettings_GetRTTI(sliderConstraintSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphSliderConstraintSettings_SaveBinaryState(sliderConstraintSettingsHandle, stream.streamOutHandle)
-
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
-        JphSliderConstraintSettings_Create(sliderConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        closeOnce { JphSliderConstraintSettings_release(sliderConstraintSettingsHandle) }
 
     open fun setSliderAxis(sliderAxis: Vec3) =
         interopScope { JphSliderConstraintSettings_SetSliderAxis(sliderConstraintSettingsHandle, toInterop(sliderAxis.toArray())) }
@@ -129,18 +121,28 @@ open class SliderConstraintSettings internal constructor(internal val sliderCons
         get() = JphSliderConstraintSettings_GetLimitsMax(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetLimitsMax(sliderConstraintSettingsHandle, value)
 
-    open fun setLimitsSpringSettings(value: SpringSettings) =
-        JphSliderConstraintSettings_SetLimitsSpringSettings(sliderConstraintSettingsHandle, value.springSettingsHandle)
+    open var limitsSpringSettings: SpringSettings
+        get() = run {
+            val returned = SpringSettings(JphSpringSettings_create(), owned = true)
+            JphSliderConstraintSettings_GetLimitsSpringSettings(sliderConstraintSettingsHandle, returned.springSettingsHandle)
+            returned
+        }
+        set(value) = JphSliderConstraintSettings_SetLimitsSpringSettings(sliderConstraintSettingsHandle, value.springSettingsHandle)
 
     open var maxFrictionForce: Float
         get() = JphSliderConstraintSettings_GetMaxFrictionForce(sliderConstraintSettingsHandle)
         set(value) = JphSliderConstraintSettings_SetMaxFrictionForce(sliderConstraintSettingsHandle, value)
 
-    open fun setMotorSettings(value: MotorSettings) =
-        JphSliderConstraintSettings_SetMotorSettings(sliderConstraintSettingsHandle, value.motorSettingsHandle)
+    open var motorSettings: MotorSettings
+        get() = run {
+            val returned = MotorSettings(JphMotorSettings_create(), owned = true)
+            JphSliderConstraintSettings_GetMotorSettings(sliderConstraintSettingsHandle, returned.motorSettingsHandle)
+            returned
+        }
+        set(value) = JphSliderConstraintSettings_SetMotorSettings(sliderConstraintSettingsHandle, value.motorSettingsHandle)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphSliderConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

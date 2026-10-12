@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CapsuleShapeSettings`. */
-open class CapsuleShapeSettings internal constructor(internal val capsuleShapeSettingsHandle: NativePointer) : ShapeSettings(JphCapsuleShapeSettings_asShapeSettings(capsuleShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphCapsuleShapeSettings_create())
-    constructor(halfHeightOfCylinder: Float, radius: Float, material: PhysicsMaterial?) : this(JphCapsuleShapeSettings_create_float_float_PhysicsMaterial(halfHeightOfCylinder, radius, material?.physicsMaterialHandle ?: NullPointer))
+open class CapsuleShapeSettings internal constructor(internal val capsuleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphCapsuleShapeSettings_asConvexShapeSettings(capsuleShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphCapsuleShapeSettings_create(), owned = true)
+    constructor(halfHeightOfCylinder: Float, radius: Float, material: PhysicsMaterial?) : this(JphCapsuleShapeSettings_create_float_float_PhysicsMaterial(halfHeightOfCylinder, radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
     override fun addRef() =
-        JphCapsuleShapeSettings_addRef(capsuleShapeSettingsHandle)
+        own { JphCapsuleShapeSettings_addRef(capsuleShapeSettingsHandle) }
 
     override fun close() =
-        JphCapsuleShapeSettings_release(capsuleShapeSettingsHandle)
+        closeOnce { JphCapsuleShapeSettings_release(capsuleShapeSettingsHandle) }
 
     open val isValid: Boolean
         get() = JphCapsuleShapeSettings_IsValid(capsuleShapeSettingsHandle)
@@ -57,7 +58,7 @@ open class CapsuleShapeSettings internal constructor(internal val capsuleShapeSe
         set(value) = JphCapsuleShapeSettings_SetHalfHeightOfCylinder(capsuleShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphCapsuleShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

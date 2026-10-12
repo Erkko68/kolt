@@ -40,7 +40,7 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     /** The hand-written C++ headers the forwarders are compiled against. */
     fun bridgeHeaders() = apiHeaders.modules.keys.flatMap { cDir.resolve("$it/manual").listFiles { f -> f.extension == "hpp" }.orEmpty().toList() }
 
-    fun read(): CppApi = CppApiReader(config, this.workDir.apply { mkdirs() }).read(includeDir, headers)
+    fun read(): CppApi = CppApiReader(config, this.workDir.apply { mkdirs() }).read(includeDir, headers).instantiating(config.aliasInstantiations)
 
     /** The [CApiWriter] of the API headers; [manualHeaders] say which functions are hand-written. */
     fun writer(): CApiWriter {

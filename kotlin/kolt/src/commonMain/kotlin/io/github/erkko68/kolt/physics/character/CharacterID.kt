@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,37 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterID`. */
-open class CharacterID internal constructor(internal val characterIDHandle: NativePointer)
+open class CharacterID internal constructor(internal val characterIDHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCharacterID_create(), owned = true)
+    constructor(id: Int) : this(JphCharacterID_create_uint32(id), owned = true)
+
+    override fun close() =
+        closeOnce { JphCharacterID_destroy(characterIDHandle) }
+
+    open val value: Int
+        get() = JphCharacterID_GetValue(characterIDHandle)
+
+    open val isInvalid: Boolean
+        get() = JphCharacterID_IsInvalid(characterIDHandle)
+
+    open val hash: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphCharacterID_GetHash(characterIDHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+
+    companion object {
+        fun nextCharacterID(): CharacterID =
+            run {
+                val returned = CharacterID(JphCharacterID_create(), owned = true)
+                JphCharacterID_sNextCharacterID(returned.characterIDHandle)
+                returned
+            }
+
+        fun setNextCharacterID(nextValue: Int) =
+            JphCharacterID_sSetNextCharacterID(nextValue)
+    }
+}

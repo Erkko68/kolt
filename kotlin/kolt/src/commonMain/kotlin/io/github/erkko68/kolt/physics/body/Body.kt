@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,7 +33,7 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Body`. */
-open class Body internal constructor(internal val bodyHandle: NativePointer) {
+open class Body internal constructor(internal val bodyHandle: NativePointer, owned: Boolean = false) : NativeObject(owned) {
     open val id: BodyID
         get() = BodyID(JphBody_GetID(bodyHandle))
 
@@ -229,7 +230,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer) {
         get() = JphBody_IsCollisionCacheInvalid(bodyHandle)
 
     open val shape: Shape?
-        get() = JphBody_GetShape(bodyHandle).takeIf { it != NullPointer }?.let(::Shape)
+        get() = JphBody_GetShape(bodyHandle).takeIf { it != NullPointer }?.let { Shape(it) }
 
     open val position: Vec3
         get() = interopScope {
@@ -285,6 +286,13 @@ open class Body internal constructor(internal val bodyHandle: NativePointer) {
             Mat44(returned)
         }
 
+    open val worldSpaceBounds: AABox
+        get() = run {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphBody_GetWorldSpaceBounds(bodyHandle, returned.aaBoxHandle)
+            returned
+        }
+
     open fun validateCachedBounds() =
         JphBody_ValidateCachedBounds(bodyHandle)
 
@@ -292,13 +300,20 @@ open class Body internal constructor(internal val bodyHandle: NativePointer) {
         JphBody_ValidateMotion(bodyHandle)
 
     open val motionProperties: MotionProperties?
-        get() = JphBody_GetMotionProperties(bodyHandle).takeIf { it != NullPointer }?.let(::MotionProperties)
+        get() = JphBody_GetMotionProperties(bodyHandle).takeIf { it != NullPointer }?.let { MotionProperties(it) }
 
     open val motionPropertiesUnchecked: MotionProperties?
-        get() = JphBody_GetMotionPropertiesUnchecked(bodyHandle).takeIf { it != NullPointer }?.let(::MotionProperties)
+        get() = JphBody_GetMotionPropertiesUnchecked(bodyHandle).takeIf { it != NullPointer }?.let { MotionProperties(it) }
 
-    open fun setUserData(userData: Long) =
-        JphBody_SetUserData(bodyHandle, userData)
+    open var userData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphBody_GetUserData(bodyHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+        set(userData) = JphBody_SetUserData(bodyHandle, userData)
 
     open fun getWorldSpaceSurfaceNormal(subShapeID: SubShapeID, position: Vec3): Vec3 =
         interopScope {
@@ -309,8 +324,29 @@ open class Body internal constructor(internal val bodyHandle: NativePointer) {
             Vec3(returned)
         }
 
+    open val transformedShape: TransformedShape
+        get() = run {
+            val returned = TransformedShape(JphTransformedShape_create(), owned = true)
+            JphBody_GetTransformedShape(bodyHandle, returned.transformedShapeHandle)
+            returned
+        }
+
+    open val bodyCreationSettings: BodyCreationSettings
+        get() = run {
+            val returned = BodyCreationSettings(JphBodyCreationSettings_create(), owned = true)
+            JphBody_GetBodyCreationSettings(bodyHandle, returned.bodyCreationSettingsHandle)
+            returned
+        }
+
     open fun applyBodyCreationSettings(bodyCreationSettings: BodyCreationSettings, bplInterface: BroadPhaseLayerInterface) =
         JphBody_ApplyBodyCreationSettings(bodyHandle, bodyCreationSettings.bodyCreationSettingsHandle, bplInterface.broadPhaseLayerInterfaceHandle)
+
+    open val softBodyCreationSettings: SoftBodyCreationSettings
+        get() = run {
+            val returned = SoftBodyCreationSettings(JphSoftBodyCreationSettings_create(), owned = true)
+            JphBody_GetSoftBodyCreationSettings(bodyHandle, returned.softBodyCreationSettingsHandle)
+            returned
+        }
 
     open fun applySoftBodyCreationSettings(softBodyCreationSettings: SoftBodyCreationSettings, bplInterface: BroadPhaseLayerInterface) =
         JphBody_ApplySoftBodyCreationSettings(bodyHandle, softBodyCreationSettings.softBodyCreationSettingsHandle, bplInterface.broadPhaseLayerInterfaceHandle)
@@ -364,7 +400,7 @@ open class Body internal constructor(internal val bodyHandle: NativePointer) {
         JphBody_RestoreState(bodyHandle, stream.stateRecorderHandle)
 
     companion object {
-        fun sFindCollidingPairsCanCollide(body1: Body, body2: Body): Boolean =
+        fun findCollidingPairsCanCollide(body1: Body, body2: Body): Boolean =
             JphBody_sFindCollidingPairsCanCollide(body1.bodyHandle, body2.bodyHandle)
     }
 }

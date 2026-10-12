@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BroadPhaseLayerInterface`. */
-open class BroadPhaseLayerInterface internal constructor(internal val broadPhaseLayerInterfaceHandle: NativePointer)
+open class BroadPhaseLayerInterface internal constructor(internal val broadPhaseLayerInterfaceHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphBroadPhaseLayerInterface_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != BroadPhaseLayerInterface::class) JphBroadPhaseLayerInterface_bindUpcalls(broadPhaseLayerInterfaceHandle, Upcalls.reference(this))
+    }
+
+    override fun close() =
+        closeOnce { JphBroadPhaseLayerInterface_destroy(broadPhaseLayerInterfaceHandle) }
+
+    open val numBroadPhaseLayers: Int
+        get() = JphBroadPhaseLayerInterface_GetNumBroadPhaseLayers(broadPhaseLayerInterfaceHandle)
+
+    open fun getBroadPhaseLayer(layer: Int): BroadPhaseLayer =
+        BroadPhaseLayer(JphBroadPhaseLayerInterface_GetBroadPhaseLayer(broadPhaseLayerInterfaceHandle, layer))
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, numBroadPhaseLayers.toLong())
+            1 -> writeSlot(result, getBroadPhaseLayer(readSlot(args, 0).toInt()).value.toLong())
+            else -> return false
+        }
+        return true
+    }
+}

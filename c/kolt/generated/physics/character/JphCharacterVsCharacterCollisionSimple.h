@@ -11,6 +11,8 @@ extern "C" {
 // JPH::CharacterVsCharacterCollisionSimple
 JphCharacterVsCharacterCollisionSimple* JphCharacterVsCharacterCollisionSimple_create(void);
 void JphCharacterVsCharacterCollisionSimple_destroy(JphCharacterVsCharacterCollisionSimple* self);
+JphCharacterVsCharacterCollisionSimple* JphCharacterVsCharacterCollisionSimple_createUpcalls(JphUpcall call);
+void JphCharacterVsCharacterCollisionSimple_bindUpcalls(JphCharacterVsCharacterCollisionSimple* self, void* userData);
 JphCharacterVsCharacterCollision* JphCharacterVsCharacterCollisionSimple_asCharacterVsCharacterCollision(JphCharacterVsCharacterCollisionSimple* self);
 void JphCharacterVsCharacterCollisionSimple_Add(JphCharacterVsCharacterCollisionSimple* self, JphCharacterVirtual* inCharacter);
 void JphCharacterVsCharacterCollisionSimple_Remove(JphCharacterVsCharacterCollisionSimple* self, const JphCharacterVirtual* inCharacter);

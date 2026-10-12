@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,70 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleTransmissionSettings`. */
-open class VehicleTransmissionSettings internal constructor(internal val vehicleTransmissionSettingsHandle: NativePointer)
+open class VehicleTransmissionSettings internal constructor(internal val vehicleTransmissionSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphVehicleTransmissionSettings_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphVehicleTransmissionSettings_destroy(vehicleTransmissionSettingsHandle) }
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphVehicleTransmissionSettings_SaveBinaryState(vehicleTransmissionSettingsHandle, stream.streamOutHandle)
+
+    open fun restoreBinaryState(stream: StreamIn) =
+        JphVehicleTransmissionSettings_RestoreBinaryState(vehicleTransmissionSettingsHandle, stream.streamInHandle)
+
+    open var mode: ETransmissionMode
+        get() = ETransmissionMode.of(JphVehicleTransmissionSettings_GetMode(vehicleTransmissionSettingsHandle))
+        set(value) = JphVehicleTransmissionSettings_SetMode(vehicleTransmissionSettingsHandle, value.value)
+
+    open var gearRatios: FloatArray
+        get() = interopScope {
+            val count = JphVehicleTransmissionSettings_GetGearRatios(vehicleTransmissionSettingsHandle, NullPointer, 0)
+            val returned = FloatArray(count)
+            val returnedPointer = toInterop(returned)
+            JphVehicleTransmissionSettings_GetGearRatios(vehicleTransmissionSettingsHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned
+        }
+        set(value) = interopScope { JphVehicleTransmissionSettings_SetGearRatios(vehicleTransmissionSettingsHandle, toInterop(value), value.size) }
+
+    open var reverseGearRatios: FloatArray
+        get() = interopScope {
+            val count = JphVehicleTransmissionSettings_GetReverseGearRatios(vehicleTransmissionSettingsHandle, NullPointer, 0)
+            val returned = FloatArray(count)
+            val returnedPointer = toInterop(returned)
+            JphVehicleTransmissionSettings_GetReverseGearRatios(vehicleTransmissionSettingsHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned
+        }
+        set(value) = interopScope { JphVehicleTransmissionSettings_SetReverseGearRatios(vehicleTransmissionSettingsHandle, toInterop(value), value.size) }
+
+    open var switchTime: Float
+        get() = JphVehicleTransmissionSettings_GetSwitchTime(vehicleTransmissionSettingsHandle)
+        set(value) = JphVehicleTransmissionSettings_SetSwitchTime(vehicleTransmissionSettingsHandle, value)
+
+    open var clutchReleaseTime: Float
+        get() = JphVehicleTransmissionSettings_GetClutchReleaseTime(vehicleTransmissionSettingsHandle)
+        set(value) = JphVehicleTransmissionSettings_SetClutchReleaseTime(vehicleTransmissionSettingsHandle, value)
+
+    open var switchLatency: Float
+        get() = JphVehicleTransmissionSettings_GetSwitchLatency(vehicleTransmissionSettingsHandle)
+        set(value) = JphVehicleTransmissionSettings_SetSwitchLatency(vehicleTransmissionSettingsHandle, value)
+
+    open var shiftUpRPM: Float
+        get() = JphVehicleTransmissionSettings_GetShiftUpRPM(vehicleTransmissionSettingsHandle)
+        set(value) = JphVehicleTransmissionSettings_SetShiftUpRPM(vehicleTransmissionSettingsHandle, value)
+
+    open var shiftDownRPM: Float
+        get() = JphVehicleTransmissionSettings_GetShiftDownRPM(vehicleTransmissionSettingsHandle)
+        set(value) = JphVehicleTransmissionSettings_SetShiftDownRPM(vehicleTransmissionSettingsHandle, value)
+
+    open var clutchStrength: Float
+        get() = JphVehicleTransmissionSettings_GetClutchStrength(vehicleTransmissionSettingsHandle)
+        set(value) = JphVehicleTransmissionSettings_SetClutchStrength(vehicleTransmissionSettingsHandle, value)
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphVehicleTransmissionSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

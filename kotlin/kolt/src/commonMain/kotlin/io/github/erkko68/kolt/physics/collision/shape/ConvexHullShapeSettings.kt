@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,14 +33,26 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConvexHullShapeSettings`. */
-open class ConvexHullShapeSettings internal constructor(internal val convexHullShapeSettingsHandle: NativePointer) : ShapeSettings(JphConvexHullShapeSettings_asShapeSettings(convexHullShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphConvexHullShapeSettings_create())
+open class ConvexHullShapeSettings internal constructor(internal val convexHullShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphConvexHullShapeSettings_asConvexShapeSettings(convexHullShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphConvexHullShapeSettings_create(), owned = true)
+    constructor(points: List<Vec3>, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphConvexHullShapeSettings_create_Array_float_PhysicsMaterial(toInterop(FloatArray(points.size * 4).also { a -> points.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), points.size, convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
 
     override fun addRef() =
-        JphConvexHullShapeSettings_addRef(convexHullShapeSettingsHandle)
+        own { JphConvexHullShapeSettings_addRef(convexHullShapeSettingsHandle) }
 
     override fun close() =
-        JphConvexHullShapeSettings_release(convexHullShapeSettingsHandle)
+        closeOnce { JphConvexHullShapeSettings_release(convexHullShapeSettingsHandle) }
+
+    open var points: List<Vec3>
+        get() = interopScope {
+            val count = JphConvexHullShapeSettings_GetPoints(convexHullShapeSettingsHandle, NullPointer, 0)
+            val returned = FloatArray(count * 4)
+            val returnedPointer = toInterop(returned)
+            JphConvexHullShapeSettings_GetPoints(convexHullShapeSettingsHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            List(count) { Vec3(returned.copyOfRange(it * 4, it * 4 + 4)) }
+        }
+        set(value) = interopScope { JphConvexHullShapeSettings_SetPoints(convexHullShapeSettingsHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
 
     open var maxConvexRadius: Float
         get() = JphConvexHullShapeSettings_GetMaxConvexRadius(convexHullShapeSettingsHandle)
@@ -54,7 +67,7 @@ open class ConvexHullShapeSettings internal constructor(internal val convexHullS
         set(value) = JphConvexHullShapeSettings_SetHullTolerance(convexHullShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphConvexHullShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

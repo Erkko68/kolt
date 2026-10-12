@@ -13,8 +13,6 @@ JphBroadPhaseLayerInterfaceTable* JphBroadPhaseLayerInterfaceTable_create(uint32
 void JphBroadPhaseLayerInterfaceTable_destroy(JphBroadPhaseLayerInterfaceTable* self);
 JphBroadPhaseLayerInterface* JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceTable* self);
 void JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer(JphBroadPhaseLayerInterfaceTable* self, uint32_t inObjectLayer, uint32_t inBroadPhaseLayer);
-uint32_t JphBroadPhaseLayerInterfaceTable_GetNumBroadPhaseLayers(const JphBroadPhaseLayerInterfaceTable* self);
-uint32_t JphBroadPhaseLayerInterfaceTable_GetBroadPhaseLayer(const JphBroadPhaseLayerInterfaceTable* self, uint32_t inLayer);
 
 
 #ifdef __cplusplus

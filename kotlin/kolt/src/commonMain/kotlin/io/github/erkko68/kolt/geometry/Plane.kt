@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,81 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::Plane`. */
-open class Plane internal constructor(internal val planeHandle: NativePointer)
+open class Plane internal constructor(internal val planeHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphPlane_create(), owned = true)
+    constructor(normalAndConstant: Vec4) : this(interopScope { JphPlane_create_Vec4Arg(toInterop(normalAndConstant.toArray())) }, owned = true)
+    constructor(normal: Vec3, constant: Float) : this(interopScope { JphPlane_create_Vec3Arg_float(toInterop(normal.toArray()), constant) }, owned = true)
+
+    override fun close() =
+        closeOnce { JphPlane_destroy(planeHandle) }
+
+    open var normal: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphPlane_GetNormal(planeHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(normal) = interopScope { JphPlane_SetNormal(planeHandle, toInterop(normal.toArray())) }
+
+    open var constant: Float
+        get() = JphPlane_GetConstant(planeHandle)
+        set(constant) = JphPlane_SetConstant(planeHandle, constant)
+
+    open fun offset(distance: Float): Plane =
+        run {
+            val returned = Plane(JphPlane_create(), owned = true)
+            JphPlane_Offset(planeHandle, distance, returned.planeHandle)
+            returned
+        }
+
+    open fun getTransformed(transform: Mat44): Plane =
+        interopScope {
+            val returned = Plane(JphPlane_create(), owned = true)
+            JphPlane_GetTransformed(planeHandle, toInterop(transform.toArray()), returned.planeHandle)
+            returned
+        }
+
+    open fun scaled(scale: Vec3): Plane =
+        interopScope {
+            val returned = Plane(JphPlane_create(), owned = true)
+            JphPlane_Scaled(planeHandle, toInterop(scale.toArray()), returned.planeHandle)
+            returned
+        }
+
+    open fun signedDistance(point: Vec3): Float =
+        interopScope { JphPlane_SignedDistance(planeHandle, toInterop(point.toArray())) }
+
+    open fun projectPointOnPlane(point: Vec3): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphPlane_ProjectPointOnPlane(planeHandle, toInterop(point.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    companion object {
+        fun fromPointAndNormal(point: Vec3, normal: Vec3): Plane =
+            interopScope {
+                val returned = Plane(JphPlane_create(), owned = true)
+                JphPlane_sFromPointAndNormal_Vec3Arg_Vec3Arg(toInterop(point.toArray()), toInterop(normal.toArray()), returned.planeHandle)
+                returned
+            }
+
+        fun fromPointAndNormal(point: DVec3, normal: Vec3): Plane =
+            interopScope {
+                val returned = Plane(JphPlane_create(), owned = true)
+                JphPlane_sFromPointAndNormal_DVec3Arg_Vec3Arg(toInterop(point.toArray()), toInterop(normal.toArray()), returned.planeHandle)
+                returned
+            }
+
+        fun fromPointsCCW(v1: Vec3, v2: Vec3, v3: Vec3): Plane =
+            interopScope {
+                val returned = Plane(JphPlane_create(), owned = true)
+                JphPlane_sFromPointsCCW(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), returned.planeHandle)
+                returned
+            }
+    }
+}

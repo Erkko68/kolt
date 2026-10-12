@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,12 +33,9 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ObjectVsBroadPhaseLayerFilterMask`. */
-open class ObjectVsBroadPhaseLayerFilterMask internal constructor(internal val objectVsBroadPhaseLayerFilterMaskHandle: NativePointer) : ObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterMask_asObjectVsBroadPhaseLayerFilter(objectVsBroadPhaseLayerFilterMaskHandle)), AutoCloseable {
-    constructor(broadPhaseLayerInterface: BroadPhaseLayerInterfaceMask) : this(JphObjectVsBroadPhaseLayerFilterMask_create(broadPhaseLayerInterface.broadPhaseLayerInterfaceMaskHandle))
+open class ObjectVsBroadPhaseLayerFilterMask internal constructor(internal val objectVsBroadPhaseLayerFilterMaskHandle: NativePointer, owned: Boolean = false) : ObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterMask_asObjectVsBroadPhaseLayerFilter(objectVsBroadPhaseLayerFilterMaskHandle), owned), AutoCloseable {
+    constructor(broadPhaseLayerInterface: BroadPhaseLayerInterfaceMask) : this(JphObjectVsBroadPhaseLayerFilterMask_create(broadPhaseLayerInterface.broadPhaseLayerInterfaceMaskHandle), owned = true)
 
     override fun close() =
-        JphObjectVsBroadPhaseLayerFilterMask_destroy(objectVsBroadPhaseLayerFilterMaskHandle)
-
-    open fun shouldCollide(layer1: Int, layer2: BroadPhaseLayer): Boolean =
-        JphObjectVsBroadPhaseLayerFilterMask_ShouldCollide(objectVsBroadPhaseLayerFilterMaskHandle, layer1, layer2.value)
+        closeOnce { JphObjectVsBroadPhaseLayerFilterMask_destroy(objectVsBroadPhaseLayerFilterMaskHandle) }
 }

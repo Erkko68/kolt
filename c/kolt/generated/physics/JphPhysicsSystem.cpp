@@ -40,6 +40,10 @@ const JphSimShapeFilter* JphPhysicsSystem_GetSimShapeFilter(const JphPhysicsSyst
     return kolt::c(kolt::cpp(self)->GetSimShapeFilter());
 }
 
+void JphPhysicsSystem_sDefaultSimCollideBodyVsBody(const JphBody* inBody1, const JphBody* inBody2, const JphMat44* inCenterOfMassTransform1, const JphMat44* inCenterOfMassTransform2, JphCollideShapeSettings* ioCollideShapeSettings, JphCollideShapeCollector* ioCollector, const JphShapeFilter* inShapeFilter) {
+    JPH::PhysicsSystem::sDefaultSimCollideBodyVsBody(*kolt::cpp(inBody1), *kolt::cpp(inBody2), kolt::math<JPH::Mat44>(*inCenterOfMassTransform1), kolt::math<JPH::Mat44>(*inCenterOfMassTransform2), *kolt::cpp(ioCollideShapeSettings), *kolt::cpp(ioCollector), *kolt::cpp(inShapeFilter));
+}
+
 void JphPhysicsSystem_SetPhysicsSettings(JphPhysicsSystem* self, const JphPhysicsSettings* inSettings) {
     kolt::cpp(self)->SetPhysicsSettings(*kolt::cpp(inSettings));
 }

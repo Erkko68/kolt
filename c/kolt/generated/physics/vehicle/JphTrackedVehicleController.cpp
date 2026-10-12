@@ -60,8 +60,4 @@ JphVehicleTransmission* JphTrackedVehicleController_GetTransmission(JphTrackedVe
     return kolt::c(&kolt::cpp(self)->GetTransmission());
 }
 
-JphVehicleControllerSettings* JphTrackedVehicleController_GetSettings(const JphTrackedVehicleController* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetSettings()));
-}
-
 } // extern "C"

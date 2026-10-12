@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,44 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PointConstraint`. */
-open class PointConstraint internal constructor(internal val pointConstraintHandle: NativePointer) : Constraint(JphPointConstraint_asConstraint(pointConstraintHandle)), AutoCloseable {
-    constructor(body1: Body, body2: Body, settings: PointConstraintSettings) : this(JphPointConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.pointConstraintSettingsHandle))
+open class PointConstraint internal constructor(internal val pointConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphPointConstraint_asTwoBodyConstraint(pointConstraintHandle), owned), AutoCloseable {
+    constructor(body1: Body, body2: Body, settings: PointConstraintSettings) : this(JphPointConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.pointConstraintSettingsHandle), owned = true)
 
-    open fun addRef() =
-        JphPointConstraint_addRef(pointConstraintHandle)
+    override fun addRef() =
+        own { JphPointConstraint_addRef(pointConstraintHandle) }
 
     override fun close() =
-        JphPointConstraint_release(pointConstraintHandle)
-
-    open val subType: EConstraintSubType
-        get() = EConstraintSubType.of(JphPointConstraint_GetSubType(pointConstraintHandle))
-
-    open fun notifyShapeChanged(bodyID: BodyID, deltaCOM: Vec3) =
-        interopScope { JphPointConstraint_NotifyShapeChanged(pointConstraintHandle, bodyID.value, toInterop(deltaCOM.toArray())) }
-
-    open fun setupVelocityConstraint(deltaTime: Float) =
-        JphPointConstraint_SetupVelocityConstraint(pointConstraintHandle, deltaTime)
-
-    open fun resetWarmStart() =
-        JphPointConstraint_ResetWarmStart(pointConstraintHandle)
-
-    open fun warmStartVelocityConstraint(warmStartImpulseRatio: Float) =
-        JphPointConstraint_WarmStartVelocityConstraint(pointConstraintHandle, warmStartImpulseRatio)
-
-    open fun solveVelocityConstraint(deltaTime: Float): Boolean =
-        JphPointConstraint_SolveVelocityConstraint(pointConstraintHandle, deltaTime)
-
-    open fun solvePositionConstraint(deltaTime: Float, baumgarte: Float): Boolean =
-        JphPointConstraint_SolvePositionConstraint(pointConstraintHandle, deltaTime, baumgarte)
-
-    open fun saveState(stream: StateRecorder) =
-        JphPointConstraint_SaveState(pointConstraintHandle, stream.stateRecorderHandle)
-
-    open fun restoreState(stream: StateRecorder) =
-        JphPointConstraint_RestoreState(pointConstraintHandle, stream.stateRecorderHandle)
-
-    open val constraintSettings: ConstraintSettings?
-        get() = JphPointConstraint_GetConstraintSettings(pointConstraintHandle).takeIf { it != NullPointer }?.let(::ConstraintSettings)
+        closeOnce { JphPointConstraint_release(pointConstraintHandle) }
 
     open fun setPoint1(space: EConstraintSpace, point1: Vec3) =
         interopScope { JphPointConstraint_SetPoint1(pointConstraintHandle, space.value, toInterop(point1.toArray())) }
@@ -93,24 +64,6 @@ open class PointConstraint internal constructor(internal val pointConstraintHand
             JphPointConstraint_GetLocalSpacePoint2(pointConstraintHandle, returnedPointer)
             returnedPointer.fromInterop(returned)
             Vec3(returned)
-        }
-
-    open val constraintToBody1Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphPointConstraint_GetConstraintToBody1Matrix(pointConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
-
-    open val constraintToBody2Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphPointConstraint_GetConstraintToBody2Matrix(pointConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
         }
 
     open val totalLambdaPosition: Vec3

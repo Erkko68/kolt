@@ -19,42 +19,6 @@ internal external fun JphGearConstraint_asTwoBodyConstraint(self: NativePointer)
 @ExternalSymbolName("JphGearConstraint_asConstraint")
 internal external fun JphGearConstraint_asConstraint(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphGearConstraint_GetSubType")
-internal external fun JphGearConstraint_GetSubType(self: NativePointer): Int
-
-@ExternalSymbolName("JphGearConstraint_NotifyShapeChanged")
-internal external fun JphGearConstraint_NotifyShapeChanged(self: NativePointer, inBodyID: Int, inDeltaCOM: NativePointer)
-
-@ExternalSymbolName("JphGearConstraint_SetupVelocityConstraint")
-internal external fun JphGearConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphGearConstraint_ResetWarmStart")
-internal external fun JphGearConstraint_ResetWarmStart(self: NativePointer)
-
-@ExternalSymbolName("JphGearConstraint_WarmStartVelocityConstraint")
-internal external fun JphGearConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphGearConstraint_SolveVelocityConstraint")
-internal external fun JphGearConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphGearConstraint_SolvePositionConstraint")
-internal external fun JphGearConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphGearConstraint_SaveState")
-internal external fun JphGearConstraint_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphGearConstraint_RestoreState")
-internal external fun JphGearConstraint_RestoreState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphGearConstraint_GetConstraintSettings")
-internal external fun JphGearConstraint_GetConstraintSettings(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphGearConstraint_GetConstraintToBody1Matrix")
-internal external fun JphGearConstraint_GetConstraintToBody1Matrix(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphGearConstraint_GetConstraintToBody2Matrix")
-internal external fun JphGearConstraint_GetConstraintToBody2Matrix(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphGearConstraint_SetConstraints")
 internal external fun JphGearConstraint_SetConstraints(self: NativePointer, inGear1: NativePointer, inGear2: NativePointer)
 

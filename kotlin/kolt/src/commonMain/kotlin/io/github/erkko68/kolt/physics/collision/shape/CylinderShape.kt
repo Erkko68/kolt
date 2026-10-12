@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CylinderShape`. */
-open class CylinderShape internal constructor(internal val cylinderShapeHandle: NativePointer) : Shape(JphCylinderShape_asShape(cylinderShapeHandle)), AutoCloseable {
-    constructor() : this(JphCylinderShape_create())
-    constructor(halfHeight: Float, radius: Float, convexRadius: Float, material: PhysicsMaterial?) : this(JphCylinderShape_create_float_float_float_PhysicsMaterial(halfHeight, radius, convexRadius, material?.physicsMaterialHandle ?: NullPointer))
+open class CylinderShape internal constructor(internal val cylinderShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphCylinderShape_asConvexShape(cylinderShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphCylinderShape_create(), owned = true)
+    constructor(halfHeight: Float, radius: Float, convexRadius: Float, material: PhysicsMaterial?) : this(JphCylinderShape_create_float_float_float_PhysicsMaterial(halfHeight, radius, convexRadius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
     override fun addRef() =
-        JphCylinderShape_addRef(cylinderShapeHandle)
+        own { JphCylinderShape_addRef(cylinderShapeHandle) }
 
     override fun close() =
-        JphCylinderShape_release(cylinderShapeHandle)
+        closeOnce { JphCylinderShape_release(cylinderShapeHandle) }
 
     open val halfHeight: Float
         get() = JphCylinderShape_GetHalfHeight(cylinderShapeHandle)
@@ -48,14 +49,11 @@ open class CylinderShape internal constructor(internal val cylinderShapeHandle: 
     open val radius: Float
         get() = JphCylinderShape_GetRadius(cylinderShapeHandle)
 
-    open fun getSupportFunction(mode: ConvexShapeESupportMode, buffer: ConvexShapeSupportBuffer, scale: Vec3): ConvexShapeSupport? =
-        interopScope { JphCylinderShape_GetSupportFunction(cylinderShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let(::ConvexShapeSupport) }
-
     open val convexRadius: Float
         get() = JphCylinderShape_GetConvexRadius(cylinderShapeHandle)
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphCylinderShape_sRegister()
     }
 }

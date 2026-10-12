@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,22 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterVirtualSettings`. */
-open class CharacterVirtualSettings internal constructor(internal val characterVirtualSettingsHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphCharacterVirtualSettings_create())
+open class CharacterVirtualSettings internal constructor(internal val characterVirtualSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCharacterVirtualSettings_create(), owned = true)
 
     open fun addRef() =
-        JphCharacterVirtualSettings_addRef(characterVirtualSettingsHandle)
+        own { JphCharacterVirtualSettings_addRef(characterVirtualSettingsHandle) }
 
     override fun close() =
-        JphCharacterVirtualSettings_release(characterVirtualSettingsHandle)
+        closeOnce { JphCharacterVirtualSettings_release(characterVirtualSettingsHandle) }
 
-    open fun setID(value: CharacterID) =
-        JphCharacterVirtualSettings_SetID(characterVirtualSettingsHandle, value.characterIDHandle)
+    open var id: CharacterID
+        get() = run {
+            val returned = CharacterID(JphCharacterID_create(), owned = true)
+            JphCharacterVirtualSettings_GetID(characterVirtualSettingsHandle, returned.characterIDHandle)
+            returned
+        }
+        set(value) = JphCharacterVirtualSettings_SetID(characterVirtualSettingsHandle, value.characterIDHandle)
 
     open var mass: Float
         get() = JphCharacterVirtualSettings_GetMass(characterVirtualSettingsHandle)
@@ -103,7 +109,7 @@ open class CharacterVirtualSettings internal constructor(internal val characterV
         set(value) = JphCharacterVirtualSettings_SetPenetrationRecoverySpeed(characterVirtualSettingsHandle, value)
 
     open var innerBodyShape: Shape?
-        get() = JphCharacterVirtualSettings_GetInnerBodyShape(characterVirtualSettingsHandle).takeIf { it != NullPointer }?.let(::Shape)
+        get() = JphCharacterVirtualSettings_GetInnerBodyShape(characterVirtualSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
         set(value) = JphCharacterVirtualSettings_SetInnerBodyShape(characterVirtualSettingsHandle, value?.shapeHandle ?: NullPointer)
 
     open var innerBodyIDOverride: BodyID

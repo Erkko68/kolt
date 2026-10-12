@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,12 +33,23 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SimShapeFilter`. */
-open class SimShapeFilter internal constructor(internal val simShapeFilterHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphSimShapeFilter_create())
+open class SimShapeFilter internal constructor(internal val simShapeFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphSimShapeFilter_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != SimShapeFilter::class) JphSimShapeFilter_bindUpcalls(simShapeFilterHandle, Upcalls.reference(this))
+    }
 
     override fun close() =
-        JphSimShapeFilter_destroy(simShapeFilterHandle)
+        closeOnce { JphSimShapeFilter_destroy(simShapeFilterHandle) }
 
     open fun shouldCollide(body1: Body, shape1: Shape?, subShapeIDOfShape1: SubShapeID, body2: Body, shape2: Shape?, subShapeIDOfShape2: SubShapeID): Boolean =
         JphSimShapeFilter_ShouldCollide(simShapeFilterHandle, body1.bodyHandle, shape1?.shapeHandle ?: NullPointer, subShapeIDOfShape1.value, body2.bodyHandle, shape2?.shapeHandle ?: NullPointer, subShapeIDOfShape2.value)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, if (shouldCollide(Body(readPointerSlot(args, 0)), readPointerSlot(args, 1).takeIf { it != NullPointer }?.let { Shape(it) }, SubShapeID(readSlot(args, 2).toInt()), Body(readPointerSlot(args, 3)), readPointerSlot(args, 4).takeIf { it != NullPointer }?.let { Shape(it) }, SubShapeID(readSlot(args, 5).toInt()))) 1L else 0L)
+            else -> return false
+        }
+        return true
+    }
 }

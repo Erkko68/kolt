@@ -7,6 +7,12 @@ import io.github.erkko68.kolt.interop.NativePointer
 @ExternalSymbolName("JphBodyActivationListener_destroy")
 internal external fun JphBodyActivationListener_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphBodyActivationListener_createUpcalls")
+internal external fun JphBodyActivationListener_createUpcalls(call: NativePointer): NativePointer
+
+@ExternalSymbolName("JphBodyActivationListener_bindUpcalls")
+internal external fun JphBodyActivationListener_bindUpcalls(self: NativePointer, userData: NativePointer)
+
 @ExternalSymbolName("JphBodyActivationListener_OnBodyActivated")
 internal external fun JphBodyActivationListener_OnBodyActivated(self: NativePointer, inBodyID: Int, inBodyUserData: Long)
 

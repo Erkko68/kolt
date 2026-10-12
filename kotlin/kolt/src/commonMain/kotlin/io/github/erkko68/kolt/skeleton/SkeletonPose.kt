@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 
 /** C++ `JPH::SkeletonPose`. */
-open class SkeletonPose internal constructor(internal val skeletonPoseHandle: NativePointer)
+open class SkeletonPose internal constructor(internal val skeletonPoseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned)

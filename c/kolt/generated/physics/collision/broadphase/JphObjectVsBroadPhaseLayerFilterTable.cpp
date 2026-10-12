@@ -16,8 +16,4 @@ JphObjectVsBroadPhaseLayerFilter* JphObjectVsBroadPhaseLayerFilterTable_asObject
     return kolt::c(static_cast<JPH::ObjectVsBroadPhaseLayerFilter*>(kolt::cpp(self)));
 }
 
-bool JphObjectVsBroadPhaseLayerFilterTable_ShouldCollide(const JphObjectVsBroadPhaseLayerFilterTable* self, uint32_t inLayer1, uint32_t inLayer2) {
-    return kolt::cpp(self)->ShouldCollide(static_cast<uint16_t>(inLayer1), JPH::BroadPhaseLayer(JPH::BroadPhaseLayer::Type(inLayer2)));
-}
-
 } // extern "C"

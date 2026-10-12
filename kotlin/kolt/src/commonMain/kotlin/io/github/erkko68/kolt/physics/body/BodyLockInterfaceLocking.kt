@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,9 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyLockInterfaceLocking`. */
-open class BodyLockInterfaceLocking internal constructor(internal val bodyLockInterfaceLockingHandle: NativePointer)
+open class BodyLockInterfaceLocking internal constructor(internal val bodyLockInterfaceLockingHandle: NativePointer, owned: Boolean = false) : BodyLockInterface(JphBodyLockInterfaceLocking_asBodyLockInterface(bodyLockInterfaceLockingHandle), owned), AutoCloseable {
+    constructor(arg0: BodyManager) : this(JphBodyLockInterfaceLocking_create(arg0.bodyManagerHandle), owned = true)
+
+    override fun close() =
+        closeOnce { JphBodyLockInterfaceLocking_destroy(bodyLockInterfaceLockingHandle) }
+}

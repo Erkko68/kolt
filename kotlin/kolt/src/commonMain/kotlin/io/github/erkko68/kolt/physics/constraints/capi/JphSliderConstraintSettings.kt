@@ -22,20 +22,8 @@ internal external fun JphSliderConstraintSettings_asConstraintSettings(self: Nat
 @ExternalSymbolName("JphSliderConstraintSettings_asSerializableObject")
 internal external fun JphSliderConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphSliderConstraintSettings_GetRTTI")
-internal external fun JphSliderConstraintSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphSliderConstraintSettings_CastTo")
-internal external fun JphSliderConstraintSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
 @ExternalSymbolName("JphSliderConstraintSettings_sCreateRTTI")
 internal external fun JphSliderConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
-@ExternalSymbolName("JphSliderConstraintSettings_SaveBinaryState")
-internal external fun JphSliderConstraintSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphSliderConstraintSettings_Create")
-internal external fun JphSliderConstraintSettings_Create(self: NativePointer, inBody1: NativePointer, inBody2: NativePointer): NativePointer
 
 @ExternalSymbolName("JphSliderConstraintSettings_SetSliderAxis")
 internal external fun JphSliderConstraintSettings_SetSliderAxis(self: NativePointer, inSliderAxis: NativePointer)

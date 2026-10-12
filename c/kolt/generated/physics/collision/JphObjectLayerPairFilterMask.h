@@ -11,11 +11,12 @@ extern "C" {
 // JPH::ObjectLayerPairFilterMask
 JphObjectLayerPairFilterMask* JphObjectLayerPairFilterMask_create(void);
 void JphObjectLayerPairFilterMask_destroy(JphObjectLayerPairFilterMask* self);
+JphObjectLayerPairFilterMask* JphObjectLayerPairFilterMask_createUpcalls(JphUpcall call);
+void JphObjectLayerPairFilterMask_bindUpcalls(JphObjectLayerPairFilterMask* self, void* userData);
 JphObjectLayerPairFilter* JphObjectLayerPairFilterMask_asObjectLayerPairFilter(JphObjectLayerPairFilterMask* self);
 uint32_t JphObjectLayerPairFilterMask_sGetObjectLayer(uint32_t inGroup, uint32_t inMask);
 uint32_t JphObjectLayerPairFilterMask_sGetGroup(uint32_t inObjectLayer);
 uint32_t JphObjectLayerPairFilterMask_sGetMask(uint32_t inObjectLayer);
-bool JphObjectLayerPairFilterMask_ShouldCollide(const JphObjectLayerPairFilterMask* self, uint32_t inObject1, uint32_t inObject2);
 
 
 #ifdef __cplusplus

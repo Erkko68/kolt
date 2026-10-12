@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,48 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MeshShapeSettings`. */
-open class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandle: NativePointer) : ShapeSettings(JphMeshShapeSettings_asShapeSettings(meshShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphMeshShapeSettings_create())
+open class MeshShapeSettings internal constructor(internal val meshShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphMeshShapeSettings_asShapeSettings(meshShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphMeshShapeSettings_create(), owned = true)
+    constructor(triangles: List<Triangle>, materials: List<PhysicsMaterial>) : this(interopScope { JphMeshShapeSettings_create_TriangleList_PhysicsMaterialList(toInterop(triangles.map { it.triangleHandle }), triangles.size, toInterop(materials.map { it.physicsMaterialHandle }), materials.size) }, owned = true)
+    constructor(vertices: List<Float3>, triangles: List<IndexedTriangle>, materials: List<PhysicsMaterial>) : this(interopScope { JphMeshShapeSettings_create_VertexList_IndexedTriangleList_PhysicsMaterialList(toInterop(FloatArray(vertices.size * 3).also { a -> vertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), vertices.size, toInterop(triangles.map { it.indexedTriangleHandle }), triangles.size, toInterop(materials.map { it.physicsMaterialHandle }), materials.size) }, owned = true)
 
     override fun addRef() =
-        JphMeshShapeSettings_addRef(meshShapeSettingsHandle)
+        own { JphMeshShapeSettings_addRef(meshShapeSettingsHandle) }
 
     override fun close() =
-        JphMeshShapeSettings_release(meshShapeSettingsHandle)
+        closeOnce { JphMeshShapeSettings_release(meshShapeSettingsHandle) }
 
     open fun sanitize() =
         JphMeshShapeSettings_Sanitize(meshShapeSettingsHandle)
+
+    open var triangleVertices: List<Float3>
+        get() = interopScope {
+            val count = JphMeshShapeSettings_GetTriangleVertices(meshShapeSettingsHandle, NullPointer, 0)
+            val returned = FloatArray(count * 3)
+            val returnedPointer = toInterop(returned)
+            JphMeshShapeSettings_GetTriangleVertices(meshShapeSettingsHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            List(count) { Float3(returned.copyOfRange(it * 3, it * 3 + 3)) }
+        }
+        set(value) = interopScope { JphMeshShapeSettings_SetTriangleVertices(meshShapeSettingsHandle, toInterop(FloatArray(value.size * 3).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), value.size) }
+
+    open var indexedTriangles: List<IndexedTriangle>
+        get() = interopScope {
+            val count = JphMeshShapeSettings_GetIndexedTriangles(meshShapeSettingsHandle, NullPointer, 0)
+            val returned = List(count) { IndexedTriangle(JphIndexedTriangle_create(), owned = true) }
+            JphMeshShapeSettings_GetIndexedTriangles(meshShapeSettingsHandle, toInterop(returned.map { it.indexedTriangleHandle }), count)
+            returned
+        }
+        set(value) = interopScope { JphMeshShapeSettings_SetIndexedTriangles(meshShapeSettingsHandle, toInterop(value.map { it.indexedTriangleHandle }), value.size) }
+
+    open var materials: List<PhysicsMaterial>
+        get() = interopScope {
+            val count = JphMeshShapeSettings_GetMaterials(meshShapeSettingsHandle, NullPointer, 0)
+            val returnedPointer = toInterop(List(count) { NullPointer })
+            JphMeshShapeSettings_GetMaterials(meshShapeSettingsHandle, returnedPointer, count)
+            readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
+        }
+        set(value) = interopScope { JphMeshShapeSettings_SetMaterials(meshShapeSettingsHandle, toInterop(value.map { it.physicsMaterialHandle }), value.size) }
 
     open var maxTrianglesPerLeaf: Int
         get() = JphMeshShapeSettings_GetMaxTrianglesPerLeaf(meshShapeSettingsHandle)
@@ -56,12 +88,22 @@ open class MeshShapeSettings internal constructor(internal val meshShapeSettings
         get() = JphMeshShapeSettings_GetPerTriangleUserData(meshShapeSettingsHandle)
         set(value) = JphMeshShapeSettings_SetPerTriangleUserData(meshShapeSettingsHandle, value)
 
-    open var buildQuality: MeshShapeSettingsEBuildQuality
-        get() = MeshShapeSettingsEBuildQuality.of(JphMeshShapeSettings_GetBuildQuality(meshShapeSettingsHandle))
+    open var buildQuality: MeshShapeSettings.EBuildQuality
+        get() = MeshShapeSettings.EBuildQuality.of(JphMeshShapeSettings_GetBuildQuality(meshShapeSettingsHandle))
         set(value) = JphMeshShapeSettings_SetBuildQuality(meshShapeSettingsHandle, value.value)
 
+    /** C++ `JPH::MeshShapeSettings::EBuildQuality`. */
+    enum class EBuildQuality(internal val value: Int) {
+        FavorRuntimePerformance(0),
+        FavorBuildSpeed(1);
+    
+        internal companion object {
+            fun of(value: Int) = entries.first { it.value == value }
+        }
+    }
+    
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphMeshShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

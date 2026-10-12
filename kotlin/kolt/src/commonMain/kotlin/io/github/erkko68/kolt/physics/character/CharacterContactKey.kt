@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,16 +33,25 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterContactKey`. */
-open class CharacterContactKey internal constructor(internal val characterContactKeyHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphCharacterContactKey_create())
-    constructor(bodyB: BodyID, subShapeID: SubShapeID) : this(JphCharacterContactKey_create_BodyID_SubShapeID(bodyB.value, subShapeID.value))
-    constructor(characterIDB: CharacterID, subShapeID: SubShapeID) : this(JphCharacterContactKey_create_CharacterID_SubShapeID(characterIDB.characterIDHandle, subShapeID.value))
+open class CharacterContactKey internal constructor(internal val characterContactKeyHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCharacterContactKey_create(), owned = true)
+    constructor(bodyB: BodyID, subShapeID: SubShapeID) : this(JphCharacterContactKey_create_BodyID_SubShapeID(bodyB.value, subShapeID.value), owned = true)
+    constructor(characterIDB: CharacterID, subShapeID: SubShapeID) : this(JphCharacterContactKey_create_CharacterID_SubShapeID(characterIDB.characterIDHandle, subShapeID.value), owned = true)
 
     override fun close() =
-        JphCharacterContactKey_destroy(characterContactKeyHandle)
+        closeOnce { JphCharacterContactKey_destroy(characterContactKeyHandle) }
 
     open fun isSameBody(other: CharacterContactKey): Boolean =
         JphCharacterContactKey_IsSameBody(characterContactKeyHandle, other.characterContactKeyHandle)
+
+    open val hash: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphCharacterContactKey_GetHash(characterContactKeyHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
 
     open fun saveState(stream: StateRecorder) =
         JphCharacterContactKey_SaveState(characterContactKeyHandle, stream.stateRecorderHandle)
@@ -53,8 +63,13 @@ open class CharacterContactKey internal constructor(internal val characterContac
         get() = BodyID(JphCharacterContactKey_GetBodyB(characterContactKeyHandle))
         set(value) = JphCharacterContactKey_SetBodyB(characterContactKeyHandle, value.value)
 
-    open fun setCharacterIDB(value: CharacterID) =
-        JphCharacterContactKey_SetCharacterIDB(characterContactKeyHandle, value.characterIDHandle)
+    open var characterIDB: CharacterID
+        get() = run {
+            val returned = CharacterID(JphCharacterID_create(), owned = true)
+            JphCharacterContactKey_GetCharacterIDB(characterContactKeyHandle, returned.characterIDHandle)
+            returned
+        }
+        set(value) = JphCharacterContactKey_SetCharacterIDB(characterContactKeyHandle, value.characterIDHandle)
 
     open var subShapeIDB: SubShapeID
         get() = SubShapeID(JphCharacterContactKey_GetSubShapeIDB(characterContactKeyHandle))

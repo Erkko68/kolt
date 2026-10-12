@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,29 +33,34 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PhysicsSystem`. */
-open class PhysicsSystem internal constructor(internal val physicsSystemHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphPhysicsSystem_create())
+open class PhysicsSystem internal constructor(internal val physicsSystemHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphPhysicsSystem_create(), owned = true)
 
     override fun close() =
-        JphPhysicsSystem_destroy(physicsSystemHandle)
+        closeOnce { JphPhysicsSystem_destroy(physicsSystemHandle) }
 
     open fun init(maxBodies: Int, numBodyMutexes: Int, maxBodyPairs: Int, maxContactConstraints: Int, broadPhaseLayerInterface: BroadPhaseLayerInterface, objectVsBroadPhaseLayerFilter: ObjectVsBroadPhaseLayerFilter, objectLayerPairFilter: ObjectLayerPairFilter) =
         JphPhysicsSystem_Init(physicsSystemHandle, maxBodies, numBodyMutexes, maxBodyPairs, maxContactConstraints, broadPhaseLayerInterface.broadPhaseLayerInterfaceHandle, objectVsBroadPhaseLayerFilter.objectVsBroadPhaseLayerFilterHandle, objectLayerPairFilter.objectLayerPairFilterHandle)
 
     open var bodyActivationListener: BodyActivationListener?
-        get() = JphPhysicsSystem_GetBodyActivationListener(physicsSystemHandle).takeIf { it != NullPointer }?.let(::BodyActivationListener)
+        get() = JphPhysicsSystem_GetBodyActivationListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { BodyActivationListener(it) }
         set(listener) = JphPhysicsSystem_SetBodyActivationListener(physicsSystemHandle, listener?.bodyActivationListenerHandle ?: NullPointer)
 
     open var contactListener: ContactListener?
-        get() = JphPhysicsSystem_GetContactListener(physicsSystemHandle).takeIf { it != NullPointer }?.let(::ContactListener)
+        get() = JphPhysicsSystem_GetContactListener(physicsSystemHandle).takeIf { it != NullPointer }?.let { ContactListener(it) }
         set(listener) = JphPhysicsSystem_SetContactListener(physicsSystemHandle, listener?.contactListenerHandle ?: NullPointer)
 
     open var simShapeFilter: SimShapeFilter?
-        get() = JphPhysicsSystem_GetSimShapeFilter(physicsSystemHandle).takeIf { it != NullPointer }?.let(::SimShapeFilter)
+        get() = JphPhysicsSystem_GetSimShapeFilter(physicsSystemHandle).takeIf { it != NullPointer }?.let { SimShapeFilter(it) }
         set(shapeFilter) = JphPhysicsSystem_SetSimShapeFilter(physicsSystemHandle, shapeFilter?.simShapeFilterHandle ?: NullPointer)
 
-    open fun setPhysicsSettings(settings: PhysicsSettings) =
-        JphPhysicsSystem_SetPhysicsSettings(physicsSystemHandle, settings.physicsSettingsHandle)
+    open var physicsSettings: PhysicsSettings
+        get() = run {
+            val returned = PhysicsSettings(JphPhysicsSettings_create(), owned = true)
+            JphPhysicsSystem_GetPhysicsSettings(physicsSystemHandle, returned.physicsSettingsHandle)
+            returned
+        }
+        set(settings) = JphPhysicsSystem_SetPhysicsSettings(physicsSystemHandle, settings.physicsSettingsHandle)
 
     open val bodyInterface: BodyInterface
         get() = BodyInterface(JphPhysicsSystem_GetBodyInterface(physicsSystemHandle))
@@ -76,6 +82,14 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
 
     open fun removeConstraint(constraint: Constraint?) =
         JphPhysicsSystem_RemoveConstraint(physicsSystemHandle, constraint?.constraintHandle ?: NullPointer)
+
+    open val constraints: List<Constraint>
+        get() = interopScope {
+            val count = JphPhysicsSystem_GetConstraints(physicsSystemHandle, NullPointer, 0)
+            val returnedPointer = toInterop(List(count) { NullPointer })
+            JphPhysicsSystem_GetConstraints(physicsSystemHandle, returnedPointer, count)
+            readPointers(returnedPointer, count).map { Constraint(it, owned = true) }
+        }
 
     open fun optimizeBroadPhase() =
         JphPhysicsSystem_OptimizeBroadPhase(physicsSystemHandle)
@@ -137,4 +151,16 @@ open class PhysicsSystem internal constructor(internal val physicsSystemHandle: 
 
     open fun wereBodiesInContact(body1ID: BodyID, body2ID: BodyID): Boolean =
         JphPhysicsSystem_WereBodiesInContact(physicsSystemHandle, body1ID.value, body2ID.value)
+
+    open val bounds: AABox
+        get() = run {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphPhysicsSystem_GetBounds(physicsSystemHandle, returned.aaBoxHandle)
+            returned
+        }
+
+    companion object {
+        fun defaultSimCollideBodyVsBody(body1: Body, body2: Body, centerOfMassTransform1: Mat44, centerOfMassTransform2: Mat44, collideShapeSettings: CollideShapeSettings, collector: CollideShapeCollector, shapeFilter: ShapeFilter) =
+            interopScope { JphPhysicsSystem_sDefaultSimCollideBodyVsBody(body1.bodyHandle, body2.bodyHandle, toInterop(centerOfMassTransform1.toArray()), toInterop(centerOfMassTransform2.toArray()), collideShapeSettings.collideShapeSettingsHandle, collector.collideShapeCollectorHandle, shapeFilter.shapeFilterHandle) }
+    }
 }

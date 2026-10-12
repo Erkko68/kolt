@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,24 +33,41 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ShapeSettings`. */
-open class ShapeSettings internal constructor(internal val shapeSettingsHandle: NativePointer) : SerializableObject(JphShapeSettings_asSerializableObject(shapeSettingsHandle)), AutoCloseable {
+open class ShapeSettings internal constructor(internal val shapeSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphShapeSettings_asSerializableObject(shapeSettingsHandle), owned), AutoCloseable {
     open fun addRef() =
-        JphShapeSettings_addRef(shapeSettingsHandle)
+        own { JphShapeSettings_addRef(shapeSettingsHandle) }
 
     override fun close() =
-        JphShapeSettings_release(shapeSettingsHandle)
+        closeOnce { JphShapeSettings_release(shapeSettingsHandle) }
 
     open val rtti: RTTI?
-        get() = JphShapeSettings_GetRTTI(shapeSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
+        get() = JphShapeSettings_GetRTTI(shapeSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
+
+    open fun create(): Shape =
+        interopScope {
+            val error = ByteArray(256)
+            val errorPointer = toInterop(error)
+            val returned = JphShapeSettings_Create(shapeSettingsHandle, errorPointer, error.size)
+            errorPointer.fromInterop(error)
+            if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
+            Shape(returned, owned = true)
+        }
 
     open fun clearCachedResult() =
         JphShapeSettings_ClearCachedResult(shapeSettingsHandle)
 
-    open fun setUserData(value: Long) =
-        JphShapeSettings_SetUserData(shapeSettingsHandle, value)
+    open var userData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphShapeSettings_GetUserData(shapeSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+        set(value) = JphShapeSettings_SetUserData(shapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

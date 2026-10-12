@@ -22,20 +22,8 @@ internal external fun JphSwingTwistConstraintSettings_asConstraintSettings(self:
 @ExternalSymbolName("JphSwingTwistConstraintSettings_asSerializableObject")
 internal external fun JphSwingTwistConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphSwingTwistConstraintSettings_GetRTTI")
-internal external fun JphSwingTwistConstraintSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphSwingTwistConstraintSettings_CastTo")
-internal external fun JphSwingTwistConstraintSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
 @ExternalSymbolName("JphSwingTwistConstraintSettings_sCreateRTTI")
 internal external fun JphSwingTwistConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
-@ExternalSymbolName("JphSwingTwistConstraintSettings_SaveBinaryState")
-internal external fun JphSwingTwistConstraintSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphSwingTwistConstraintSettings_Create")
-internal external fun JphSwingTwistConstraintSettings_Create(self: NativePointer, inBody1: NativePointer, inBody2: NativePointer): NativePointer
 
 @ExternalSymbolName("JphSwingTwistConstraintSettings_GetSpace")
 internal external fun JphSwingTwistConstraintSettings_GetSpace(self: NativePointer): Int

@@ -36,10 +36,6 @@ float JphCapsuleShape_GetHalfHeightOfCylinder(const JphCapsuleShape* self) {
     return kolt::cpp(self)->GetHalfHeightOfCylinder();
 }
 
-const JphConvexShapeSupport* JphCapsuleShape_GetSupportFunction(const JphCapsuleShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale) {
-    return kolt::c(kolt::cpp(self)->GetSupportFunction(static_cast<JPH::ConvexShape::ESupportMode>(inMode), *kolt::cpp(inBuffer), kolt::math<JPH::Vec3>(*inScale)));
-}
-
 void JphCapsuleShape_sRegister(void) {
     JPH::CapsuleShape::sRegister();
 }

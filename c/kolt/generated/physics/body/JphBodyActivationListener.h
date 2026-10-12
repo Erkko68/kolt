@@ -10,6 +10,8 @@ extern "C" {
 
 // JPH::BodyActivationListener
 void JphBodyActivationListener_destroy(JphBodyActivationListener* self);
+JphBodyActivationListener* JphBodyActivationListener_createUpcalls(JphUpcall call);
+void JphBodyActivationListener_bindUpcalls(JphBodyActivationListener* self, void* userData);
 void JphBodyActivationListener_OnBodyActivated(JphBodyActivationListener* self, uint32_t inBodyID, uint64_t inBodyUserData);
 void JphBodyActivationListener_OnBodyDeactivated(JphBodyActivationListener* self, uint32_t inBodyID, uint64_t inBodyUserData);
 

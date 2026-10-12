@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,24 +33,21 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SphereShape`. */
-open class SphereShape internal constructor(internal val sphereShapeHandle: NativePointer) : Shape(JphSphereShape_asShape(sphereShapeHandle)), AutoCloseable {
-    constructor() : this(JphSphereShape_create())
-    constructor(radius: Float, material: PhysicsMaterial?) : this(JphSphereShape_create_float_PhysicsMaterial(radius, material?.physicsMaterialHandle ?: NullPointer))
+open class SphereShape internal constructor(internal val sphereShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphSphereShape_asConvexShape(sphereShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphSphereShape_create(), owned = true)
+    constructor(radius: Float, material: PhysicsMaterial?) : this(JphSphereShape_create_float_PhysicsMaterial(radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
     override fun addRef() =
-        JphSphereShape_addRef(sphereShapeHandle)
+        own { JphSphereShape_addRef(sphereShapeHandle) }
 
     override fun close() =
-        JphSphereShape_release(sphereShapeHandle)
+        closeOnce { JphSphereShape_release(sphereShapeHandle) }
 
     open val radius: Float
         get() = JphSphereShape_GetRadius(sphereShapeHandle)
 
-    open fun getSupportFunction(mode: ConvexShapeESupportMode, buffer: ConvexShapeSupportBuffer, scale: Vec3): ConvexShapeSupport? =
-        interopScope { JphSphereShape_GetSupportFunction(sphereShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let(::ConvexShapeSupport) }
-
     companion object {
-        fun sRegister() =
+        fun register() =
             JphSphereShape_sRegister()
     }
 }

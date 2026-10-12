@@ -15,7 +15,6 @@ JphObjectLayerPairFilter* JphObjectLayerPairFilterTable_asObjectLayerPairFilter(
 uint32_t JphObjectLayerPairFilterTable_GetNumObjectLayers(const JphObjectLayerPairFilterTable* self);
 void JphObjectLayerPairFilterTable_DisableCollision(JphObjectLayerPairFilterTable* self, uint32_t inLayer1, uint32_t inLayer2);
 void JphObjectLayerPairFilterTable_EnableCollision(JphObjectLayerPairFilterTable* self, uint32_t inLayer1, uint32_t inLayer2);
-bool JphObjectLayerPairFilterTable_ShouldCollide(const JphObjectLayerPairFilterTable* self, uint32_t inObject1, uint32_t inObject2);
 
 
 #ifdef __cplusplus

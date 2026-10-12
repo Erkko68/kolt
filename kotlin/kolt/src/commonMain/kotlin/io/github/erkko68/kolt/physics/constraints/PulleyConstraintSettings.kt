@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PulleyConstraintSettings`. */
-open class PulleyConstraintSettings internal constructor(internal val pulleyConstraintSettingsHandle: NativePointer) : SerializableObject(JphPulleyConstraintSettings_asSerializableObject(pulleyConstraintSettingsHandle)), AutoCloseable {
-    constructor() : this(JphPulleyConstraintSettings_create())
+open class PulleyConstraintSettings internal constructor(internal val pulleyConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphPulleyConstraintSettings_asTwoBodyConstraintSettings(pulleyConstraintSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphPulleyConstraintSettings_create(), owned = true)
 
-    open fun addRef() =
-        JphPulleyConstraintSettings_addRef(pulleyConstraintSettingsHandle)
+    override fun addRef() =
+        own { JphPulleyConstraintSettings_addRef(pulleyConstraintSettingsHandle) }
 
     override fun close() =
-        JphPulleyConstraintSettings_release(pulleyConstraintSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphPulleyConstraintSettings_GetRTTI(pulleyConstraintSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphPulleyConstraintSettings_SaveBinaryState(pulleyConstraintSettingsHandle, stream.streamOutHandle)
-
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
-        JphPulleyConstraintSettings_Create(pulleyConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        closeOnce { JphPulleyConstraintSettings_release(pulleyConstraintSettingsHandle) }
 
     open var space: EConstraintSpace
         get() = EConstraintSpace.of(JphPulleyConstraintSettings_GetSpace(pulleyConstraintSettingsHandle))
@@ -107,7 +99,7 @@ open class PulleyConstraintSettings internal constructor(internal val pulleyCons
         set(value) = JphPulleyConstraintSettings_SetMaxLength(pulleyConstraintSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphPulleyConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,19 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleTrack`. */
-open class VehicleTrack internal constructor(internal val vehicleTrackHandle: NativePointer)
+open class VehicleTrack internal constructor(internal val vehicleTrackHandle: NativePointer, owned: Boolean = false) : VehicleTrackSettings(JphVehicleTrack_asVehicleTrackSettings(vehicleTrackHandle), owned), AutoCloseable {
+    constructor() : this(JphVehicleTrack_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphVehicleTrack_destroy(vehicleTrackHandle) }
+
+    open fun saveState(stream: StateRecorder) =
+        JphVehicleTrack_SaveState(vehicleTrackHandle, stream.stateRecorderHandle)
+
+    open fun restoreState(stream: StateRecorder) =
+        JphVehicleTrack_RestoreState(vehicleTrackHandle, stream.stateRecorderHandle)
+
+    open var angularVelocity: Float
+        get() = JphVehicleTrack_GetAngularVelocity(vehicleTrackHandle)
+        set(value) = JphVehicleTrack_SetAngularVelocity(vehicleTrackHandle, value)
+}

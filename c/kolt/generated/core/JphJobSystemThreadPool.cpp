@@ -28,10 +28,6 @@ void JphJobSystemThreadPool_Init(JphJobSystemThreadPool* self, uint32_t inMaxJob
     kolt::cpp(self)->Init(static_cast<unsigned int>(inMaxJobs), static_cast<unsigned int>(inMaxBarriers), static_cast<int>(inNumThreads));
 }
 
-int32_t JphJobSystemThreadPool_GetMaxConcurrency(const JphJobSystemThreadPool* self) {
-    return static_cast<int32_t>(kolt::cpp(self)->GetMaxConcurrency());
-}
-
 void JphJobSystemThreadPool_SetNumThreads(JphJobSystemThreadPool* self, int32_t inNumThreads) {
     kolt::cpp(self)->SetNumThreads(static_cast<int>(inNumThreads));
 }

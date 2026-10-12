@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollideSettingsBase`. */
-open class CollideSettingsBase internal constructor(internal val collideSettingsBaseHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphCollideSettingsBase_create())
+open class CollideSettingsBase internal constructor(internal val collideSettingsBaseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCollideSettingsBase_create(), owned = true)
 
     override fun close() =
-        JphCollideSettingsBase_destroy(collideSettingsBaseHandle)
+        closeOnce { JphCollideSettingsBase_destroy(collideSettingsBaseHandle) }
 
     open var activeEdgeMode: EActiveEdgeMode
         get() = EActiveEdgeMode.of(JphCollideSettingsBase_GetActiveEdgeMode(collideSettingsBaseHandle))

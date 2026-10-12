@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,7 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterVsCharacterCollision`. */
-open class CharacterVsCharacterCollision internal constructor(internal val characterVsCharacterCollisionHandle: NativePointer) : AutoCloseable {
+open class CharacterVsCharacterCollision internal constructor(internal val characterVsCharacterCollisionHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphCharacterVsCharacterCollision_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != CharacterVsCharacterCollision::class) JphCharacterVsCharacterCollision_bindUpcalls(characterVsCharacterCollisionHandle, Upcalls.reference(this))
+    }
+
     override fun close() =
-        JphCharacterVsCharacterCollision_destroy(characterVsCharacterCollisionHandle)
+        closeOnce { JphCharacterVsCharacterCollision_destroy(characterVsCharacterCollisionHandle) }
+
+    open fun collideCharacter(character: CharacterVirtual?, centerOfMassTransform: Mat44, collideShapeSettings: CollideShapeSettings, baseOffset: Vec3, collector: CollideShapeCollector) =
+        interopScope { JphCharacterVsCharacterCollision_CollideCharacter(characterVsCharacterCollisionHandle, character?.characterVirtualHandle ?: NullPointer, toInterop(centerOfMassTransform.toArray()), collideShapeSettings.collideShapeSettingsHandle, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle) }
+
+    open fun castCharacter(character: CharacterVirtual?, centerOfMassTransform: Mat44, direction: Vec3, shapeCastSettings: ShapeCastSettings, baseOffset: Vec3, collector: CastShapeCollector) =
+        interopScope { JphCharacterVsCharacterCollision_CastCharacter(characterVsCharacterCollisionHandle, character?.characterVirtualHandle ?: NullPointer, toInterop(centerOfMassTransform.toArray()), toInterop(direction.toArray()), shapeCastSettings.shapeCastSettingsHandle, toInterop(baseOffset.toArray()), collector.castShapeCollectorHandle) }
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> collideCharacter(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, Mat44(readFloats(readPointerSlot(args, 1), 16)), CollideShapeSettings(readPointerSlot(args, 2)), Vec3(readFloats(readPointerSlot(args, 3), 4)), CollideShapeCollector(readPointerSlot(args, 4)))
+            1 -> castCharacter(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, Mat44(readFloats(readPointerSlot(args, 1), 16)), Vec3(readFloats(readPointerSlot(args, 2), 4)), ShapeCastSettings(readPointerSlot(args, 3)), Vec3(readFloats(readPointerSlot(args, 4), 4)), CastShapeCollector(readPointerSlot(args, 5)))
+            else -> return false
+        }
+        return true
+    }
 }

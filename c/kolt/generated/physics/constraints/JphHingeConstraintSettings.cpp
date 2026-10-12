@@ -28,24 +28,8 @@ JphSerializableObject* JphHingeConstraintSettings_asSerializableObject(JphHingeC
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphHingeConstraintSettings_GetRTTI(const JphHingeConstraintSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphHingeConstraintSettings_CastTo(const JphHingeConstraintSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphHingeConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::HingeConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-void JphHingeConstraintSettings_SaveBinaryState(const JphHingeConstraintSettings* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-JphTwoBodyConstraint* JphHingeConstraintSettings_Create(const JphHingeConstraintSettings* self, JphBody* inBody1, JphBody* inBody2) {
-    return kolt::c(kolt::cpp(self)->Create(*kolt::cpp(inBody1), *kolt::cpp(inBody2)));
 }
 
 JphEConstraintSpace JphHingeConstraintSettings_GetSpace(const JphHingeConstraintSettings* self) {

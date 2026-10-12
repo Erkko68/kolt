@@ -31,11 +31,10 @@ JphContactListener* JphPhysicsSystem_GetContactListener(const JphPhysicsSystem* 
 void JphPhysicsSystem_SetSimShapeFilter(JphPhysicsSystem* self, const JphSimShapeFilter* inShapeFilter);
 const JphSimShapeFilter* JphPhysicsSystem_GetSimShapeFilter(const JphPhysicsSystem* self);
 // TODO(handwritten) JphPhysicsSystem_SetSimCollideBodyVsBody: void JPH::PhysicsSystem::SetSimCollideBodyVsBody(const SimCollideBodyVsBody & inBodyVsBody)
-//     CollisionCollector<CollideShapeResult, CollisionCollectorTraitsCollideShape>: class template
+//     JPH::PhysicsSystem::SimCollideBodyVsBody: arguments C takes in pieces
 // TODO(handwritten) JphPhysicsSystem_GetSimCollideBodyVsBody: const SimCollideBodyVsBody & JPH::PhysicsSystem::GetSimCollideBodyVsBody() const
 //     JPH::PhysicsSystem::SimCollideBodyVsBody by reference or as a result
-// TODO(handwritten) JphPhysicsSystem_sDefaultSimCollideBodyVsBody: static void JPH::PhysicsSystem::sDefaultSimCollideBodyVsBody(const Body & inBody1, const Body & inBody2, Mat44Arg inCenterOfMassTransform1, Mat44Arg inCenterOfMassTransform2, CollideShapeSettings & ioCollideShapeSettings, CollideShapeCollector & ioCollector, const ShapeFilter & inShapeFilter)
-//     CollisionCollector<CollideShapeResult, CollisionCollectorTraitsCollideShape>: class template
+void JphPhysicsSystem_sDefaultSimCollideBodyVsBody(const JphBody* inBody1, const JphBody* inBody2, const JphMat44* inCenterOfMassTransform1, const JphMat44* inCenterOfMassTransform2, JphCollideShapeSettings* ioCollideShapeSettings, JphCollideShapeCollector* ioCollector, const JphShapeFilter* inShapeFilter);
 void JphPhysicsSystem_SetPhysicsSettings(JphPhysicsSystem* self, const JphPhysicsSettings* inSettings);
 void JphPhysicsSystem_GetPhysicsSettings(const JphPhysicsSystem* self, JphPhysicsSettings* out);
 JphBodyInterface* JphPhysicsSystem_GetBodyInterface(JphPhysicsSystem* self);

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,43 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SpringSettings`. */
-open class SpringSettings internal constructor(internal val springSettingsHandle: NativePointer)
+open class SpringSettings internal constructor(internal val springSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphSpringSettings_create(), owned = true)
+    constructor(mode: ESpringMode, frequencyOrStiffness: Float, damping: Float) : this(JphSpringSettings_create_ESpringMode_float_float(mode.value, frequencyOrStiffness, damping), owned = true)
+
+    override fun close() =
+        closeOnce { JphSpringSettings_destroy(springSettingsHandle) }
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphSpringSettings_SaveBinaryState(springSettingsHandle, stream.streamOutHandle)
+
+    open fun restoreBinaryState(stream: StreamIn) =
+        JphSpringSettings_RestoreBinaryState(springSettingsHandle, stream.streamInHandle)
+
+    open fun hasStiffness(): Boolean =
+        JphSpringSettings_HasStiffness(springSettingsHandle)
+
+    open fun hasStiffnessOrDamping(): Boolean =
+        JphSpringSettings_HasStiffnessOrDamping(springSettingsHandle)
+
+    open var mode: ESpringMode
+        get() = ESpringMode.of(JphSpringSettings_GetMode(springSettingsHandle))
+        set(value) = JphSpringSettings_SetMode(springSettingsHandle, value.value)
+
+    open var frequency: Float
+        get() = JphSpringSettings_GetFrequency(springSettingsHandle)
+        set(value) = JphSpringSettings_SetFrequency(springSettingsHandle, value)
+
+    open var stiffness: Float
+        get() = JphSpringSettings_GetStiffness(springSettingsHandle)
+        set(value) = JphSpringSettings_SetStiffness(springSettingsHandle, value)
+
+    open var damping: Float
+        get() = JphSpringSettings_GetDamping(springSettingsHandle)
+        set(value) = JphSpringSettings_SetDamping(springSettingsHandle, value)
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphSpringSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

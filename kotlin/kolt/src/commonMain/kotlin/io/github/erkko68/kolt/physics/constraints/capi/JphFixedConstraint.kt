@@ -19,42 +19,6 @@ internal external fun JphFixedConstraint_asTwoBodyConstraint(self: NativePointer
 @ExternalSymbolName("JphFixedConstraint_asConstraint")
 internal external fun JphFixedConstraint_asConstraint(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphFixedConstraint_GetSubType")
-internal external fun JphFixedConstraint_GetSubType(self: NativePointer): Int
-
-@ExternalSymbolName("JphFixedConstraint_NotifyShapeChanged")
-internal external fun JphFixedConstraint_NotifyShapeChanged(self: NativePointer, inBodyID: Int, inDeltaCOM: NativePointer)
-
-@ExternalSymbolName("JphFixedConstraint_SetupVelocityConstraint")
-internal external fun JphFixedConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphFixedConstraint_ResetWarmStart")
-internal external fun JphFixedConstraint_ResetWarmStart(self: NativePointer)
-
-@ExternalSymbolName("JphFixedConstraint_WarmStartVelocityConstraint")
-internal external fun JphFixedConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphFixedConstraint_SolveVelocityConstraint")
-internal external fun JphFixedConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphFixedConstraint_SolvePositionConstraint")
-internal external fun JphFixedConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphFixedConstraint_SaveState")
-internal external fun JphFixedConstraint_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphFixedConstraint_RestoreState")
-internal external fun JphFixedConstraint_RestoreState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphFixedConstraint_GetConstraintSettings")
-internal external fun JphFixedConstraint_GetConstraintSettings(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphFixedConstraint_GetConstraintToBody1Matrix")
-internal external fun JphFixedConstraint_GetConstraintToBody1Matrix(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphFixedConstraint_GetConstraintToBody2Matrix")
-internal external fun JphFixedConstraint_GetConstraintToBody2Matrix(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphFixedConstraint_GetTotalLambdaPosition")
 internal external fun JphFixedConstraint_GetTotalLambdaPosition(self: NativePointer, out: NativePointer)
 

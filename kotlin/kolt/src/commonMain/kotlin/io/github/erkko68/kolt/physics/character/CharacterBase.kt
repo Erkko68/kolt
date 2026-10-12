@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,116 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterBase`. */
-open class CharacterBase internal constructor(internal val characterBaseHandle: NativePointer)
+open class CharacterBase internal constructor(internal val characterBaseHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor(settings: CharacterBaseSettings?, system: PhysicsSystem?) : this(JphCharacterBase_create(settings?.characterBaseSettingsHandle ?: NullPointer, system?.physicsSystemHandle ?: NullPointer), owned = true)
+
+    open fun addRef() =
+        own { JphCharacterBase_addRef(characterBaseHandle) }
+
+    override fun close() =
+        closeOnce { JphCharacterBase_release(characterBaseHandle) }
+
+    open fun setMaxSlopeAngle(maxSlopeAngle: Float) =
+        JphCharacterBase_SetMaxSlopeAngle(characterBaseHandle, maxSlopeAngle)
+
+    open val cosMaxSlopeAngle: Float
+        get() = JphCharacterBase_GetCosMaxSlopeAngle(characterBaseHandle)
+
+    open var up: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphCharacterBase_GetUp(characterBaseHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(up) = interopScope { JphCharacterBase_SetUp(characterBaseHandle, toInterop(up.toArray())) }
+
+    open var supportingVolume: Plane
+        get() = run {
+            val returned = Plane(JphPlane_create(), owned = true)
+            JphCharacterBase_GetSupportingVolume(characterBaseHandle, returned.planeHandle)
+            returned
+        }
+        set(plane) = JphCharacterBase_SetSupportingVolume(characterBaseHandle, plane.planeHandle)
+
+    open fun isSlopeTooSteep(normal: Vec3): Boolean =
+        interopScope { JphCharacterBase_IsSlopeTooSteep(characterBaseHandle, toInterop(normal.toArray())) }
+
+    open val shape: Shape?
+        get() = JphCharacterBase_GetShape(characterBaseHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+
+    open val groundState: CharacterBase.EGroundState
+        get() = CharacterBase.EGroundState.of(JphCharacterBase_GetGroundState(characterBaseHandle))
+
+    open val isSupported: Boolean
+        get() = JphCharacterBase_IsSupported(characterBaseHandle)
+
+    open val groundPosition: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphCharacterBase_GetGroundPosition(characterBaseHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val groundNormal: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphCharacterBase_GetGroundNormal(characterBaseHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val groundVelocity: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphCharacterBase_GetGroundVelocity(characterBaseHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val groundMaterial: PhysicsMaterial?
+        get() = JphCharacterBase_GetGroundMaterial(characterBaseHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
+
+    open val groundBodyID: BodyID
+        get() = BodyID(JphCharacterBase_GetGroundBodyID(characterBaseHandle))
+
+    open val groundSubShapeID: SubShapeID
+        get() = SubShapeID(JphCharacterBase_GetGroundSubShapeID(characterBaseHandle))
+
+    open val groundUserData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphCharacterBase_GetGroundUserData(characterBaseHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+
+    open fun saveState(stream: StateRecorder) =
+        JphCharacterBase_SaveState(characterBaseHandle, stream.stateRecorderHandle)
+
+    open fun restoreState(stream: StateRecorder) =
+        JphCharacterBase_RestoreState(characterBaseHandle, stream.stateRecorderHandle)
+
+    /** C++ `JPH::CharacterBase::EGroundState`. */
+    enum class EGroundState(internal val value: Int) {
+        OnGround(0),
+        OnSteepGround(1),
+        NotSupported(2),
+        InAir(3);
+    
+        internal companion object {
+            fun of(value: Int) = entries.first { it.value == value }
+        }
+    }
+    
+    companion object {
+        fun toString(state: CharacterBase.EGroundState): String? =
+            stringFromInterop(JphCharacterBase_sToString(state.value))
+    }
+}

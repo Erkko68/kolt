@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,14 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::WheelTV`. */
-open class WheelTV internal constructor(internal val wheelTVHandle: NativePointer) : Wheel(JphWheelTV_asWheel(wheelTVHandle)), AutoCloseable {
-    constructor(wheel: WheelSettingsTV) : this(JphWheelTV_create(wheel.wheelSettingsTVHandle))
+open class WheelTV internal constructor(internal val wheelTVHandle: NativePointer, owned: Boolean = false) : Wheel(JphWheelTV_asWheel(wheelTVHandle), owned), AutoCloseable {
+    constructor(wheel: WheelSettingsTV) : this(JphWheelTV_create(wheel.wheelSettingsTVHandle), owned = true)
 
     override fun close() =
-        JphWheelTV_destroy(wheelTVHandle)
+        closeOnce { JphWheelTV_destroy(wheelTVHandle) }
 
-    open val settings: WheelSettingsTV?
-        get() = JphWheelTV_GetSettings(wheelTVHandle).takeIf { it != NullPointer }?.let(::WheelSettingsTV)
+    override val settings: WheelSettingsTV?
+        get() = JphWheelTV_GetSettings(wheelTVHandle).takeIf { it != NullPointer }?.let { WheelSettingsTV(it) }
 
     open fun calculateAngularVelocity(constraint: VehicleConstraint) =
         JphWheelTV_CalculateAngularVelocity(wheelTVHandle, constraint.vehicleConstraintHandle)

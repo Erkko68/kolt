@@ -12,6 +12,49 @@ void JphCharacterVsCharacterCollisionSimple_destroy(JphCharacterVsCharacterColli
     delete kolt::cpp(self);
 }
 
+} // extern "C"
+
+namespace JPH {
+struct JphCharacterVsCharacterCollisionSimple_Upcalls final : ::JPH::CharacterVsCharacterCollisionSimple {
+    kolt::Upcall mCall;
+    void* mUser = nullptr;
+    explicit JphCharacterVsCharacterCollisionSimple_Upcalls(kolt::Upcall call) : mCall(call) {}
+    ~JphCharacterVsCharacterCollisionSimple_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    void CollideCharacter(const CharacterVirtual * p0, RMat44Arg p1, const CollideShapeSettings & p2, RVec3Arg p3, CollideShapeCollector & p4) const override {
+        JphMat44 a1;
+        *&a1 = kolt::mirror<JphMat44>(p1);
+        JphVec3 a3;
+        *&a3 = kolt::mirror<JphVec3>(p3);
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(&a1), kolt::slot(kolt::c(&p2)), kolt::slot(&a3), kolt::slot(kolt::c(&p4))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return;
+        JPH::CharacterVsCharacterCollisionSimple::CollideCharacter(p0, p1, p2, p3, p4);
+    }
+    void CastCharacter(const CharacterVirtual * p0, RMat44Arg p1, Vec3Arg p2, const ShapeCastSettings & p3, RVec3Arg p4, CastShapeCollector & p5) const override {
+        JphMat44 a1;
+        *&a1 = kolt::mirror<JphMat44>(p1);
+        JphVec3 a2;
+        *&a2 = kolt::mirror<JphVec3>(p2);
+        JphVec3 a4;
+        *&a4 = kolt::mirror<JphVec3>(p4);
+        const uint64_t args[] = {kolt::slot(kolt::c(p0)), kolt::slot(&a1), kolt::slot(&a2), kolt::slot(kolt::c(&p3)), kolt::slot(&a4), kolt::slot(kolt::c(&p5))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 1, args, &result)) return;
+        JPH::CharacterVsCharacterCollisionSimple::CastCharacter(p0, p1, p2, p3, p4, p5);
+    }
+};
+} // namespace JPH
+
+extern "C" {
+
+JphCharacterVsCharacterCollisionSimple* JphCharacterVsCharacterCollisionSimple_createUpcalls(JphUpcall call) {
+    return kolt::c(static_cast<::JPH::CharacterVsCharacterCollisionSimple*>(new ::JPH::JphCharacterVsCharacterCollisionSimple_Upcalls(call)));
+}
+
+void JphCharacterVsCharacterCollisionSimple_bindUpcalls(JphCharacterVsCharacterCollisionSimple* self, void* userData) {
+    static_cast<::JPH::JphCharacterVsCharacterCollisionSimple_Upcalls*>(kolt::cpp(self))->mUser = userData;
+}
+
 JphCharacterVsCharacterCollision* JphCharacterVsCharacterCollisionSimple_asCharacterVsCharacterCollision(JphCharacterVsCharacterCollisionSimple* self) {
     return kolt::c(static_cast<JPH::CharacterVsCharacterCollision*>(kolt::cpp(self)));
 }

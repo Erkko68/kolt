@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,62 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PulleyConstraint`. */
-open class PulleyConstraint internal constructor(internal val pulleyConstraintHandle: NativePointer) : Constraint(JphPulleyConstraint_asConstraint(pulleyConstraintHandle)), AutoCloseable {
-    constructor(body1: Body, body2: Body, settings: PulleyConstraintSettings) : this(JphPulleyConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.pulleyConstraintSettingsHandle))
+open class PulleyConstraint internal constructor(internal val pulleyConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphPulleyConstraint_asTwoBodyConstraint(pulleyConstraintHandle), owned), AutoCloseable {
+    constructor(body1: Body, body2: Body, settings: PulleyConstraintSettings) : this(JphPulleyConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.pulleyConstraintSettingsHandle), owned = true)
 
-    open fun addRef() =
-        JphPulleyConstraint_addRef(pulleyConstraintHandle)
+    override fun addRef() =
+        own { JphPulleyConstraint_addRef(pulleyConstraintHandle) }
 
     override fun close() =
-        JphPulleyConstraint_release(pulleyConstraintHandle)
-
-    open val subType: EConstraintSubType
-        get() = EConstraintSubType.of(JphPulleyConstraint_GetSubType(pulleyConstraintHandle))
-
-    open fun notifyShapeChanged(bodyID: BodyID, deltaCOM: Vec3) =
-        interopScope { JphPulleyConstraint_NotifyShapeChanged(pulleyConstraintHandle, bodyID.value, toInterop(deltaCOM.toArray())) }
-
-    open fun setupVelocityConstraint(deltaTime: Float) =
-        JphPulleyConstraint_SetupVelocityConstraint(pulleyConstraintHandle, deltaTime)
-
-    open fun resetWarmStart() =
-        JphPulleyConstraint_ResetWarmStart(pulleyConstraintHandle)
-
-    open fun warmStartVelocityConstraint(warmStartImpulseRatio: Float) =
-        JphPulleyConstraint_WarmStartVelocityConstraint(pulleyConstraintHandle, warmStartImpulseRatio)
-
-    open fun solveVelocityConstraint(deltaTime: Float): Boolean =
-        JphPulleyConstraint_SolveVelocityConstraint(pulleyConstraintHandle, deltaTime)
-
-    open fun solvePositionConstraint(deltaTime: Float, baumgarte: Float): Boolean =
-        JphPulleyConstraint_SolvePositionConstraint(pulleyConstraintHandle, deltaTime, baumgarte)
-
-    open fun saveState(stream: StateRecorder) =
-        JphPulleyConstraint_SaveState(pulleyConstraintHandle, stream.stateRecorderHandle)
-
-    open fun restoreState(stream: StateRecorder) =
-        JphPulleyConstraint_RestoreState(pulleyConstraintHandle, stream.stateRecorderHandle)
-
-    open val constraintSettings: ConstraintSettings?
-        get() = JphPulleyConstraint_GetConstraintSettings(pulleyConstraintHandle).takeIf { it != NullPointer }?.let(::ConstraintSettings)
-
-    open val constraintToBody1Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphPulleyConstraint_GetConstraintToBody1Matrix(pulleyConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
-
-    open val constraintToBody2Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphPulleyConstraint_GetConstraintToBody2Matrix(pulleyConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
+        closeOnce { JphPulleyConstraint_release(pulleyConstraintHandle) }
 
     open fun setLength(minLength: Float, maxLength: Float) =
         JphPulleyConstraint_SetLength(pulleyConstraintHandle, minLength, maxLength)

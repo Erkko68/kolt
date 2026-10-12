@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,14 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::HeightFieldShapeSettings`. */
-open class HeightFieldShapeSettings internal constructor(internal val heightFieldShapeSettingsHandle: NativePointer) : ShapeSettings(JphHeightFieldShapeSettings_asShapeSettings(heightFieldShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphHeightFieldShapeSettings_create())
+open class HeightFieldShapeSettings internal constructor(internal val heightFieldShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphHeightFieldShapeSettings_asShapeSettings(heightFieldShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphHeightFieldShapeSettings_create(), owned = true)
 
     override fun addRef() =
-        JphHeightFieldShapeSettings_addRef(heightFieldShapeSettingsHandle)
+        own { JphHeightFieldShapeSettings_addRef(heightFieldShapeSettingsHandle) }
 
     override fun close() =
-        JphHeightFieldShapeSettings_release(heightFieldShapeSettingsHandle)
+        closeOnce { JphHeightFieldShapeSettings_release(heightFieldShapeSettingsHandle) }
 
     open fun calculateBitsPerSampleForError(maxError: Float): Int =
         JphHeightFieldShapeSettings_CalculateBitsPerSampleForError(heightFieldShapeSettingsHandle, maxError)
@@ -88,12 +89,43 @@ open class HeightFieldShapeSettings internal constructor(internal val heightFiel
         get() = JphHeightFieldShapeSettings_GetBitsPerSample(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetBitsPerSample(heightFieldShapeSettingsHandle, value)
 
+    open var heightSamples: FloatArray
+        get() = interopScope {
+            val count = JphHeightFieldShapeSettings_GetHeightSamples(heightFieldShapeSettingsHandle, NullPointer, 0)
+            val returned = FloatArray(count)
+            val returnedPointer = toInterop(returned)
+            JphHeightFieldShapeSettings_GetHeightSamples(heightFieldShapeSettingsHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned
+        }
+        set(value) = interopScope { JphHeightFieldShapeSettings_SetHeightSamples(heightFieldShapeSettingsHandle, toInterop(value), value.size) }
+
+    open var materialIndices: IntArray
+        get() = interopScope {
+            val count = JphHeightFieldShapeSettings_GetMaterialIndices(heightFieldShapeSettingsHandle, NullPointer, 0)
+            val returned = IntArray(count)
+            val returnedPointer = toInterop(returned)
+            JphHeightFieldShapeSettings_GetMaterialIndices(heightFieldShapeSettingsHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            returned
+        }
+        set(value) = interopScope { JphHeightFieldShapeSettings_SetMaterialIndices(heightFieldShapeSettingsHandle, toInterop(value), value.size) }
+
+    open var materials: List<PhysicsMaterial>
+        get() = interopScope {
+            val count = JphHeightFieldShapeSettings_GetMaterials(heightFieldShapeSettingsHandle, NullPointer, 0)
+            val returnedPointer = toInterop(List(count) { NullPointer })
+            JphHeightFieldShapeSettings_GetMaterials(heightFieldShapeSettingsHandle, returnedPointer, count)
+            readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
+        }
+        set(value) = interopScope { JphHeightFieldShapeSettings_SetMaterials(heightFieldShapeSettingsHandle, toInterop(value.map { it.physicsMaterialHandle }), value.size) }
+
     open var activeEdgeCosThresholdAngle: Float
         get() = JphHeightFieldShapeSettings_GetActiveEdgeCosThresholdAngle(heightFieldShapeSettingsHandle)
         set(value) = JphHeightFieldShapeSettings_SetActiveEdgeCosThresholdAngle(heightFieldShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphHeightFieldShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

@@ -11,6 +11,8 @@ extern "C" {
 // JPH::CharacterContactListener
 JphCharacterContactListener* JphCharacterContactListener_create(void);
 void JphCharacterContactListener_destroy(JphCharacterContactListener* self);
+JphCharacterContactListener* JphCharacterContactListener_createUpcalls(JphUpcall call);
+void JphCharacterContactListener_bindUpcalls(JphCharacterContactListener* self, void* userData);
 void JphCharacterContactListener_OnAdjustBodyVelocity(JphCharacterContactListener* self, const JphCharacterVirtual* inCharacter, const JphBody* inBody2, JphVec3* ioLinearVelocity, JphVec3* ioAngularVelocity);
 bool JphCharacterContactListener_OnContactValidate(JphCharacterContactListener* self, const JphCharacterVirtual* inCharacter, const JphCharacterContact* inContact);
 void JphCharacterContactListener_OnContactAdded(JphCharacterContactListener* self, const JphCharacterVirtual* inCharacter, const JphCharacterContact* inContact, JphCharacterContactSettings* ioSettings);

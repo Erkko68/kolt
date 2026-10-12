@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterContactListener`. */
-open class CharacterContactListener internal constructor(internal val characterContactListenerHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphCharacterContactListener_create())
+open class CharacterContactListener internal constructor(internal val characterContactListenerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphCharacterContactListener_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != CharacterContactListener::class) JphCharacterContactListener_bindUpcalls(characterContactListenerHandle, Upcalls.reference(this))
+    }
 
     override fun close() =
-        JphCharacterContactListener_destroy(characterContactListenerHandle)
+        closeOnce { JphCharacterContactListener_destroy(characterContactListenerHandle) }
 
     open fun onContactValidate(character: CharacterVirtual?, contact: CharacterContact): Boolean =
         JphCharacterContactListener_OnContactValidate(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, contact.characterContactHandle)
@@ -61,4 +65,19 @@ open class CharacterContactListener internal constructor(internal val characterC
 
     open fun onCharacterContactRemoved(character: CharacterVirtual?, otherCharacterID: CharacterID, subShapeID2: SubShapeID) =
         JphCharacterContactListener_OnCharacterContactRemoved(characterContactListenerHandle, character?.characterVirtualHandle ?: NullPointer, otherCharacterID.characterIDHandle, subShapeID2.value)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, if (onContactValidate(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)))) 1L else 0L)
+            1 -> onContactAdded(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
+            2 -> onContactPersisted(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
+            3 -> onContactRemoved(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, BodyID(readSlot(args, 1).toInt()), SubShapeID(readSlot(args, 2).toInt()))
+            4 -> writeSlot(result, if (onCharacterContactValidate(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)))) 1L else 0L)
+            5 -> onCharacterContactAdded(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
+            6 -> onCharacterContactPersisted(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterContact(readPointerSlot(args, 1)), CharacterContactSettings(readPointerSlot(args, 2)))
+            7 -> onCharacterContactRemoved(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, CharacterID(readPointerSlot(args, 1)), SubShapeID(readSlot(args, 2).toInt()))
+            else -> return false
+        }
+        return true
+    }
 }

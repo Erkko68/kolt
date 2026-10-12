@@ -196,14 +196,11 @@ internal external fun JphCharacterVirtual_SetInnerBodyShape(self: NativePointer,
 @ExternalSymbolName("JphCharacterVirtual_GetTransformedShape")
 internal external fun JphCharacterVirtual_GetTransformedShape(self: NativePointer, out: NativePointer)
 
+@ExternalSymbolName("JphCharacterVirtual_CheckCollision")
+internal external fun JphCharacterVirtual_CheckCollision(self: NativePointer, inPosition: NativePointer, inRotation: NativePointer, inMovementDirection: NativePointer, inMaxSeparationDistance: Float, inShape: NativePointer, inBaseOffset: NativePointer, ioCollector: NativePointer, inBroadPhaseLayerFilter: NativePointer, inObjectLayerFilter: NativePointer, inBodyFilter: NativePointer, inShapeFilter: NativePointer)
+
 @ExternalSymbolName("JphCharacterVirtual_GetCharacterVirtualSettings")
 internal external fun JphCharacterVirtual_GetCharacterVirtualSettings(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphCharacterVirtual_SaveState")
-internal external fun JphCharacterVirtual_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphCharacterVirtual_RestoreState")
-internal external fun JphCharacterVirtual_RestoreState(self: NativePointer, inStream: NativePointer)
 
 @ExternalSymbolName("JphCharacterVirtual_GetActiveContacts")
 internal external fun JphCharacterVirtual_GetActiveContacts(self: NativePointer, out: NativePointer, outCapacity: Int): Int

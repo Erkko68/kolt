@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,35 +33,54 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TrackedVehicleControllerSettings`. */
-open class TrackedVehicleControllerSettings internal constructor(internal val trackedVehicleControllerSettingsHandle: NativePointer) : SerializableObject(JphTrackedVehicleControllerSettings_asSerializableObject(trackedVehicleControllerSettingsHandle)), AutoCloseable {
-    constructor() : this(JphTrackedVehicleControllerSettings_create())
+open class TrackedVehicleControllerSettings internal constructor(internal val trackedVehicleControllerSettingsHandle: NativePointer, owned: Boolean = false) : VehicleControllerSettings(JphTrackedVehicleControllerSettings_asVehicleControllerSettings(trackedVehicleControllerSettingsHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphTrackedVehicleControllerSettings_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != TrackedVehicleControllerSettings::class) JphTrackedVehicleControllerSettings_bindUpcalls(trackedVehicleControllerSettingsHandle, Upcalls.reference(this))
+    }
 
-    open fun addRef() =
-        JphTrackedVehicleControllerSettings_addRef(trackedVehicleControllerSettingsHandle)
+    override fun addRef() =
+        own { JphTrackedVehicleControllerSettings_addRef(trackedVehicleControllerSettingsHandle) }
 
     override fun close() =
-        JphTrackedVehicleControllerSettings_release(trackedVehicleControllerSettingsHandle)
+        closeOnce { JphTrackedVehicleControllerSettings_release(trackedVehicleControllerSettingsHandle) }
 
-    open val rtti: RTTI?
-        get() = JphTrackedVehicleControllerSettings_GetRTTI(trackedVehicleControllerSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
+    open var engine: VehicleEngineSettings
+        get() = run {
+            val returned = VehicleEngineSettings(JphVehicleEngineSettings_create(), owned = true)
+            JphTrackedVehicleControllerSettings_GetEngine(trackedVehicleControllerSettingsHandle, returned.vehicleEngineSettingsHandle)
+            returned
+        }
+        set(value) = JphTrackedVehicleControllerSettings_SetEngine(trackedVehicleControllerSettingsHandle, value.vehicleEngineSettingsHandle)
 
-    open fun constructController(constraint: VehicleConstraint): VehicleController? =
-        JphTrackedVehicleControllerSettings_ConstructController(trackedVehicleControllerSettingsHandle, constraint.vehicleConstraintHandle).takeIf { it != NullPointer }?.let(::VehicleController)
+    open var transmission: VehicleTransmissionSettings
+        get() = run {
+            val returned = VehicleTransmissionSettings(JphVehicleTransmissionSettings_create(), owned = true)
+            JphTrackedVehicleControllerSettings_GetTransmission(trackedVehicleControllerSettingsHandle, returned.vehicleTransmissionSettingsHandle)
+            returned
+        }
+        set(value) = JphTrackedVehicleControllerSettings_SetTransmission(trackedVehicleControllerSettingsHandle, value.vehicleTransmissionSettingsHandle)
 
-    open fun saveBinaryState(stream: StreamOut) =
-        JphTrackedVehicleControllerSettings_SaveBinaryState(trackedVehicleControllerSettingsHandle, stream.streamOutHandle)
+    open var tracks: List<VehicleTrackSettings>
+        get() = interopScope {
+            val count = JphTrackedVehicleControllerSettings_GetTracks(trackedVehicleControllerSettingsHandle, NullPointer, 0)
+            val returned = List(count) { VehicleTrackSettings(JphVehicleTrackSettings_create(), owned = true) }
+            JphTrackedVehicleControllerSettings_GetTracks(trackedVehicleControllerSettingsHandle, toInterop(returned.map { it.vehicleTrackSettingsHandle }), count)
+            returned
+        }
+        set(value) = interopScope { JphTrackedVehicleControllerSettings_SetTracks(trackedVehicleControllerSettingsHandle, toInterop(value.map { it.vehicleTrackSettingsHandle }), value.size) }
 
-    open fun restoreBinaryState(stream: StreamIn) =
-        JphTrackedVehicleControllerSettings_RestoreBinaryState(trackedVehicleControllerSettingsHandle, stream.streamInHandle)
-
-    open fun setEngine(value: VehicleEngineSettings) =
-        JphTrackedVehicleControllerSettings_SetEngine(trackedVehicleControllerSettingsHandle, value.vehicleEngineSettingsHandle)
-
-    open fun setTransmission(value: VehicleTransmissionSettings) =
-        JphTrackedVehicleControllerSettings_SetTransmission(trackedVehicleControllerSettingsHandle, value.vehicleTransmissionSettingsHandle)
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            1 -> restoreBinaryState(StreamIn(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphTrackedVehicleControllerSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

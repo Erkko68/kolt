@@ -8,6 +8,39 @@ void JphBodyActivationListener_destroy(JphBodyActivationListener* self) {
     delete kolt::cpp(self);
 }
 
+} // extern "C"
+
+namespace JPH {
+struct JphBodyActivationListener_Upcalls final : ::JPH::BodyActivationListener {
+    kolt::Upcall mCall;
+    void* mUser = nullptr;
+    explicit JphBodyActivationListener_Upcalls(kolt::Upcall call) : mCall(call) {}
+    ~JphBodyActivationListener_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    void OnBodyActivated(const BodyID & p0, uint64 p1) override {
+        const uint64_t args[] = {kolt::slot((p0).GetIndexAndSequenceNumber()), kolt::slot(p1)};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return;
+        kolt::unavailable("JPH::BodyActivationListener::OnBodyActivated");
+    }
+    void OnBodyDeactivated(const BodyID & p0, uint64 p1) override {
+        const uint64_t args[] = {kolt::slot((p0).GetIndexAndSequenceNumber()), kolt::slot(p1)};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 1, args, &result)) return;
+        kolt::unavailable("JPH::BodyActivationListener::OnBodyDeactivated");
+    }
+};
+} // namespace JPH
+
+extern "C" {
+
+JphBodyActivationListener* JphBodyActivationListener_createUpcalls(JphUpcall call) {
+    return kolt::c(static_cast<::JPH::BodyActivationListener*>(new ::JPH::JphBodyActivationListener_Upcalls(call)));
+}
+
+void JphBodyActivationListener_bindUpcalls(JphBodyActivationListener* self, void* userData) {
+    static_cast<::JPH::JphBodyActivationListener_Upcalls*>(kolt::cpp(self))->mUser = userData;
+}
+
 void JphBodyActivationListener_OnBodyActivated(JphBodyActivationListener* self, uint32_t inBodyID, uint64_t inBodyUserData) {
     kolt::cpp(self)->OnBodyActivated(JPH::BodyID(inBodyID), inBodyUserData);
 }

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BoxShapeSettings`. */
-open class BoxShapeSettings internal constructor(internal val boxShapeSettingsHandle: NativePointer) : ShapeSettings(JphBoxShapeSettings_asShapeSettings(boxShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphBoxShapeSettings_create())
-    constructor(halfExtent: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphBoxShapeSettings_create_Vec3Arg_float_PhysicsMaterial(toInterop(halfExtent.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) })
+open class BoxShapeSettings internal constructor(internal val boxShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphBoxShapeSettings_asConvexShapeSettings(boxShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphBoxShapeSettings_create(), owned = true)
+    constructor(halfExtent: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphBoxShapeSettings_create_Vec3Arg_float_PhysicsMaterial(toInterop(halfExtent.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
 
     override fun addRef() =
-        JphBoxShapeSettings_addRef(boxShapeSettingsHandle)
+        own { JphBoxShapeSettings_addRef(boxShapeSettingsHandle) }
 
     override fun close() =
-        JphBoxShapeSettings_release(boxShapeSettingsHandle)
+        closeOnce { JphBoxShapeSettings_release(boxShapeSettingsHandle) }
 
     open var halfExtent: Vec3
         get() = interopScope {
@@ -57,7 +58,7 @@ open class BoxShapeSettings internal constructor(internal val boxShapeSettingsHa
         set(value) = JphBoxShapeSettings_SetConvexRadius(boxShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphBoxShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

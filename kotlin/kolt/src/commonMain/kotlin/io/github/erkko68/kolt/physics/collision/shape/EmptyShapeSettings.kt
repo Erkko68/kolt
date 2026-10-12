@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::EmptyShapeSettings`. */
-open class EmptyShapeSettings internal constructor(internal val emptyShapeSettingsHandle: NativePointer) : ShapeSettings(JphEmptyShapeSettings_asShapeSettings(emptyShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphEmptyShapeSettings_create())
-    constructor(centerOfMass: Vec3) : this(interopScope { JphEmptyShapeSettings_create_Vec3Arg(toInterop(centerOfMass.toArray())) })
+open class EmptyShapeSettings internal constructor(internal val emptyShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphEmptyShapeSettings_asShapeSettings(emptyShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphEmptyShapeSettings_create(), owned = true)
+    constructor(centerOfMass: Vec3) : this(interopScope { JphEmptyShapeSettings_create_Vec3Arg(toInterop(centerOfMass.toArray())) }, owned = true)
 
     override fun addRef() =
-        JphEmptyShapeSettings_addRef(emptyShapeSettingsHandle)
+        own { JphEmptyShapeSettings_addRef(emptyShapeSettingsHandle) }
 
     override fun close() =
-        JphEmptyShapeSettings_release(emptyShapeSettingsHandle)
+        closeOnce { JphEmptyShapeSettings_release(emptyShapeSettingsHandle) }
 
     open var centerOfMass: Vec3
         get() = interopScope {
@@ -53,7 +54,7 @@ open class EmptyShapeSettings internal constructor(internal val emptyShapeSettin
         set(value) = interopScope { JphEmptyShapeSettings_SetCenterOfMass(emptyShapeSettingsHandle, toInterop(value.toArray())) }
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphEmptyShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

@@ -7,6 +7,12 @@ import io.github.erkko68.kolt.interop.NativePointer
 @ExternalSymbolName("Jph_EstimateCollisionResponse")
 internal external fun Jph_EstimateCollisionResponse(inBody1: NativePointer, inBody2: NativePointer, inManifold: NativePointer, outResult: NativePointer, inCombinedFriction: Float, inCombinedRestitution: Float, inMinVelocityForRestitution: Float, inNumIterations: Int)
 
+@ExternalSymbolName("Jph_IsVelocityMotor")
+internal external fun Jph_IsVelocityMotor(inMotorState: Int): Boolean
+
+@ExternalSymbolName("Jph_IsPositionMotor")
+internal external fun Jph_IsPositionMotor(inMotorState: Int): Boolean
+
 @ExternalSymbolName("Jph_VerifyJoltVersionIDInternal")
 internal external fun Jph_VerifyJoltVersionIDInternal(inVersionID: Long): Boolean
 

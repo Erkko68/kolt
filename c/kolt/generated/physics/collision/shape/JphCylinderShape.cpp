@@ -36,10 +36,6 @@ float JphCylinderShape_GetRadius(const JphCylinderShape* self) {
     return kolt::cpp(self)->GetRadius();
 }
 
-const JphConvexShapeSupport* JphCylinderShape_GetSupportFunction(const JphCylinderShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale) {
-    return kolt::c(kolt::cpp(self)->GetSupportFunction(static_cast<JPH::ConvexShape::ESupportMode>(inMode), *kolt::cpp(inBuffer), kolt::math<JPH::Vec3>(*inScale)));
-}
-
 float JphCylinderShape_GetConvexRadius(const JphCylinderShape* self) {
     return kolt::cpp(self)->GetConvexRadius();
 }

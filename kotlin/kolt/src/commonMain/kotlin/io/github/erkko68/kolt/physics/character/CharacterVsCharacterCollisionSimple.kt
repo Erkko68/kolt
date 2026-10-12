@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,36 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterVsCharacterCollisionSimple`. */
-open class CharacterVsCharacterCollisionSimple internal constructor(internal val characterVsCharacterCollisionSimpleHandle: NativePointer) : CharacterVsCharacterCollision(JphCharacterVsCharacterCollisionSimple_asCharacterVsCharacterCollision(characterVsCharacterCollisionSimpleHandle)), AutoCloseable {
-    constructor() : this(JphCharacterVsCharacterCollisionSimple_create())
+open class CharacterVsCharacterCollisionSimple internal constructor(internal val characterVsCharacterCollisionSimpleHandle: NativePointer, owned: Boolean = false) : CharacterVsCharacterCollision(JphCharacterVsCharacterCollisionSimple_asCharacterVsCharacterCollision(characterVsCharacterCollisionSimpleHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphCharacterVsCharacterCollisionSimple_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != CharacterVsCharacterCollisionSimple::class) JphCharacterVsCharacterCollisionSimple_bindUpcalls(characterVsCharacterCollisionSimpleHandle, Upcalls.reference(this))
+    }
 
     override fun close() =
-        JphCharacterVsCharacterCollisionSimple_destroy(characterVsCharacterCollisionSimpleHandle)
+        closeOnce { JphCharacterVsCharacterCollisionSimple_destroy(characterVsCharacterCollisionSimpleHandle) }
 
     open fun add(character: CharacterVirtual?) =
         JphCharacterVsCharacterCollisionSimple_Add(characterVsCharacterCollisionSimpleHandle, character?.characterVirtualHandle ?: NullPointer)
 
     open fun remove(character: CharacterVirtual?) =
         JphCharacterVsCharacterCollisionSimple_Remove(characterVsCharacterCollisionSimpleHandle, character?.characterVirtualHandle ?: NullPointer)
+
+    open var characters: List<CharacterVirtual>
+        get() = interopScope {
+            val count = JphCharacterVsCharacterCollisionSimple_GetCharacters(characterVsCharacterCollisionSimpleHandle, NullPointer, 0)
+            val returnedPointer = toInterop(List(count) { NullPointer })
+            JphCharacterVsCharacterCollisionSimple_GetCharacters(characterVsCharacterCollisionSimpleHandle, returnedPointer, count)
+            readPointers(returnedPointer, count).map { CharacterVirtual(it) }
+        }
+        set(value) = interopScope { JphCharacterVsCharacterCollisionSimple_SetCharacters(characterVsCharacterCollisionSimpleHandle, toInterop(value.map { it.characterVirtualHandle }), value.size) }
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> collideCharacter(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, Mat44(readFloats(readPointerSlot(args, 1), 16)), CollideShapeSettings(readPointerSlot(args, 2)), Vec3(readFloats(readPointerSlot(args, 3), 4)), CollideShapeCollector(readPointerSlot(args, 4)))
+            1 -> castCharacter(readPointerSlot(args, 0).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }, Mat44(readFloats(readPointerSlot(args, 1), 16)), Vec3(readFloats(readPointerSlot(args, 2), 4)), ShapeCastSettings(readPointerSlot(args, 3)), Vec3(readFloats(readPointerSlot(args, 4), 4)), CastShapeCollector(readPointerSlot(args, 5)))
+            else -> return false
+        }
+        return true
+    }
 }

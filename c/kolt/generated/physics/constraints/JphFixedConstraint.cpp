@@ -24,54 +24,6 @@ JphConstraint* JphFixedConstraint_asConstraint(JphFixedConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
-JphEConstraintSubType JphFixedConstraint_GetSubType(const JphFixedConstraint* self) {
-    return static_cast<JphEConstraintSubType>(kolt::cpp(self)->GetSubType());
-}
-
-void JphFixedConstraint_NotifyShapeChanged(JphFixedConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM) {
-    kolt::cpp(self)->NotifyShapeChanged(JPH::BodyID(inBodyID), kolt::math<JPH::Vec3>(*inDeltaCOM));
-}
-
-void JphFixedConstraint_SetupVelocityConstraint(JphFixedConstraint* self, float inDeltaTime) {
-    kolt::cpp(self)->SetupVelocityConstraint(inDeltaTime);
-}
-
-void JphFixedConstraint_ResetWarmStart(JphFixedConstraint* self) {
-    kolt::cpp(self)->ResetWarmStart();
-}
-
-void JphFixedConstraint_WarmStartVelocityConstraint(JphFixedConstraint* self, float inWarmStartImpulseRatio) {
-    kolt::cpp(self)->WarmStartVelocityConstraint(inWarmStartImpulseRatio);
-}
-
-bool JphFixedConstraint_SolveVelocityConstraint(JphFixedConstraint* self, float inDeltaTime) {
-    return kolt::cpp(self)->SolveVelocityConstraint(inDeltaTime);
-}
-
-bool JphFixedConstraint_SolvePositionConstraint(JphFixedConstraint* self, float inDeltaTime, float inBaumgarte) {
-    return kolt::cpp(self)->SolvePositionConstraint(inDeltaTime, inBaumgarte);
-}
-
-void JphFixedConstraint_SaveState(const JphFixedConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
-}
-
-void JphFixedConstraint_RestoreState(JphFixedConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
-}
-
-JphConstraintSettings* JphFixedConstraint_GetConstraintSettings(const JphFixedConstraint* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetConstraintSettings()));
-}
-
-void JphFixedConstraint_GetConstraintToBody1Matrix(const JphFixedConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody1Matrix());
-}
-
-void JphFixedConstraint_GetConstraintToBody2Matrix(const JphFixedConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody2Matrix());
-}
-
 void JphFixedConstraint_GetTotalLambdaPosition(const JphFixedConstraint* self, JphVec3* out) {
     *out = kolt::mirror<JphVec3>(kolt::cpp(self)->GetTotalLambdaPosition());
 }

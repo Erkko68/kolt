@@ -75,11 +75,8 @@ void JphCharacterVirtual_UpdateGroundVelocity(JphCharacterVirtual* self);
 bool JphCharacterVirtual_SetShape(JphCharacterVirtual* self, const JphShape* inShape, float inMaxPenetrationDepth, const JphBroadPhaseLayerFilter* inBroadPhaseLayerFilter, const JphObjectLayerFilter* inObjectLayerFilter, const JphBodyFilter* inBodyFilter, const JphShapeFilter* inShapeFilter, JphTempAllocator* inAllocator);
 void JphCharacterVirtual_SetInnerBodyShape(JphCharacterVirtual* self, const JphShape* inShape);
 void JphCharacterVirtual_GetTransformedShape(const JphCharacterVirtual* self, JphTransformedShape* out);
-// TODO(handwritten) JphCharacterVirtual_CheckCollision: void JPH::CharacterVirtual::CheckCollision(RVec3Arg inPosition, QuatArg inRotation, Vec3Arg inMovementDirection, float inMaxSeparationDistance, const Shape * inShape, RVec3Arg inBaseOffset, CollideShapeCollector & ioCollector, const BroadPhaseLayerFilter & inBroadPhaseLayerFilter, const ObjectLayerFilter & inObjectLayerFilter, const BodyFilter & inBodyFilter, const ShapeFilter & inShapeFilter) const
-//     CollisionCollector<CollideShapeResult, CollisionCollectorTraitsCollideShape>: class template
+void JphCharacterVirtual_CheckCollision(const JphCharacterVirtual* self, const JphVec3* inPosition, const JphQuat* inRotation, const JphVec3* inMovementDirection, float inMaxSeparationDistance, const JphShape* inShape, const JphVec3* inBaseOffset, JphCollideShapeCollector* ioCollector, const JphBroadPhaseLayerFilter* inBroadPhaseLayerFilter, const JphObjectLayerFilter* inObjectLayerFilter, const JphBodyFilter* inBodyFilter, const JphShapeFilter* inShapeFilter);
 void JphCharacterVirtual_GetCharacterVirtualSettings(const JphCharacterVirtual* self, JphCharacterVirtualSettings* out);
-void JphCharacterVirtual_SaveState(const JphCharacterVirtual* self, JphStateRecorder* inStream);
-void JphCharacterVirtual_RestoreState(JphCharacterVirtual* self, JphStateRecorder* inStream);
 uint32_t JphCharacterVirtual_GetActiveContacts(const JphCharacterVirtual* self, JphCharacterContact* const* out, uint32_t outCapacity);
 bool JphCharacterVirtual_HasCollidedWith_BodyID(const JphCharacterVirtual* self, uint32_t inBody);
 bool JphCharacterVirtual_HasCollidedWith_CharacterID(const JphCharacterVirtual* self, const JphCharacterID* inCharacterID);

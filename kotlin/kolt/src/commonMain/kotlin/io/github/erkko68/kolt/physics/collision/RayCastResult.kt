@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RayCastResult`. */
-open class RayCastResult internal constructor(internal val rayCastResultHandle: NativePointer) : BroadPhaseCastResult(JphRayCastResult_asBroadPhaseCastResult(rayCastResultHandle)), AutoCloseable {
-    constructor() : this(JphRayCastResult_create())
+open class RayCastResult internal constructor(internal val rayCastResultHandle: NativePointer, owned: Boolean = false) : BroadPhaseCastResult(JphRayCastResult_asBroadPhaseCastResult(rayCastResultHandle), owned), AutoCloseable {
+    constructor() : this(JphRayCastResult_create(), owned = true)
 
     override fun close() =
-        JphRayCastResult_destroy(rayCastResultHandle)
+        closeOnce { JphRayCastResult_destroy(rayCastResultHandle) }
 
     open var subShapeID2: SubShapeID
         get() = SubShapeID(JphRayCastResult_GetSubShapeID2(rayCastResultHandle))

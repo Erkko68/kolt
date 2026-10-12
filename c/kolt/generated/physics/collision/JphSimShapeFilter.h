@@ -11,6 +11,8 @@ extern "C" {
 // JPH::SimShapeFilter
 JphSimShapeFilter* JphSimShapeFilter_create(void);
 void JphSimShapeFilter_destroy(JphSimShapeFilter* self);
+JphSimShapeFilter* JphSimShapeFilter_createUpcalls(JphUpcall call);
+void JphSimShapeFilter_bindUpcalls(JphSimShapeFilter* self, void* userData);
 bool JphSimShapeFilter_ShouldCollide(const JphSimShapeFilter* self, const JphBody* inBody1, const JphShape* inShape1, uint32_t inSubShapeIDOfShape1, const JphBody* inBody2, const JphShape* inShape2, uint32_t inSubShapeIDOfShape2);
 
 

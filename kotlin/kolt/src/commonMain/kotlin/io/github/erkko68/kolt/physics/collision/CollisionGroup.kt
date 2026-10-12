@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,36 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CollisionGroup`. */
-open class CollisionGroup internal constructor(internal val collisionGroupHandle: NativePointer)
+open class CollisionGroup internal constructor(internal val collisionGroupHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCollisionGroup_create(), owned = true)
+    constructor(filter: GroupFilter?, groupID: Int, subGroupID: Int) : this(JphCollisionGroup_create_GroupFilter_GroupID_SubGroupID(filter?.groupFilterHandle ?: NullPointer, groupID, subGroupID), owned = true)
+
+    override fun close() =
+        closeOnce { JphCollisionGroup_destroy(collisionGroupHandle) }
+
+    open var groupFilter: GroupFilter?
+        get() = JphCollisionGroup_GetGroupFilter(collisionGroupHandle).takeIf { it != NullPointer }?.let { GroupFilter(it) }
+        set(filter) = JphCollisionGroup_SetGroupFilter(collisionGroupHandle, filter?.groupFilterHandle ?: NullPointer)
+
+    open var groupID: Int
+        get() = JphCollisionGroup_GetGroupID(collisionGroupHandle)
+        set(id) = JphCollisionGroup_SetGroupID(collisionGroupHandle, id)
+
+    open var subGroupID: Int
+        get() = JphCollisionGroup_GetSubGroupID(collisionGroupHandle)
+        set(id) = JphCollisionGroup_SetSubGroupID(collisionGroupHandle, id)
+
+    open fun canCollide(other: CollisionGroup): Boolean =
+        JphCollisionGroup_CanCollide(collisionGroupHandle, other.collisionGroupHandle)
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphCollisionGroup_SaveBinaryState(collisionGroupHandle, stream.streamOutHandle)
+
+    open fun restoreBinaryState(stream: StreamIn) =
+        JphCollisionGroup_RestoreBinaryState(collisionGroupHandle, stream.streamInHandle)
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphCollisionGroup_sCreateRTTI(rtti.rttiHandle)
+    }
+}

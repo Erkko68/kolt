@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,17 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::GroupFilterTable`. */
-open class GroupFilterTable internal constructor(internal val groupFilterTableHandle: NativePointer) : SerializableObject(JphGroupFilterTable_asSerializableObject(groupFilterTableHandle)), AutoCloseable {
-    constructor(numSubGroups: Int) : this(JphGroupFilterTable_create(numSubGroups))
+open class GroupFilterTable internal constructor(internal val groupFilterTableHandle: NativePointer, owned: Boolean = false) : GroupFilter(JphGroupFilterTable_asGroupFilter(groupFilterTableHandle), owned), AutoCloseable {
+    constructor(numSubGroups: Int) : this(JphGroupFilterTable_create(numSubGroups), owned = true)
 
-    open fun addRef() =
-        JphGroupFilterTable_addRef(groupFilterTableHandle)
+    override fun addRef() =
+        own { JphGroupFilterTable_addRef(groupFilterTableHandle) }
 
     override fun close() =
-        JphGroupFilterTable_release(groupFilterTableHandle)
-
-    open val rtti: RTTI?
-        get() = JphGroupFilterTable_GetRTTI(groupFilterTableHandle).takeIf { it != NullPointer }?.let(::RTTI)
+        closeOnce { JphGroupFilterTable_release(groupFilterTableHandle) }
 
     open fun disableCollision(subGroup1: Int, subGroup2: Int) =
         JphGroupFilterTable_DisableCollision(groupFilterTableHandle, subGroup1, subGroup2)
@@ -53,14 +51,8 @@ open class GroupFilterTable internal constructor(internal val groupFilterTableHa
     open fun isCollisionEnabled(subGroup1: Int, subGroup2: Int): Boolean =
         JphGroupFilterTable_IsCollisionEnabled(groupFilterTableHandle, subGroup1, subGroup2)
 
-    open fun canCollide(group1: CollisionGroup, group2: CollisionGroup): Boolean =
-        JphGroupFilterTable_CanCollide(groupFilterTableHandle, group1.collisionGroupHandle, group2.collisionGroupHandle)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphGroupFilterTable_SaveBinaryState(groupFilterTableHandle, stream.streamOutHandle)
-
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphGroupFilterTable_sCreateRTTI(rtti.rttiHandle)
     }
 }

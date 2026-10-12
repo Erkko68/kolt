@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,74 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConvexShape`. */
-open class ConvexShape internal constructor(internal val convexShapeHandle: NativePointer)
+open class ConvexShape internal constructor(internal val convexShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphConvexShape_asShape(convexShapeHandle), owned), AutoCloseable {
+    override fun addRef() =
+        own { JphConvexShape_addRef(convexShapeHandle) }
+
+    override fun close() =
+        closeOnce { JphConvexShape_release(convexShapeHandle) }
+
+    open fun getSupportFunction(mode: ConvexShape.ESupportMode, buffer: ConvexShape.SupportBuffer, scale: Vec3): ConvexShape.Support? =
+        interopScope { JphConvexShape_GetSupportFunction(convexShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let { ConvexShape.Support(it) } }
+
+    open var material: PhysicsMaterial?
+        get() = JphConvexShape_GetMaterial(convexShapeHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
+        set(material) = JphConvexShape_SetMaterial(convexShapeHandle, material?.physicsMaterialHandle ?: NullPointer)
+
+    open var density: Float
+        get() = JphConvexShape_GetDensity(convexShapeHandle)
+        set(density) = JphConvexShape_SetDensity(convexShapeHandle, density)
+
+    /** C++ `JPH::ConvexShape::Support`. */
+    open class Support internal constructor(internal val convexShapeSupportHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+        override fun close() =
+            closeOnce { JphConvexShapeSupport_destroy(convexShapeSupportHandle) }
+    
+        open fun getSupport(direction: Vec3): Vec3 =
+            interopScope {
+                val returned = FloatArray(4)
+                val returnedPointer = toInterop(returned)
+                JphConvexShapeSupport_GetSupport(convexShapeSupportHandle, toInterop(direction.toArray()), returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Vec3(returned)
+            }
+    
+        open val convexRadius: Float
+            get() = JphConvexShapeSupport_GetConvexRadius(convexShapeSupportHandle)
+    }
+    
+    /** C++ `JPH::ConvexShape::SupportBuffer`. */
+    open class SupportBuffer internal constructor(internal val convexShapeSupportBufferHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+        constructor() : this(JphConvexShapeSupportBuffer_create(), owned = true)
+    
+        override fun close() =
+            closeOnce { JphConvexShapeSupportBuffer_destroy(convexShapeSupportBufferHandle) }
+    
+        open var data: IntArray
+            get() = interopScope {
+                val count = JphConvexShapeSupportBuffer_GetData(convexShapeSupportBufferHandle, NullPointer, 0)
+                val returned = IntArray(count)
+                val returnedPointer = toInterop(returned)
+                JphConvexShapeSupportBuffer_GetData(convexShapeSupportBufferHandle, returnedPointer, count)
+                returnedPointer.fromInterop(returned)
+                returned
+            }
+            set(value) = interopScope { JphConvexShapeSupportBuffer_SetData(convexShapeSupportBufferHandle, toInterop(value), value.size) }
+    }
+    
+    /** C++ `JPH::ConvexShape::ESupportMode`. */
+    enum class ESupportMode(internal val value: Int) {
+        ExcludeConvexRadius(0),
+        IncludeConvexRadius(1),
+        Default(2);
+    
+        internal companion object {
+            fun of(value: Int) = entries.first { it.value == value }
+        }
+    }
+    
+    companion object {
+        fun register() =
+            JphConvexShape_sRegister()
+    }
+}

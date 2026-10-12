@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,12 +33,9 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ObjectVsBroadPhaseLayerFilterTable`. */
-open class ObjectVsBroadPhaseLayerFilterTable internal constructor(internal val objectVsBroadPhaseLayerFilterTableHandle: NativePointer) : ObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterTable_asObjectVsBroadPhaseLayerFilter(objectVsBroadPhaseLayerFilterTableHandle)), AutoCloseable {
-    constructor(broadPhaseLayerInterface: BroadPhaseLayerInterface, numBroadPhaseLayers: Int, objectLayerPairFilter: ObjectLayerPairFilter, numObjectLayers: Int) : this(JphObjectVsBroadPhaseLayerFilterTable_create(broadPhaseLayerInterface.broadPhaseLayerInterfaceHandle, numBroadPhaseLayers, objectLayerPairFilter.objectLayerPairFilterHandle, numObjectLayers))
+open class ObjectVsBroadPhaseLayerFilterTable internal constructor(internal val objectVsBroadPhaseLayerFilterTableHandle: NativePointer, owned: Boolean = false) : ObjectVsBroadPhaseLayerFilter(JphObjectVsBroadPhaseLayerFilterTable_asObjectVsBroadPhaseLayerFilter(objectVsBroadPhaseLayerFilterTableHandle), owned), AutoCloseable {
+    constructor(broadPhaseLayerInterface: BroadPhaseLayerInterface, numBroadPhaseLayers: Int, objectLayerPairFilter: ObjectLayerPairFilter, numObjectLayers: Int) : this(JphObjectVsBroadPhaseLayerFilterTable_create(broadPhaseLayerInterface.broadPhaseLayerInterfaceHandle, numBroadPhaseLayers, objectLayerPairFilter.objectLayerPairFilterHandle, numObjectLayers), owned = true)
 
     override fun close() =
-        JphObjectVsBroadPhaseLayerFilterTable_destroy(objectVsBroadPhaseLayerFilterTableHandle)
-
-    open fun shouldCollide(layer1: Int, layer2: BroadPhaseLayer): Boolean =
-        JphObjectVsBroadPhaseLayerFilterTable_ShouldCollide(objectVsBroadPhaseLayerFilterTableHandle, layer1, layer2.value)
+        closeOnce { JphObjectVsBroadPhaseLayerFilterTable_destroy(objectVsBroadPhaseLayerFilterTableHandle) }
 }

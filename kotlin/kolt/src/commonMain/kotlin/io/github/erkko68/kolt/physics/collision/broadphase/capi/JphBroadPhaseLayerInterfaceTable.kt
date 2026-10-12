@@ -15,9 +15,3 @@ internal external fun JphBroadPhaseLayerInterfaceTable_asBroadPhaseLayerInterfac
 
 @ExternalSymbolName("JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer")
 internal external fun JphBroadPhaseLayerInterfaceTable_MapObjectToBroadPhaseLayer(self: NativePointer, inObjectLayer: Int, inBroadPhaseLayer: Int)
-
-@ExternalSymbolName("JphBroadPhaseLayerInterfaceTable_GetNumBroadPhaseLayers")
-internal external fun JphBroadPhaseLayerInterfaceTable_GetNumBroadPhaseLayers(self: NativePointer): Int
-
-@ExternalSymbolName("JphBroadPhaseLayerInterfaceTable_GetBroadPhaseLayer")
-internal external fun JphBroadPhaseLayerInterfaceTable_GetBroadPhaseLayer(self: NativePointer, inLayer: Int): Int

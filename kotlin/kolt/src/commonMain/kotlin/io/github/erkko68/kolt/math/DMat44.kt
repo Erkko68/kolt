@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.objectstream.*
 import io.github.erkko68.kolt.physics.*
@@ -32,4 +33,4 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DMat44`. */
-open class DMat44 internal constructor(internal val dMat44Handle: NativePointer)
+open class DMat44 internal constructor(internal val dMat44Handle: NativePointer, owned: Boolean = false) : NativeObject(owned)

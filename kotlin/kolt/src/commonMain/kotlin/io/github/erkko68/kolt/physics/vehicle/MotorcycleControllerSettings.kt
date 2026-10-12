@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,26 +33,17 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MotorcycleControllerSettings`. */
-open class MotorcycleControllerSettings internal constructor(internal val motorcycleControllerSettingsHandle: NativePointer) : SerializableObject(JphMotorcycleControllerSettings_asSerializableObject(motorcycleControllerSettingsHandle)), AutoCloseable {
-    constructor() : this(JphMotorcycleControllerSettings_create())
+open class MotorcycleControllerSettings internal constructor(internal val motorcycleControllerSettingsHandle: NativePointer, owned: Boolean = false) : WheeledVehicleControllerSettings(JphMotorcycleControllerSettings_asWheeledVehicleControllerSettings(motorcycleControllerSettingsHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphMotorcycleControllerSettings_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != MotorcycleControllerSettings::class) JphMotorcycleControllerSettings_bindUpcalls(motorcycleControllerSettingsHandle, Upcalls.reference(this))
+    }
 
-    open fun addRef() =
-        JphMotorcycleControllerSettings_addRef(motorcycleControllerSettingsHandle)
+    override fun addRef() =
+        own { JphMotorcycleControllerSettings_addRef(motorcycleControllerSettingsHandle) }
 
     override fun close() =
-        JphMotorcycleControllerSettings_release(motorcycleControllerSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphMotorcycleControllerSettings_GetRTTI(motorcycleControllerSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun constructController(constraint: VehicleConstraint): VehicleController? =
-        JphMotorcycleControllerSettings_ConstructController(motorcycleControllerSettingsHandle, constraint.vehicleConstraintHandle).takeIf { it != NullPointer }?.let(::VehicleController)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphMotorcycleControllerSettings_SaveBinaryState(motorcycleControllerSettingsHandle, stream.streamOutHandle)
-
-    open fun restoreBinaryState(stream: StreamIn) =
-        JphMotorcycleControllerSettings_RestoreBinaryState(motorcycleControllerSettingsHandle, stream.streamInHandle)
+        closeOnce { JphMotorcycleControllerSettings_release(motorcycleControllerSettingsHandle) }
 
     open var maxLeanAngle: Float
         get() = JphMotorcycleControllerSettings_GetMaxLeanAngle(motorcycleControllerSettingsHandle)
@@ -77,8 +69,17 @@ open class MotorcycleControllerSettings internal constructor(internal val motorc
         get() = JphMotorcycleControllerSettings_GetLeanSmoothingFactor(motorcycleControllerSettingsHandle)
         set(value) = JphMotorcycleControllerSettings_SetLeanSmoothingFactor(motorcycleControllerSettingsHandle, value)
 
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            1 -> restoreBinaryState(StreamIn(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
+
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphMotorcycleControllerSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

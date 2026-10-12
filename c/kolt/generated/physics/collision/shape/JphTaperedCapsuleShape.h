@@ -19,7 +19,6 @@ JphShape* JphTaperedCapsuleShape_asShape(JphTaperedCapsuleShape* self);
 float JphTaperedCapsuleShape_GetTopRadius(const JphTaperedCapsuleShape* self);
 float JphTaperedCapsuleShape_GetBottomRadius(const JphTaperedCapsuleShape* self);
 float JphTaperedCapsuleShape_GetHalfHeight(const JphTaperedCapsuleShape* self);
-const JphConvexShapeSupport* JphTaperedCapsuleShape_GetSupportFunction(const JphTaperedCapsuleShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale);
 void JphTaperedCapsuleShape_sRegister(void);
 
 

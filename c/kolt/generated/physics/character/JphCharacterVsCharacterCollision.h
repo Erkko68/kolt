@@ -10,10 +10,10 @@ extern "C" {
 
 // JPH::CharacterVsCharacterCollision
 void JphCharacterVsCharacterCollision_destroy(JphCharacterVsCharacterCollision* self);
-// TODO(handwritten) JphCharacterVsCharacterCollision_CollideCharacter: void JPH::CharacterVsCharacterCollision::CollideCharacter(const CharacterVirtual * inCharacter, RMat44Arg inCenterOfMassTransform, const CollideShapeSettings & inCollideShapeSettings, RVec3Arg inBaseOffset, CollideShapeCollector & ioCollector) const
-//     CollisionCollector<CollideShapeResult, CollisionCollectorTraitsCollideShape>: class template
-// TODO(handwritten) JphCharacterVsCharacterCollision_CastCharacter: void JPH::CharacterVsCharacterCollision::CastCharacter(const CharacterVirtual * inCharacter, RMat44Arg inCenterOfMassTransform, Vec3Arg inDirection, const ShapeCastSettings & inShapeCastSettings, RVec3Arg inBaseOffset, CastShapeCollector & ioCollector) const
-//     CollisionCollector<ShapeCastResult, CollisionCollectorTraitsCastShape>: class template
+JphCharacterVsCharacterCollision* JphCharacterVsCharacterCollision_createUpcalls(JphUpcall call);
+void JphCharacterVsCharacterCollision_bindUpcalls(JphCharacterVsCharacterCollision* self, void* userData);
+void JphCharacterVsCharacterCollision_CollideCharacter(const JphCharacterVsCharacterCollision* self, const JphCharacterVirtual* inCharacter, const JphMat44* inCenterOfMassTransform, const JphCollideShapeSettings* inCollideShapeSettings, const JphVec3* inBaseOffset, JphCollideShapeCollector* ioCollector);
+void JphCharacterVsCharacterCollision_CastCharacter(const JphCharacterVsCharacterCollision* self, const JphCharacterVirtual* inCharacter, const JphMat44* inCenterOfMassTransform, const JphVec3* inDirection, const JphShapeCastSettings* inShapeCastSettings, const JphVec3* inBaseOffset, JphCastShapeCollector* ioCollector);
 
 
 #ifdef __cplusplus

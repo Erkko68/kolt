@@ -19,42 +19,6 @@ internal external fun JphSixDOFConstraint_asTwoBodyConstraint(self: NativePointe
 @ExternalSymbolName("JphSixDOFConstraint_asConstraint")
 internal external fun JphSixDOFConstraint_asConstraint(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphSixDOFConstraint_GetSubType")
-internal external fun JphSixDOFConstraint_GetSubType(self: NativePointer): Int
-
-@ExternalSymbolName("JphSixDOFConstraint_NotifyShapeChanged")
-internal external fun JphSixDOFConstraint_NotifyShapeChanged(self: NativePointer, inBodyID: Int, inDeltaCOM: NativePointer)
-
-@ExternalSymbolName("JphSixDOFConstraint_SetupVelocityConstraint")
-internal external fun JphSixDOFConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphSixDOFConstraint_ResetWarmStart")
-internal external fun JphSixDOFConstraint_ResetWarmStart(self: NativePointer)
-
-@ExternalSymbolName("JphSixDOFConstraint_WarmStartVelocityConstraint")
-internal external fun JphSixDOFConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphSixDOFConstraint_SolveVelocityConstraint")
-internal external fun JphSixDOFConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphSixDOFConstraint_SolvePositionConstraint")
-internal external fun JphSixDOFConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphSixDOFConstraint_SaveState")
-internal external fun JphSixDOFConstraint_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphSixDOFConstraint_RestoreState")
-internal external fun JphSixDOFConstraint_RestoreState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphSixDOFConstraint_GetConstraintSettings")
-internal external fun JphSixDOFConstraint_GetConstraintSettings(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphSixDOFConstraint_GetConstraintToBody1Matrix")
-internal external fun JphSixDOFConstraint_GetConstraintToBody1Matrix(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphSixDOFConstraint_GetConstraintToBody2Matrix")
-internal external fun JphSixDOFConstraint_GetConstraintToBody2Matrix(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphSixDOFConstraint_SetTranslationLimits")
 internal external fun JphSixDOFConstraint_SetTranslationLimits(self: NativePointer, inLimitMin: NativePointer, inLimitMax: NativePointer)
 

@@ -13,8 +13,6 @@ JphBroadPhaseLayerInterfaceMask* JphBroadPhaseLayerInterfaceMask_create(uint32_t
 void JphBroadPhaseLayerInterfaceMask_destroy(JphBroadPhaseLayerInterfaceMask* self);
 JphBroadPhaseLayerInterface* JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface(JphBroadPhaseLayerInterfaceMask* self);
 void JphBroadPhaseLayerInterfaceMask_ConfigureLayer(JphBroadPhaseLayerInterfaceMask* self, uint32_t inBroadPhaseLayer, uint32_t inGroupsToInclude, uint32_t inGroupsToExclude);
-uint32_t JphBroadPhaseLayerInterfaceMask_GetNumBroadPhaseLayers(const JphBroadPhaseLayerInterfaceMask* self);
-uint32_t JphBroadPhaseLayerInterfaceMask_GetBroadPhaseLayer(const JphBroadPhaseLayerInterfaceMask* self, uint32_t inLayer);
 bool JphBroadPhaseLayerInterfaceMask_ShouldCollide(const JphBroadPhaseLayerInterfaceMask* self, uint32_t inLayer1, uint32_t inLayer2);
 
 

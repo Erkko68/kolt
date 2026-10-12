@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,88 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ContactManifold`. */
-open class ContactManifold internal constructor(internal val contactManifoldHandle: NativePointer)
+open class ContactManifold internal constructor(internal val contactManifoldHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphContactManifold_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphContactManifold_destroy(contactManifoldHandle) }
+
+    open fun swapShapes(): ContactManifold =
+        run {
+            val returned = ContactManifold(JphContactManifold_create(), owned = true)
+            JphContactManifold_SwapShapes(contactManifoldHandle, returned.contactManifoldHandle)
+            returned
+        }
+
+    open fun getWorldSpaceContactPointOn1(index: Int): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphContactManifold_GetWorldSpaceContactPointOn1(contactManifoldHandle, index, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open fun getWorldSpaceContactPointOn2(index: Int): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphContactManifold_GetWorldSpaceContactPointOn2(contactManifoldHandle, index, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open var baseOffset: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphContactManifold_GetBaseOffset(contactManifoldHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphContactManifold_SetBaseOffset(contactManifoldHandle, toInterop(value.toArray())) }
+
+    open var worldSpaceNormal: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphContactManifold_GetWorldSpaceNormal(contactManifoldHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphContactManifold_SetWorldSpaceNormal(contactManifoldHandle, toInterop(value.toArray())) }
+
+    open var penetrationDepth: Float
+        get() = JphContactManifold_GetPenetrationDepth(contactManifoldHandle)
+        set(value) = JphContactManifold_SetPenetrationDepth(contactManifoldHandle, value)
+
+    open var subShapeID1: SubShapeID
+        get() = SubShapeID(JphContactManifold_GetSubShapeID1(contactManifoldHandle))
+        set(value) = JphContactManifold_SetSubShapeID1(contactManifoldHandle, value.value)
+
+    open var subShapeID2: SubShapeID
+        get() = SubShapeID(JphContactManifold_GetSubShapeID2(contactManifoldHandle))
+        set(value) = JphContactManifold_SetSubShapeID2(contactManifoldHandle, value.value)
+
+    open var relativeContactPointsOn1: List<Vec3>
+        get() = interopScope {
+            val count = JphContactManifold_GetRelativeContactPointsOn1(contactManifoldHandle, NullPointer, 0)
+            val returned = FloatArray(count * 4)
+            val returnedPointer = toInterop(returned)
+            JphContactManifold_GetRelativeContactPointsOn1(contactManifoldHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            List(count) { Vec3(returned.copyOfRange(it * 4, it * 4 + 4)) }
+        }
+        set(value) = interopScope { JphContactManifold_SetRelativeContactPointsOn1(contactManifoldHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
+
+    open var relativeContactPointsOn2: List<Vec3>
+        get() = interopScope {
+            val count = JphContactManifold_GetRelativeContactPointsOn2(contactManifoldHandle, NullPointer, 0)
+            val returned = FloatArray(count * 4)
+            val returnedPointer = toInterop(returned)
+            JphContactManifold_GetRelativeContactPointsOn2(contactManifoldHandle, returnedPointer, count)
+            returnedPointer.fromInterop(returned)
+            List(count) { Vec3(returned.copyOfRange(it * 4, it * 4 + 4)) }
+        }
+        set(value) = interopScope { JphContactManifold_SetRelativeContactPointsOn2(contactManifoldHandle, toInterop(FloatArray(value.size * 4).also { a -> value.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 4) } }), value.size) }
+}

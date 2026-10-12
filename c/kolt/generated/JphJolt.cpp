@@ -8,6 +8,14 @@ void Jph_EstimateCollisionResponse(const JphBody* inBody1, const JphBody* inBody
     JPH::EstimateCollisionResponse(*kolt::cpp(inBody1), *kolt::cpp(inBody2), *kolt::cpp(inManifold), *kolt::cpp(outResult), inCombinedFriction, inCombinedRestitution, inMinVelocityForRestitution, static_cast<unsigned int>(inNumIterations));
 }
 
+bool Jph_IsVelocityMotor(JphEMotorState inMotorState) {
+    return JPH::IsVelocityMotor(static_cast<JPH::EMotorState>(inMotorState));
+}
+
+bool Jph_IsPositionMotor(JphEMotorState inMotorState) {
+    return JPH::IsPositionMotor(static_cast<JPH::EMotorState>(inMotorState));
+}
+
 bool Jph_VerifyJoltVersionIDInternal(uint64_t inVersionID) {
     return JPH::VerifyJoltVersionIDInternal(inVersionID);
 }

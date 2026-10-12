@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RayCastSettings`. */
-open class RayCastSettings internal constructor(internal val rayCastSettingsHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphRayCastSettings_create())
+open class RayCastSettings internal constructor(internal val rayCastSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphRayCastSettings_create(), owned = true)
 
     override fun close() =
-        JphRayCastSettings_destroy(rayCastSettingsHandle)
+        closeOnce { JphRayCastSettings_destroy(rayCastSettingsHandle) }
 
     open fun setBackFaceMode(mode: EBackFaceMode) =
         JphRayCastSettings_SetBackFaceMode(rayCastSettingsHandle, mode.value)

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleControllerSettings`. */
-open class VehicleControllerSettings internal constructor(internal val vehicleControllerSettingsHandle: NativePointer)
+open class VehicleControllerSettings internal constructor(internal val vehicleControllerSettingsHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphVehicleControllerSettings_asSerializableObject(vehicleControllerSettingsHandle), owned), AutoCloseable {
+    open fun addRef() =
+        own { JphVehicleControllerSettings_addRef(vehicleControllerSettingsHandle) }
+
+    override fun close() =
+        closeOnce { JphVehicleControllerSettings_release(vehicleControllerSettingsHandle) }
+
+    open val rtti: RTTI?
+        get() = JphVehicleControllerSettings_GetRTTI(vehicleControllerSettingsHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphVehicleControllerSettings_SaveBinaryState(vehicleControllerSettingsHandle, stream.streamOutHandle)
+
+    open fun restoreBinaryState(stream: StreamIn) =
+        JphVehicleControllerSettings_RestoreBinaryState(vehicleControllerSettingsHandle, stream.streamInHandle)
+
+    open fun constructController(constraint: VehicleConstraint): VehicleController? =
+        JphVehicleControllerSettings_ConstructController(vehicleControllerSettingsHandle, constraint.vehicleConstraintHandle).takeIf { it != NullPointer }?.let { VehicleController(it) }
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphVehicleControllerSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

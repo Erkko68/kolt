@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::OffsetCenterOfMassShape`. */
-open class OffsetCenterOfMassShape internal constructor(internal val offsetCenterOfMassShapeHandle: NativePointer) : Shape(JphOffsetCenterOfMassShape_asShape(offsetCenterOfMassShapeHandle)), AutoCloseable {
-    constructor() : this(JphOffsetCenterOfMassShape_create())
-    constructor(shape: Shape?, offset: Vec3) : this(interopScope { JphOffsetCenterOfMassShape_create_Shape_Vec3Arg(shape?.shapeHandle ?: NullPointer, toInterop(offset.toArray())) })
+open class OffsetCenterOfMassShape internal constructor(internal val offsetCenterOfMassShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphOffsetCenterOfMassShape_asShape(offsetCenterOfMassShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphOffsetCenterOfMassShape_create(), owned = true)
+    constructor(shape: Shape?, offset: Vec3) : this(interopScope { JphOffsetCenterOfMassShape_create_Shape_Vec3Arg(shape?.shapeHandle ?: NullPointer, toInterop(offset.toArray())) }, owned = true)
 
     override fun addRef() =
-        JphOffsetCenterOfMassShape_addRef(offsetCenterOfMassShapeHandle)
+        own { JphOffsetCenterOfMassShape_addRef(offsetCenterOfMassShapeHandle) }
 
     override fun close() =
-        JphOffsetCenterOfMassShape_release(offsetCenterOfMassShapeHandle)
+        closeOnce { JphOffsetCenterOfMassShape_release(offsetCenterOfMassShapeHandle) }
 
     open val offset: Vec3
         get() = interopScope {
@@ -52,7 +53,7 @@ open class OffsetCenterOfMassShape internal constructor(internal val offsetCente
         }
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphOffsetCenterOfMassShape_sRegister()
     }
 }

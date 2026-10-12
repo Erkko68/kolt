@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TriangleShapeSettings`. */
-open class TriangleShapeSettings internal constructor(internal val triangleShapeSettingsHandle: NativePointer) : ShapeSettings(JphTriangleShapeSettings_asShapeSettings(triangleShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphTriangleShapeSettings_create())
-    constructor(v1: Vec3, v2: Vec3, v3: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphTriangleShapeSettings_create_Vec3Arg_Vec3Arg_Vec3Arg_float_PhysicsMaterial(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) })
+open class TriangleShapeSettings internal constructor(internal val triangleShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTriangleShapeSettings_asConvexShapeSettings(triangleShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphTriangleShapeSettings_create(), owned = true)
+    constructor(v1: Vec3, v2: Vec3, v3: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphTriangleShapeSettings_create_Vec3Arg_Vec3Arg_Vec3Arg_float_PhysicsMaterial(toInterop(v1.toArray()), toInterop(v2.toArray()), toInterop(v3.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
 
     override fun addRef() =
-        JphTriangleShapeSettings_addRef(triangleShapeSettingsHandle)
+        own { JphTriangleShapeSettings_addRef(triangleShapeSettingsHandle) }
 
     override fun close() =
-        JphTriangleShapeSettings_release(triangleShapeSettingsHandle)
+        closeOnce { JphTriangleShapeSettings_release(triangleShapeSettingsHandle) }
 
     open var v1: Vec3
         get() = interopScope {
@@ -77,7 +78,7 @@ open class TriangleShapeSettings internal constructor(internal val triangleShape
         set(value) = JphTriangleShapeSettings_SetConvexRadius(triangleShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphTriangleShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

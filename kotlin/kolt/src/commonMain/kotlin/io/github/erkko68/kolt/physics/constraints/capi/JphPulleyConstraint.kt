@@ -19,42 +19,6 @@ internal external fun JphPulleyConstraint_asTwoBodyConstraint(self: NativePointe
 @ExternalSymbolName("JphPulleyConstraint_asConstraint")
 internal external fun JphPulleyConstraint_asConstraint(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphPulleyConstraint_GetSubType")
-internal external fun JphPulleyConstraint_GetSubType(self: NativePointer): Int
-
-@ExternalSymbolName("JphPulleyConstraint_NotifyShapeChanged")
-internal external fun JphPulleyConstraint_NotifyShapeChanged(self: NativePointer, inBodyID: Int, inDeltaCOM: NativePointer)
-
-@ExternalSymbolName("JphPulleyConstraint_SetupVelocityConstraint")
-internal external fun JphPulleyConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphPulleyConstraint_ResetWarmStart")
-internal external fun JphPulleyConstraint_ResetWarmStart(self: NativePointer)
-
-@ExternalSymbolName("JphPulleyConstraint_WarmStartVelocityConstraint")
-internal external fun JphPulleyConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphPulleyConstraint_SolveVelocityConstraint")
-internal external fun JphPulleyConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphPulleyConstraint_SolvePositionConstraint")
-internal external fun JphPulleyConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphPulleyConstraint_SaveState")
-internal external fun JphPulleyConstraint_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphPulleyConstraint_RestoreState")
-internal external fun JphPulleyConstraint_RestoreState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphPulleyConstraint_GetConstraintSettings")
-internal external fun JphPulleyConstraint_GetConstraintSettings(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphPulleyConstraint_GetConstraintToBody1Matrix")
-internal external fun JphPulleyConstraint_GetConstraintToBody1Matrix(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphPulleyConstraint_GetConstraintToBody2Matrix")
-internal external fun JphPulleyConstraint_GetConstraintToBody2Matrix(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphPulleyConstraint_SetLength")
 internal external fun JphPulleyConstraint_SetLength(self: NativePointer, inMinLength: Float, inMaxLength: Float)
 

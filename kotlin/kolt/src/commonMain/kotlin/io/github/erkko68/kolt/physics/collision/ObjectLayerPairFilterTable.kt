@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ObjectLayerPairFilterTable`. */
-open class ObjectLayerPairFilterTable internal constructor(internal val objectLayerPairFilterTableHandle: NativePointer) : ObjectLayerPairFilter(JphObjectLayerPairFilterTable_asObjectLayerPairFilter(objectLayerPairFilterTableHandle)), AutoCloseable {
-    constructor(numObjectLayers: Int) : this(JphObjectLayerPairFilterTable_create(numObjectLayers))
+open class ObjectLayerPairFilterTable internal constructor(internal val objectLayerPairFilterTableHandle: NativePointer, owned: Boolean = false) : ObjectLayerPairFilter(JphObjectLayerPairFilterTable_asObjectLayerPairFilter(objectLayerPairFilterTableHandle), owned), AutoCloseable {
+    constructor(numObjectLayers: Int) : this(JphObjectLayerPairFilterTable_create(numObjectLayers), owned = true)
 
     override fun close() =
-        JphObjectLayerPairFilterTable_destroy(objectLayerPairFilterTableHandle)
+        closeOnce { JphObjectLayerPairFilterTable_destroy(objectLayerPairFilterTableHandle) }
 
     open val numObjectLayers: Int
         get() = JphObjectLayerPairFilterTable_GetNumObjectLayers(objectLayerPairFilterTableHandle)
@@ -46,7 +47,4 @@ open class ObjectLayerPairFilterTable internal constructor(internal val objectLa
 
     open fun enableCollision(layer1: Int, layer2: Int) =
         JphObjectLayerPairFilterTable_EnableCollision(objectLayerPairFilterTableHandle, layer1, layer2)
-
-    open fun shouldCollide(object1: Int, object2: Int): Boolean =
-        JphObjectLayerPairFilterTable_ShouldCollide(objectLayerPairFilterTableHandle, object1, object2)
 }

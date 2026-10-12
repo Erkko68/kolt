@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterContact`. */
-open class CharacterContact internal constructor(internal val characterContactHandle: NativePointer) : CharacterContactKey(JphCharacterContact_asCharacterContactKey(characterContactHandle)), AutoCloseable {
-    constructor() : this(JphCharacterContact_create())
+open class CharacterContact internal constructor(internal val characterContactHandle: NativePointer, owned: Boolean = false) : CharacterContactKey(JphCharacterContact_asCharacterContactKey(characterContactHandle), owned), AutoCloseable {
+    constructor() : this(JphCharacterContact_create(), owned = true)
 
     override fun close() =
-        JphCharacterContact_destroy(characterContactHandle)
+        closeOnce { JphCharacterContact_destroy(characterContactHandle) }
 
     override fun saveState(stream: StateRecorder) =
         JphCharacterContact_SaveState(characterContactHandle, stream.stateRecorderHandle)
@@ -101,14 +102,21 @@ open class CharacterContact internal constructor(internal val characterContactHa
         set(value) = JphCharacterContact_SetIsSensorB(characterContactHandle, value)
 
     open var characterB: CharacterVirtual?
-        get() = JphCharacterContact_GetCharacterB(characterContactHandle).takeIf { it != NullPointer }?.let(::CharacterVirtual)
+        get() = JphCharacterContact_GetCharacterB(characterContactHandle).takeIf { it != NullPointer }?.let { CharacterVirtual(it) }
         set(value) = JphCharacterContact_SetCharacterB(characterContactHandle, value?.characterVirtualHandle ?: NullPointer)
 
-    open fun setUserData(value: Long) =
-        JphCharacterContact_SetUserData(characterContactHandle, value)
+    open var userData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphCharacterContact_GetUserData(characterContactHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+        set(value) = JphCharacterContact_SetUserData(characterContactHandle, value)
 
     open var material: PhysicsMaterial?
-        get() = JphCharacterContact_GetMaterial(characterContactHandle).takeIf { it != NullPointer }?.let(::PhysicsMaterial)
+        get() = JphCharacterContact_GetMaterial(characterContactHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(value) = JphCharacterContact_SetMaterial(characterContactHandle, value?.physicsMaterialHandle ?: NullPointer)
 
     open var hadCollision: Boolean

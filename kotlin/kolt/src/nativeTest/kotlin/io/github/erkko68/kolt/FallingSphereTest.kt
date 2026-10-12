@@ -1,20 +1,21 @@
 package io.github.erkko68.kolt
 
-import io.github.erkko68.kolt.capi.JphFactory_SetInstance
-import io.github.erkko68.kolt.capi.Jph_RegisterDefaultAllocator
-import io.github.erkko68.kolt.core.Factory
 import io.github.erkko68.kolt.core.JobSystemThreadPool
 import io.github.erkko68.kolt.core.TempAllocatorImpl
-import io.github.erkko68.kolt.interop.NullPointer
 import io.github.erkko68.kolt.math.Quat
 import io.github.erkko68.kolt.math.Vec3
 import io.github.erkko68.kolt.physics.EPhysicsUpdateError
 import io.github.erkko68.kolt.physics.PhysicsSystem
 import io.github.erkko68.kolt.physics.body.BodyCreationSettings
+import io.github.erkko68.kolt.physics.body.BodyFilter
 import io.github.erkko68.kolt.physics.EActivation
 import io.github.erkko68.kolt.physics.body.EMotionType
+import io.github.erkko68.kolt.physics.collision.ObjectLayerFilter
 import io.github.erkko68.kolt.physics.collision.ObjectLayerPairFilterTable
+import io.github.erkko68.kolt.physics.collision.RRayCast
+import io.github.erkko68.kolt.physics.collision.RayCastResult
 import io.github.erkko68.kolt.physics.collision.broadphase.BroadPhaseLayer
+import io.github.erkko68.kolt.physics.collision.broadphase.BroadPhaseLayerFilter
 import io.github.erkko68.kolt.physics.collision.broadphase.BroadPhaseLayerInterfaceTable
 import io.github.erkko68.kolt.physics.collision.broadphase.ObjectVsBroadPhaseLayerFilterTable
 import io.github.erkko68.kolt.physics.collision.shape.EShapeSubType
@@ -31,10 +32,7 @@ import kotlin.test.assertTrue
 class FallingSphereTest {
     @Test
     fun sphereFalls() {
-        Jph_RegisterDefaultAllocator()
-        val factory = Factory()
-        JphFactory_SetInstance(factory.factoryHandle)
-        registerTypes()
+        Jolt.init()
 
         val temp = TempAllocatorImpl(10 * 1024 * 1024)
         val jobs = JobSystemThreadPool(2048, 8, 1)
@@ -53,7 +51,10 @@ class FallingSphereTest {
         val shape: Shape = sphere
         assertEquals(EShapeSubType.Sphere, shape.subType)
 
+        // Borrowed from the system: closing it leaves the system's alone.
         val bodies = system.bodyInterface
+        bodies.close()
+        assertEquals(100, system.physicsSettings.use { it.numVelocitySteps * 10 })
         val body = BodyCreationSettings(sphere, Vec3(0f, 10f, 0f), Quat.IDENTITY, EMotionType.Dynamic, 0).use { settings ->
             assertEquals(EMotionType.Dynamic, settings.motionType)
             assertEquals(Vec3(0f, 10f, 0f), settings.position)
@@ -66,18 +67,34 @@ class FallingSphereTest {
         assertEquals(0f, position.x)
         assertTrue(position.y in 4.5f..5.5f, "y = ${position.y}")
         assertTrue(bodies.getLinearVelocity(body).y < -9f)
+        // A ray down the sphere's path hits it at its top.
+        RayCastResult().use { hit ->
+            val filters = Triple(BroadPhaseLayerFilter(), ObjectLayerFilter(), BodyFilter())
+            RRayCast(Vec3(0f, 20f, 0f), Vec3(0f, -20f, 0f)).use { ray ->
+                assertTrue(system.narrowPhaseQuery.castRay(ray, hit, filters.first, filters.second, filters.third))
+            }
+            assertEquals(body, hit.bodyID)
+            assertEquals((20f - position.y - 0.5f) / 20f, hit.fraction, 1e-3f)
+            filters.first.close(); filters.second.close(); filters.third.close()
+        }
+        bodies.setUserData(body, 1L shl 40)
+        assertEquals(1L shl 40, bodies.getUserData(body))
+        // The body's shape is the sphere, borrowed: only the wrapper that owns a reference releases one.
+        val borrowed = bodies.getShape(body)!!
+        assertEquals(EShapeSubType.Sphere, borrowed.subType)
+        borrowed.close()
+        sphere.close()
+        sphere.close()
+        assertEquals(EShapeSubType.Sphere, bodies.getShape(body)!!.subType)
 
         bodies.removeBody(body)
         bodies.destroyBody(body)
-        sphere.close()
         system.close()
         objectVsBroadPhase.close()
         layerPairs.close()
         broadPhaseLayers.close()
         jobs.close()
         temp.close()
-        unregisterTypes()
-        JphFactory_SetInstance(NullPointer)
-        factory.close()
+        Jolt.shutdown()
     }
 }

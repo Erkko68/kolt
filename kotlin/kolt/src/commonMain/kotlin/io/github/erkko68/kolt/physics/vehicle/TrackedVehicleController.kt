@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TrackedVehicleController`. */
-open class TrackedVehicleController internal constructor(internal val trackedVehicleControllerHandle: NativePointer) : VehicleController(JphTrackedVehicleController_asVehicleController(trackedVehicleControllerHandle)), AutoCloseable {
-    constructor(settings: TrackedVehicleControllerSettings, constraint: VehicleConstraint) : this(JphTrackedVehicleController_create(settings.trackedVehicleControllerSettingsHandle, constraint.vehicleConstraintHandle))
+open class TrackedVehicleController internal constructor(internal val trackedVehicleControllerHandle: NativePointer, owned: Boolean = false) : VehicleController(JphTrackedVehicleController_asVehicleController(trackedVehicleControllerHandle), owned), AutoCloseable {
+    constructor(settings: TrackedVehicleControllerSettings, constraint: VehicleConstraint) : this(JphTrackedVehicleController_create(settings.trackedVehicleControllerSettingsHandle, constraint.vehicleConstraintHandle), owned = true)
 
     override fun close() =
-        JphTrackedVehicleController_destroy(trackedVehicleControllerHandle)
+        closeOnce { JphTrackedVehicleController_destroy(trackedVehicleControllerHandle) }
 
     open fun setDriverInput(forward: Float, leftRatio: Float, rightRatio: Float, brake: Float) =
         JphTrackedVehicleController_SetDriverInput(trackedVehicleControllerHandle, forward, leftRatio, rightRatio, brake)
@@ -62,7 +63,4 @@ open class TrackedVehicleController internal constructor(internal val trackedVeh
 
     open val transmission: VehicleTransmission
         get() = VehicleTransmission(JphTrackedVehicleController_GetTransmission(trackedVehicleControllerHandle))
-
-    open val settings: VehicleControllerSettings?
-        get() = JphTrackedVehicleController_GetSettings(trackedVehicleControllerHandle).takeIf { it != NullPointer }?.let(::VehicleControllerSettings)
 }

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PointConstraintSettings`. */
-open class PointConstraintSettings internal constructor(internal val pointConstraintSettingsHandle: NativePointer) : SerializableObject(JphPointConstraintSettings_asSerializableObject(pointConstraintSettingsHandle)), AutoCloseable {
-    constructor() : this(JphPointConstraintSettings_create())
+open class PointConstraintSettings internal constructor(internal val pointConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphPointConstraintSettings_asTwoBodyConstraintSettings(pointConstraintSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphPointConstraintSettings_create(), owned = true)
 
-    open fun addRef() =
-        JphPointConstraintSettings_addRef(pointConstraintSettingsHandle)
+    override fun addRef() =
+        own { JphPointConstraintSettings_addRef(pointConstraintSettingsHandle) }
 
     override fun close() =
-        JphPointConstraintSettings_release(pointConstraintSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphPointConstraintSettings_GetRTTI(pointConstraintSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphPointConstraintSettings_SaveBinaryState(pointConstraintSettingsHandle, stream.streamOutHandle)
-
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
-        JphPointConstraintSettings_Create(pointConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        closeOnce { JphPointConstraintSettings_release(pointConstraintSettingsHandle) }
 
     open var space: EConstraintSpace
         get() = EConstraintSpace.of(JphPointConstraintSettings_GetSpace(pointConstraintSettingsHandle))
@@ -75,7 +67,7 @@ open class PointConstraintSettings internal constructor(internal val pointConstr
         set(value) = interopScope { JphPointConstraintSettings_SetPoint2(pointConstraintSettingsHandle, toInterop(value.toArray())) }
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphPointConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

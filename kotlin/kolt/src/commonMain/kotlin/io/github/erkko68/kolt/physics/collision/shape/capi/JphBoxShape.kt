@@ -25,9 +25,6 @@ internal external fun JphBoxShape_asShape(self: NativePointer): NativePointer
 @ExternalSymbolName("JphBoxShape_GetHalfExtent")
 internal external fun JphBoxShape_GetHalfExtent(self: NativePointer, out: NativePointer)
 
-@ExternalSymbolName("JphBoxShape_GetSupportFunction")
-internal external fun JphBoxShape_GetSupportFunction(self: NativePointer, inMode: Int, inBuffer: NativePointer, inScale: NativePointer): NativePointer
-
 @ExternalSymbolName("JphBoxShape_GetConvexRadius")
 internal external fun JphBoxShape_GetConvexRadius(self: NativePointer): Float
 

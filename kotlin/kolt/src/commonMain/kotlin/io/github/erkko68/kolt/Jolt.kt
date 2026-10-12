@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -33,6 +34,12 @@ import io.github.erkko68.kolt.skeleton.*
 
 fun estimateCollisionResponse(body1: Body, body2: Body, manifold: ContactManifold, result: CollisionEstimationResult, combinedFriction: Float, combinedRestitution: Float, minVelocityForRestitution: Float, numIterations: Int) =
     Jph_EstimateCollisionResponse(body1.bodyHandle, body2.bodyHandle, manifold.contactManifoldHandle, result.collisionEstimationResultHandle, combinedFriction, combinedRestitution, minVelocityForRestitution, numIterations)
+
+fun isVelocityMotor(motorState: EMotorState): Boolean =
+    Jph_IsVelocityMotor(motorState.value)
+
+fun isPositionMotor(motorState: EMotorState): Boolean =
+    Jph_IsPositionMotor(motorState.value)
 
 fun verifyJoltVersionIDInternal(versionID: Long): Boolean =
     Jph_VerifyJoltVersionIDInternal(versionID)

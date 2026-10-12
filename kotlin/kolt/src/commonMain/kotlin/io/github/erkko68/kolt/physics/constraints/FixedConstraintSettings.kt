@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::FixedConstraintSettings`. */
-open class FixedConstraintSettings internal constructor(internal val fixedConstraintSettingsHandle: NativePointer) : SerializableObject(JphFixedConstraintSettings_asSerializableObject(fixedConstraintSettingsHandle)), AutoCloseable {
-    constructor() : this(JphFixedConstraintSettings_create())
+open class FixedConstraintSettings internal constructor(internal val fixedConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphFixedConstraintSettings_asTwoBodyConstraintSettings(fixedConstraintSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphFixedConstraintSettings_create(), owned = true)
 
-    open fun addRef() =
-        JphFixedConstraintSettings_addRef(fixedConstraintSettingsHandle)
+    override fun addRef() =
+        own { JphFixedConstraintSettings_addRef(fixedConstraintSettingsHandle) }
 
     override fun close() =
-        JphFixedConstraintSettings_release(fixedConstraintSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphFixedConstraintSettings_GetRTTI(fixedConstraintSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphFixedConstraintSettings_SaveBinaryState(fixedConstraintSettingsHandle, stream.streamOutHandle)
-
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
-        JphFixedConstraintSettings_Create(fixedConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        closeOnce { JphFixedConstraintSettings_release(fixedConstraintSettingsHandle) }
 
     open var space: EConstraintSpace
         get() = EConstraintSpace.of(JphFixedConstraintSettings_GetSpace(fixedConstraintSettingsHandle))
@@ -119,7 +111,7 @@ open class FixedConstraintSettings internal constructor(internal val fixedConstr
         set(value) = interopScope { JphFixedConstraintSettings_SetAxisY2(fixedConstraintSettingsHandle, toInterop(value.toArray())) }
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphFixedConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

@@ -28,24 +28,8 @@ JphSerializableObject* JphPulleyConstraintSettings_asSerializableObject(JphPulle
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphPulleyConstraintSettings_GetRTTI(const JphPulleyConstraintSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphPulleyConstraintSettings_CastTo(const JphPulleyConstraintSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphPulleyConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::PulleyConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-void JphPulleyConstraintSettings_SaveBinaryState(const JphPulleyConstraintSettings* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-JphTwoBodyConstraint* JphPulleyConstraintSettings_Create(const JphPulleyConstraintSettings* self, JphBody* inBody1, JphBody* inBody2) {
-    return kolt::c(kolt::cpp(self)->Create(*kolt::cpp(inBody1), *kolt::cpp(inBody2)));
 }
 
 JphEConstraintSpace JphPulleyConstraintSettings_GetSpace(const JphPulleyConstraintSettings* self) {

@@ -15,11 +15,7 @@ void JphSliderConstraintSettings_release(const JphSliderConstraintSettings* self
 JphTwoBodyConstraintSettings* JphSliderConstraintSettings_asTwoBodyConstraintSettings(JphSliderConstraintSettings* self);
 JphConstraintSettings* JphSliderConstraintSettings_asConstraintSettings(JphSliderConstraintSettings* self);
 JphSerializableObject* JphSliderConstraintSettings_asSerializableObject(JphSliderConstraintSettings* self);
-const JphRTTI* JphSliderConstraintSettings_GetRTTI(const JphSliderConstraintSettings* self);
-const void* JphSliderConstraintSettings_CastTo(const JphSliderConstraintSettings* self, const JphRTTI* inRTTI);
 void JphSliderConstraintSettings_sCreateRTTI(JphRTTI* inRTTI);
-void JphSliderConstraintSettings_SaveBinaryState(const JphSliderConstraintSettings* self, JphStreamOut* inStream);
-JphTwoBodyConstraint* JphSliderConstraintSettings_Create(const JphSliderConstraintSettings* self, JphBody* inBody1, JphBody* inBody2);
 void JphSliderConstraintSettings_SetSliderAxis(JphSliderConstraintSettings* self, const JphVec3* inSliderAxis);
 JphEConstraintSpace JphSliderConstraintSettings_GetSpace(const JphSliderConstraintSettings* self);
 void JphSliderConstraintSettings_SetSpace(JphSliderConstraintSettings* self, JphEConstraintSpace value);

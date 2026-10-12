@@ -16,6 +16,39 @@ void JphTrackedVehicleControllerSettings_release(const JphTrackedVehicleControll
     kolt::cpp(self)->Release();
 }
 
+} // extern "C"
+
+namespace JPH {
+struct JphTrackedVehicleControllerSettings_Upcalls final : ::JPH::TrackedVehicleControllerSettings {
+    kolt::Upcall mCall;
+    void* mUser = nullptr;
+    explicit JphTrackedVehicleControllerSettings_Upcalls(kolt::Upcall call) : mCall(call) {}
+    ~JphTrackedVehicleControllerSettings_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    void SaveBinaryState(StreamOut & p0) const override {
+        const uint64_t args[] = {kolt::slot(kolt::c(&p0))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return;
+        JPH::TrackedVehicleControllerSettings::SaveBinaryState(p0);
+    }
+    void RestoreBinaryState(StreamIn & p0) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(&p0))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 1, args, &result)) return;
+        JPH::TrackedVehicleControllerSettings::RestoreBinaryState(p0);
+    }
+};
+} // namespace JPH
+
+extern "C" {
+
+JphTrackedVehicleControllerSettings* JphTrackedVehicleControllerSettings_createUpcalls(JphUpcall call) {
+    return kolt::c(kolt::retain(static_cast<::JPH::TrackedVehicleControllerSettings*>(new ::JPH::JphTrackedVehicleControllerSettings_Upcalls(call))));
+}
+
+void JphTrackedVehicleControllerSettings_bindUpcalls(JphTrackedVehicleControllerSettings* self, void* userData) {
+    static_cast<::JPH::JphTrackedVehicleControllerSettings_Upcalls*>(kolt::cpp(self))->mUser = userData;
+}
+
 JphVehicleControllerSettings* JphTrackedVehicleControllerSettings_asVehicleControllerSettings(JphTrackedVehicleControllerSettings* self) {
     return kolt::c(static_cast<JPH::VehicleControllerSettings*>(kolt::cpp(self)));
 }
@@ -24,28 +57,8 @@ JphSerializableObject* JphTrackedVehicleControllerSettings_asSerializableObject(
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphTrackedVehicleControllerSettings_GetRTTI(const JphTrackedVehicleControllerSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphTrackedVehicleControllerSettings_CastTo(const JphTrackedVehicleControllerSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphTrackedVehicleControllerSettings_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::TrackedVehicleControllerSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-JphVehicleController* JphTrackedVehicleControllerSettings_ConstructController(const JphTrackedVehicleControllerSettings* self, JphVehicleConstraint* inConstraint) {
-    return kolt::c(kolt::cpp(self)->ConstructController(*kolt::cpp(inConstraint)));
-}
-
-void JphTrackedVehicleControllerSettings_SaveBinaryState(const JphTrackedVehicleControllerSettings* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-void JphTrackedVehicleControllerSettings_RestoreBinaryState(JphTrackedVehicleControllerSettings* self, JphStreamIn* inStream) {
-    kolt::cpp(self)->RestoreBinaryState(*kolt::cpp(inStream));
 }
 
 void JphTrackedVehicleControllerSettings_GetEngine(const JphTrackedVehicleControllerSettings* self, JphVehicleEngineSettings* out) {

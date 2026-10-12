@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,9 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::DefaultObjectLayerFilter`. */
-open class DefaultObjectLayerFilter internal constructor(internal val defaultObjectLayerFilterHandle: NativePointer)
+open class DefaultObjectLayerFilter internal constructor(internal val defaultObjectLayerFilterHandle: NativePointer, owned: Boolean = false) : ObjectLayerFilter(JphDefaultObjectLayerFilter_asObjectLayerFilter(defaultObjectLayerFilterHandle), owned), AutoCloseable {
+    constructor(objectLayerPairFilter: ObjectLayerPairFilter, layer: Int) : this(JphDefaultObjectLayerFilter_create(objectLayerPairFilter.objectLayerPairFilterHandle, layer), owned = true)
+
+    override fun close() =
+        closeOnce { JphDefaultObjectLayerFilter_destroy(defaultObjectLayerFilterHandle) }
+}

@@ -24,54 +24,6 @@ JphConstraint* JphDistanceConstraint_asConstraint(JphDistanceConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
-JphEConstraintSubType JphDistanceConstraint_GetSubType(const JphDistanceConstraint* self) {
-    return static_cast<JphEConstraintSubType>(kolt::cpp(self)->GetSubType());
-}
-
-void JphDistanceConstraint_NotifyShapeChanged(JphDistanceConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM) {
-    kolt::cpp(self)->NotifyShapeChanged(JPH::BodyID(inBodyID), kolt::math<JPH::Vec3>(*inDeltaCOM));
-}
-
-void JphDistanceConstraint_SetupVelocityConstraint(JphDistanceConstraint* self, float inDeltaTime) {
-    kolt::cpp(self)->SetupVelocityConstraint(inDeltaTime);
-}
-
-void JphDistanceConstraint_ResetWarmStart(JphDistanceConstraint* self) {
-    kolt::cpp(self)->ResetWarmStart();
-}
-
-void JphDistanceConstraint_WarmStartVelocityConstraint(JphDistanceConstraint* self, float inWarmStartImpulseRatio) {
-    kolt::cpp(self)->WarmStartVelocityConstraint(inWarmStartImpulseRatio);
-}
-
-bool JphDistanceConstraint_SolveVelocityConstraint(JphDistanceConstraint* self, float inDeltaTime) {
-    return kolt::cpp(self)->SolveVelocityConstraint(inDeltaTime);
-}
-
-bool JphDistanceConstraint_SolvePositionConstraint(JphDistanceConstraint* self, float inDeltaTime, float inBaumgarte) {
-    return kolt::cpp(self)->SolvePositionConstraint(inDeltaTime, inBaumgarte);
-}
-
-void JphDistanceConstraint_SaveState(const JphDistanceConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
-}
-
-void JphDistanceConstraint_RestoreState(JphDistanceConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
-}
-
-JphConstraintSettings* JphDistanceConstraint_GetConstraintSettings(const JphDistanceConstraint* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetConstraintSettings()));
-}
-
-void JphDistanceConstraint_GetConstraintToBody1Matrix(const JphDistanceConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody1Matrix());
-}
-
-void JphDistanceConstraint_GetConstraintToBody2Matrix(const JphDistanceConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody2Matrix());
-}
-
 void JphDistanceConstraint_SetDistance(JphDistanceConstraint* self, float inMinDistance, float inMaxDistance) {
     kolt::cpp(self)->SetDistance(inMinDistance, inMaxDistance);
 }

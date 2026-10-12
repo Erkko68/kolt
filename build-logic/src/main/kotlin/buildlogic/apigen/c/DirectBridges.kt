@@ -29,16 +29,16 @@ class DirectBridges internal constructor(
     fun string(decl: String): CBridge {
         if (!byValue) throw Unsupported("$decl by pointer")
         return when {
-            !result -> CBridge("const char*", { "${config.allStrings.getValue(decl)}($it)" })
+            !result -> CBridge("const char*", { "${config.allStrings.getValue(decl)}($it)" }, value = CValue.Text)
             // ponytail: assumes the view is NUL-terminated (literals, string storage); an out length if one isn't.
-            decl == "std::string_view" -> CBridge("const char*", { "($it).data()" })
+            decl == "std::string_view" -> CBridge("const char*", { "($it).data()" }, value = CValue.Text)
             // A temporary: copied into C's buffer, not NUL-terminated; returns its length.
             indirection == null && !lvalue -> CBridge(
                 "uint32_t",
                 { call -> "$h::copy($call, outCapacity, [&](char x, uint32_t i) { out[i] = x; })" },
                 extra = listOf("char*" to "out", "uint32_t" to "outCapacity"),
             )
-            else -> CBridge("const char*", { "($it).c_str()" })
+            else -> CBridge("const char*", { "($it).c_str()" }, value = CValue.Text)
         }
     }
 
@@ -47,11 +47,11 @@ class DirectBridges internal constructor(
         if (byValue) {
             val cType = CAbi.byValue(base)
             val out = result && CAbi.returnsThroughPointer(cType)
-            return CBridge(cType, if (cType == base) { v -> v } else cast(cType, base), out = out, value = CValue.Builtin(cType).takeIf { !out })
+            return CBridge(cType, if (cType == base) { v -> v } else cast(cType, base), out = out, value = CValue.Builtin(cType))
         }
         CAbi.checkPointee(base)
         return when {
-            indirection == "*" -> CBridge("$c$base*", { it })
+            indirection == "*" -> CBridge("$c$base*", { it }, value = CValue.Text.takeIf { const && base == "char" })
             result -> CBridge("$base*", { "&$it" })
             else -> CBridge("$base*", { "*$it" })
         }
@@ -89,7 +89,7 @@ class DirectBridges internal constructor(
             // C can't create one to copy into; a reference's outlives the call, so C borrows it.
             !copyable && indirection == "&" -> handle(name, record = true)
             !copyable -> throw Unsupported("$decl result: C can't create one to copy it into")
-            else -> CBridge(name, { it }, out = true, store = { v, out -> "*$h::cpp($out) = $v;" })
+            else -> CBridge(name, { it }, out = true, store = { v, out -> "*$h::cpp($out) = $v;" }, value = CValue.Handle(name, nullable = false))
         }
     }
 

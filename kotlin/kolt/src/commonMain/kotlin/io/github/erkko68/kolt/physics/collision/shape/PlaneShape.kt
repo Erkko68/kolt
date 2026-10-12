@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,25 +33,32 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PlaneShape`. */
-open class PlaneShape internal constructor(internal val planeShapeHandle: NativePointer) : Shape(JphPlaneShape_asShape(planeShapeHandle)), AutoCloseable {
-    constructor() : this(JphPlaneShape_create())
-    constructor(plane: Plane, material: PhysicsMaterial?, halfExtent: Float) : this(JphPlaneShape_create_Plane_PhysicsMaterial_float(plane.planeHandle, material?.physicsMaterialHandle ?: NullPointer, halfExtent))
+open class PlaneShape internal constructor(internal val planeShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphPlaneShape_asShape(planeShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphPlaneShape_create(), owned = true)
+    constructor(plane: Plane, material: PhysicsMaterial?, halfExtent: Float) : this(JphPlaneShape_create_Plane_PhysicsMaterial_float(plane.planeHandle, material?.physicsMaterialHandle ?: NullPointer, halfExtent), owned = true)
 
     override fun addRef() =
-        JphPlaneShape_addRef(planeShapeHandle)
+        own { JphPlaneShape_addRef(planeShapeHandle) }
 
     override fun close() =
-        JphPlaneShape_release(planeShapeHandle)
+        closeOnce { JphPlaneShape_release(planeShapeHandle) }
+
+    open val plane: Plane
+        get() = run {
+            val returned = Plane(JphPlane_create(), owned = true)
+            JphPlaneShape_GetPlane(planeShapeHandle, returned.planeHandle)
+            returned
+        }
 
     open val halfExtent: Float
         get() = JphPlaneShape_GetHalfExtent(planeShapeHandle)
 
     open var material: PhysicsMaterial?
-        get() = JphPlaneShape_GetMaterial(planeShapeHandle).takeIf { it != NullPointer }?.let(::PhysicsMaterial)
+        get() = JphPlaneShape_GetMaterial(planeShapeHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
         set(material) = JphPlaneShape_SetMaterial(planeShapeHandle, material?.physicsMaterialHandle ?: NullPointer)
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphPlaneShape_sRegister()
     }
 }

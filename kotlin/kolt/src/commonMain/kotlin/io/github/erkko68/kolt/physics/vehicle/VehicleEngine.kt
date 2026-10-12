@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,37 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleEngine`. */
-open class VehicleEngine internal constructor(internal val vehicleEngineHandle: NativePointer)
+open class VehicleEngine internal constructor(internal val vehicleEngineHandle: NativePointer, owned: Boolean = false) : VehicleEngineSettings(JphVehicleEngine_asVehicleEngineSettings(vehicleEngineHandle), owned), AutoCloseable {
+    constructor() : this(JphVehicleEngine_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphVehicleEngine_destroy(vehicleEngineHandle) }
+
+    open fun clampRPM() =
+        JphVehicleEngine_ClampRPM(vehicleEngineHandle)
+
+    open var currentRPM: Float
+        get() = JphVehicleEngine_GetCurrentRPM(vehicleEngineHandle)
+        set(rpm) = JphVehicleEngine_SetCurrentRPM(vehicleEngineHandle, rpm)
+
+    open val angularVelocity: Float
+        get() = JphVehicleEngine_GetAngularVelocity(vehicleEngineHandle)
+
+    open fun getTorque(acceleration: Float): Float =
+        JphVehicleEngine_GetTorque(vehicleEngineHandle, acceleration)
+
+    open fun applyTorque(torque: Float, deltaTime: Float) =
+        JphVehicleEngine_ApplyTorque(vehicleEngineHandle, torque, deltaTime)
+
+    open fun applyDamping(deltaTime: Float) =
+        JphVehicleEngine_ApplyDamping(vehicleEngineHandle, deltaTime)
+
+    open fun allowSleep(): Boolean =
+        JphVehicleEngine_AllowSleep(vehicleEngineHandle)
+
+    open fun saveState(stream: StateRecorder) =
+        JphVehicleEngine_SaveState(vehicleEngineHandle, stream.stateRecorderHandle)
+
+    open fun restoreState(stream: StateRecorder) =
+        JphVehicleEngine_RestoreState(vehicleEngineHandle, stream.stateRecorderHandle)
+}

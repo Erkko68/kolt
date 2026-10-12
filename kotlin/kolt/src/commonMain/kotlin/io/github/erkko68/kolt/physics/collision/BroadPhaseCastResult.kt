@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BroadPhaseCastResult`. */
-open class BroadPhaseCastResult internal constructor(internal val broadPhaseCastResultHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphBroadPhaseCastResult_create())
+open class BroadPhaseCastResult internal constructor(internal val broadPhaseCastResultHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphBroadPhaseCastResult_create(), owned = true)
 
     override fun close() =
-        JphBroadPhaseCastResult_destroy(broadPhaseCastResultHandle)
+        closeOnce { JphBroadPhaseCastResult_destroy(broadPhaseCastResultHandle) }
 
     open val earlyOutFraction: Float
         get() = JphBroadPhaseCastResult_GetEarlyOutFraction(broadPhaseCastResultHandle)

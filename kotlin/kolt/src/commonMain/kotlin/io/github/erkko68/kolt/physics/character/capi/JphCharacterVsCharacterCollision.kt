@@ -6,3 +6,15 @@ import io.github.erkko68.kolt.interop.NativePointer
 
 @ExternalSymbolName("JphCharacterVsCharacterCollision_destroy")
 internal external fun JphCharacterVsCharacterCollision_destroy(self: NativePointer)
+
+@ExternalSymbolName("JphCharacterVsCharacterCollision_createUpcalls")
+internal external fun JphCharacterVsCharacterCollision_createUpcalls(call: NativePointer): NativePointer
+
+@ExternalSymbolName("JphCharacterVsCharacterCollision_bindUpcalls")
+internal external fun JphCharacterVsCharacterCollision_bindUpcalls(self: NativePointer, userData: NativePointer)
+
+@ExternalSymbolName("JphCharacterVsCharacterCollision_CollideCharacter")
+internal external fun JphCharacterVsCharacterCollision_CollideCharacter(self: NativePointer, inCharacter: NativePointer, inCenterOfMassTransform: NativePointer, inCollideShapeSettings: NativePointer, inBaseOffset: NativePointer, ioCollector: NativePointer)
+
+@ExternalSymbolName("JphCharacterVsCharacterCollision_CastCharacter")
+internal external fun JphCharacterVsCharacterCollision_CastCharacter(self: NativePointer, inCharacter: NativePointer, inCenterOfMassTransform: NativePointer, inDirection: NativePointer, inShapeCastSettings: NativePointer, inBaseOffset: NativePointer, ioCollector: NativePointer)

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,23 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::HingeConstraintSettings`. */
-open class HingeConstraintSettings internal constructor(internal val hingeConstraintSettingsHandle: NativePointer) : SerializableObject(JphHingeConstraintSettings_asSerializableObject(hingeConstraintSettingsHandle)), AutoCloseable {
-    constructor() : this(JphHingeConstraintSettings_create())
+open class HingeConstraintSettings internal constructor(internal val hingeConstraintSettingsHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraintSettings(JphHingeConstraintSettings_asTwoBodyConstraintSettings(hingeConstraintSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphHingeConstraintSettings_create(), owned = true)
 
-    open fun addRef() =
-        JphHingeConstraintSettings_addRef(hingeConstraintSettingsHandle)
+    override fun addRef() =
+        own { JphHingeConstraintSettings_addRef(hingeConstraintSettingsHandle) }
 
     override fun close() =
-        JphHingeConstraintSettings_release(hingeConstraintSettingsHandle)
-
-    open val rtti: RTTI?
-        get() = JphHingeConstraintSettings_GetRTTI(hingeConstraintSettingsHandle).takeIf { it != NullPointer }?.let(::RTTI)
-
-    open fun saveBinaryState(stream: StreamOut) =
-        JphHingeConstraintSettings_SaveBinaryState(hingeConstraintSettingsHandle, stream.streamOutHandle)
-
-    open fun create(body1: Body, body2: Body): TwoBodyConstraint? =
-        JphHingeConstraintSettings_Create(hingeConstraintSettingsHandle, body1.bodyHandle, body2.bodyHandle).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        closeOnce { JphHingeConstraintSettings_release(hingeConstraintSettingsHandle) }
 
     open var space: EConstraintSpace
         get() = EConstraintSpace.of(JphHingeConstraintSettings_GetSpace(hingeConstraintSettingsHandle))
@@ -122,18 +114,28 @@ open class HingeConstraintSettings internal constructor(internal val hingeConstr
         get() = JphHingeConstraintSettings_GetLimitsMax(hingeConstraintSettingsHandle)
         set(value) = JphHingeConstraintSettings_SetLimitsMax(hingeConstraintSettingsHandle, value)
 
-    open fun setLimitsSpringSettings(value: SpringSettings) =
-        JphHingeConstraintSettings_SetLimitsSpringSettings(hingeConstraintSettingsHandle, value.springSettingsHandle)
+    open var limitsSpringSettings: SpringSettings
+        get() = run {
+            val returned = SpringSettings(JphSpringSettings_create(), owned = true)
+            JphHingeConstraintSettings_GetLimitsSpringSettings(hingeConstraintSettingsHandle, returned.springSettingsHandle)
+            returned
+        }
+        set(value) = JphHingeConstraintSettings_SetLimitsSpringSettings(hingeConstraintSettingsHandle, value.springSettingsHandle)
 
     open var maxFrictionTorque: Float
         get() = JphHingeConstraintSettings_GetMaxFrictionTorque(hingeConstraintSettingsHandle)
         set(value) = JphHingeConstraintSettings_SetMaxFrictionTorque(hingeConstraintSettingsHandle, value)
 
-    open fun setMotorSettings(value: MotorSettings) =
-        JphHingeConstraintSettings_SetMotorSettings(hingeConstraintSettingsHandle, value.motorSettingsHandle)
+    open var motorSettings: MotorSettings
+        get() = run {
+            val returned = MotorSettings(JphMotorSettings_create(), owned = true)
+            JphHingeConstraintSettings_GetMotorSettings(hingeConstraintSettingsHandle, returned.motorSettingsHandle)
+            returned
+        }
+        set(value) = JphHingeConstraintSettings_SetMotorSettings(hingeConstraintSettingsHandle, value.motorSettingsHandle)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphHingeConstraintSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

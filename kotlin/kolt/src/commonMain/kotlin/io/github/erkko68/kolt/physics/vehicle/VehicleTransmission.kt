@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,36 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::VehicleTransmission`. */
-open class VehicleTransmission internal constructor(internal val vehicleTransmissionHandle: NativePointer)
+open class VehicleTransmission internal constructor(internal val vehicleTransmissionHandle: NativePointer, owned: Boolean = false) : VehicleTransmissionSettings(JphVehicleTransmission_asVehicleTransmissionSettings(vehicleTransmissionHandle), owned), AutoCloseable {
+    constructor() : this(JphVehicleTransmission_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphVehicleTransmission_destroy(vehicleTransmissionHandle) }
+
+    open fun set(currentGear: Int, clutchFriction: Float) =
+        JphVehicleTransmission_Set(vehicleTransmissionHandle, currentGear, clutchFriction)
+
+    open fun update(deltaTime: Float, currentRPM: Float, forwardInput: Float, canShiftUp: Boolean) =
+        JphVehicleTransmission_Update(vehicleTransmissionHandle, deltaTime, currentRPM, forwardInput, canShiftUp)
+
+    open val currentGear: Int
+        get() = JphVehicleTransmission_GetCurrentGear(vehicleTransmissionHandle)
+
+    open val clutchFriction: Float
+        get() = JphVehicleTransmission_GetClutchFriction(vehicleTransmissionHandle)
+
+    open val isSwitchingGear: Boolean
+        get() = JphVehicleTransmission_IsSwitchingGear(vehicleTransmissionHandle)
+
+    open val currentRatio: Float
+        get() = JphVehicleTransmission_GetCurrentRatio(vehicleTransmissionHandle)
+
+    open fun allowSleep(): Boolean =
+        JphVehicleTransmission_AllowSleep(vehicleTransmissionHandle)
+
+    open fun saveState(stream: StateRecorder) =
+        JphVehicleTransmission_SaveState(vehicleTransmissionHandle, stream.stateRecorderHandle)
+
+    open fun restoreState(stream: StateRecorder) =
+        JphVehicleTransmission_RestoreState(vehicleTransmissionHandle, stream.stateRecorderHandle)
+}

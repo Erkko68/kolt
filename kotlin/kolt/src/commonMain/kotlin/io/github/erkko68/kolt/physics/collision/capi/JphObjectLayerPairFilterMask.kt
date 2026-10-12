@@ -10,6 +10,12 @@ internal external fun JphObjectLayerPairFilterMask_create(): NativePointer
 @ExternalSymbolName("JphObjectLayerPairFilterMask_destroy")
 internal external fun JphObjectLayerPairFilterMask_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphObjectLayerPairFilterMask_createUpcalls")
+internal external fun JphObjectLayerPairFilterMask_createUpcalls(call: NativePointer): NativePointer
+
+@ExternalSymbolName("JphObjectLayerPairFilterMask_bindUpcalls")
+internal external fun JphObjectLayerPairFilterMask_bindUpcalls(self: NativePointer, userData: NativePointer)
+
 @ExternalSymbolName("JphObjectLayerPairFilterMask_asObjectLayerPairFilter")
 internal external fun JphObjectLayerPairFilterMask_asObjectLayerPairFilter(self: NativePointer): NativePointer
 
@@ -21,6 +27,3 @@ internal external fun JphObjectLayerPairFilterMask_sGetGroup(inObjectLayer: Int)
 
 @ExternalSymbolName("JphObjectLayerPairFilterMask_sGetMask")
 internal external fun JphObjectLayerPairFilterMask_sGetMask(inObjectLayer: Int): Int
-
-@ExternalSymbolName("JphObjectLayerPairFilterMask_ShouldCollide")
-internal external fun JphObjectLayerPairFilterMask_ShouldCollide(self: NativePointer, inObject1: Int, inObject2: Int): Boolean

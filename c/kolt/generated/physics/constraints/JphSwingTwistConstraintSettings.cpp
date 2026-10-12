@@ -28,24 +28,8 @@ JphSerializableObject* JphSwingTwistConstraintSettings_asSerializableObject(JphS
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphSwingTwistConstraintSettings_GetRTTI(const JphSwingTwistConstraintSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphSwingTwistConstraintSettings_CastTo(const JphSwingTwistConstraintSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphSwingTwistConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::SwingTwistConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-void JphSwingTwistConstraintSettings_SaveBinaryState(const JphSwingTwistConstraintSettings* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-JphTwoBodyConstraint* JphSwingTwistConstraintSettings_Create(const JphSwingTwistConstraintSettings* self, JphBody* inBody1, JphBody* inBody2) {
-    return kolt::c(kolt::cpp(self)->Create(*kolt::cpp(inBody1), *kolt::cpp(inBody2)));
 }
 
 JphEConstraintSpace JphSwingTwistConstraintSettings_GetSpace(const JphSwingTwistConstraintSettings* self) {

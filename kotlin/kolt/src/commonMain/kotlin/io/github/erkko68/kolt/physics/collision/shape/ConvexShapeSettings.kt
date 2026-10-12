@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,23 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConvexShapeSettings`. */
-open class ConvexShapeSettings internal constructor(internal val convexShapeSettingsHandle: NativePointer)
+open class ConvexShapeSettings internal constructor(internal val convexShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphConvexShapeSettings_asShapeSettings(convexShapeSettingsHandle), owned), AutoCloseable {
+    override fun addRef() =
+        own { JphConvexShapeSettings_addRef(convexShapeSettingsHandle) }
+
+    override fun close() =
+        closeOnce { JphConvexShapeSettings_release(convexShapeSettingsHandle) }
+
+    open var material: PhysicsMaterial?
+        get() = JphConvexShapeSettings_GetMaterial(convexShapeSettingsHandle).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
+        set(value) = JphConvexShapeSettings_SetMaterial(convexShapeSettingsHandle, value?.physicsMaterialHandle ?: NullPointer)
+
+    open var density: Float
+        get() = JphConvexShapeSettings_GetDensity(convexShapeSettingsHandle)
+        set(density) = JphConvexShapeSettings_SetDensity(convexShapeSettingsHandle, density)
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphConvexShapeSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyFilter`. */
-open class BodyFilter internal constructor(internal val bodyFilterHandle: NativePointer)
+open class BodyFilter internal constructor(internal val bodyFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphBodyFilter_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != BodyFilter::class) JphBodyFilter_bindUpcalls(bodyFilterHandle, Upcalls.reference(this))
+    }
+
+    override fun close() =
+        closeOnce { JphBodyFilter_destroy(bodyFilterHandle) }
+
+    open fun shouldCollide(bodyID: BodyID): Boolean =
+        JphBodyFilter_ShouldCollide(bodyFilterHandle, bodyID.value)
+
+    open fun shouldCollideLocked(body: Body): Boolean =
+        JphBodyFilter_ShouldCollideLocked(bodyFilterHandle, body.bodyHandle)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, if (shouldCollide(BodyID(readSlot(args, 0).toInt()))) 1L else 0L)
+            1 -> writeSlot(result, if (shouldCollideLocked(Body(readPointerSlot(args, 0)))) 1L else 0L)
+            else -> return false
+        }
+        return true
+    }
+}

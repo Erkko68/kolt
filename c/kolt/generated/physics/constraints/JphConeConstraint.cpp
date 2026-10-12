@@ -24,54 +24,6 @@ JphConstraint* JphConeConstraint_asConstraint(JphConeConstraint* self) {
     return kolt::c(static_cast<JPH::Constraint*>(kolt::cpp(self)));
 }
 
-JphEConstraintSubType JphConeConstraint_GetSubType(const JphConeConstraint* self) {
-    return static_cast<JphEConstraintSubType>(kolt::cpp(self)->GetSubType());
-}
-
-void JphConeConstraint_NotifyShapeChanged(JphConeConstraint* self, uint32_t inBodyID, const JphVec3* inDeltaCOM) {
-    kolt::cpp(self)->NotifyShapeChanged(JPH::BodyID(inBodyID), kolt::math<JPH::Vec3>(*inDeltaCOM));
-}
-
-void JphConeConstraint_SetupVelocityConstraint(JphConeConstraint* self, float inDeltaTime) {
-    kolt::cpp(self)->SetupVelocityConstraint(inDeltaTime);
-}
-
-void JphConeConstraint_ResetWarmStart(JphConeConstraint* self) {
-    kolt::cpp(self)->ResetWarmStart();
-}
-
-void JphConeConstraint_WarmStartVelocityConstraint(JphConeConstraint* self, float inWarmStartImpulseRatio) {
-    kolt::cpp(self)->WarmStartVelocityConstraint(inWarmStartImpulseRatio);
-}
-
-bool JphConeConstraint_SolveVelocityConstraint(JphConeConstraint* self, float inDeltaTime) {
-    return kolt::cpp(self)->SolveVelocityConstraint(inDeltaTime);
-}
-
-bool JphConeConstraint_SolvePositionConstraint(JphConeConstraint* self, float inDeltaTime, float inBaumgarte) {
-    return kolt::cpp(self)->SolvePositionConstraint(inDeltaTime, inBaumgarte);
-}
-
-void JphConeConstraint_SaveState(const JphConeConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->SaveState(*kolt::cpp(inStream));
-}
-
-void JphConeConstraint_RestoreState(JphConeConstraint* self, JphStateRecorder* inStream) {
-    kolt::cpp(self)->RestoreState(*kolt::cpp(inStream));
-}
-
-JphConstraintSettings* JphConeConstraint_GetConstraintSettings(const JphConeConstraint* self) {
-    return kolt::c(kolt::retain(kolt::cpp(self)->GetConstraintSettings()));
-}
-
-void JphConeConstraint_GetConstraintToBody1Matrix(const JphConeConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody1Matrix());
-}
-
-void JphConeConstraint_GetConstraintToBody2Matrix(const JphConeConstraint* self, JphMat44* out) {
-    *out = kolt::mirror<JphMat44>(kolt::cpp(self)->GetConstraintToBody2Matrix());
-}
-
 void JphConeConstraint_SetHalfConeAngle(JphConeConstraint* self, float inHalfConeAngle) {
     kolt::cpp(self)->SetHalfConeAngle(inHalfConeAngle);
 }

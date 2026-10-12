@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,42 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterBaseSettings`. */
-open class CharacterBaseSettings internal constructor(internal val characterBaseSettingsHandle: NativePointer)
+open class CharacterBaseSettings internal constructor(internal val characterBaseSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphCharacterBaseSettings_create(), owned = true)
+
+    open fun addRef() =
+        own { JphCharacterBaseSettings_addRef(characterBaseSettingsHandle) }
+
+    override fun close() =
+        closeOnce { JphCharacterBaseSettings_release(characterBaseSettingsHandle) }
+
+    open var up: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphCharacterBaseSettings_GetUp(characterBaseSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphCharacterBaseSettings_SetUp(characterBaseSettingsHandle, toInterop(value.toArray())) }
+
+    open var supportingVolume: Plane
+        get() = run {
+            val returned = Plane(JphPlane_create(), owned = true)
+            JphCharacterBaseSettings_GetSupportingVolume(characterBaseSettingsHandle, returned.planeHandle)
+            returned
+        }
+        set(value) = JphCharacterBaseSettings_SetSupportingVolume(characterBaseSettingsHandle, value.planeHandle)
+
+    open var maxSlopeAngle: Float
+        get() = JphCharacterBaseSettings_GetMaxSlopeAngle(characterBaseSettingsHandle)
+        set(value) = JphCharacterBaseSettings_SetMaxSlopeAngle(characterBaseSettingsHandle, value)
+
+    open var enhancedInternalEdgeRemoval: Boolean
+        get() = JphCharacterBaseSettings_GetEnhancedInternalEdgeRemoval(characterBaseSettingsHandle)
+        set(value) = JphCharacterBaseSettings_SetEnhancedInternalEdgeRemoval(characterBaseSettingsHandle, value)
+
+    open var shape: Shape?
+        get() = JphCharacterBaseSettings_GetShape(characterBaseSettingsHandle).takeIf { it != NullPointer }?.let { Shape(it) }
+        set(value) = JphCharacterBaseSettings_SetShape(characterBaseSettingsHandle, value?.shapeHandle ?: NullPointer)
+}

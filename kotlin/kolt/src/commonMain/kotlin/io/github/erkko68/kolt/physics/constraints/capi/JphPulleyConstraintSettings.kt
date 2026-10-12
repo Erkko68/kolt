@@ -22,20 +22,8 @@ internal external fun JphPulleyConstraintSettings_asConstraintSettings(self: Nat
 @ExternalSymbolName("JphPulleyConstraintSettings_asSerializableObject")
 internal external fun JphPulleyConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphPulleyConstraintSettings_GetRTTI")
-internal external fun JphPulleyConstraintSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphPulleyConstraintSettings_CastTo")
-internal external fun JphPulleyConstraintSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
 @ExternalSymbolName("JphPulleyConstraintSettings_sCreateRTTI")
 internal external fun JphPulleyConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
-@ExternalSymbolName("JphPulleyConstraintSettings_SaveBinaryState")
-internal external fun JphPulleyConstraintSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphPulleyConstraintSettings_Create")
-internal external fun JphPulleyConstraintSettings_Create(self: NativePointer, inBody1: NativePointer, inBody2: NativePointer): NativePointer
 
 @ExternalSymbolName("JphPulleyConstraintSettings_GetSpace")
 internal external fun JphPulleyConstraintSettings_GetSpace(self: NativePointer): Int

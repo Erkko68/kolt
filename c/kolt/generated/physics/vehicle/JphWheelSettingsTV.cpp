@@ -16,6 +16,39 @@ void JphWheelSettingsTV_release(const JphWheelSettingsTV* self) {
     kolt::cpp(self)->Release();
 }
 
+} // extern "C"
+
+namespace JPH {
+struct JphWheelSettingsTV_Upcalls final : ::JPH::WheelSettingsTV {
+    kolt::Upcall mCall;
+    void* mUser = nullptr;
+    explicit JphWheelSettingsTV_Upcalls(kolt::Upcall call) : mCall(call) {}
+    ~JphWheelSettingsTV_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    void SaveBinaryState(StreamOut & p0) const override {
+        const uint64_t args[] = {kolt::slot(kolt::c(&p0))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return;
+        JPH::WheelSettingsTV::SaveBinaryState(p0);
+    }
+    void RestoreBinaryState(StreamIn & p0) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(&p0))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 1, args, &result)) return;
+        JPH::WheelSettingsTV::RestoreBinaryState(p0);
+    }
+};
+} // namespace JPH
+
+extern "C" {
+
+JphWheelSettingsTV* JphWheelSettingsTV_createUpcalls(JphUpcall call) {
+    return kolt::c(kolt::retain(static_cast<::JPH::WheelSettingsTV*>(new ::JPH::JphWheelSettingsTV_Upcalls(call))));
+}
+
+void JphWheelSettingsTV_bindUpcalls(JphWheelSettingsTV* self, void* userData) {
+    static_cast<::JPH::JphWheelSettingsTV_Upcalls*>(kolt::cpp(self))->mUser = userData;
+}
+
 JphWheelSettings* JphWheelSettingsTV_asWheelSettings(JphWheelSettingsTV* self) {
     return kolt::c(static_cast<JPH::WheelSettings*>(kolt::cpp(self)));
 }
@@ -24,24 +57,8 @@ JphSerializableObject* JphWheelSettingsTV_asSerializableObject(JphWheelSettingsT
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphWheelSettingsTV_GetRTTI(const JphWheelSettingsTV* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphWheelSettingsTV_CastTo(const JphWheelSettingsTV* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphWheelSettingsTV_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::WheelSettingsTV::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-void JphWheelSettingsTV_SaveBinaryState(const JphWheelSettingsTV* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-void JphWheelSettingsTV_RestoreBinaryState(JphWheelSettingsTV* self, JphStreamIn* inStream) {
-    kolt::cpp(self)->RestoreBinaryState(*kolt::cpp(inStream));
 }
 
 float JphWheelSettingsTV_GetLongitudinalFriction(const JphWheelSettingsTV* self) {

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::TaperedCylinderShapeSettings`. */
-open class TaperedCylinderShapeSettings internal constructor(internal val taperedCylinderShapeSettingsHandle: NativePointer) : ShapeSettings(JphTaperedCylinderShapeSettings_asShapeSettings(taperedCylinderShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphTaperedCylinderShapeSettings_create())
-    constructor(halfHeightOfTaperedCylinder: Float, topRadius: Float, bottomRadius: Float, convexRadius: Float, material: PhysicsMaterial?) : this(JphTaperedCylinderShapeSettings_create_float_float_float_float_PhysicsMaterial(halfHeightOfTaperedCylinder, topRadius, bottomRadius, convexRadius, material?.physicsMaterialHandle ?: NullPointer))
+open class TaperedCylinderShapeSettings internal constructor(internal val taperedCylinderShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphTaperedCylinderShapeSettings_asConvexShapeSettings(taperedCylinderShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphTaperedCylinderShapeSettings_create(), owned = true)
+    constructor(halfHeightOfTaperedCylinder: Float, topRadius: Float, bottomRadius: Float, convexRadius: Float, material: PhysicsMaterial?) : this(JphTaperedCylinderShapeSettings_create_float_float_float_float_PhysicsMaterial(halfHeightOfTaperedCylinder, topRadius, bottomRadius, convexRadius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
     override fun addRef() =
-        JphTaperedCylinderShapeSettings_addRef(taperedCylinderShapeSettingsHandle)
+        own { JphTaperedCylinderShapeSettings_addRef(taperedCylinderShapeSettingsHandle) }
 
     override fun close() =
-        JphTaperedCylinderShapeSettings_release(taperedCylinderShapeSettingsHandle)
+        closeOnce { JphTaperedCylinderShapeSettings_release(taperedCylinderShapeSettingsHandle) }
 
     open var halfHeight: Float
         get() = JphTaperedCylinderShapeSettings_GetHalfHeight(taperedCylinderShapeSettingsHandle)
@@ -59,7 +60,7 @@ open class TaperedCylinderShapeSettings internal constructor(internal val tapere
         set(value) = JphTaperedCylinderShapeSettings_SetConvexRadius(taperedCylinderShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphTaperedCylinderShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

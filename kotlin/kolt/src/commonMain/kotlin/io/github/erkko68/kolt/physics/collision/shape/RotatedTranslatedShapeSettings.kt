@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,16 +33,16 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RotatedTranslatedShapeSettings`. */
-open class RotatedTranslatedShapeSettings internal constructor(internal val rotatedTranslatedShapeSettingsHandle: NativePointer) : ShapeSettings(JphRotatedTranslatedShapeSettings_asShapeSettings(rotatedTranslatedShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphRotatedTranslatedShapeSettings_create())
-    constructor(position: Vec3, rotation: Quat, shape: ShapeSettings?) : this(interopScope { JphRotatedTranslatedShapeSettings_create_Vec3Arg_QuatArg_ShapeSettings(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeSettingsHandle ?: NullPointer) })
-    constructor(position: Vec3, rotation: Quat, shape: Shape?) : this(interopScope { JphRotatedTranslatedShapeSettings_create_Vec3Arg_QuatArg_Shape(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) })
+open class RotatedTranslatedShapeSettings internal constructor(internal val rotatedTranslatedShapeSettingsHandle: NativePointer, owned: Boolean = false) : ShapeSettings(JphRotatedTranslatedShapeSettings_asShapeSettings(rotatedTranslatedShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphRotatedTranslatedShapeSettings_create(), owned = true)
+    constructor(position: Vec3, rotation: Quat, shape: ShapeSettings?) : this(interopScope { JphRotatedTranslatedShapeSettings_create_Vec3Arg_QuatArg_ShapeSettings(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeSettingsHandle ?: NullPointer) }, owned = true)
+    constructor(position: Vec3, rotation: Quat, shape: Shape?) : this(interopScope { JphRotatedTranslatedShapeSettings_create_Vec3Arg_QuatArg_Shape(toInterop(position.toArray()), toInterop(rotation.toArray()), shape?.shapeHandle ?: NullPointer) }, owned = true)
 
     override fun addRef() =
-        JphRotatedTranslatedShapeSettings_addRef(rotatedTranslatedShapeSettingsHandle)
+        own { JphRotatedTranslatedShapeSettings_addRef(rotatedTranslatedShapeSettingsHandle) }
 
     override fun close() =
-        JphRotatedTranslatedShapeSettings_release(rotatedTranslatedShapeSettingsHandle)
+        closeOnce { JphRotatedTranslatedShapeSettings_release(rotatedTranslatedShapeSettingsHandle) }
 
     open var position: Vec3
         get() = interopScope {
@@ -64,7 +65,7 @@ open class RotatedTranslatedShapeSettings internal constructor(internal val rota
         set(value) = interopScope { JphRotatedTranslatedShapeSettings_SetRotation(rotatedTranslatedShapeSettingsHandle, toInterop(value.toArray())) }
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphRotatedTranslatedShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

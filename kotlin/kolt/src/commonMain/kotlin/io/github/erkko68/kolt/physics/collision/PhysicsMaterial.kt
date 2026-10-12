@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,54 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PhysicsMaterial`. */
-open class PhysicsMaterial internal constructor(internal val physicsMaterialHandle: NativePointer)
+open class PhysicsMaterial internal constructor(internal val physicsMaterialHandle: NativePointer, owned: Boolean = false) : SerializableObject(JphPhysicsMaterial_asSerializableObject(physicsMaterialHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphPhysicsMaterial_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != PhysicsMaterial::class) JphPhysicsMaterial_bindUpcalls(physicsMaterialHandle, Upcalls.reference(this))
+    }
+
+    open fun addRef() =
+        own { JphPhysicsMaterial_addRef(physicsMaterialHandle) }
+
+    override fun close() =
+        closeOnce { JphPhysicsMaterial_release(physicsMaterialHandle) }
+
+    open val rtti: RTTI?
+        get() = JphPhysicsMaterial_GetRTTI(physicsMaterialHandle).takeIf { it != NullPointer }?.let { RTTI(it) }
+
+    open val debugName: String?
+        get() = stringFromInterop(JphPhysicsMaterial_GetDebugName(physicsMaterialHandle))
+
+    open val debugColor: Color
+        get() = run {
+            val returned = Color(JphColor_create(), owned = true)
+            JphPhysicsMaterial_GetDebugColor(physicsMaterialHandle, returned.colorHandle)
+            returned
+        }
+
+    open fun saveBinaryState(stream: StreamOut) =
+        JphPhysicsMaterial_SaveBinaryState(physicsMaterialHandle, stream.streamOutHandle)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphPhysicsMaterial_sCreateRTTI(rtti.rttiHandle)
+
+        fun restoreFromBinaryState(stream: StreamIn): PhysicsMaterial =
+            interopScope {
+                val error = ByteArray(256)
+                val errorPointer = toInterop(error)
+                val returned = JphPhysicsMaterial_sRestoreFromBinaryState(stream.streamInHandle, errorPointer, error.size)
+                errorPointer.fromInterop(error)
+                if (returned == NullPointer) throw NativeException(error.decodeToString().substringBefore('\u0000'))
+                PhysicsMaterial(returned, owned = true)
+            }
+    }
+}

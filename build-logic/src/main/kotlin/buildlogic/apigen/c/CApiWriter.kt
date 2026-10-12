@@ -42,9 +42,21 @@ internal class CApiWriter(
     class Bound(
         val role: Role, val owner: String, val name: String, val params: List<Pair<String, CBridge>> = emptyList(),
         val returns: CBridge? = null, val isStatic: Boolean = false,
+        /** A method's C++ signature, by which an [Upcall] names the one it overrides. */
+        val signature: String? = null,
+        /** For [Role.UPCALLS]: the virtual functions the created object passes on, by index. */
+        val upcalls: List<Upcall> = emptyList(),
     ) {
-        enum class Role { CREATE, ADD_REF, RELEASE, DESTROY, UPCAST, METHOD, GETTER, SETTER }
+        /**
+         * [UPCALLS] creates an object of a generated subclass, whose virtual functions call the `Upcall` it's given
+         * (Bridge.hpp) with the user data [BIND_UPCALLS] sets; with none set, they're the record's own.
+         */
+        enum class Role { CREATE, ADD_REF, RELEASE, DESTROY, UPCAST, METHOD, GETTER, SETTER, UPCALLS, BIND_UPCALLS }
     }
+
+    /** A virtual function passed on with [args] in its slots; its result, if any, comes back as [returns]. */
+    class Upcall(val signature: String, val args: List<CValue>, val returns: CValue?)
+
 
     /** A C function's [signature] and the [body] forwarding it. */
     private class Forwarder(val signature: String, val body: String, val bound: Bound)
@@ -129,6 +141,7 @@ internal class CApiWriter(
                 Forwarder("void ${self}_destroy($self* self)", "delete $h::cpp(self);", Bound(Bound.Role.DESTROY, record.name, "destroy"))
             }
         }
+        upcalls(record, section, counted)
         rules.upcasts(record).forEach { base ->
             val baseType = names.type(base.name)
             val name = "${self}_as${baseType.removePrefix(names.prefix)}"
@@ -152,6 +165,81 @@ internal class CApiWriter(
         if (section.declarations.isEmpty()) return
         file.declarations.appendLine("// ${record.name}").append(section.declarations).appendLine()
         file.definitions.append(section.definitions)
+    }
+
+    private fun virtualSignature(m: CppMethod) = "${m.name}(${m.params.joinToString { cSpelling(it.type.spelling) }})${if (m.isConst) " const" else ""}"
+
+    /**
+     * `_createUpcalls` and `_bindUpcalls`, for a record a class outside C++ can derive from: a subclass overriding each
+     * virtual function to call an `Upcall`, and the base's when that leaves it alone. Not when a pure one passes what
+     * no slot holds.
+     */
+    private fun upcalls(record: CppRecord, section: Section, counted: Boolean) {
+        if (!record.derivable || !record.allocatable || !record.destructible || bridges.uninstantiated(record)) return
+        val virtuals = rules.virtuals(record)
+        if (virtuals.none { it.isPublic && it.isApi } || virtuals.any { it.isFinal }) return
+        val self = names.type(record.name)
+        val cpp = bridges.cpp(record.name)
+        val shim = "${self}_Upcalls"
+        val bound = ArrayList<Upcall>()
+        val overrides = StringBuilder()
+        for (m in virtuals) {
+            val params = m.params.indices.joinToString { "${m.params[it].type.spelling} p$it" }
+            val base = if (m.isPure) "$h::unavailable(\"${record.name}::${m.name}\");" else "${if (m.returns.spelling == "void") "" else "return "}$cpp::${m.name}(${m.params.indices.joinToString { "p$it" }});"
+            val head = "    ${m.returns.spelling} ${m.name}($params) ${if (m.isConst) "const " else ""}override {\n"
+            val passed = try {
+                if (!m.isPublic || !m.isApi) throw Unsupported("not API")
+                val args = m.params.mapIndexed { i, p -> upcallArgument(p, i) }
+                val returns = if (m.returns.spelling == "void") null else bridges.param(m.returns).also {
+                    if (it.extra.isNotEmpty() || it.value !is CValue.Builtin && it.value !is CValue.Enum && it.value !is CValue.Scalar) throw Unsupported("${m.returns.spelling} result")
+                }
+                Triple(args, returns, bound.size)
+            } catch (e: Unsupported) {
+                if (m.isPure) return
+                null
+            }
+            if (passed == null) continue
+            val (args, returns, index) = passed
+            bound += Upcall(virtualSignature(m), args.map { it.third }, returns?.value)
+            overrides.append(head).append(args.joinToString("") { it.first })
+                .append(if (args.isEmpty()) "        const uint64_t* args = nullptr;\n" else "        const uint64_t args[] = {${args.joinToString { "$h::slot(${it.second})" }}};\n")
+                .append("        uint64_t result = 0;\n        if ($h::upcall(mCall, mUser, this, $index, args, &result)) return${returns?.let { " " + it.convert("$h::unslot<${it.c}>(result)") }.orEmpty()};\n")
+                .append("        $base\n    }\n")
+        }
+        if (bound.isEmpty()) return
+        val upcall = "${names.prefix}Upcall"
+        val namespace = topLevel(record.name).substringBeforeLast("::", "")
+        val create = "${self}_createUpcalls"
+        // The class goes with the function creating it, which C sees; the namespace is the record's, so the signatures read as its header spells them.
+        section.definitions.append("} // extern \"C\"\n\n${if (namespace.isEmpty()) "" else "namespace $namespace {\n"}struct $shim final : ::$cpp {\n")
+            .append("    $h::Upcall mCall;\n    void* mUser = nullptr;\n    explicit $shim($h::Upcall call) : mCall(call) {}\n")
+            .append("    ~$shim() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }\n").append(overrides)
+            .append("};\n${if (namespace.isEmpty()) "" else "} // namespace $namespace\n"}\nextern \"C\" {\n\n")
+        emit(create, "class : ${record.name}", section) {
+            bridges.callbackTypes[upcall] = "typedef int32_t (*$upcall)(void* userData, int32_t method, const uint64_t* args, uint64_t* result);"
+            val made = "static_cast<::$cpp*>(new ${if (namespace.isEmpty()) "" else "::$namespace::"}$shim(call))"
+            Forwarder("$self* $create($upcall call)", "return $h::c(${if (counted) "$h::retain($made)" else made});", Bound(Bound.Role.UPCALLS, record.name, "createUpcalls", upcalls = bound))
+        }
+        emit("${self}_bindUpcalls", "class : ${record.name}", section) {
+            Forwarder("void ${self}_bindUpcalls($self* self, void* userData)", "static_cast<${if (namespace.isEmpty()) "" else "::$namespace::"}$shim*>($h::cpp(self))->mUser = userData;",
+                Bound(Bound.Role.BIND_UPCALLS, record.name, "bindUpcalls"))
+        }
+    }
+
+    /** A virtual function's argument [i] for its slot: the statements before, the value, and what it is. */
+    private fun upcallArgument(p: CppParam, i: Int): Triple<String, String, CValue> {
+        val s = shape(p.type.spelling)
+        val record = p.type.decl?.let(api.records::get)
+        // A record by pointer or reference is borrowed for the call, a value struct too.
+        if (record != null && handled(record) && record.accessible && s.indirection.size == 1 && s.indirection[0] != "&&")
+            return Triple("", "$h::c(${if (s.indirection[0] == "&") "&" else ""}p$i)", CValue.Handle(names.type(record.name), nullable = s.indirection[0] == "*"))
+        val b = bridges.result(p.type)
+        val value = b.value?.takeIf { b.extra.isEmpty() } ?: throw Unsupported("${p.type.spelling}: no slot holds it")
+        return when {
+            value is CValue.Mirror -> Triple("        ${b.c} a$i;\n        ${b.store("p$i", "&a$i")}\n", "&a$i", value)
+            value is CValue.Builtin || !b.out -> Triple("", b.convert("p$i"), value)
+            else -> throw Unsupported("${p.type.spelling}: no slot holds it")
+        }
     }
 
     /** A skip note's reason, unless it's the member's own entry. */
@@ -191,7 +279,7 @@ internal class CApiWriter(
         val target = if (method.isStatic) "${bridges.cpp(method.owner)}::" else "$h::cpp(self)->"
         val explicit = if (templateArguments.isEmpty()) "" else templateArguments.joinToString(prefix = "<", postfix = ">")
         val call = "$target${method.name}$explicit(${args(params)})"
-        val bound = Bound(Bound.Role.METHOD, method.owner, method.name, params, returns, method.isStatic)
+        val bound = Bound(Bound.Role.METHOD, method.owner, method.name, params, returns, method.isStatic, signature = virtualSignature(method))
         return when {
             returns.out -> Forwarder("void $name(${cParams(self, params, out = "${returns.c}* out")})", returns.store(call, "out"), bound)
             returns.c == "void" -> Forwarder("void $name(${cParams(self, params)})", "$call;", bound)

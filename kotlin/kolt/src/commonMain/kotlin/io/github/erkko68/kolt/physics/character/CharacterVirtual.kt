@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,18 +33,25 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CharacterVirtual`. */
-open class CharacterVirtual internal constructor(internal val characterVirtualHandle: NativePointer) : CharacterBase(JphCharacterVirtual_asCharacterBase(characterVirtualHandle)), AutoCloseable {
-    constructor(settings: CharacterVirtualSettings?, position: Vec3, rotation: Quat, userData: Long, system: PhysicsSystem?) : this(interopScope { JphCharacterVirtual_create_uint64_PhysicsSystem(settings?.characterVirtualSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), userData, system?.physicsSystemHandle ?: NullPointer) })
-    constructor(settings: CharacterVirtualSettings?, position: Vec3, rotation: Quat, system: PhysicsSystem?) : this(interopScope { JphCharacterVirtual_create_PhysicsSystem(settings?.characterVirtualSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), system?.physicsSystemHandle ?: NullPointer) })
+open class CharacterVirtual internal constructor(internal val characterVirtualHandle: NativePointer, owned: Boolean = false) : CharacterBase(JphCharacterVirtual_asCharacterBase(characterVirtualHandle), owned), AutoCloseable {
+    constructor(settings: CharacterVirtualSettings?, position: Vec3, rotation: Quat, userData: Long, system: PhysicsSystem?) : this(interopScope { JphCharacterVirtual_create_uint64_PhysicsSystem(settings?.characterVirtualSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), userData, system?.physicsSystemHandle ?: NullPointer) }, owned = true)
+    constructor(settings: CharacterVirtualSettings?, position: Vec3, rotation: Quat, system: PhysicsSystem?) : this(interopScope { JphCharacterVirtual_create_PhysicsSystem(settings?.characterVirtualSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), system?.physicsSystemHandle ?: NullPointer) }, owned = true)
 
-    open fun addRef() =
-        JphCharacterVirtual_addRef(characterVirtualHandle)
+    override fun addRef() =
+        own { JphCharacterVirtual_addRef(characterVirtualHandle) }
 
     override fun close() =
-        JphCharacterVirtual_release(characterVirtualHandle)
+        closeOnce { JphCharacterVirtual_release(characterVirtualHandle) }
+
+    open val id: CharacterID
+        get() = run {
+            val returned = CharacterID(JphCharacterID_create(), owned = true)
+            JphCharacterVirtual_GetID(characterVirtualHandle, returned.characterIDHandle)
+            returned
+        }
 
     open var listener: CharacterContactListener?
-        get() = JphCharacterVirtual_GetListener(characterVirtualHandle).takeIf { it != NullPointer }?.let(::CharacterContactListener)
+        get() = JphCharacterVirtual_GetListener(characterVirtualHandle).takeIf { it != NullPointer }?.let { CharacterContactListener(it) }
         set(listener) = JphCharacterVirtual_SetListener(characterVirtualHandle, listener?.characterContactListenerHandle ?: NullPointer)
 
     open fun setCharacterVsCharacterCollision(characterVsCharacterCollision: CharacterVsCharacterCollision?) =
@@ -146,8 +154,15 @@ open class CharacterVirtual internal constructor(internal val characterVirtualHa
         }
         set(shapeOffset) = interopScope { JphCharacterVirtual_SetShapeOffset(characterVirtualHandle, toInterop(shapeOffset.toArray())) }
 
-    open fun setUserData(userData: Long) =
-        JphCharacterVirtual_SetUserData(characterVirtualHandle, userData)
+    open var userData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphCharacterVirtual_GetUserData(characterVirtualHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+        set(userData) = JphCharacterVirtual_SetUserData(characterVirtualHandle, userData)
 
     open val innerBodyID: BodyID
         get() = BodyID(JphCharacterVirtual_GetInnerBodyID(characterVirtualHandle))
@@ -179,7 +194,7 @@ open class CharacterVirtual internal constructor(internal val characterVirtualHa
     open fun stickToFloor(stepDown: Vec3, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator): Boolean =
         interopScope { JphCharacterVirtual_StickToFloor(characterVirtualHandle, toInterop(stepDown.toArray()), broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle, allocator.tempAllocatorHandle) }
 
-    open fun extendedUpdate(deltaTime: Float, gravity: Vec3, settings: CharacterVirtualExtendedUpdateSettings, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator) =
+    open fun extendedUpdate(deltaTime: Float, gravity: Vec3, settings: CharacterVirtual.ExtendedUpdateSettings, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator) =
         interopScope { JphCharacterVirtual_ExtendedUpdate(characterVirtualHandle, deltaTime, toInterop(gravity.toArray()), settings.characterVirtualExtendedUpdateSettingsHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle, allocator.tempAllocatorHandle) }
 
     open fun refreshContacts(broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter, allocator: TempAllocator) =
@@ -194,11 +209,30 @@ open class CharacterVirtual internal constructor(internal val characterVirtualHa
     open fun setInnerBodyShape(shape: Shape?) =
         JphCharacterVirtual_SetInnerBodyShape(characterVirtualHandle, shape?.shapeHandle ?: NullPointer)
 
-    open fun saveState(stream: StateRecorder) =
-        JphCharacterVirtual_SaveState(characterVirtualHandle, stream.stateRecorderHandle)
+    open val transformedShape: TransformedShape
+        get() = run {
+            val returned = TransformedShape(JphTransformedShape_create(), owned = true)
+            JphCharacterVirtual_GetTransformedShape(characterVirtualHandle, returned.transformedShapeHandle)
+            returned
+        }
 
-    open fun restoreState(stream: StateRecorder) =
-        JphCharacterVirtual_RestoreState(characterVirtualHandle, stream.stateRecorderHandle)
+    open fun checkCollision(position: Vec3, rotation: Quat, movementDirection: Vec3, maxSeparationDistance: Float, shape: Shape?, baseOffset: Vec3, collector: CollideShapeCollector, broadPhaseLayerFilter: BroadPhaseLayerFilter, objectLayerFilter: ObjectLayerFilter, bodyFilter: BodyFilter, shapeFilter: ShapeFilter) =
+        interopScope { JphCharacterVirtual_CheckCollision(characterVirtualHandle, toInterop(position.toArray()), toInterop(rotation.toArray()), toInterop(movementDirection.toArray()), maxSeparationDistance, shape?.shapeHandle ?: NullPointer, toInterop(baseOffset.toArray()), collector.collideShapeCollectorHandle, broadPhaseLayerFilter.broadPhaseLayerFilterHandle, objectLayerFilter.objectLayerFilterHandle, bodyFilter.bodyFilterHandle, shapeFilter.shapeFilterHandle) }
+
+    open val characterVirtualSettings: CharacterVirtualSettings
+        get() = run {
+            val returned = CharacterVirtualSettings(JphCharacterVirtualSettings_create(), owned = true)
+            JphCharacterVirtual_GetCharacterVirtualSettings(characterVirtualHandle, returned.characterVirtualSettingsHandle)
+            returned
+        }
+
+    open val activeContacts: List<CharacterContact>
+        get() = interopScope {
+            val count = JphCharacterVirtual_GetActiveContacts(characterVirtualHandle, NullPointer, 0)
+            val returned = List(count) { CharacterContact(JphCharacterContact_create(), owned = true) }
+            JphCharacterVirtual_GetActiveContacts(characterVirtualHandle, toInterop(returned.map { it.characterContactHandle }), count)
+            returned
+        }
 
     open fun hasCollidedWith(body: BodyID): Boolean =
         JphCharacterVirtual_HasCollidedWith_BodyID(characterVirtualHandle, body.value)
@@ -208,4 +242,54 @@ open class CharacterVirtual internal constructor(internal val characterVirtualHa
 
     open fun hasCollidedWith(character: CharacterVirtual?): Boolean =
         JphCharacterVirtual_HasCollidedWith_CharacterVirtual(characterVirtualHandle, character?.characterVirtualHandle ?: NullPointer)
-}
+
+    /** C++ `JPH::CharacterVirtual::ExtendedUpdateSettings`. */
+    open class ExtendedUpdateSettings internal constructor(internal val characterVirtualExtendedUpdateSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+        constructor() : this(JphCharacterVirtualExtendedUpdateSettings_create(), owned = true)
+    
+        override fun close() =
+            closeOnce { JphCharacterVirtualExtendedUpdateSettings_destroy(characterVirtualExtendedUpdateSettingsHandle) }
+    
+        open var stickToFloorStepDown: Vec3
+            get() = interopScope {
+                val returned = FloatArray(4)
+                val returnedPointer = toInterop(returned)
+                JphCharacterVirtualExtendedUpdateSettings_GetStickToFloorStepDown(characterVirtualExtendedUpdateSettingsHandle, returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Vec3(returned)
+            }
+            set(value) = interopScope { JphCharacterVirtualExtendedUpdateSettings_SetStickToFloorStepDown(characterVirtualExtendedUpdateSettingsHandle, toInterop(value.toArray())) }
+    
+        open var walkStairsStepUp: Vec3
+            get() = interopScope {
+                val returned = FloatArray(4)
+                val returnedPointer = toInterop(returned)
+                JphCharacterVirtualExtendedUpdateSettings_GetWalkStairsStepUp(characterVirtualExtendedUpdateSettingsHandle, returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Vec3(returned)
+            }
+            set(value) = interopScope { JphCharacterVirtualExtendedUpdateSettings_SetWalkStairsStepUp(characterVirtualExtendedUpdateSettingsHandle, toInterop(value.toArray())) }
+    
+        open var walkStairsMinStepForward: Float
+            get() = JphCharacterVirtualExtendedUpdateSettings_GetWalkStairsMinStepForward(characterVirtualExtendedUpdateSettingsHandle)
+            set(value) = JphCharacterVirtualExtendedUpdateSettings_SetWalkStairsMinStepForward(characterVirtualExtendedUpdateSettingsHandle, value)
+    
+        open var walkStairsStepForwardTest: Float
+            get() = JphCharacterVirtualExtendedUpdateSettings_GetWalkStairsStepForwardTest(characterVirtualExtendedUpdateSettingsHandle)
+            set(value) = JphCharacterVirtualExtendedUpdateSettings_SetWalkStairsStepForwardTest(characterVirtualExtendedUpdateSettingsHandle, value)
+    
+        open var walkStairsCosAngleForwardContact: Float
+            get() = JphCharacterVirtualExtendedUpdateSettings_GetWalkStairsCosAngleForwardContact(characterVirtualExtendedUpdateSettingsHandle)
+            set(value) = JphCharacterVirtualExtendedUpdateSettings_SetWalkStairsCosAngleForwardContact(characterVirtualExtendedUpdateSettingsHandle, value)
+    
+        open var walkStairsStepDownExtra: Vec3
+            get() = interopScope {
+                val returned = FloatArray(4)
+                val returnedPointer = toInterop(returned)
+                JphCharacterVirtualExtendedUpdateSettings_GetWalkStairsStepDownExtra(characterVirtualExtendedUpdateSettingsHandle, returnedPointer)
+                returnedPointer.fromInterop(returned)
+                Vec3(returned)
+            }
+            set(value) = interopScope { JphCharacterVirtualExtendedUpdateSettings_SetWalkStairsStepDownExtra(characterVirtualExtendedUpdateSettingsHandle, toInterop(value.toArray())) }
+    }
+    }

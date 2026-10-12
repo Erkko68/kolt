@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,10 +33,10 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::RShapeCast`. */
-open class RShapeCast internal constructor(internal val rShapeCastHandle: NativePointer) : AutoCloseable {
-    constructor(cast: ShapeCast) : this(JphRShapeCast_create_ShapeCast(cast.shapeCastHandle))
-    constructor(arg0: Shape?, arg1: Vec3, arg2: Mat44, arg3: Vec3, arg4: AABox) : this(interopScope { JphRShapeCast_create_Shape_Vec3Arg_ArgType_Vec3Arg_AABox(arg0?.shapeHandle ?: NullPointer, toInterop(arg1.toArray()), toInterop(arg2.toArray()), toInterop(arg3.toArray()), arg4.aaBoxHandle) })
+open class RShapeCast internal constructor(internal val rShapeCastHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor(cast: ShapeCast) : this(JphRShapeCast_create_ShapeCast(cast.shapeCastHandle), owned = true)
+    constructor(arg0: Shape?, arg1: Vec3, arg2: Mat44, arg3: Vec3, arg4: AABox) : this(interopScope { JphRShapeCast_create_Shape_Vec3Arg_ArgType_Vec3Arg_AABox(arg0?.shapeHandle ?: NullPointer, toInterop(arg1.toArray()), toInterop(arg2.toArray()), toInterop(arg3.toArray()), arg4.aaBoxHandle) }, owned = true)
 
     override fun close() =
-        JphRShapeCast_destroy(rShapeCastHandle)
+        closeOnce { JphRShapeCast_destroy(rShapeCastHandle) }
 }

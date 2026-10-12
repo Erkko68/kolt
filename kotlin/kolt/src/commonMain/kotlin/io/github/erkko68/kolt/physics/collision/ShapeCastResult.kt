@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,22 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ShapeCastResult`. */
-open class ShapeCastResult internal constructor(internal val shapeCastResultHandle: NativePointer) : CollideShapeResult(JphShapeCastResult_asCollideShapeResult(shapeCastResultHandle)), AutoCloseable {
-    constructor() : this(JphShapeCastResult_create())
-    constructor(fraction: Float, contactPoint1: Vec3, contactPoint2: Vec3, contactNormalOrPenetrationDepth: Vec3, backFaceHit: Boolean, subShapeID1: SubShapeID, subShapeID2: SubShapeID, bodyID2: BodyID) : this(interopScope { JphShapeCastResult_create_float_Vec3Arg_Vec3Arg_Vec3Arg_bool_SubShapeID_SubShapeID_BodyID(fraction, toInterop(contactPoint1.toArray()), toInterop(contactPoint2.toArray()), toInterop(contactNormalOrPenetrationDepth.toArray()), backFaceHit, subShapeID1.value, subShapeID2.value, bodyID2.value) })
+open class ShapeCastResult internal constructor(internal val shapeCastResultHandle: NativePointer, owned: Boolean = false) : CollideShapeResult(JphShapeCastResult_asCollideShapeResult(shapeCastResultHandle), owned), AutoCloseable {
+    constructor() : this(JphShapeCastResult_create(), owned = true)
+    constructor(fraction: Float, contactPoint1: Vec3, contactPoint2: Vec3, contactNormalOrPenetrationDepth: Vec3, backFaceHit: Boolean, subShapeID1: SubShapeID, subShapeID2: SubShapeID, bodyID2: BodyID) : this(interopScope { JphShapeCastResult_create_float_Vec3Arg_Vec3Arg_Vec3Arg_bool_SubShapeID_SubShapeID_BodyID(fraction, toInterop(contactPoint1.toArray()), toInterop(contactPoint2.toArray()), toInterop(contactNormalOrPenetrationDepth.toArray()), backFaceHit, subShapeID1.value, subShapeID2.value, bodyID2.value) }, owned = true)
 
     override fun close() =
-        JphShapeCastResult_destroy(shapeCastResultHandle)
+        closeOnce { JphShapeCastResult_destroy(shapeCastResultHandle) }
 
     override val earlyOutFraction: Float
         get() = JphShapeCastResult_GetEarlyOutFraction(shapeCastResultHandle)
+
+    open fun reversed(worldSpaceCastDirection: Vec3): ShapeCastResult =
+        interopScope {
+            val returned = ShapeCastResult(JphShapeCastResult_create(), owned = true)
+            JphShapeCastResult_Reversed(shapeCastResultHandle, toInterop(worldSpaceCastDirection.toArray()), returned.shapeCastResultHandle)
+            returned
+        }
 
     open var fraction: Float
         get() = JphShapeCastResult_GetFraction(shapeCastResultHandle)

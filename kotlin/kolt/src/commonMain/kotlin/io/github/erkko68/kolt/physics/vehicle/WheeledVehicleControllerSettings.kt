@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,58 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::WheeledVehicleControllerSettings`. */
-open class WheeledVehicleControllerSettings internal constructor(internal val wheeledVehicleControllerSettingsHandle: NativePointer)
+open class WheeledVehicleControllerSettings internal constructor(internal val wheeledVehicleControllerSettingsHandle: NativePointer, owned: Boolean = false) : VehicleControllerSettings(JphWheeledVehicleControllerSettings_asVehicleControllerSettings(wheeledVehicleControllerSettingsHandle), owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphWheeledVehicleControllerSettings_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != WheeledVehicleControllerSettings::class) JphWheeledVehicleControllerSettings_bindUpcalls(wheeledVehicleControllerSettingsHandle, Upcalls.reference(this))
+    }
+
+    override fun addRef() =
+        own { JphWheeledVehicleControllerSettings_addRef(wheeledVehicleControllerSettingsHandle) }
+
+    override fun close() =
+        closeOnce { JphWheeledVehicleControllerSettings_release(wheeledVehicleControllerSettingsHandle) }
+
+    open var engine: VehicleEngineSettings
+        get() = run {
+            val returned = VehicleEngineSettings(JphVehicleEngineSettings_create(), owned = true)
+            JphWheeledVehicleControllerSettings_GetEngine(wheeledVehicleControllerSettingsHandle, returned.vehicleEngineSettingsHandle)
+            returned
+        }
+        set(value) = JphWheeledVehicleControllerSettings_SetEngine(wheeledVehicleControllerSettingsHandle, value.vehicleEngineSettingsHandle)
+
+    open var transmission: VehicleTransmissionSettings
+        get() = run {
+            val returned = VehicleTransmissionSettings(JphVehicleTransmissionSettings_create(), owned = true)
+            JphWheeledVehicleControllerSettings_GetTransmission(wheeledVehicleControllerSettingsHandle, returned.vehicleTransmissionSettingsHandle)
+            returned
+        }
+        set(value) = JphWheeledVehicleControllerSettings_SetTransmission(wheeledVehicleControllerSettingsHandle, value.vehicleTransmissionSettingsHandle)
+
+    open var differentials: List<VehicleDifferentialSettings>
+        get() = interopScope {
+            val count = JphWheeledVehicleControllerSettings_GetDifferentials(wheeledVehicleControllerSettingsHandle, NullPointer, 0)
+            val returned = List(count) { VehicleDifferentialSettings(JphVehicleDifferentialSettings_create(), owned = true) }
+            JphWheeledVehicleControllerSettings_GetDifferentials(wheeledVehicleControllerSettingsHandle, toInterop(returned.map { it.vehicleDifferentialSettingsHandle }), count)
+            returned
+        }
+        set(value) = interopScope { JphWheeledVehicleControllerSettings_SetDifferentials(wheeledVehicleControllerSettingsHandle, toInterop(value.map { it.vehicleDifferentialSettingsHandle }), value.size) }
+
+    open var differentialLimitedSlipRatio: Float
+        get() = JphWheeledVehicleControllerSettings_GetDifferentialLimitedSlipRatio(wheeledVehicleControllerSettingsHandle)
+        set(value) = JphWheeledVehicleControllerSettings_SetDifferentialLimitedSlipRatio(wheeledVehicleControllerSettingsHandle, value)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> saveBinaryState(StreamOut(readPointerSlot(args, 0)))
+            1 -> restoreBinaryState(StreamIn(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
+
+    companion object {
+        fun createRTTI(rtti: RTTI) =
+            JphWheeledVehicleControllerSettings_sCreateRTTI(rtti.rttiHandle)
+    }
+}

@@ -22,20 +22,8 @@ internal external fun JphGearConstraintSettings_asConstraintSettings(self: Nativ
 @ExternalSymbolName("JphGearConstraintSettings_asSerializableObject")
 internal external fun JphGearConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphGearConstraintSettings_GetRTTI")
-internal external fun JphGearConstraintSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphGearConstraintSettings_CastTo")
-internal external fun JphGearConstraintSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
 @ExternalSymbolName("JphGearConstraintSettings_sCreateRTTI")
 internal external fun JphGearConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
-@ExternalSymbolName("JphGearConstraintSettings_SaveBinaryState")
-internal external fun JphGearConstraintSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphGearConstraintSettings_Create")
-internal external fun JphGearConstraintSettings_Create(self: NativePointer, inBody1: NativePointer, inBody2: NativePointer): NativePointer
 
 @ExternalSymbolName("JphGearConstraintSettings_SetRatio")
 internal external fun JphGearConstraintSettings_SetRatio(self: NativePointer, inNumTeethGear1: Int, inNumTeethGear2: Int)

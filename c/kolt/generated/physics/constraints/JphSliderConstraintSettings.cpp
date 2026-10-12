@@ -28,24 +28,8 @@ JphSerializableObject* JphSliderConstraintSettings_asSerializableObject(JphSlide
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphSliderConstraintSettings_GetRTTI(const JphSliderConstraintSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphSliderConstraintSettings_CastTo(const JphSliderConstraintSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphSliderConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::SliderConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-void JphSliderConstraintSettings_SaveBinaryState(const JphSliderConstraintSettings* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-JphTwoBodyConstraint* JphSliderConstraintSettings_Create(const JphSliderConstraintSettings* self, JphBody* inBody1, JphBody* inBody2) {
-    return kolt::c(kolt::cpp(self)->Create(*kolt::cpp(inBody1), *kolt::cpp(inBody2)));
 }
 
 void JphSliderConstraintSettings_SetSliderAxis(JphSliderConstraintSettings* self, const JphVec3* inSliderAxis) {

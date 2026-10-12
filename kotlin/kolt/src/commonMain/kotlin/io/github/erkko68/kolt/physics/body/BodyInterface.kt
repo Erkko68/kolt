@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,32 +33,32 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyInterface`. */
-open class BodyInterface internal constructor(internal val bodyInterfaceHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphBodyInterface_create())
+open class BodyInterface internal constructor(internal val bodyInterfaceHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphBodyInterface_create(), owned = true)
 
     override fun close() =
-        JphBodyInterface_destroy(bodyInterfaceHandle)
+        closeOnce { JphBodyInterface_destroy(bodyInterfaceHandle) }
 
     open fun init(bodyLockInterface: BodyLockInterface, bodyManager: BodyManager, broadPhase: BroadPhase) =
         JphBodyInterface_Init(bodyInterfaceHandle, bodyLockInterface.bodyLockInterfaceHandle, bodyManager.bodyManagerHandle, broadPhase.broadPhaseHandle)
 
     open fun createBody(settings: BodyCreationSettings): Body? =
-        JphBodyInterface_CreateBody(bodyInterfaceHandle, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let(::Body)
+        JphBodyInterface_CreateBody(bodyInterfaceHandle, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
     open fun createSoftBody(settings: SoftBodyCreationSettings): Body? =
-        JphBodyInterface_CreateSoftBody(bodyInterfaceHandle, settings.softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let(::Body)
+        JphBodyInterface_CreateSoftBody(bodyInterfaceHandle, settings.softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
     open fun createBodyWithID(bodyID: BodyID, settings: BodyCreationSettings): Body? =
-        JphBodyInterface_CreateBodyWithID(bodyInterfaceHandle, bodyID.value, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let(::Body)
+        JphBodyInterface_CreateBodyWithID(bodyInterfaceHandle, bodyID.value, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
     open fun createSoftBodyWithID(bodyID: BodyID, settings: SoftBodyCreationSettings): Body? =
-        JphBodyInterface_CreateSoftBodyWithID(bodyInterfaceHandle, bodyID.value, settings.softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let(::Body)
+        JphBodyInterface_CreateSoftBodyWithID(bodyInterfaceHandle, bodyID.value, settings.softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
     open fun createBodyWithoutID(settings: BodyCreationSettings): Body? =
-        JphBodyInterface_CreateBodyWithoutID(bodyInterfaceHandle, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let(::Body)
+        JphBodyInterface_CreateBodyWithoutID(bodyInterfaceHandle, settings.bodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
     open fun createSoftBodyWithoutID(settings: SoftBodyCreationSettings): Body? =
-        JphBodyInterface_CreateSoftBodyWithoutID(bodyInterfaceHandle, settings.softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let(::Body)
+        JphBodyInterface_CreateSoftBodyWithoutID(bodyInterfaceHandle, settings.softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { Body(it) }
 
     open fun destroyBodyWithoutID(body: Body?) =
         JphBodyInterface_DestroyBodyWithoutID(bodyInterfaceHandle, body?.bodyHandle ?: NullPointer)
@@ -69,7 +70,7 @@ open class BodyInterface internal constructor(internal val bodyInterfaceHandle: 
         JphBodyInterface_AssignBodyID_BodyID(bodyInterfaceHandle, body?.bodyHandle ?: NullPointer, bodyID.value)
 
     open fun unassignBodyID(bodyID: BodyID): Body? =
-        JphBodyInterface_UnassignBodyID(bodyInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let(::Body)
+        JphBodyInterface_UnassignBodyID(bodyInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { Body(it) }
 
     open fun destroyBody(bodyID: BodyID) =
         JphBodyInterface_DestroyBody(bodyInterfaceHandle, bodyID.value)
@@ -105,13 +106,13 @@ open class BodyInterface internal constructor(internal val bodyInterfaceHandle: 
         JphBodyInterface_ResetSleepTimer(bodyInterfaceHandle, bodyID.value)
 
     open fun createConstraint(settings: TwoBodyConstraintSettings?, bodyID1: BodyID, bodyID2: BodyID): TwoBodyConstraint? =
-        JphBodyInterface_CreateConstraint(bodyInterfaceHandle, settings?.twoBodyConstraintSettingsHandle ?: NullPointer, bodyID1.value, bodyID2.value).takeIf { it != NullPointer }?.let(::TwoBodyConstraint)
+        JphBodyInterface_CreateConstraint(bodyInterfaceHandle, settings?.twoBodyConstraintSettingsHandle ?: NullPointer, bodyID1.value, bodyID2.value).takeIf { it != NullPointer }?.let { TwoBodyConstraint(it) }
 
     open fun activateConstraint(constraint: TwoBodyConstraint?) =
         JphBodyInterface_ActivateConstraint(bodyInterfaceHandle, constraint?.twoBodyConstraintHandle ?: NullPointer)
 
     open fun getShape(bodyID: BodyID): Shape? =
-        JphBodyInterface_GetShape(bodyInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let(::Shape)
+        JphBodyInterface_GetShape(bodyInterfaceHandle, bodyID.value).takeIf { it != NullPointer }?.let { Shape(it, owned = true) }
 
     open fun setShape(bodyID: BodyID, shape: Shape?, updateMassProperties: Boolean, activationMode: EActivation) =
         JphBodyInterface_SetShape(bodyInterfaceHandle, bodyID.value, shape?.shapeHandle ?: NullPointer, updateMassProperties, activationMode.value)
@@ -323,11 +324,34 @@ open class BodyInterface internal constructor(internal val bodyInterfaceHandle: 
     open fun setCollisionGroup(bodyID: BodyID, collisionGroup: CollisionGroup) =
         JphBodyInterface_SetCollisionGroup(bodyInterfaceHandle, bodyID.value, collisionGroup.collisionGroupHandle)
 
+    open fun getCollisionGroup(bodyID: BodyID): CollisionGroup =
+        run {
+            val returned = CollisionGroup(JphCollisionGroup_create(), owned = true)
+            JphBodyInterface_GetCollisionGroup(bodyInterfaceHandle, bodyID.value, returned.collisionGroupHandle)
+            returned
+        }
+
+    open fun getTransformedShape(bodyID: BodyID): TransformedShape =
+        run {
+            val returned = TransformedShape(JphTransformedShape_create(), owned = true)
+            JphBodyInterface_GetTransformedShape(bodyInterfaceHandle, bodyID.value, returned.transformedShapeHandle)
+            returned
+        }
+
+    open fun getUserData(bodyID: BodyID): Long =
+        interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphBodyInterface_GetUserData(bodyInterfaceHandle, bodyID.value, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+
     open fun setUserData(bodyID: BodyID, userData: Long) =
         JphBodyInterface_SetUserData(bodyInterfaceHandle, bodyID.value, userData)
 
     open fun getMaterial(bodyID: BodyID, subShapeID: SubShapeID): PhysicsMaterial? =
-        JphBodyInterface_GetMaterial(bodyInterfaceHandle, bodyID.value, subShapeID.value).takeIf { it != NullPointer }?.let(::PhysicsMaterial)
+        JphBodyInterface_GetMaterial(bodyInterfaceHandle, bodyID.value, subShapeID.value).takeIf { it != NullPointer }?.let { PhysicsMaterial(it) }
 
     open fun invalidateContactCache(bodyID: BodyID) =
         JphBodyInterface_InvalidateContactCache(bodyInterfaceHandle, bodyID.value)

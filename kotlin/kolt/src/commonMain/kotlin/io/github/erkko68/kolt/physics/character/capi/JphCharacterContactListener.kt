@@ -10,6 +10,12 @@ internal external fun JphCharacterContactListener_create(): NativePointer
 @ExternalSymbolName("JphCharacterContactListener_destroy")
 internal external fun JphCharacterContactListener_destroy(self: NativePointer)
 
+@ExternalSymbolName("JphCharacterContactListener_createUpcalls")
+internal external fun JphCharacterContactListener_createUpcalls(call: NativePointer): NativePointer
+
+@ExternalSymbolName("JphCharacterContactListener_bindUpcalls")
+internal external fun JphCharacterContactListener_bindUpcalls(self: NativePointer, userData: NativePointer)
+
 @ExternalSymbolName("JphCharacterContactListener_OnAdjustBodyVelocity")
 internal external fun JphCharacterContactListener_OnAdjustBodyVelocity(self: NativePointer, inCharacter: NativePointer, inBody2: NativePointer, ioLinearVelocity: NativePointer, ioAngularVelocity: NativePointer)
 

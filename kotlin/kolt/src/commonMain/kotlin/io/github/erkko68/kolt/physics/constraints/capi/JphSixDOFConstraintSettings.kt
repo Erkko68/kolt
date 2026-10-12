@@ -22,20 +22,8 @@ internal external fun JphSixDOFConstraintSettings_asConstraintSettings(self: Nat
 @ExternalSymbolName("JphSixDOFConstraintSettings_asSerializableObject")
 internal external fun JphSixDOFConstraintSettings_asSerializableObject(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphSixDOFConstraintSettings_GetRTTI")
-internal external fun JphSixDOFConstraintSettings_GetRTTI(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphSixDOFConstraintSettings_CastTo")
-internal external fun JphSixDOFConstraintSettings_CastTo(self: NativePointer, inRTTI: NativePointer): NativePointer
-
 @ExternalSymbolName("JphSixDOFConstraintSettings_sCreateRTTI")
 internal external fun JphSixDOFConstraintSettings_sCreateRTTI(inRTTI: NativePointer)
-
-@ExternalSymbolName("JphSixDOFConstraintSettings_SaveBinaryState")
-internal external fun JphSixDOFConstraintSettings_SaveBinaryState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphSixDOFConstraintSettings_Create")
-internal external fun JphSixDOFConstraintSettings_Create(self: NativePointer, inBody1: NativePointer, inBody2: NativePointer): NativePointer
 
 @ExternalSymbolName("JphSixDOFConstraintSettings_MakeFreeAxis")
 internal external fun JphSixDOFConstraintSettings_MakeFreeAxis(self: NativePointer, inAxis: Int)

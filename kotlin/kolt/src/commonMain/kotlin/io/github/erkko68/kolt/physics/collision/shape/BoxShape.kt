@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BoxShape`. */
-open class BoxShape internal constructor(internal val boxShapeHandle: NativePointer) : Shape(JphBoxShape_asShape(boxShapeHandle)), AutoCloseable {
-    constructor() : this(JphBoxShape_create())
-    constructor(halfExtent: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphBoxShape_create_Vec3Arg_float_PhysicsMaterial(toInterop(halfExtent.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) })
+open class BoxShape internal constructor(internal val boxShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphBoxShape_asConvexShape(boxShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphBoxShape_create(), owned = true)
+    constructor(halfExtent: Vec3, convexRadius: Float, material: PhysicsMaterial?) : this(interopScope { JphBoxShape_create_Vec3Arg_float_PhysicsMaterial(toInterop(halfExtent.toArray()), convexRadius, material?.physicsMaterialHandle ?: NullPointer) }, owned = true)
 
     override fun addRef() =
-        JphBoxShape_addRef(boxShapeHandle)
+        own { JphBoxShape_addRef(boxShapeHandle) }
 
     override fun close() =
-        JphBoxShape_release(boxShapeHandle)
+        closeOnce { JphBoxShape_release(boxShapeHandle) }
 
     open val halfExtent: Vec3
         get() = interopScope {
@@ -51,14 +52,11 @@ open class BoxShape internal constructor(internal val boxShapeHandle: NativePoin
             Vec3(returned)
         }
 
-    open fun getSupportFunction(mode: ConvexShapeESupportMode, buffer: ConvexShapeSupportBuffer, scale: Vec3): ConvexShapeSupport? =
-        interopScope { JphBoxShape_GetSupportFunction(boxShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let(::ConvexShapeSupport) }
-
     open val convexRadius: Float
         get() = JphBoxShape_GetConvexRadius(boxShapeHandle)
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphBoxShape_sRegister()
     }
 }

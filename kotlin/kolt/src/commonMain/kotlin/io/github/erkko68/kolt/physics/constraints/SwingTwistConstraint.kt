@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,62 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SwingTwistConstraint`. */
-open class SwingTwistConstraint internal constructor(internal val swingTwistConstraintHandle: NativePointer) : Constraint(JphSwingTwistConstraint_asConstraint(swingTwistConstraintHandle)), AutoCloseable {
-    constructor(body1: Body, body2: Body, settings: SwingTwistConstraintSettings) : this(JphSwingTwistConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.swingTwistConstraintSettingsHandle))
+open class SwingTwistConstraint internal constructor(internal val swingTwistConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphSwingTwistConstraint_asTwoBodyConstraint(swingTwistConstraintHandle), owned), AutoCloseable {
+    constructor(body1: Body, body2: Body, settings: SwingTwistConstraintSettings) : this(JphSwingTwistConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.swingTwistConstraintSettingsHandle), owned = true)
 
-    open fun addRef() =
-        JphSwingTwistConstraint_addRef(swingTwistConstraintHandle)
+    override fun addRef() =
+        own { JphSwingTwistConstraint_addRef(swingTwistConstraintHandle) }
 
     override fun close() =
-        JphSwingTwistConstraint_release(swingTwistConstraintHandle)
-
-    open val subType: EConstraintSubType
-        get() = EConstraintSubType.of(JphSwingTwistConstraint_GetSubType(swingTwistConstraintHandle))
-
-    open fun notifyShapeChanged(bodyID: BodyID, deltaCOM: Vec3) =
-        interopScope { JphSwingTwistConstraint_NotifyShapeChanged(swingTwistConstraintHandle, bodyID.value, toInterop(deltaCOM.toArray())) }
-
-    open fun setupVelocityConstraint(deltaTime: Float) =
-        JphSwingTwistConstraint_SetupVelocityConstraint(swingTwistConstraintHandle, deltaTime)
-
-    open fun resetWarmStart() =
-        JphSwingTwistConstraint_ResetWarmStart(swingTwistConstraintHandle)
-
-    open fun warmStartVelocityConstraint(warmStartImpulseRatio: Float) =
-        JphSwingTwistConstraint_WarmStartVelocityConstraint(swingTwistConstraintHandle, warmStartImpulseRatio)
-
-    open fun solveVelocityConstraint(deltaTime: Float): Boolean =
-        JphSwingTwistConstraint_SolveVelocityConstraint(swingTwistConstraintHandle, deltaTime)
-
-    open fun solvePositionConstraint(deltaTime: Float, baumgarte: Float): Boolean =
-        JphSwingTwistConstraint_SolvePositionConstraint(swingTwistConstraintHandle, deltaTime, baumgarte)
-
-    open fun saveState(stream: StateRecorder) =
-        JphSwingTwistConstraint_SaveState(swingTwistConstraintHandle, stream.stateRecorderHandle)
-
-    open fun restoreState(stream: StateRecorder) =
-        JphSwingTwistConstraint_RestoreState(swingTwistConstraintHandle, stream.stateRecorderHandle)
-
-    open val constraintSettings: ConstraintSettings?
-        get() = JphSwingTwistConstraint_GetConstraintSettings(swingTwistConstraintHandle).takeIf { it != NullPointer }?.let(::ConstraintSettings)
-
-    open val constraintToBody1Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphSwingTwistConstraint_GetConstraintToBody1Matrix(swingTwistConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
-
-    open val constraintToBody2Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphSwingTwistConstraint_GetConstraintToBody2Matrix(swingTwistConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
+        closeOnce { JphSwingTwistConstraint_release(swingTwistConstraintHandle) }
 
     open val localSpacePosition1: Vec3
         get() = interopScope {

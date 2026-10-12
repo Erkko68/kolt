@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::PhysicsSettings`. */
-open class PhysicsSettings internal constructor(internal val physicsSettingsHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphPhysicsSettings_create())
+open class PhysicsSettings internal constructor(internal val physicsSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphPhysicsSettings_create(), owned = true)
 
     override fun close() =
-        JphPhysicsSettings_destroy(physicsSettingsHandle)
+        closeOnce { JphPhysicsSettings_destroy(physicsSettingsHandle) }
 
     open var maxInFlightBodyPairs: Int
         get() = JphPhysicsSettings_GetMaxInFlightBodyPairs(physicsSettingsHandle)

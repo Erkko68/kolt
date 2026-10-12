@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,35 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ContactListener`. */
-open class ContactListener internal constructor(internal val contactListenerHandle: NativePointer)
+open class ContactListener internal constructor(internal val contactListenerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphContactListener_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != ContactListener::class) JphContactListener_bindUpcalls(contactListenerHandle, Upcalls.reference(this))
+    }
+
+    override fun close() =
+        closeOnce { JphContactListener_destroy(contactListenerHandle) }
+
+    open fun onContactValidate(body1: Body, body2: Body, baseOffset: Vec3, collisionResult: CollideShapeResult): ValidateResult =
+        interopScope { ValidateResult.of(JphContactListener_OnContactValidate(contactListenerHandle, body1.bodyHandle, body2.bodyHandle, toInterop(baseOffset.toArray()), collisionResult.collideShapeResultHandle)) }
+
+    open fun onContactAdded(body1: Body, body2: Body, manifold: ContactManifold, settings: ContactSettings) =
+        JphContactListener_OnContactAdded(contactListenerHandle, body1.bodyHandle, body2.bodyHandle, manifold.contactManifoldHandle, settings.contactSettingsHandle)
+
+    open fun onContactPersisted(body1: Body, body2: Body, manifold: ContactManifold, settings: ContactSettings) =
+        JphContactListener_OnContactPersisted(contactListenerHandle, body1.bodyHandle, body2.bodyHandle, manifold.contactManifoldHandle, settings.contactSettingsHandle)
+
+    open fun onContactRemoved(subShapePair: SubShapeIDPair) =
+        JphContactListener_OnContactRemoved(contactListenerHandle, subShapePair.subShapeIDPairHandle)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, onContactValidate(Body(readPointerSlot(args, 0)), Body(readPointerSlot(args, 1)), Vec3(readFloats(readPointerSlot(args, 2), 4)), CollideShapeResult(readPointerSlot(args, 3))).value.toLong())
+            1 -> onContactAdded(Body(readPointerSlot(args, 0)), Body(readPointerSlot(args, 1)), ContactManifold(readPointerSlot(args, 2)), ContactSettings(readPointerSlot(args, 3)))
+            2 -> onContactPersisted(Body(readPointerSlot(args, 0)), Body(readPointerSlot(args, 1)), ContactManifold(readPointerSlot(args, 2)), ContactSettings(readPointerSlot(args, 3)))
+            3 -> onContactRemoved(SubShapeIDPair(readPointerSlot(args, 0)))
+            else -> return false
+        }
+        return true
+    }
+}

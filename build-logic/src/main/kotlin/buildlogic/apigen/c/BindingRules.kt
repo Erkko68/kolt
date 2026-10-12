@@ -47,7 +47,7 @@ internal class BindingRules(private val api: CppApi, private val config: ApiGenC
             base !in bridges.twins(record) && !bridges.uninstantiated(base) && base.methods.any { it.isPublic && it.isApi && !it.isDeprecated }
         }
 
-    private fun ancestors(record: CppRecord): List<CppRecord> = record.bases.mapNotNull { api.records[it] }.flatMap { listOf(it) + ancestors(it) }
+    fun ancestors(record: CppRecord): List<CppRecord> = record.bases.mapNotNull { api.records[it] }.flatMap { listOf(it) + ancestors(it) }
 
     /**
      * The methods C binds, its twins' too. Not deprecated ones, nor overloads only literals call; a const overload's
@@ -71,6 +71,21 @@ internal class BindingRules(private val api: CppApi, private val config: ApiGenC
 
     /** What a parameter passes: a by-value one's top-level `const` and nullability aside. */
     private fun passed(spelling: String) = shape(spelling).let { if (it.indirection.isEmpty()) it.base else cSpelling(spelling) }
+
+    /**
+     * The virtual functions [record] and its bases declare, each as the nearest declares it: what a class deriving
+     * from it may override.
+     */
+    fun virtuals(record: CppRecord): List<CppMethod> {
+        val nearest = LinkedHashMap<Triple<String, List<String>, Boolean>, CppMethod>()
+        val virtual = HashSet<Triple<String, List<String>, Boolean>>()
+        (listOf(record) + ancestors(record)).flatMap { it.methods }.forEach { m ->
+            val key = Triple(m.name, m.params.map { passed(it.type.spelling) }, m.isConst)
+            nearest.putIfAbsent(key, m)
+            if (m.isVirtual || m.isOverride) virtual += key
+        }
+        return nearest.filterKeys { it in virtual }.values.toList()
+    }
 
     /** The fields C gets a getter and setter for: a value record's public ones, its twins' first. */
     fun fields(record: CppRecord): List<CppField> = if (!bridges.isValue(record.name) || bridges.uninstantiated(record)) emptyList() else

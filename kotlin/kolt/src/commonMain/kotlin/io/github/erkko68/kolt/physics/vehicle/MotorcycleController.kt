@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,11 +33,11 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MotorcycleController`. */
-open class MotorcycleController internal constructor(internal val motorcycleControllerHandle: NativePointer) : VehicleController(JphMotorcycleController_asVehicleController(motorcycleControllerHandle)), AutoCloseable {
-    constructor(settings: MotorcycleControllerSettings, constraint: VehicleConstraint) : this(JphMotorcycleController_create(settings.motorcycleControllerSettingsHandle, constraint.vehicleConstraintHandle))
+open class MotorcycleController internal constructor(internal val motorcycleControllerHandle: NativePointer, owned: Boolean = false) : WheeledVehicleController(JphMotorcycleController_asWheeledVehicleController(motorcycleControllerHandle), owned), AutoCloseable {
+    constructor(settings: MotorcycleControllerSettings, constraint: VehicleConstraint) : this(JphMotorcycleController_create(settings.motorcycleControllerSettingsHandle, constraint.vehicleConstraintHandle), owned = true)
 
     override fun close() =
-        JphMotorcycleController_destroy(motorcycleControllerHandle)
+        closeOnce { JphMotorcycleController_destroy(motorcycleControllerHandle) }
 
     open val wheelBase: Float
         get() = JphMotorcycleController_GetWheelBase(motorcycleControllerHandle)
@@ -72,7 +73,4 @@ open class MotorcycleController internal constructor(internal val motorcycleCont
     open var leanSmoothingFactor: Float
         get() = JphMotorcycleController_GetLeanSmoothingFactor(motorcycleControllerHandle)
         set(factor) = JphMotorcycleController_SetLeanSmoothingFactor(motorcycleControllerHandle, factor)
-
-    open val settings: VehicleControllerSettings?
-        get() = JphMotorcycleController_GetSettings(motorcycleControllerHandle).takeIf { it != NullPointer }?.let(::VehicleControllerSettings)
 }

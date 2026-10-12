@@ -19,7 +19,6 @@ JphConvexShape* JphCapsuleShape_asConvexShape(JphCapsuleShape* self);
 JphShape* JphCapsuleShape_asShape(JphCapsuleShape* self);
 float JphCapsuleShape_GetRadius(const JphCapsuleShape* self);
 float JphCapsuleShape_GetHalfHeightOfCylinder(const JphCapsuleShape* self);
-const JphConvexShapeSupport* JphCapsuleShape_GetSupportFunction(const JphCapsuleShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale);
 void JphCapsuleShape_sRegister(void);
 
 

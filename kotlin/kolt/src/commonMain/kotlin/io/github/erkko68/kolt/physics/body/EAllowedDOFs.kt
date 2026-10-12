@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -31,19 +32,23 @@ import io.github.erkko68.kolt.physics.vehicle.*
 import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
-/** C++ `JPH::EAllowedDOFs`. */
-enum class EAllowedDOFs(internal val value: Int) {
-    None(0),
-    All(63),
-    TranslationX(1),
-    TranslationY(2),
-    TranslationZ(4),
-    RotationX(8),
-    RotationY(16),
-    RotationZ(32),
-    Plane2D(35);
+/** C++ `JPH::EAllowedDOFs`: flags, which [or] combines. */
+@kotlin.jvm.JvmInline
+value class EAllowedDOFs internal constructor(internal val value: Int) {
+    infix fun or(other: EAllowedDOFs) = EAllowedDOFs(value or other.value)
+    operator fun contains(flags: EAllowedDOFs) = value and flags.value == flags.value
 
-    internal companion object {
-        fun of(value: Int) = entries.first { it.value == value }
+    companion object {
+        val None = EAllowedDOFs(0)
+        val All = EAllowedDOFs(63)
+        val TranslationX = EAllowedDOFs(1)
+        val TranslationY = EAllowedDOFs(2)
+        val TranslationZ = EAllowedDOFs(4)
+        val RotationX = EAllowedDOFs(8)
+        val RotationY = EAllowedDOFs(16)
+        val RotationZ = EAllowedDOFs(32)
+        val Plane2D = EAllowedDOFs(35)
+
+        internal fun of(value: Int) = EAllowedDOFs(value)
     }
 }

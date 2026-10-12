@@ -128,6 +128,22 @@ bool JphShape_CastRay_SubShapeIDCreator_RayCastResult(const JphShape* self, cons
     return kolt::cpp(self)->CastRay(*kolt::cpp(inRay), *kolt::cpp(inSubShapeIDCreator), *kolt::cpp(ioHit));
 }
 
+void JphShape_CastRay_RayCastSettings_SubShapeIDCreator_CastRayCollector_ShapeFilter(const JphShape* self, const JphRayCast* inRay, const JphRayCastSettings* inRayCastSettings, const JphSubShapeIDCreator* inSubShapeIDCreator, JphCastRayCollector* ioCollector, const JphShapeFilter* inShapeFilter) {
+    kolt::cpp(self)->CastRay(*kolt::cpp(inRay), *kolt::cpp(inRayCastSettings), *kolt::cpp(inSubShapeIDCreator), *kolt::cpp(ioCollector), *kolt::cpp(inShapeFilter));
+}
+
+void JphShape_CollidePoint(const JphShape* self, const JphVec3* inPoint, const JphSubShapeIDCreator* inSubShapeIDCreator, JphCollidePointCollector* ioCollector, const JphShapeFilter* inShapeFilter) {
+    kolt::cpp(self)->CollidePoint(kolt::math<JPH::Vec3>(*inPoint), *kolt::cpp(inSubShapeIDCreator), *kolt::cpp(ioCollector), *kolt::cpp(inShapeFilter));
+}
+
+void JphShape_CollectTransformedShapes(const JphShape* self, const JphAABox* inBox, const JphVec3* inPositionCOM, const JphQuat* inRotation, const JphVec3* inScale, const JphSubShapeIDCreator* inSubShapeIDCreator, JphTransformedShapeCollector* ioCollector, const JphShapeFilter* inShapeFilter) {
+    kolt::cpp(self)->CollectTransformedShapes(*kolt::cpp(inBox), kolt::math<JPH::Vec3>(*inPositionCOM), kolt::math<JPH::Quat>(*inRotation), kolt::math<JPH::Vec3>(*inScale), *kolt::cpp(inSubShapeIDCreator), *kolt::cpp(ioCollector), *kolt::cpp(inShapeFilter));
+}
+
+void JphShape_TransformShape(const JphShape* self, const JphMat44* inCenterOfMassTransform, JphTransformedShapeCollector* ioCollector) {
+    kolt::cpp(self)->TransformShape(kolt::math<JPH::Mat44>(*inCenterOfMassTransform), *kolt::cpp(ioCollector));
+}
+
 JphShape* JphShape_ScaleShape(const JphShape* self, const JphVec3* inScale, char* outError, uint32_t outErrorCapacity) {
     return kolt::result(kolt::cpp(self)->ScaleShape(kolt::math<JPH::Vec3>(*inScale)), outError, outErrorCapacity, [&](auto& v) { return kolt::c(kolt::retain(v)); });
 }

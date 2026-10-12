@@ -16,6 +16,39 @@ void JphMotorcycleControllerSettings_release(const JphMotorcycleControllerSettin
     kolt::cpp(self)->Release();
 }
 
+} // extern "C"
+
+namespace JPH {
+struct JphMotorcycleControllerSettings_Upcalls final : ::JPH::MotorcycleControllerSettings {
+    kolt::Upcall mCall;
+    void* mUser = nullptr;
+    explicit JphMotorcycleControllerSettings_Upcalls(kolt::Upcall call) : mCall(call) {}
+    ~JphMotorcycleControllerSettings_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    void SaveBinaryState(StreamOut & p0) const override {
+        const uint64_t args[] = {kolt::slot(kolt::c(&p0))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return;
+        JPH::MotorcycleControllerSettings::SaveBinaryState(p0);
+    }
+    void RestoreBinaryState(StreamIn & p0) override {
+        const uint64_t args[] = {kolt::slot(kolt::c(&p0))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 1, args, &result)) return;
+        JPH::MotorcycleControllerSettings::RestoreBinaryState(p0);
+    }
+};
+} // namespace JPH
+
+extern "C" {
+
+JphMotorcycleControllerSettings* JphMotorcycleControllerSettings_createUpcalls(JphUpcall call) {
+    return kolt::c(kolt::retain(static_cast<::JPH::MotorcycleControllerSettings*>(new ::JPH::JphMotorcycleControllerSettings_Upcalls(call))));
+}
+
+void JphMotorcycleControllerSettings_bindUpcalls(JphMotorcycleControllerSettings* self, void* userData) {
+    static_cast<::JPH::JphMotorcycleControllerSettings_Upcalls*>(kolt::cpp(self))->mUser = userData;
+}
+
 JphWheeledVehicleControllerSettings* JphMotorcycleControllerSettings_asWheeledVehicleControllerSettings(JphMotorcycleControllerSettings* self) {
     return kolt::c(static_cast<JPH::WheeledVehicleControllerSettings*>(kolt::cpp(self)));
 }
@@ -28,28 +61,8 @@ JphSerializableObject* JphMotorcycleControllerSettings_asSerializableObject(JphM
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphMotorcycleControllerSettings_GetRTTI(const JphMotorcycleControllerSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphMotorcycleControllerSettings_CastTo(const JphMotorcycleControllerSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphMotorcycleControllerSettings_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::MotorcycleControllerSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-JphVehicleController* JphMotorcycleControllerSettings_ConstructController(const JphMotorcycleControllerSettings* self, JphVehicleConstraint* inConstraint) {
-    return kolt::c(kolt::cpp(self)->ConstructController(*kolt::cpp(inConstraint)));
-}
-
-void JphMotorcycleControllerSettings_SaveBinaryState(const JphMotorcycleControllerSettings* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-void JphMotorcycleControllerSettings_RestoreBinaryState(JphMotorcycleControllerSettings* self, JphStreamIn* inStream) {
-    kolt::cpp(self)->RestoreBinaryState(*kolt::cpp(inStream));
 }
 
 float JphMotorcycleControllerSettings_GetMaxLeanAngle(const JphMotorcycleControllerSettings* self) {

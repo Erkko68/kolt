@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,12 +33,12 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SoftBodyCreationSettings`. */
-open class SoftBodyCreationSettings internal constructor(internal val softBodyCreationSettingsHandle: NativePointer) : AutoCloseable {
-    constructor() : this(JphSoftBodyCreationSettings_create())
-    constructor(settings: SoftBodySharedSettings?, position: Vec3, rotation: Quat, objectLayer: Int) : this(interopScope { JphSoftBodyCreationSettings_create_SoftBodySharedSettings_RVec3Arg_QuatArg_ObjectLayer(settings?.softBodySharedSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), objectLayer) })
+open class SoftBodyCreationSettings internal constructor(internal val softBodyCreationSettingsHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphSoftBodyCreationSettings_create(), owned = true)
+    constructor(settings: SoftBodySharedSettings?, position: Vec3, rotation: Quat, objectLayer: Int) : this(interopScope { JphSoftBodyCreationSettings_create_SoftBodySharedSettings_RVec3Arg_QuatArg_ObjectLayer(settings?.softBodySharedSettingsHandle ?: NullPointer, toInterop(position.toArray()), toInterop(rotation.toArray()), objectLayer) }, owned = true)
 
     override fun close() =
-        JphSoftBodyCreationSettings_destroy(softBodyCreationSettingsHandle)
+        closeOnce { JphSoftBodyCreationSettings_destroy(softBodyCreationSettingsHandle) }
 
     open fun saveBinaryState(stream: StreamOut) =
         JphSoftBodyCreationSettings_SaveBinaryState(softBodyCreationSettingsHandle, stream.streamOutHandle)
@@ -46,7 +47,7 @@ open class SoftBodyCreationSettings internal constructor(internal val softBodyCr
         JphSoftBodyCreationSettings_RestoreBinaryState(softBodyCreationSettingsHandle, stream.streamInHandle)
 
     open var settings: SoftBodySharedSettings?
-        get() = JphSoftBodyCreationSettings_GetSettings(softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let(::SoftBodySharedSettings)
+        get() = JphSoftBodyCreationSettings_GetSettings(softBodyCreationSettingsHandle).takeIf { it != NullPointer }?.let { SoftBodySharedSettings(it) }
         set(value) = JphSoftBodyCreationSettings_SetSettings(softBodyCreationSettingsHandle, value?.softBodySharedSettingsHandle ?: NullPointer)
 
     open var position: Vec3
@@ -69,15 +70,27 @@ open class SoftBodyCreationSettings internal constructor(internal val softBodyCr
         }
         set(value) = interopScope { JphSoftBodyCreationSettings_SetRotation(softBodyCreationSettingsHandle, toInterop(value.toArray())) }
 
-    open fun setUserData(value: Long) =
-        JphSoftBodyCreationSettings_SetUserData(softBodyCreationSettingsHandle, value)
+    open var userData: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphSoftBodyCreationSettings_GetUserData(softBodyCreationSettingsHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+        set(value) = JphSoftBodyCreationSettings_SetUserData(softBodyCreationSettingsHandle, value)
 
     open var objectLayer: Int
         get() = JphSoftBodyCreationSettings_GetObjectLayer(softBodyCreationSettingsHandle)
         set(value) = JphSoftBodyCreationSettings_SetObjectLayer(softBodyCreationSettingsHandle, value)
 
-    open fun setCollisionGroup(value: CollisionGroup) =
-        JphSoftBodyCreationSettings_SetCollisionGroup(softBodyCreationSettingsHandle, value.collisionGroupHandle)
+    open var collisionGroup: CollisionGroup
+        get() = run {
+            val returned = CollisionGroup(JphCollisionGroup_create(), owned = true)
+            JphSoftBodyCreationSettings_GetCollisionGroup(softBodyCreationSettingsHandle, returned.collisionGroupHandle)
+            returned
+        }
+        set(value) = JphSoftBodyCreationSettings_SetCollisionGroup(softBodyCreationSettingsHandle, value.collisionGroupHandle)
 
     open var numIterations: Int
         get() = JphSoftBodyCreationSettings_GetNumIterations(softBodyCreationSettingsHandle)
@@ -128,7 +141,7 @@ open class SoftBodyCreationSettings internal constructor(internal val softBodyCr
         set(value) = JphSoftBodyCreationSettings_SetFacesDoubleSided(softBodyCreationSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphSoftBodyCreationSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

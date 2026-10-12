@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,22 +33,22 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::SphereShapeSettings`. */
-open class SphereShapeSettings internal constructor(internal val sphereShapeSettingsHandle: NativePointer) : ShapeSettings(JphSphereShapeSettings_asShapeSettings(sphereShapeSettingsHandle)), AutoCloseable {
-    constructor() : this(JphSphereShapeSettings_create())
-    constructor(radius: Float, material: PhysicsMaterial?) : this(JphSphereShapeSettings_create_float_PhysicsMaterial(radius, material?.physicsMaterialHandle ?: NullPointer))
+open class SphereShapeSettings internal constructor(internal val sphereShapeSettingsHandle: NativePointer, owned: Boolean = false) : ConvexShapeSettings(JphSphereShapeSettings_asConvexShapeSettings(sphereShapeSettingsHandle), owned), AutoCloseable {
+    constructor() : this(JphSphereShapeSettings_create(), owned = true)
+    constructor(radius: Float, material: PhysicsMaterial?) : this(JphSphereShapeSettings_create_float_PhysicsMaterial(radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
     override fun addRef() =
-        JphSphereShapeSettings_addRef(sphereShapeSettingsHandle)
+        own { JphSphereShapeSettings_addRef(sphereShapeSettingsHandle) }
 
     override fun close() =
-        JphSphereShapeSettings_release(sphereShapeSettingsHandle)
+        closeOnce { JphSphereShapeSettings_release(sphereShapeSettingsHandle) }
 
     open var radius: Float
         get() = JphSphereShapeSettings_GetRadius(sphereShapeSettingsHandle)
         set(value) = JphSphereShapeSettings_SetRadius(sphereShapeSettingsHandle, value)
 
     companion object {
-        fun sCreateRTTI(rtti: RTTI) =
+        fun createRTTI(rtti: RTTI) =
             JphSphereShapeSettings_sCreateRTTI(rtti.rttiHandle)
     }
 }

@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,18 +33,18 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::EmptyShape`. */
-open class EmptyShape internal constructor(internal val emptyShapeHandle: NativePointer) : Shape(JphEmptyShape_asShape(emptyShapeHandle)), AutoCloseable {
-    constructor() : this(JphEmptyShape_create())
-    constructor(centerOfMass: Vec3) : this(interopScope { JphEmptyShape_create_Vec3Arg(toInterop(centerOfMass.toArray())) })
+open class EmptyShape internal constructor(internal val emptyShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphEmptyShape_asShape(emptyShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphEmptyShape_create(), owned = true)
+    constructor(centerOfMass: Vec3) : this(interopScope { JphEmptyShape_create_Vec3Arg(toInterop(centerOfMass.toArray())) }, owned = true)
 
     override fun addRef() =
-        JphEmptyShape_addRef(emptyShapeHandle)
+        own { JphEmptyShape_addRef(emptyShapeHandle) }
 
     override fun close() =
-        JphEmptyShape_release(emptyShapeHandle)
+        closeOnce { JphEmptyShape_release(emptyShapeHandle) }
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphEmptyShape_sRegister()
     }
 }

@@ -28,24 +28,8 @@ JphSerializableObject* JphSixDOFConstraintSettings_asSerializableObject(JphSixDO
     return kolt::c(static_cast<JPH::SerializableObject*>(kolt::cpp(self)));
 }
 
-const JphRTTI* JphSixDOFConstraintSettings_GetRTTI(const JphSixDOFConstraintSettings* self) {
-    return kolt::c(kolt::cpp(self)->GetRTTI());
-}
-
-const void* JphSixDOFConstraintSettings_CastTo(const JphSixDOFConstraintSettings* self, const JphRTTI* inRTTI) {
-    return kolt::cpp(self)->CastTo(kolt::cpp(inRTTI));
-}
-
 void JphSixDOFConstraintSettings_sCreateRTTI(JphRTTI* inRTTI) {
     JPH::SixDOFConstraintSettings::sCreateRTTI(*kolt::cpp(inRTTI));
-}
-
-void JphSixDOFConstraintSettings_SaveBinaryState(const JphSixDOFConstraintSettings* self, JphStreamOut* inStream) {
-    kolt::cpp(self)->SaveBinaryState(*kolt::cpp(inStream));
-}
-
-JphTwoBodyConstraint* JphSixDOFConstraintSettings_Create(const JphSixDOFConstraintSettings* self, JphBody* inBody1, JphBody* inBody2) {
-    return kolt::c(kolt::cpp(self)->Create(*kolt::cpp(inBody1), *kolt::cpp(inBody2)));
 }
 
 void JphSixDOFConstraintSettings_MakeFreeAxis(JphSixDOFConstraintSettings* self, JphSixDOFConstraintSettingsEAxis inAxis) {

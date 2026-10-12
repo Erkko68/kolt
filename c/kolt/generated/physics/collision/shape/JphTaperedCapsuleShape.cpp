@@ -36,10 +36,6 @@ float JphTaperedCapsuleShape_GetHalfHeight(const JphTaperedCapsuleShape* self) {
     return kolt::cpp(self)->GetHalfHeight();
 }
 
-const JphConvexShapeSupport* JphTaperedCapsuleShape_GetSupportFunction(const JphTaperedCapsuleShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale) {
-    return kolt::c(kolt::cpp(self)->GetSupportFunction(static_cast<JPH::ConvexShape::ESupportMode>(inMode), *kolt::cpp(inBuffer), kolt::math<JPH::Vec3>(*inScale)));
-}
-
 void JphTaperedCapsuleShape_sRegister(void) {
     JPH::TaperedCapsuleShape::sRegister();
 }

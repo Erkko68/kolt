@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,23 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ObjectVsBroadPhaseLayerFilter`. */
-open class ObjectVsBroadPhaseLayerFilter internal constructor(internal val objectVsBroadPhaseLayerFilterHandle: NativePointer)
+open class ObjectVsBroadPhaseLayerFilter internal constructor(internal val objectVsBroadPhaseLayerFilterHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphObjectVsBroadPhaseLayerFilter_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != ObjectVsBroadPhaseLayerFilter::class) JphObjectVsBroadPhaseLayerFilter_bindUpcalls(objectVsBroadPhaseLayerFilterHandle, Upcalls.reference(this))
+    }
+
+    override fun close() =
+        closeOnce { JphObjectVsBroadPhaseLayerFilter_destroy(objectVsBroadPhaseLayerFilterHandle) }
+
+    open fun shouldCollide(layer1: Int, layer2: BroadPhaseLayer): Boolean =
+        JphObjectVsBroadPhaseLayerFilter_ShouldCollide(objectVsBroadPhaseLayerFilterHandle, layer1, layer2.value)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> writeSlot(result, if (shouldCollide(readSlot(args, 0).toInt(), BroadPhaseLayer(readSlot(args, 1).toInt()))) 1L else 0L)
+            else -> return false
+        }
+        return true
+    }
+}

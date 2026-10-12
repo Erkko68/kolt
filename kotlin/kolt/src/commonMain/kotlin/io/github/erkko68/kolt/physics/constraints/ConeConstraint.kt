@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,62 +33,14 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::ConeConstraint`. */
-open class ConeConstraint internal constructor(internal val coneConstraintHandle: NativePointer) : Constraint(JphConeConstraint_asConstraint(coneConstraintHandle)), AutoCloseable {
-    constructor(body1: Body, body2: Body, settings: ConeConstraintSettings) : this(JphConeConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.coneConstraintSettingsHandle))
+open class ConeConstraint internal constructor(internal val coneConstraintHandle: NativePointer, owned: Boolean = false) : TwoBodyConstraint(JphConeConstraint_asTwoBodyConstraint(coneConstraintHandle), owned), AutoCloseable {
+    constructor(body1: Body, body2: Body, settings: ConeConstraintSettings) : this(JphConeConstraint_create(body1.bodyHandle, body2.bodyHandle, settings.coneConstraintSettingsHandle), owned = true)
 
-    open fun addRef() =
-        JphConeConstraint_addRef(coneConstraintHandle)
+    override fun addRef() =
+        own { JphConeConstraint_addRef(coneConstraintHandle) }
 
     override fun close() =
-        JphConeConstraint_release(coneConstraintHandle)
-
-    open val subType: EConstraintSubType
-        get() = EConstraintSubType.of(JphConeConstraint_GetSubType(coneConstraintHandle))
-
-    open fun notifyShapeChanged(bodyID: BodyID, deltaCOM: Vec3) =
-        interopScope { JphConeConstraint_NotifyShapeChanged(coneConstraintHandle, bodyID.value, toInterop(deltaCOM.toArray())) }
-
-    open fun setupVelocityConstraint(deltaTime: Float) =
-        JphConeConstraint_SetupVelocityConstraint(coneConstraintHandle, deltaTime)
-
-    open fun resetWarmStart() =
-        JphConeConstraint_ResetWarmStart(coneConstraintHandle)
-
-    open fun warmStartVelocityConstraint(warmStartImpulseRatio: Float) =
-        JphConeConstraint_WarmStartVelocityConstraint(coneConstraintHandle, warmStartImpulseRatio)
-
-    open fun solveVelocityConstraint(deltaTime: Float): Boolean =
-        JphConeConstraint_SolveVelocityConstraint(coneConstraintHandle, deltaTime)
-
-    open fun solvePositionConstraint(deltaTime: Float, baumgarte: Float): Boolean =
-        JphConeConstraint_SolvePositionConstraint(coneConstraintHandle, deltaTime, baumgarte)
-
-    open fun saveState(stream: StateRecorder) =
-        JphConeConstraint_SaveState(coneConstraintHandle, stream.stateRecorderHandle)
-
-    open fun restoreState(stream: StateRecorder) =
-        JphConeConstraint_RestoreState(coneConstraintHandle, stream.stateRecorderHandle)
-
-    open val constraintSettings: ConstraintSettings?
-        get() = JphConeConstraint_GetConstraintSettings(coneConstraintHandle).takeIf { it != NullPointer }?.let(::ConstraintSettings)
-
-    open val constraintToBody1Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphConeConstraint_GetConstraintToBody1Matrix(coneConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
-
-    open val constraintToBody2Matrix: Mat44
-        get() = interopScope {
-            val returned = FloatArray(16)
-            val returnedPointer = toInterop(returned)
-            JphConeConstraint_GetConstraintToBody2Matrix(coneConstraintHandle, returnedPointer)
-            returnedPointer.fromInterop(returned)
-            Mat44(returned)
-        }
+        closeOnce { JphConeConstraint_release(coneConstraintHandle) }
 
     open fun setHalfConeAngle(halfConeAngle: Float) =
         JphConeConstraint_SetHalfConeAngle(coneConstraintHandle, halfConeAngle)

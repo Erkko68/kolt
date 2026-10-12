@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,18 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::JobSystemThreadPool`. */
-open class JobSystemThreadPool internal constructor(internal val jobSystemThreadPoolHandle: NativePointer) : JobSystem(JphJobSystemThreadPool_asJobSystem(jobSystemThreadPoolHandle)), AutoCloseable {
-    constructor(maxJobs: Int, maxBarriers: Int, numThreads: Int) : this(JphJobSystemThreadPool_create_uint_uint_int(maxJobs, maxBarriers, numThreads))
-    constructor() : this(JphJobSystemThreadPool_create())
+open class JobSystemThreadPool internal constructor(internal val jobSystemThreadPoolHandle: NativePointer, owned: Boolean = false) : JobSystemWithBarrier(JphJobSystemThreadPool_asJobSystemWithBarrier(jobSystemThreadPoolHandle), owned), AutoCloseable {
+    constructor(maxJobs: Int, maxBarriers: Int, numThreads: Int) : this(JphJobSystemThreadPool_create_uint_uint_int(maxJobs, maxBarriers, numThreads), owned = true)
+    constructor() : this(JphJobSystemThreadPool_create(), owned = true)
 
     override fun close() =
-        JphJobSystemThreadPool_destroy(jobSystemThreadPoolHandle)
+        closeOnce { JphJobSystemThreadPool_destroy(jobSystemThreadPoolHandle) }
 
     open fun init(maxJobs: Int, maxBarriers: Int, numThreads: Int) =
         JphJobSystemThreadPool_Init(jobSystemThreadPoolHandle, maxJobs, maxBarriers, numThreads)
-
-    open val maxConcurrency: Int
-        get() = JphJobSystemThreadPool_GetMaxConcurrency(jobSystemThreadPoolHandle)
 
     open fun setNumThreads(numThreads: Int) =
         JphJobSystemThreadPool_SetNumThreads(jobSystemThreadPoolHandle, numThreads)

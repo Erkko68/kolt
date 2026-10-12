@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,14 +33,22 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::MeshShape`. */
-open class MeshShape internal constructor(internal val meshShapeHandle: NativePointer) : Shape(JphMeshShape_asShape(meshShapeHandle)), AutoCloseable {
-    constructor() : this(JphMeshShape_create())
+open class MeshShape internal constructor(internal val meshShapeHandle: NativePointer, owned: Boolean = false) : Shape(JphMeshShape_asShape(meshShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphMeshShape_create(), owned = true)
 
     override fun addRef() =
-        JphMeshShape_addRef(meshShapeHandle)
+        own { JphMeshShape_addRef(meshShapeHandle) }
 
     override fun close() =
-        JphMeshShape_release(meshShapeHandle)
+        closeOnce { JphMeshShape_release(meshShapeHandle) }
+
+    open val materialList: List<PhysicsMaterial>
+        get() = interopScope {
+            val count = JphMeshShape_GetMaterialList(meshShapeHandle, NullPointer, 0)
+            val returnedPointer = toInterop(List(count) { NullPointer })
+            JphMeshShape_GetMaterialList(meshShapeHandle, returnedPointer, count)
+            readPointers(returnedPointer, count).map { PhysicsMaterial(it) }
+        }
 
     open fun getMaterialIndex(subShapeID: SubShapeID): Int =
         JphMeshShape_GetMaterialIndex(meshShapeHandle, subShapeID.value)
@@ -48,7 +57,7 @@ open class MeshShape internal constructor(internal val meshShapeHandle: NativePo
         JphMeshShape_GetTriangleUserData(meshShapeHandle, subShapeID.value)
 
     companion object {
-        fun sRegister() =
+        fun register() =
             JphMeshShape_sRegister()
     }
 }

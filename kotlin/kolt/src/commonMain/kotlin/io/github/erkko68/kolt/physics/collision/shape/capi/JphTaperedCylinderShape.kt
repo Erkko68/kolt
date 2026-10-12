@@ -31,8 +31,5 @@ internal external fun JphTaperedCylinderShape_GetConvexRadius(self: NativePointe
 @ExternalSymbolName("JphTaperedCylinderShape_GetHalfHeight")
 internal external fun JphTaperedCylinderShape_GetHalfHeight(self: NativePointer): Float
 
-@ExternalSymbolName("JphTaperedCylinderShape_GetSupportFunction")
-internal external fun JphTaperedCylinderShape_GetSupportFunction(self: NativePointer, inMode: Int, inBuffer: NativePointer, inScale: NativePointer): NativePointer
-
 @ExternalSymbolName("JphTaperedCylinderShape_sRegister")
 internal external fun JphTaperedCylinderShape_sRegister()

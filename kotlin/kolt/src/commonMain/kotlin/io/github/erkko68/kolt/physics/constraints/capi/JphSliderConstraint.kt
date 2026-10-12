@@ -19,42 +19,6 @@ internal external fun JphSliderConstraint_asTwoBodyConstraint(self: NativePointe
 @ExternalSymbolName("JphSliderConstraint_asConstraint")
 internal external fun JphSliderConstraint_asConstraint(self: NativePointer): NativePointer
 
-@ExternalSymbolName("JphSliderConstraint_GetSubType")
-internal external fun JphSliderConstraint_GetSubType(self: NativePointer): Int
-
-@ExternalSymbolName("JphSliderConstraint_NotifyShapeChanged")
-internal external fun JphSliderConstraint_NotifyShapeChanged(self: NativePointer, inBodyID: Int, inDeltaCOM: NativePointer)
-
-@ExternalSymbolName("JphSliderConstraint_SetupVelocityConstraint")
-internal external fun JphSliderConstraint_SetupVelocityConstraint(self: NativePointer, inDeltaTime: Float)
-
-@ExternalSymbolName("JphSliderConstraint_ResetWarmStart")
-internal external fun JphSliderConstraint_ResetWarmStart(self: NativePointer)
-
-@ExternalSymbolName("JphSliderConstraint_WarmStartVelocityConstraint")
-internal external fun JphSliderConstraint_WarmStartVelocityConstraint(self: NativePointer, inWarmStartImpulseRatio: Float)
-
-@ExternalSymbolName("JphSliderConstraint_SolveVelocityConstraint")
-internal external fun JphSliderConstraint_SolveVelocityConstraint(self: NativePointer, inDeltaTime: Float): Boolean
-
-@ExternalSymbolName("JphSliderConstraint_SolvePositionConstraint")
-internal external fun JphSliderConstraint_SolvePositionConstraint(self: NativePointer, inDeltaTime: Float, inBaumgarte: Float): Boolean
-
-@ExternalSymbolName("JphSliderConstraint_SaveState")
-internal external fun JphSliderConstraint_SaveState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphSliderConstraint_RestoreState")
-internal external fun JphSliderConstraint_RestoreState(self: NativePointer, inStream: NativePointer)
-
-@ExternalSymbolName("JphSliderConstraint_GetConstraintSettings")
-internal external fun JphSliderConstraint_GetConstraintSettings(self: NativePointer): NativePointer
-
-@ExternalSymbolName("JphSliderConstraint_GetConstraintToBody1Matrix")
-internal external fun JphSliderConstraint_GetConstraintToBody1Matrix(self: NativePointer, out: NativePointer)
-
-@ExternalSymbolName("JphSliderConstraint_GetConstraintToBody2Matrix")
-internal external fun JphSliderConstraint_GetConstraintToBody2Matrix(self: NativePointer, out: NativePointer)
-
 @ExternalSymbolName("JphSliderConstraint_GetCurrentPosition")
 internal external fun JphSliderConstraint_GetCurrentPosition(self: NativePointer): Float
 

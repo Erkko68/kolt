@@ -18,7 +18,6 @@ void JphSphereShape_release(const JphSphereShape* self);
 JphConvexShape* JphSphereShape_asConvexShape(JphSphereShape* self);
 JphShape* JphSphereShape_asShape(JphSphereShape* self);
 float JphSphereShape_GetRadius(const JphSphereShape* self);
-const JphConvexShapeSupport* JphSphereShape_GetSupportFunction(const JphSphereShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale);
 void JphSphereShape_sRegister(void);
 
 

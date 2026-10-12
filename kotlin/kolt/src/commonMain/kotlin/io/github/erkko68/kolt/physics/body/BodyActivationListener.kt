@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,13 +33,27 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::BodyActivationListener`. */
-open class BodyActivationListener internal constructor(internal val bodyActivationListenerHandle: NativePointer) : AutoCloseable {
+open class BodyActivationListener internal constructor(internal val bodyActivationListenerHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    /** Creates one whose functions a subclass overrides. */
+    constructor() : this(JphBodyActivationListener_createUpcalls(Upcalls.function), owned = true) {
+        if (this::class != BodyActivationListener::class) JphBodyActivationListener_bindUpcalls(bodyActivationListenerHandle, Upcalls.reference(this))
+    }
+
     override fun close() =
-        JphBodyActivationListener_destroy(bodyActivationListenerHandle)
+        closeOnce { JphBodyActivationListener_destroy(bodyActivationListenerHandle) }
 
     open fun onBodyActivated(bodyID: BodyID, bodyUserData: Long) =
         JphBodyActivationListener_OnBodyActivated(bodyActivationListenerHandle, bodyID.value, bodyUserData)
 
     open fun onBodyDeactivated(bodyID: BodyID, bodyUserData: Long) =
         JphBodyActivationListener_OnBodyDeactivated(bodyActivationListenerHandle, bodyID.value, bodyUserData)
+
+    override fun nativeUpcall(method: Int, args: NativePointer, result: NativePointer): Boolean {
+        when (method) {
+            0 -> onBodyActivated(BodyID(readSlot(args, 0).toInt()), readSlot(args, 1))
+            1 -> onBodyDeactivated(BodyID(readSlot(args, 0).toInt()), readSlot(args, 1))
+            else -> return false
+        }
+        return true
+    }
 }

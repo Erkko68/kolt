@@ -16,11 +16,5 @@ internal external fun JphBroadPhaseLayerInterfaceMask_asBroadPhaseLayerInterface
 @ExternalSymbolName("JphBroadPhaseLayerInterfaceMask_ConfigureLayer")
 internal external fun JphBroadPhaseLayerInterfaceMask_ConfigureLayer(self: NativePointer, inBroadPhaseLayer: Int, inGroupsToInclude: Int, inGroupsToExclude: Int)
 
-@ExternalSymbolName("JphBroadPhaseLayerInterfaceMask_GetNumBroadPhaseLayers")
-internal external fun JphBroadPhaseLayerInterfaceMask_GetNumBroadPhaseLayers(self: NativePointer): Int
-
-@ExternalSymbolName("JphBroadPhaseLayerInterfaceMask_GetBroadPhaseLayer")
-internal external fun JphBroadPhaseLayerInterfaceMask_GetBroadPhaseLayer(self: NativePointer, inLayer: Int): Int
-
 @ExternalSymbolName("JphBroadPhaseLayerInterfaceMask_ShouldCollide")
 internal external fun JphBroadPhaseLayerInterfaceMask_ShouldCollide(self: NativePointer, inLayer1: Int, inLayer2: Int): Boolean

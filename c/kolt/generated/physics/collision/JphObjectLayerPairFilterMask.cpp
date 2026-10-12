@@ -12,6 +12,33 @@ void JphObjectLayerPairFilterMask_destroy(JphObjectLayerPairFilterMask* self) {
     delete kolt::cpp(self);
 }
 
+} // extern "C"
+
+namespace JPH {
+struct JphObjectLayerPairFilterMask_Upcalls final : ::JPH::ObjectLayerPairFilterMask {
+    kolt::Upcall mCall;
+    void* mUser = nullptr;
+    explicit JphObjectLayerPairFilterMask_Upcalls(kolt::Upcall call) : mCall(call) {}
+    ~JphObjectLayerPairFilterMask_Upcalls() { if (mCall && mUser) mCall(mUser, -1, nullptr, nullptr); }
+    bool ShouldCollide(ObjectLayer p0, ObjectLayer p1) const override {
+        const uint64_t args[] = {kolt::slot(static_cast<uint32_t>(p0)), kolt::slot(static_cast<uint32_t>(p1))};
+        uint64_t result = 0;
+        if (kolt::upcall(mCall, mUser, this, 0, args, &result)) return kolt::unslot<bool>(result);
+        return JPH::ObjectLayerPairFilterMask::ShouldCollide(p0, p1);
+    }
+};
+} // namespace JPH
+
+extern "C" {
+
+JphObjectLayerPairFilterMask* JphObjectLayerPairFilterMask_createUpcalls(JphUpcall call) {
+    return kolt::c(static_cast<::JPH::ObjectLayerPairFilterMask*>(new ::JPH::JphObjectLayerPairFilterMask_Upcalls(call)));
+}
+
+void JphObjectLayerPairFilterMask_bindUpcalls(JphObjectLayerPairFilterMask* self, void* userData) {
+    static_cast<::JPH::JphObjectLayerPairFilterMask_Upcalls*>(kolt::cpp(self))->mUser = userData;
+}
+
 JphObjectLayerPairFilter* JphObjectLayerPairFilterMask_asObjectLayerPairFilter(JphObjectLayerPairFilterMask* self) {
     return kolt::c(static_cast<JPH::ObjectLayerPairFilter*>(kolt::cpp(self)));
 }
@@ -26,10 +53,6 @@ uint32_t JphObjectLayerPairFilterMask_sGetGroup(uint32_t inObjectLayer) {
 
 uint32_t JphObjectLayerPairFilterMask_sGetMask(uint32_t inObjectLayer) {
     return JPH::ObjectLayerPairFilterMask::sGetMask(static_cast<uint16_t>(inObjectLayer));
-}
-
-bool JphObjectLayerPairFilterMask_ShouldCollide(const JphObjectLayerPairFilterMask* self, uint32_t inObject1, uint32_t inObject2) {
-    return kolt::cpp(self)->ShouldCollide(static_cast<uint16_t>(inObject1), static_cast<uint16_t>(inObject2));
 }
 
 } // extern "C"

@@ -20,7 +20,6 @@ float JphTaperedCylinderShape_GetTopRadius(const JphTaperedCylinderShape* self);
 float JphTaperedCylinderShape_GetBottomRadius(const JphTaperedCylinderShape* self);
 float JphTaperedCylinderShape_GetConvexRadius(const JphTaperedCylinderShape* self);
 float JphTaperedCylinderShape_GetHalfHeight(const JphTaperedCylinderShape* self);
-const JphConvexShapeSupport* JphTaperedCylinderShape_GetSupportFunction(const JphTaperedCylinderShape* self, JphConvexShapeESupportMode inMode, JphConvexShapeSupportBuffer* inBuffer, const JphVec3* inScale);
 void JphTaperedCylinderShape_sRegister(void);
 
 

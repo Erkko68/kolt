@@ -6,6 +6,7 @@ import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
 import io.github.erkko68.kolt.geometry.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,15 +33,15 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::CapsuleShape`. */
-open class CapsuleShape internal constructor(internal val capsuleShapeHandle: NativePointer) : Shape(JphCapsuleShape_asShape(capsuleShapeHandle)), AutoCloseable {
-    constructor() : this(JphCapsuleShape_create())
-    constructor(halfHeightOfCylinder: Float, radius: Float, material: PhysicsMaterial?) : this(JphCapsuleShape_create_float_float_PhysicsMaterial(halfHeightOfCylinder, radius, material?.physicsMaterialHandle ?: NullPointer))
+open class CapsuleShape internal constructor(internal val capsuleShapeHandle: NativePointer, owned: Boolean = false) : ConvexShape(JphCapsuleShape_asConvexShape(capsuleShapeHandle), owned), AutoCloseable {
+    constructor() : this(JphCapsuleShape_create(), owned = true)
+    constructor(halfHeightOfCylinder: Float, radius: Float, material: PhysicsMaterial?) : this(JphCapsuleShape_create_float_float_PhysicsMaterial(halfHeightOfCylinder, radius, material?.physicsMaterialHandle ?: NullPointer), owned = true)
 
     override fun addRef() =
-        JphCapsuleShape_addRef(capsuleShapeHandle)
+        own { JphCapsuleShape_addRef(capsuleShapeHandle) }
 
     override fun close() =
-        JphCapsuleShape_release(capsuleShapeHandle)
+        closeOnce { JphCapsuleShape_release(capsuleShapeHandle) }
 
     open val radius: Float
         get() = JphCapsuleShape_GetRadius(capsuleShapeHandle)
@@ -48,11 +49,8 @@ open class CapsuleShape internal constructor(internal val capsuleShapeHandle: Na
     open val halfHeightOfCylinder: Float
         get() = JphCapsuleShape_GetHalfHeightOfCylinder(capsuleShapeHandle)
 
-    open fun getSupportFunction(mode: ConvexShapeESupportMode, buffer: ConvexShapeSupportBuffer, scale: Vec3): ConvexShapeSupport? =
-        interopScope { JphCapsuleShape_GetSupportFunction(capsuleShapeHandle, mode.value, buffer.convexShapeSupportBufferHandle, toInterop(scale.toArray())).takeIf { it != NullPointer }?.let(::ConvexShapeSupport) }
-
     companion object {
-        fun sRegister() =
+        fun register() =
             JphCapsuleShape_sRegister()
     }
 }

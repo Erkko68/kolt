@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,182 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::AABox`. */
-open class AABox internal constructor(internal val aaBoxHandle: NativePointer)
+open class AABox internal constructor(internal val aaBoxHandle: NativePointer, owned: Boolean = false) : NativeObject(owned), AutoCloseable {
+    constructor() : this(JphAABox_create(), owned = true)
+    constructor(min: Vec3, max: Vec3) : this(interopScope { JphAABox_create_Vec3Arg_Vec3Arg(toInterop(min.toArray()), toInterop(max.toArray())) }, owned = true)
+    constructor(min: DVec3, max: DVec3) : this(interopScope { JphAABox_create_DVec3Arg_DVec3Arg(toInterop(min.toArray()), toInterop(max.toArray())) }, owned = true)
+    constructor(center: Vec3, radius: Float) : this(interopScope { JphAABox_create_Vec3Arg_float(toInterop(center.toArray()), radius) }, owned = true)
+
+    override fun close() =
+        closeOnce { JphAABox_destroy(aaBoxHandle) }
+
+    open fun setEmpty() =
+        JphAABox_SetEmpty(aaBoxHandle)
+
+    open val isValid: Boolean
+        get() = JphAABox_IsValid(aaBoxHandle)
+
+    open fun encapsulate(pos: Vec3) =
+        interopScope { JphAABox_Encapsulate_Vec3Arg(aaBoxHandle, toInterop(pos.toArray())) }
+
+    open fun encapsulate(rhs: AABox) =
+        JphAABox_Encapsulate_AABox(aaBoxHandle, rhs.aaBoxHandle)
+
+    open fun encapsulate(rhs: Triangle) =
+        JphAABox_Encapsulate_Triangle(aaBoxHandle, rhs.triangleHandle)
+
+    open fun encapsulate(vertices: List<Float3>, triangle: IndexedTriangle) =
+        interopScope { JphAABox_Encapsulate_VertexList_IndexedTriangle(aaBoxHandle, toInterop(FloatArray(vertices.size * 3).also { a -> vertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), vertices.size, triangle.indexedTriangleHandle) }
+
+    open fun intersect(other: AABox): AABox =
+        run {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphAABox_Intersect(aaBoxHandle, other.aaBoxHandle, returned.aaBoxHandle)
+            returned
+        }
+
+    open fun ensureMinimalEdgeLength(minEdgeLength: Float) =
+        JphAABox_EnsureMinimalEdgeLength(aaBoxHandle, minEdgeLength)
+
+    open fun expandBy(vector: Vec3) =
+        interopScope { JphAABox_ExpandBy(aaBoxHandle, toInterop(vector.toArray())) }
+
+    open val center: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphAABox_GetCenter(aaBoxHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val extent: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphAABox_GetExtent(aaBoxHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val size: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphAABox_GetSize(aaBoxHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open val surfaceArea: Float
+        get() = JphAABox_GetSurfaceArea(aaBoxHandle)
+
+    open val volume: Float
+        get() = JphAABox_GetVolume(aaBoxHandle)
+
+    open fun contains(other: AABox): Boolean =
+        JphAABox_Contains_AABox(aaBoxHandle, other.aaBoxHandle)
+
+    open fun contains(other: Vec3): Boolean =
+        interopScope { JphAABox_Contains_Vec3Arg(aaBoxHandle, toInterop(other.toArray())) }
+
+    open fun contains(other: DVec3): Boolean =
+        interopScope { JphAABox_Contains_DVec3Arg(aaBoxHandle, toInterop(other.toArray())) }
+
+    open fun overlaps(other: AABox): Boolean =
+        JphAABox_Overlaps_AABox(aaBoxHandle, other.aaBoxHandle)
+
+    open fun overlaps(plane: Plane): Boolean =
+        JphAABox_Overlaps_Plane(aaBoxHandle, plane.planeHandle)
+
+    open fun translate(translation: Vec3) =
+        interopScope { JphAABox_Translate_Vec3Arg(aaBoxHandle, toInterop(translation.toArray())) }
+
+    open fun translate(translation: DVec3) =
+        interopScope { JphAABox_Translate_DVec3Arg(aaBoxHandle, toInterop(translation.toArray())) }
+
+    open fun transformed(matrix: Mat44): AABox =
+        interopScope {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphAABox_Transformed_Mat44Arg(aaBoxHandle, toInterop(matrix.toArray()), returned.aaBoxHandle)
+            returned
+        }
+
+    open fun transformed(matrix: DMat44): AABox =
+        run {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphAABox_Transformed_DMat44Arg(aaBoxHandle, matrix.dMat44Handle, returned.aaBoxHandle)
+            returned
+        }
+
+    open fun scaled(scale: Vec3): AABox =
+        interopScope {
+            val returned = AABox(JphAABox_create(), owned = true)
+            JphAABox_Scaled(aaBoxHandle, toInterop(scale.toArray()), returned.aaBoxHandle)
+            returned
+        }
+
+    open fun getSupport(direction: Vec3): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphAABox_GetSupport(aaBoxHandle, toInterop(direction.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open fun getClosestPoint(point: Vec3): Vec3 =
+        interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphAABox_GetClosestPoint(aaBoxHandle, toInterop(point.toArray()), returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+
+    open fun getSqDistanceTo(point: Vec3): Float =
+        interopScope { JphAABox_GetSqDistanceTo(aaBoxHandle, toInterop(point.toArray())) }
+
+    open var min: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphAABox_GetMin(aaBoxHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphAABox_SetMin(aaBoxHandle, toInterop(value.toArray())) }
+
+    open var max: Vec3
+        get() = interopScope {
+            val returned = FloatArray(4)
+            val returnedPointer = toInterop(returned)
+            JphAABox_GetMax(aaBoxHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            Vec3(returned)
+        }
+        set(value) = interopScope { JphAABox_SetMax(aaBoxHandle, toInterop(value.toArray())) }
+
+    companion object {
+        fun fromTwoPoints(p1: Vec3, p2: Vec3): AABox =
+            interopScope {
+                val returned = AABox(JphAABox_create(), owned = true)
+                JphAABox_sFromTwoPoints(toInterop(p1.toArray()), toInterop(p2.toArray()), returned.aaBoxHandle)
+                returned
+            }
+
+        fun fromTriangle(vertices: List<Float3>, triangle: IndexedTriangle): AABox =
+            interopScope {
+                val returned = AABox(JphAABox_create(), owned = true)
+                JphAABox_sFromTriangle(toInterop(FloatArray(vertices.size * 3).also { a -> vertices.forEachIndexed { i, v -> v.toArray().copyInto(a, i * 3) } }), vertices.size, triangle.indexedTriangleHandle, returned.aaBoxHandle)
+                returned
+            }
+
+        fun biggest(): AABox =
+            run {
+                val returned = AABox(JphAABox_create(), owned = true)
+                JphAABox_sBiggest(returned.aaBoxHandle)
+                returned
+            }
+    }
+}

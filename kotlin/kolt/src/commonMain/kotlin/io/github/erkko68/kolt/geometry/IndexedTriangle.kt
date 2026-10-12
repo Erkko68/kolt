@@ -5,6 +5,7 @@ import io.github.erkko68.kolt.*
 import io.github.erkko68.kolt.capi.*
 import io.github.erkko68.kolt.core.*
 import io.github.erkko68.kolt.core.capi.*
+import io.github.erkko68.kolt.geometry.capi.*
 import io.github.erkko68.kolt.interop.*
 import io.github.erkko68.kolt.math.*
 import io.github.erkko68.kolt.objectstream.*
@@ -32,4 +33,34 @@ import io.github.erkko68.kolt.physics.vehicle.capi.*
 import io.github.erkko68.kolt.skeleton.*
 
 /** C++ `JPH::IndexedTriangle`. */
-open class IndexedTriangle internal constructor(internal val indexedTriangleHandle: NativePointer)
+open class IndexedTriangle internal constructor(internal val indexedTriangleHandle: NativePointer, owned: Boolean = false) : IndexedTriangleNoMaterial(JphIndexedTriangle_asIndexedTriangleNoMaterial(indexedTriangleHandle), owned), AutoCloseable {
+    constructor(i1: Int, i2: Int, i3: Int, materialIndex: Int, userData: Int) : this(JphIndexedTriangle_create_uint32_uint32_uint32_uint32_uint(i1, i2, i3, materialIndex, userData), owned = true)
+    constructor() : this(JphIndexedTriangle_create(), owned = true)
+
+    override fun close() =
+        closeOnce { JphIndexedTriangle_destroy(indexedTriangleHandle) }
+
+    open val lowestIndexFirst: IndexedTriangle
+        get() = run {
+            val returned = IndexedTriangle(JphIndexedTriangle_create(), owned = true)
+            JphIndexedTriangle_GetLowestIndexFirst(indexedTriangleHandle, returned.indexedTriangleHandle)
+            returned
+        }
+
+    override val hash: Long
+        get() = interopScope {
+            val returned = LongArray(1)
+            val returnedPointer = toInterop(returned)
+            JphIndexedTriangle_GetHash(indexedTriangleHandle, returnedPointer)
+            returnedPointer.fromInterop(returned)
+            returned[0]
+        }
+
+    open var materialIndex: Int
+        get() = JphIndexedTriangle_GetMaterialIndex(indexedTriangleHandle)
+        set(value) = JphIndexedTriangle_SetMaterialIndex(indexedTriangleHandle, value)
+
+    open var userData: Int
+        get() = JphIndexedTriangle_GetUserData(indexedTriangleHandle)
+        set(value) = JphIndexedTriangle_SetUserData(indexedTriangleHandle, value)
+}
