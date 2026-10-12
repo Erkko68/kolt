@@ -13,7 +13,8 @@ import org.gradle.kotlin.dsl.register
  * ApiGenConfig  what the generator is told about the library; ApiGen runs the stages, without Gradle
  * ApiHeaders    api-headers.txt: which headers are API, and the C module each goes to
  * cpp/          clang's AST of those headers → CppApi model         apiModel        (report)
- * c/            CppApi → <module>/generated                         generateCApi    (committed)
+ * c/            CppApi → <module>/generated; the functions those and
+ *               <module>/manual declare → api-manifest.json         generateCApi    (committed)
  * gaps/         what C++ the C API binds, by C function             apiCoverage     (committed report)
  * ```
  */
@@ -44,6 +45,8 @@ fun Project.registerApiGenTasks(config: ApiGenConfig) {
         group = "verification"
         description = "Writes ${config.cDir}/api-coverage.txt: what of the C++ API the C API binds; warns on stale generated code."
         configure()
+        // Reads what it writes, and tasks run in parallel under the configuration cache.
+        mustRunAfter("generateCApi")
     }
 }
 

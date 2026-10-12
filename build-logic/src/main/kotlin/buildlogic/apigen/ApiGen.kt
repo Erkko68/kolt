@@ -1,6 +1,7 @@
 package buildlogic.apigen
 
 import buildlogic.apigen.c.CApiWriter
+import buildlogic.apigen.c.CManifest
 import buildlogic.apigen.cpp.CppApi
 import buildlogic.apigen.cpp.CppApiReader
 import buildlogic.apigen.cpp.clang
@@ -8,7 +9,7 @@ import java.io.File
 
 /**
  * The generator for one library, laid out as [ApiGenConfig] says under [projectDir]. Nothing here is Gradle's: the
- * tasks and the tests both drive it. [workDir] holds scratch files.
+ * tasks drive it. [workDir] holds scratch files.
  */
 internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File) {
     // Absolute: clang reports a declaration's file as the include path spells it.
@@ -16,6 +17,7 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     val includeDir: File = projectDir.absoluteFile.resolve(config.includeDir)
     val cDir: File = projectDir.absoluteFile.resolve(config.cDir)
     val apiHeadersFile: File = cDir.resolve("api-headers.txt")
+    val manifestFile: File = cDir.resolve("api-manifest.json")
     val apiHeaders by lazy { ApiHeaders.parse(apiHeadersFile.readText()) }
     val headers by lazy { apiHeaders.headers(includeDir) }
 
@@ -25,6 +27,9 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
 
     /** Hand-written headers: what they declare, the generator leaves alone. */
     fun manualHeaders() = apiHeaders.modules.keys.flatMap { cDir.resolve("$it/manual").listFiles { f -> f.extension == "h" }.orEmpty().toList() }
+
+    /** The functions the C headers on disk declare, generated and hand-written. */
+    fun manifest() = CManifest.read((generatedDirs().flatMap { it.listFiles { f -> f.extension == "h" }.orEmpty().toList() } + manualHeaders()).sortedBy { it.path }, cDir, config.prefix, workDir)
 
     /** The hand-written C++ headers the forwarders are compiled against. */
     fun bridgeHeaders() = apiHeaders.modules.keys.flatMap { cDir.resolve("$it/manual").listFiles { f -> f.extension == "hpp" }.orEmpty().toList() }

@@ -7,7 +7,7 @@ import org.gradle.api.tasks.UntrackedTask
 /**
  * Writes `api-coverage.txt`: each C function the C++ API calls for: `bound` (generated, or written in manual/), or why
  * it isn't (`todo`, `skipped`). Committed, so a library bump's diff shows what changed and how far it got. Warns when
- * the committed C API isn't what the generator would write.
+ * the committed C API or its manifest isn't what the generator would write.
  */
 @UntrackedTask(because = "A report to diff, cheap next to reading the AST")
 abstract class ApiCoverageTask : ApiGenTask() {
@@ -17,7 +17,8 @@ abstract class ApiCoverageTask : ApiGenTask() {
         val c = apiGen.cDir
         val writer = apiGen.writer()
         val expected = writer.write()
-        val stale = apiGen.stale(expected)
+        val stale = apiGen.stale(expected) +
+            setOfNotNull(apiGen.manifestFile.name.takeIf { !apiGen.manifestFile.isFile || apiGen.manifestFile.readText() != apiGen.manifest().json() })
         if (stale.isNotEmpty()) logger.warn("The committed C API is stale (${stale.size} files, e.g. ${stale.first()}): run generateCApi")
 
         val lines = writer.bindings.distinctBy { it.c to it.cpp }.sortedWith(compareBy({ it.c }, { it.cpp })).map { b ->
