@@ -35,7 +35,7 @@ internal class ApiGen(val config: ApiGenConfig, projectDir: File, workDir: File)
     fun manualHeaders() = apiHeaders.modules.keys.flatMap { cDir.resolve("$it/manual").listFiles { f -> f.extension == "h" }.orEmpty().toList() }
 
     /** The functions the C headers on disk declare, generated and hand-written. */
-    fun manifest() = CManifest.read((generatedDirs().flatMap { it.listFiles { f -> f.extension == "h" }.orEmpty().toList() } + manualHeaders()).sortedBy { it.path }, cDir, config.prefix, workDir)
+    fun manifest() = CManifest.read((generatedDirs().flatMap { dir -> dir.walkTopDown().filter { it.extension == "h" } } + manualHeaders()).sortedBy { it.path }, cDir, config.prefix, workDir)
 
     /** The hand-written C++ headers the forwarders are compiled against. */
     fun bridgeHeaders() = apiHeaders.modules.keys.flatMap { cDir.resolve("$it/manual").listFiles { f -> f.extension == "hpp" }.orEmpty().toList() }

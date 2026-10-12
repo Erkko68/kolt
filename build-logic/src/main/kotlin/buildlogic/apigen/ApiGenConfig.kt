@@ -40,6 +40,13 @@ data class ApiGenConfig(
     val getter: String = "Get",
     val setter: String = "Set",
 
+    /**
+     * A dir of [includeDir] whose subdirectories group the API: a class declared in `<groupRoot>/Physics/Body/` gets its
+     * C files in `<module>/generated/physics/body/`, and its Kotlin externals in that subpackage
+     * ([KotlinBindings.packageOf]). Null for one flat dir per module.
+     */
+    val groupRoot: String? = null,
+
     /** The C++ namespace of the helpers the forwarders call (the generated `Bridge.hpp`), and of the handle casts. */
     val helpers: String,
     /**
@@ -101,7 +108,19 @@ data class KotlinBindings(
     /** The Kotlin modules whose wasm exports go to a runtime of their own. */
     val wasmRuntimes: Map<String, String> = emptyMap(),
     val dir: String = "kotlin",
-) : Serializable
+) : Serializable {
+    /**
+     * The package of the externals of [header] (its path under the C dir): its module's, with the header's directories
+     * under `generated/` before the last segment. `kolt/generated/physics/body/JphBody.h` of `a.kolt.capi` is in
+     * `a.kolt.physics.body.capi`, next to the API of `a.kolt.physics.body`.
+     */
+    fun packageOf(header: String): String {
+        val path = header.split('/')
+        val pkg = packages.getValue(path[0])
+        val group = path.subList(2, path.size - 1)
+        return if (group.isEmpty()) pkg else "${pkg.substringBeforeLast('.')}.${group.joinToString(".")}.${pkg.substringAfterLast('.')}"
+    }
+}
 
 /**
  * A C++ type C holds as the scalar [c]: [toCpp] builds it from a C value, [toC] reads one back, each an expression

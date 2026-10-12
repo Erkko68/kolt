@@ -33,7 +33,7 @@ internal class CApiWriter(
     class Binding(val c: String, val cpp: String, val gap: String?)
     private val files = LinkedHashMap<String, Section>()
     /** One generated header and its forwarders. */
-    private class Section(val module: String) {
+    private class Section(val module: String, val group: String = "") {
         val declarations = StringBuilder()
         val definitions = StringBuilder()
     }
@@ -41,7 +41,8 @@ internal class CApiWriter(
     /** Generated file text by path under `c/`. */
     fun write(): Map<String, String> {
         api.apiRecords(headers).filter(::handled).groupBy { topLevel(it.name) }.forEach { (top, records) ->
-            val section = section(moduleOf(api.records.getValue(top).header), names.type(top))
+            val header = api.records.getValue(top).header
+            val section = section(moduleOf(header), names.type(top), groupOf(header))
             records.forEach { record(it, section) }
         }
         api.apiFunctions(headers).groupBy { it.owner }.forEach { (namespace, functions) ->
@@ -54,10 +55,12 @@ internal class CApiWriter(
         check(bridges.unusedFunctionInstantiations.isEmpty()) { "functionInstantiations lists unknown templates: ${bridges.unusedFunctionInstantiations}" }
         val out = LinkedHashMap<String, String>()
         files.filterValues { it.declarations.isNotBlank() }.forEach { (name, section) ->
-            val dir = "${section.module}/generated"
-            out["$dir/$name.h"] = header(name, "#include \"Types.h\"", section.declarations.toString())
+            val dir = "${section.module}/generated" + if (section.group.isEmpty()) "" else "/${section.group}"
+            // Types.h and Includes.hpp are the module's, above its groups.
+            val up = "../".repeat(section.group.count { it == '/' } + if (section.group.isEmpty()) 0 else 1)
+            out["$dir/$name.h"] = header(name, "#include \"${up}Types.h\"", section.declarations.toString())
             // Only TODOs and skip notes: nothing to forward.
-            if (section.definitions.isNotEmpty()) out["$dir/$name.cpp"] = "$banner\n#include \"Includes.hpp\"\n#include \"$name.h\"\n\nextern \"C\" {\n\n${section.definitions}} // extern \"C\"\n"
+            if (section.definitions.isNotEmpty()) out["$dir/$name.cpp"] = "$banner\n#include \"${up}Includes.hpp\"\n#include \"$name.h\"\n\nextern \"C\" {\n\n${section.definitions}} // extern \"C\"\n"
         }
         // Types last: the forwarders decide which math types need mirrors.
         apiHeaders.modules.keys.forEach { module ->
@@ -68,7 +71,12 @@ internal class CApiWriter(
         return out
     }
 
-    private fun section(module: String, name: String) = files.getOrPut(name) { Section(module) }
+    private fun section(module: String, name: String, group: String = "") = files.getOrPut(name) { Section(module, group) }
+
+    /** The dir under `generated/` for what [header] declares: its own under [ApiGenConfig.groupRoot], lowercased, if any. */
+    private fun groupOf(header: String?) = config.groupRoot?.let { root ->
+        header?.takeIf { it.startsWith("$root/") }?.removePrefix("$root/")?.substringBeforeLast('/', "")?.lowercase()
+    }.orEmpty()
 
     private fun record(record: CppRecord, file: Section) {
         val section = Section(file.module)

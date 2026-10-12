@@ -17,6 +17,7 @@ registerApiGenTasks(
         prelude = listOf("Jolt/Jolt.h"),
         astFilters = listOf("JPH::"),
         prefix = "Jph",
+        groupRoot = "Jolt",
         droppedNamespaces = setOf("JPH"),
         memberPrefix = "^m(?=[A-Z])",
         helpers = "kolt",

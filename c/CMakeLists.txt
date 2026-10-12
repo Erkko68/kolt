@@ -18,8 +18,8 @@ set(JPH_USE_VK OFF CACHE BOOL "")
 set(ENABLE_INSTALL OFF CACHE BOOL "")
 add_subdirectory(../jolt/Build jolt)
 
-# Each module is its generated API (<module>/generated) plus the hand-written rest (<module>/manual).
-file(GLOB sources CONFIGURE_DEPENDS kolt/generated/*.cpp kolt/manual/*.cpp)
+# The generated API (kolt/generated, grouped as Jolt's dirs) plus the hand-written rest (kolt/manual).
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS kolt/generated/*.cpp kolt/manual/*.cpp)
 add_library(kolt-c STATIC ${sources})
 # Jolt's defines and include dir come with the target.
 target_link_libraries(kolt-c PUBLIC Jolt)

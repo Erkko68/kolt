@@ -3,6 +3,12 @@
 package io.github.erkko68.kolt
 
 import io.github.erkko68.kolt.capi.*
+import io.github.erkko68.kolt.core.capi.*
+import io.github.erkko68.kolt.physics.body.capi.*
+import io.github.erkko68.kolt.physics.capi.*
+import io.github.erkko68.kolt.physics.collision.broadphase.capi.*
+import io.github.erkko68.kolt.physics.collision.capi.*
+import io.github.erkko68.kolt.physics.collision.shape.capi.*
 import io.github.erkko68.kolt.interop.NullPointer
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.toLong

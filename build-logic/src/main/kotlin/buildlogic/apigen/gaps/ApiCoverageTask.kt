@@ -4,7 +4,7 @@ import buildlogic.apigen.ApiGenTask
 import buildlogic.apigen.kotlin.KotlinDeclarations
 import buildlogic.apigen.kotlin.kotlinApiSources
 import buildlogic.apigen.kotlin.kotlinExternals
-import buildlogic.apigen.kotlin.packageDir
+import buildlogic.apigen.kotlin.externalsDirs
 import buildlogic.apigen.stale
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.UntrackedTask
@@ -42,9 +42,8 @@ abstract class ApiCoverageTask : ApiGenTask() {
             logger.lifecycle("Report: ${report.toURI()} (git diff it to see what changed)")
             return
         }
-        val packages = config.get().kotlin!!.packages
         warnStale("Kotlin externals", "generateKotlinExternals",
-            stale(kotlin, kotlinExternals(manifest, config.get()), packages.map { (m, p) -> kotlin.resolve(packageDir(m, p)) }))
+            stale(kotlin, kotlinExternals(manifest, config.get()), externalsDirs(kotlin, config.get().kotlin!!)))
 
         val sources = kotlinApiSources(kotlin)
         val called = Regex("""\b${Regex.escape(config.get().prefix)}\w+""").findAll(sources).mapTo(HashSet()) { it.value }

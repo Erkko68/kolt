@@ -6,12 +6,13 @@ generated from Jolt's headers (the generator is filament-kmp's `buildlogic.apige
 ```
 jolt/                 Jolt Physics, pinned (submodule)
 c/api-headers.txt     which Jolt headers are API
-c/kolt/generated/     the generated C API (./gradlew generateCApi)
+c/kolt/generated/     the generated C API, grouped as Jolt's dirs: physics/body/JphBody.h (./gradlew generateCApi)
 c/api-manifest.json   each C function's ABI signature, by header; what the Kotlin stages read
 c/kolt/manual/        hand-written C for what the generator can't map, and the helpers only Jolt can write (JphBridge.hpp)
 c/api-coverage.txt    each C function the API calls for: wrapped by Kotlin or not yet, or why it isn't bound (./gradlew apiCoverage)
 c/CMakeLists.txt      builds Jolt and the C API as static libraries (./gradlew :kotlin:kolt:cmakeBuild)
-kotlin/kolt/          the Kotlin module: capi/ is the generated externals (./gradlew generateKotlinExternals), interop/ what they need
+kotlin/kolt/          the Kotlin module: interop/ and, per group, a package whose capi/ is the generated externals
+                      (physics.body.capi; ./gradlew generateKotlinExternals)
 build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C), kotlin/ (manifest → externals),
                       externals/ (manifest → JNI and wasm glue), gaps/ (coverage), verify/ (Kotlin enums' values)
 ```

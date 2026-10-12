@@ -42,7 +42,7 @@ abstract class GenerateBindingsTask : ApiGenTask() {
         headers.forEach { (header, functions) ->
             // The externals' file, and the facade class its functions compile to on the JVM.
             val name = File(header).nameWithoutExtension
-            val jvmClass = "${bindings.packages.getValue(header.substringBefore('/'))}.${name.replaceFirstChar { it.uppercase() }}Kt"
+            val jvmClass = "${bindings.packageOf(header)}.${name.replaceFirstChar { it.uppercase() }}Kt"
             out.write("jni/$name.c", JniForwarderWriter.write("$name.kt", jvmClass, functions, headers.keys))
         }
 
