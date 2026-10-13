@@ -7,6 +7,15 @@ release's notes (`.github/workflows/publish.yml`).
 
 ## [Unreleased]
 
+### Added
+- **A sample app** in `samples/`: a wall of cubes to push over, simulated by kolt and rendered by filament-kmp in
+  Compose Multiplatform, on Android, iOS, the desktop and the web. Its web build is the project's site,
+  [erkko68.github.io/kolt](https://erkko68.github.io/kolt/).
+
+### Changed
+- **The API reference is under `/api`** of the site, [erkko68.github.io/kolt/api](https://erkko68.github.io/kolt/api/),
+  where it was the site's root.
+
 ## [0.1.0] — 2026-10-13
 
 ### Added
