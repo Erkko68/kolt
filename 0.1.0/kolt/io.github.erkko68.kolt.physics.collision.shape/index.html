@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>io.github.erkko68.kolt.physics.collision.shape</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer="defer"></script>
+<link href="../../styles/multimodule.css" rel="Stylesheet">
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../index.html" tabindex="1">
+                    kolt
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kolt/io.github.erkko68.kolt.physics.collision.shape/index.html&quot;}">0.1.0</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true"
+                        data-filter=":kotlin:kolt/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":kotlin:kolt/commonMain"
+                                       data-filter=":kotlin:kolt/commonMain"/>
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kolt
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="package" id="content" pageIds="kolt::io.github.erkko68.kolt.physics.collision.shape////PointingToDeclaration//-90274882">
+  <div class="breadcrumbs"><a href="../../index.html">kolt</a><span class="delimiter">/</span><span class="current">io.github.erkko68.kolt.physics.collision.shape</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="862925429%2FClasslikes%2F-90274882" anchor-label="BoxShape" id="862925429%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-box-shape/index.html"><span>Box</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="862925429%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-box-shape/index.html">BoxShape</a> : <a href="-convex-shape/index.html">ConvexShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A box, centered around the origin</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1082675090%2FClasslikes%2F-90274882" anchor-label="BoxShapeSettings" id="1082675090%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-box-shape-settings/index.html"><span>Box</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1082675090%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-box-shape-settings/index.html">BoxShapeSettings</a> : <a href="-convex-shape-settings/index.html">ConvexShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a BoxShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="948245079%2FClasslikes%2F-90274882" anchor-label="CapsuleShape" id="948245079%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-capsule-shape/index.html"><span>Capsule</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="948245079%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-capsule-shape/index.html">CapsuleShape</a> : <a href="-convex-shape/index.html">ConvexShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A capsule, implemented as a line segment with convex radius</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-507957900%2FClasslikes%2F-90274882" anchor-label="CapsuleShapeSettings" id="-507957900%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-capsule-shape-settings/index.html"><span>Capsule</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-507957900%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-capsule-shape-settings/index.html">CapsuleShapeSettings</a> : <a href="-convex-shape-settings/index.html">ConvexShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a CapsuleShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-745892255%2FClasslikes%2F-90274882" anchor-label="CompoundShape" id="-745892255%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-compound-shape/index.html"><span>Compound</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-745892255%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-compound-shape/index.html">CompoundShape</a> : <a href="-shape/index.html">Shape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Base class for a compound shape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1146681474%2FClasslikes%2F-90274882" anchor-label="CompoundShapeSettings" id="-1146681474%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-compound-shape-settings/index.html"><span>Compound</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1146681474%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-compound-shape-settings/index.html">CompoundShapeSettings</a> : <a href="-shape-settings/index.html">ShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Base class settings to construct a compound shape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="231022666%2FClasslikes%2F-90274882" anchor-label="ConvexHullShape" id="231022666%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-convex-hull-shape/index.html"><span>Convex</span><wbr></wbr><span>Hull</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="231022666%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-convex-hull-shape/index.html">ConvexHullShape</a> : <a href="-convex-shape/index.html">ConvexShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A convex hull</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1382967193%2FClasslikes%2F-90274882" anchor-label="ConvexHullShapeSettings" id="-1382967193%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-convex-hull-shape-settings/index.html"><span>Convex</span><wbr></wbr><span>Hull</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1382967193%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-convex-hull-shape-settings/index.html">ConvexHullShapeSettings</a> : <a href="-convex-shape-settings/index.html">ConvexShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a ConvexHullShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-106329059%2FClasslikes%2F-90274882" anchor-label="ConvexShape" id="-106329059%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-convex-shape/index.html"><span>Convex</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-106329059%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-convex-shape/index.html">ConvexShape</a> : <a href="-shape/index.html">Shape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Base class for all convex shapes. Defines a virtual interface.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1145209146%2FClasslikes%2F-90274882" anchor-label="ConvexShapeSettings" id="1145209146%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-convex-shape-settings/index.html"><span>Convex</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1145209146%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-convex-shape-settings/index.html">ConvexShapeSettings</a> : <a href="-shape-settings/index.html">ShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a ConvexShape (abstract)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="377608012%2FClasslikes%2F-90274882" anchor-label="CylinderShape" id="377608012%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-cylinder-shape/index.html"><span>Cylinder</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="377608012%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-cylinder-shape/index.html">CylinderShape</a> : <a href="-convex-shape/index.html">ConvexShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A cylinder</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1311780201%2FClasslikes%2F-90274882" anchor-label="CylinderShapeSettings" id="1311780201%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-cylinder-shape-settings/index.html"><span>Cylinder</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1311780201%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-cylinder-shape-settings/index.html">CylinderShapeSettings</a> : <a href="-convex-shape-settings/index.html">ConvexShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a CylinderShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-66217183%2FClasslikes%2F-90274882" anchor-label="DecoratedShape" id="-66217183%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-decorated-shape/index.html"><span>Decorated</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-66217183%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-decorated-shape/index.html">DecoratedShape</a> : <a href="-shape/index.html">Shape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Base class for shapes that decorate another shape with extra functionality (e.g. scale, translation etc.)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-164017090%2FClasslikes%2F-90274882" anchor-label="DecoratedShapeSettings" id="-164017090%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-decorated-shape-settings/index.html"><span>Decorated</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-164017090%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-decorated-shape-settings/index.html">DecoratedShapeSettings</a> : <a href="-shape-settings/index.html">ShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a DecoratedShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1508117495%2FClasslikes%2F-90274882" anchor-label="EmptyShape" id="1508117495%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-empty-shape/index.html"><span>Empty</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1508117495%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-empty-shape/index.html">EmptyShape</a> : <a href="-shape/index.html">Shape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">An empty shape that has no volume and collides with nothing.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2849004%2FClasslikes%2F-90274882" anchor-label="EmptyShapeSettings" id="-2849004%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-empty-shape-settings/index.html"><span>Empty</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2849004%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-empty-shape-settings/index.html">EmptyShapeSettings</a> : <a href="-shape-settings/index.html">ShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs an EmptyShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-312422311%2FClasslikes%2F-90274882" anchor-label="EShapeSubType" id="-312422311%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-shape-sub-type/index.html"><span>EShape</span><wbr></wbr><span>Sub</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-312422311%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-e-shape-sub-type/index.html">EShapeSubType</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-e-shape-sub-type/index.html">EShapeSubType</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">This enumerates all shape types, each shape can return its type through Shape::GetSubType</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1012440843%2FClasslikes%2F-90274882" anchor-label="EShapeType" id="-1012440843%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-shape-type/index.html"><span>EShape</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1012440843%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-e-shape-type/index.html">EShapeType</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-e-shape-type/index.html">EShapeType</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Shapes are categorized in groups, each shape can return which group it belongs to through its Shape::GetType function.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1641843901%2FClasslikes%2F-90274882" anchor-label="HeightFieldShape" id="1641843901%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-height-field-shape/index.html"><span>Height</span><wbr></wbr><span>Field</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1641843901%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-height-field-shape/index.html">HeightFieldShape</a> : <a href="-shape/index.html">Shape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A height field shape. Cannot be used as a dynamic object.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1950015962%2FClasslikes%2F-90274882" anchor-label="HeightFieldShapeSettings" id="1950015962%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-height-field-shape-settings/index.html"><span>Height</span><wbr></wbr><span>Field</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1950015962%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-height-field-shape-settings/index.html">HeightFieldShapeSettings</a> : <a href="-shape-settings/index.html">ShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a HeightFieldShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1293387299%2FClasslikes%2F-90274882" anchor-label="MeshShape" id="1293387299%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mesh-shape/index.html"><span>Mesh</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1293387299%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-mesh-shape/index.html">MeshShape</a> : <a href="-shape/index.html">Shape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A mesh shape, consisting of triangles. Mesh shapes are mostly used for static geometry. They can be used by dynamic or kinematic objects but only if they don't collide with other mesh or heightfield shapes as those collisions are currently not supported. Note that if you make a mesh shape a dynamic or kinematic object, you need to provide a mass yourself as mesh shapes don't need to form a closed hull so don't have a well defined volume from which the mass can be calculated.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="682693952%2FClasslikes%2F-90274882" anchor-label="MeshShapeSettings" id="682693952%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mesh-shape-settings/index.html"><span>Mesh</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="682693952%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-mesh-shape-settings/index.html">MeshShapeSettings</a> : <a href="-shape-settings/index.html">ShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a MeshShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1296861669%2FClasslikes%2F-90274882" anchor-label="MutableCompoundShape" id="-1296861669%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mutable-compound-shape/index.html"><span>Mutable</span><wbr></wbr><span>Compound</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1296861669%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-mutable-compound-shape/index.html">MutableCompoundShape</a> : <a href="-compound-shape/index.html">CompoundShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A compound shape, sub shapes can be rotated and translated. This shape is optimized for adding / removing and changing the rotation / translation of sub shapes but is less efficient in querying. Shifts all child objects so that they're centered around the center of mass (which needs to be kept up to date by calling AdjustCenterOfMass).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1228508472%2FClasslikes%2F-90274882" anchor-label="MutableCompoundShapeSettings" id="1228508472%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mutable-compound-shape-settings/index.html"><span>Mutable</span><wbr></wbr><span>Compound</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1228508472%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-mutable-compound-shape-settings/index.html">MutableCompoundShapeSettings</a> : <a href="-compound-shape-settings/index.html">CompoundShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a MutableCompoundShape.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2016435593%2FClasslikes%2F-90274882" anchor-label="OffsetCenterOfMassShape" id="2016435593%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-offset-center-of-mass-shape/index.html"><span>Offset</span><wbr></wbr><span>Center</span><wbr></wbr><span>Of</span><wbr></wbr><span>Mass</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2016435593%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-offset-center-of-mass-shape/index.html">OffsetCenterOfMassShape</a> : <a href="-decorated-shape/index.html">DecoratedShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">This shape will shift the center of mass of a child shape, it can e.g. be used to lower the center of mass of an unstable object like a boat to make it stable</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1212622502%2FClasslikes%2F-90274882" anchor-label="OffsetCenterOfMassShapeSettings" id="1212622502%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-offset-center-of-mass-shape-settings/index.html"><span>Offset</span><wbr></wbr><span>Center</span><wbr></wbr><span>Of</span><wbr></wbr><span>Mass</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1212622502%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-offset-center-of-mass-shape-settings/index.html">OffsetCenterOfMassShapeSettings</a> : <a href="-decorated-shape-settings/index.html">DecoratedShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs an OffsetCenterOfMassShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1428118726%2FClasslikes%2F-90274882" anchor-label="PlaneShape" id="1428118726%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-plane-shape/index.html"><span>Plane</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1428118726%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-plane-shape/index.html">PlaneShape</a> : <a href="-shape/index.html">Shape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A plane shape. The negative half space is considered solid. Planes cannot be dynamic objects, only static or kinematic. The plane is considered an infinite shape, but testing collision outside of its bounding box (defined by the half-extent parameter) will not return a collision result. At the edge of the bounding box collision with the plane will be inconsistent. If you need something of a well defined size, a box shape may be better.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-703227677%2FClasslikes%2F-90274882" anchor-label="PlaneShapeSettings" id="-703227677%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-plane-shape-settings/index.html"><span>Plane</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-703227677%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-plane-shape-settings/index.html">PlaneShapeSettings</a> : <a href="-shape-settings/index.html">ShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a PlaneShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1334143049%2FClasslikes%2F-90274882" anchor-label="RotatedTranslatedShape" id="1334143049%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-rotated-translated-shape/index.html"><span>Rotated</span><wbr></wbr><span>Translated</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1334143049%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-rotated-translated-shape/index.html">RotatedTranslatedShape</a> : <a href="-decorated-shape/index.html">DecoratedShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A rotated translated shape will rotate and translate a child shape. Shifts the child object so that it is centered around the center of mass.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-632983194%2FClasslikes%2F-90274882" anchor-label="RotatedTranslatedShapeSettings" id="-632983194%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-rotated-translated-shape-settings/index.html"><span>Rotated</span><wbr></wbr><span>Translated</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-632983194%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-rotated-translated-shape-settings/index.html">RotatedTranslatedShapeSettings</a> : <a href="-decorated-shape-settings/index.html">DecoratedShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a RotatedTranslatedShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1002823088%2FClasslikes%2F-90274882" anchor-label="ScaledShape" id="-1002823088%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-scaled-shape/index.html"><span>Scaled</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1002823088%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-scaled-shape/index.html">ScaledShape</a> : <a href="-decorated-shape/index.html">DecoratedShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A shape that scales a child shape in local space of that shape. The scale can be non-uniform and can even turn it inside out when one or three components of the scale are negative.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="561984621%2FClasslikes%2F-90274882" anchor-label="ScaledShapeSettings" id="561984621%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-scaled-shape-settings/index.html"><span>Scaled</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="561984621%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-scaled-shape-settings/index.html">ScaledShapeSettings</a> : <a href="-decorated-shape-settings/index.html">DecoratedShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a ScaledShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1483654102%2FClasslikes%2F-90274882" anchor-label="Shape" id="1483654102%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-shape/index.html"><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1483654102%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-shape/index.html">Shape</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Base class for all shapes (collision volume of a body). Defines a virtual interface for collision detection.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-413863949%2FClasslikes%2F-90274882" anchor-label="ShapeSettings" id="-413863949%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-shape-settings/index.html"><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-413863949%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-shape-settings/index.html">ShapeSettings</a> : <a href="../io.github.erkko68.kolt.objectstream/-serializable-object/index.html">SerializableObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that can construct shapes and that is serializable using the ObjectStream system. Can be used to store shape data in 'uncooked' form (i.e. in a form that is still human readable and authorable). Once the shape has been created using the Create() function, the data will be moved into the Shape class in a form that is optimized for collision detection. After this, the ShapeSettings object is no longer needed and can be destroyed. Each shape class has a derived class of the ShapeSettings object to store shape specific data.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="932191875%2FClasslikes%2F-90274882" anchor-label="SphereShape" id="932191875%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-sphere-shape/index.html"><span>Sphere</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="932191875%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-sphere-shape/index.html">SphereShape</a> : <a href="-convex-shape/index.html">ConvexShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A sphere, centered around the origin. Note that it is implemented as a point with convex radius.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1455115680%2FClasslikes%2F-90274882" anchor-label="SphereShapeSettings" id="1455115680%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-sphere-shape-settings/index.html"><span>Sphere</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1455115680%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-sphere-shape-settings/index.html">SphereShapeSettings</a> : <a href="-convex-shape-settings/index.html">ConvexShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a SphereShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1065703919%2FClasslikes%2F-90274882" anchor-label="StaticCompoundShape" id="1065703919%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-static-compound-shape/index.html"><span>Static</span><wbr></wbr><span>Compound</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1065703919%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-static-compound-shape/index.html">StaticCompoundShape</a> : <a href="-compound-shape/index.html">CompoundShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A compound shape, sub shapes can be rotated and translated. Sub shapes cannot be modified once the shape is constructed. Shifts all child objects so that they're centered around the center of mass.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-333161204%2FClasslikes%2F-90274882" anchor-label="StaticCompoundShapeSettings" id="-333161204%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-static-compound-shape-settings/index.html"><span>Static</span><wbr></wbr><span>Compound</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-333161204%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-static-compound-shape-settings/index.html">StaticCompoundShapeSettings</a> : <a href="-compound-shape-settings/index.html">CompoundShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a StaticCompoundShape. Note that if you only want a compound of 1 shape, use a RotatedTranslatedShape instead.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="773470511%2FClasslikes%2F-90274882" anchor-label="SubShapeID" id="773470511%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-sub-shape-i-d/index.html"><span>Sub</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>ID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="773470511%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-sub-shape-i-d/index.html">SubShapeID</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A sub shape id contains a path to an element (usually a triangle or other primitive type) of a compound shape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2033616615%2FClasslikes%2F-90274882" anchor-label="SubShapeIDCreator" id="2033616615%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-sub-shape-i-d-creator/index.html"><span>Sub</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>IDCreator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2033616615%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-sub-shape-i-d-creator/index.html">SubShapeIDCreator</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A sub shape id creator can be used to create a new sub shape id by recursing through the shape hierarchy and pushing new ID's onto the chain</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2055643253%2FClasslikes%2F-90274882" anchor-label="SubShapeIDPair" id="2055643253%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-sub-shape-i-d-pair/index.html"><span>Sub</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>IDPair</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2055643253%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-sub-shape-i-d-pair/index.html">SubShapeIDPair</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A pair of bodies and their sub shape ID's. Can be used as a key in a map to find a contact point.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2096098316%2FClasslikes%2F-90274882" anchor-label="TaperedCapsuleShape" id="-2096098316%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-tapered-capsule-shape/index.html"><span>Tapered</span><wbr></wbr><span>Capsule</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2096098316%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-tapered-capsule-shape/index.html">TaperedCapsuleShape</a> : <a href="-convex-shape/index.html">ConvexShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A capsule with different top and bottom radii</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1549057519%2FClasslikes%2F-90274882" anchor-label="TaperedCapsuleShapeSettings" id="-1549057519%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-tapered-capsule-shape-settings/index.html"><span>Tapered</span><wbr></wbr><span>Capsule</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1549057519%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-tapered-capsule-shape-settings/index.html">TaperedCapsuleShapeSettings</a> : <a href="-convex-shape-settings/index.html">ConvexShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a TaperedCapsuleShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="492243279%2FClasslikes%2F-90274882" anchor-label="TaperedCylinderShape" id="492243279%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-tapered-cylinder-shape/index.html"><span>Tapered</span><wbr></wbr><span>Cylinder</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="492243279%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-tapered-cylinder-shape/index.html">TaperedCylinderShape</a> : <a href="-convex-shape/index.html">ConvexShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A cylinder with different top and bottom radii</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-897536916%2FClasslikes%2F-90274882" anchor-label="TaperedCylinderShapeSettings" id="-897536916%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-tapered-cylinder-shape-settings/index.html"><span>Tapered</span><wbr></wbr><span>Cylinder</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-897536916%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-tapered-cylinder-shape-settings/index.html">TaperedCylinderShapeSettings</a> : <a href="-convex-shape-settings/index.html">ConvexShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a TaperedCylinderShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1830119938%2FClasslikes%2F-90274882" anchor-label="TriangleShape" id="-1830119938%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-triangle-shape/index.html"><span>Triangle</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1830119938%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-triangle-shape/index.html">TriangleShape</a> : <a href="-convex-shape/index.html">ConvexShape</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A single triangle, not the most efficient way of creating a world filled with triangles but can be used as a query shape for example.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-997189093%2FClasslikes%2F-90274882" anchor-label="TriangleShapeSettings" id="-997189093%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-triangle-shape-settings/index.html"><span>Triangle</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-997189093%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-triangle-shape-settings/index.html">TriangleShapeSettings</a> : <a href="-convex-shape-settings/index.html">ConvexShapeSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that constructs a TriangleShape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

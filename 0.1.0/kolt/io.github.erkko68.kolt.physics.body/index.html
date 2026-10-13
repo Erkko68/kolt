@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>io.github.erkko68.kolt.physics.body</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer="defer"></script>
+<link href="../../styles/multimodule.css" rel="Stylesheet">
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../index.html" tabindex="1">
+                    kolt
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kolt/io.github.erkko68.kolt.physics.body/index.html&quot;}">0.1.0</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true"
+                        data-filter=":kotlin:kolt/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":kotlin:kolt/commonMain"
+                                       data-filter=":kotlin:kolt/commonMain"/>
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kolt
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="package" id="content" pageIds="kolt::io.github.erkko68.kolt.physics.body////PointingToDeclaration//-90274882">
+  <div class="breadcrumbs"><a href="../../index.html">kolt</a><span class="delimiter">/</span><span class="current">io.github.erkko68.kolt.physics.body</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="-909664866%2FClasslikes%2F-90274882" anchor-label="Body" id="-909664866%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body/index.html"><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-909664866%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-body/index.html">Body</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a></div><div class="brief "><p class="paragraph">C++ <code class="lang-kotlin">JPH::Body</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-572208236%2FClasslikes%2F-90274882" anchor-label="BodyActivationListener" id="-572208236%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-activation-listener/index.html"><span>Body</span><wbr></wbr><span>Activation</span><wbr></wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-572208236%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-body-activation-listener/index.html">BodyActivationListener</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A listener class that receives events when a body activates or deactivates. It can be registered with the BodyManager (or PhysicsSystem).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1128297060%2FClasslikes%2F-90274882" anchor-label="BodyCreationSettings" id="-1128297060%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-creation-settings/index.html"><span>Body</span><wbr></wbr><span>Creation</span><wbr></wbr><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1128297060%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-body-creation-settings/index.html">BodyCreationSettings</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Settings for constructing a rigid body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="186981190%2FClasslikes%2F-90274882" anchor-label="BodyFilter" id="186981190%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-filter/index.html"><span>Body</span><wbr></wbr><span><span>Filter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="186981190%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-body-filter/index.html">BodyFilter</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class function to filter out bodies, returns true if test should collide with body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="493572515%2FClasslikes%2F-90274882" anchor-label="BodyID" id="493572515%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-i-d/index.html"><span>Body</span><wbr></wbr><span><span>ID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="493572515%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-body-i-d/index.html">BodyID</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">ID of a body. This is a way of reasoning about bodies in a multithreaded simulation while avoiding race conditions.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-506705301%2FClasslikes%2F-90274882" anchor-label="BodyInterface" id="-506705301%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-interface/index.html"><span>Body</span><wbr></wbr><span><span>Interface</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-506705301%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-body-interface/index.html">BodyInterface</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Class that provides operations on bodies using a body ID. Note that if you need to do multiple operations on a single body, it is more efficient to lock the body once and combine the operations. All quantities are in world space unless otherwise specified.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1884790646%2FClasslikes%2F-90274882" anchor-label="BodyLockInterface" id="1884790646%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-lock-interface/index.html"><span>Body</span><wbr></wbr><span>Lock</span><wbr></wbr><span><span>Interface</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1884790646%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-body-lock-interface/index.html">BodyLockInterface</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Base class interface for locking a body. Usually you will use BodyLockRead / BodyLockWrite / BodyLockMultiRead / BodyLockMultiWrite instead.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1345824139%2FClasslikes%2F-90274882" anchor-label="BodyLockInterfaceLocking" id="-1345824139%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-lock-interface-locking/index.html"><span>Body</span><wbr></wbr><span>Lock</span><wbr></wbr><span>Interface</span><wbr></wbr><span><span>Locking</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1345824139%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-body-lock-interface-locking/index.html">BodyLockInterfaceLocking</a> : <a href="-body-lock-interface/index.html">BodyLockInterface</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Implementation that uses the body manager to lock the correct mutex for a body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1541375626%2FClasslikes%2F-90274882" anchor-label="BodyLockInterfaceNoLock" id="1541375626%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-lock-interface-no-lock/index.html"><span>Body</span><wbr></wbr><span>Lock</span><wbr></wbr><span>Interface</span><wbr></wbr><span>No</span><wbr></wbr><span><span>Lock</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1541375626%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-body-lock-interface-no-lock/index.html">BodyLockInterfaceNoLock</a> : <a href="-body-lock-interface/index.html">BodyLockInterface</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Implementation that performs no locking (assumes the lock has already been taken)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-598255872%2FClasslikes%2F-90274882" anchor-label="BodyLockMultiRead" id="-598255872%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-lock-multi-read/index.html"><span>Body</span><wbr></wbr><span>Lock</span><wbr></wbr><span>Multi</span><wbr></wbr><span><span>Read</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-598255872%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-body-lock-multi-read/index.html">BodyLockMultiRead</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a></div><div class="brief "><p class="paragraph">A multi body lock takes a number of body IDs and locks the underlying bodies so that other threads cannot access its members</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-941459923%2FClasslikes%2F-90274882" anchor-label="BodyLockMultiWrite" id="-941459923%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-lock-multi-write/index.html"><span>Body</span><wbr></wbr><span>Lock</span><wbr></wbr><span>Multi</span><wbr></wbr><span><span>Write</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-941459923%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-body-lock-multi-write/index.html">BodyLockMultiWrite</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a></div><div class="brief "><p class="paragraph">Specialization that locks multiple bodies for writing to.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="780630589%2FClasslikes%2F-90274882" anchor-label="BodyLockRead" id="780630589%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-lock-read/index.html"><span>Body</span><wbr></wbr><span>Lock</span><wbr></wbr><span><span>Read</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="780630589%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-body-lock-read/index.html">BodyLockRead</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a></div><div class="brief "><p class="paragraph">A body lock takes a body ID and locks the underlying body so that other threads cannot access its members</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1145652592%2FClasslikes%2F-90274882" anchor-label="BodyLockWrite" id="-1145652592%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-lock-write/index.html"><span>Body</span><wbr></wbr><span>Lock</span><wbr></wbr><span><span>Write</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1145652592%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-body-lock-write/index.html">BodyLockWrite</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a></div><div class="brief "><p class="paragraph">Specialization that locks a body for writing to.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1497327525%2FClasslikes%2F-90274882" anchor-label="EAllowedDOFs" id="1497327525%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-allowed-d-o-fs/index.html"><span>EAllowed</span><wbr></wbr><span><span>DOFs</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1497327525%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-e-allowed-d-o-fs/index.html">EAllowedDOFs</a></div><div class="brief "><p class="paragraph">Enum used in BodyCreationSettings and MotionProperties to indicate which degrees of freedom a body has</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="444919905%2FClasslikes%2F-90274882" anchor-label="EBodyType" id="444919905%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-body-type/index.html"><span>EBody</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="444919905%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-e-body-type/index.html">EBodyType</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-e-body-type/index.html">EBodyType</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Type of body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1976354346%2FClasslikes%2F-90274882" anchor-label="ECanSleep" id="-1976354346%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-can-sleep/index.html"><span>ECan</span><wbr></wbr><span><span>Sleep</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1976354346%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-e-can-sleep/index.html">ECanSleep</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-e-can-sleep/index.html">ECanSleep</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Enum that determines if an object can go to sleep</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-489187652%2FClasslikes%2F-90274882" anchor-label="EMotionQuality" id="-489187652%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-motion-quality/index.html"><span>EMotion</span><wbr></wbr><span><span>Quality</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-489187652%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-e-motion-quality/index.html">EMotionQuality</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-e-motion-quality/index.html">EMotionQuality</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Motion quality, or how well it detects collisions when it has a high velocity</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1795004365%2FClasslikes%2F-90274882" anchor-label="EMotionType" id="1795004365%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-motion-type/index.html"><span>EMotion</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1795004365%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-e-motion-type/index.html">EMotionType</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-e-motion-type/index.html">EMotionType</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Motion type of a physics body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1539074314%2FClasslikes%2F-90274882" anchor-label="EOverrideMassProperties" id="1539074314%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-override-mass-properties/index.html"><span>EOverride</span><wbr></wbr><span>Mass</span><wbr></wbr><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1539074314%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-e-override-mass-properties/index.html">EOverrideMassProperties</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-e-override-mass-properties/index.html">EOverrideMassProperties</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Enum used in BodyCreationSettings to indicate how mass and inertia should be calculated</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-593027962%2FClasslikes%2F-90274882" anchor-label="IgnoreMultipleBodiesFilter" id="-593027962%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ignore-multiple-bodies-filter/index.html"><span>Ignore</span><wbr></wbr><span>Multiple</span><wbr></wbr><span>Bodies</span><wbr></wbr><span><span>Filter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-593027962%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-ignore-multiple-bodies-filter/index.html">IgnoreMultipleBodiesFilter</a> : <a href="-body-filter/index.html">BodyFilter</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A simple body filter implementation that ignores multiple, specified bodies</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1595608660%2FClasslikes%2F-90274882" anchor-label="IgnoreSingleBodyFilter" id="-1595608660%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ignore-single-body-filter/index.html"><span>Ignore</span><wbr></wbr><span>Single</span><wbr></wbr><span>Body</span><wbr></wbr><span><span>Filter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1595608660%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-ignore-single-body-filter/index.html">IgnoreSingleBodyFilter</a> : <a href="-body-filter/index.html">BodyFilter</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">A simple body filter implementation that ignores a single, specified body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="992017238%2FClasslikes%2F-90274882" anchor-label="IgnoreSingleBodyFilterChained" id="992017238%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ignore-single-body-filter-chained/index.html"><span>Ignore</span><wbr></wbr><span>Single</span><wbr></wbr><span>Body</span><wbr></wbr><span>Filter</span><wbr></wbr><span><span>Chained</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="992017238%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-ignore-single-body-filter-chained/index.html">IgnoreSingleBodyFilterChained</a> : <a href="-body-filter/index.html">BodyFilter</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Ignores a single body and chains the filter to another filter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-399915815%2FClasslikes%2F-90274882" anchor-label="MassProperties" id="-399915815%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mass-properties/index.html"><span>Mass</span><wbr></wbr><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-399915815%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-mass-properties/index.html">MassProperties</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Describes the mass and inertia properties of a body. Used during body construction only.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-949748457%2FClasslikes%2F-90274882" anchor-label="MotionProperties" id="-949748457%2FClasslikes%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-motion-properties/index.html"><span>Motion</span><wbr></wbr><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-949748457%2FClasslikes%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-motion-properties/index.html">MotionProperties</a> : <a href="../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">The Body class only keeps track of state for static bodies, the MotionProperties class keeps the additional state needed for a moving Body. It has a 1-on-1 relationship with the body.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

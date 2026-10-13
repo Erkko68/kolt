@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>WheelSettingsWV</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+<link href="../../../styles/multimodule.css" rel="Stylesheet">
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../../index.html" tabindex="1">
+                    kolt
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kolt/io.github.erkko68.kolt.physics.vehicle/-wheel-settings-w-v/index.html&quot;}">0.1.0</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true"
+                        data-filter=":kotlin:kolt/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":kotlin:kolt/commonMain"
+                                       data-filter=":kotlin:kolt/commonMain"/>
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kolt
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="kolt::io.github.erkko68.kolt.physics.vehicle/WheelSettingsWV///PointingToDeclaration//-90274882">
+  <div class="breadcrumbs"><a href="../../../index.html">kolt</a><span class="delimiter">/</span><a href="../index.html">io.github.erkko68.kolt.physics.vehicle</a><span class="delimiter">/</span><span class="current">WheelSettingsWV</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Wheel</span><wbr></wbr><span>Settings</span><wbr></wbr><span><span>WV</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">WheelSettingsWV</a> : <a href="../-wheel-settings/index.html">WheelSettings</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><p class="paragraph">WheelSettings object specifically for WheeledVehicleController</p><p class="paragraph">C++ <code class="lang-kotlin">JPH::WheelSettingsWV</code>.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="1094925201%2FConstructors%2F-90274882" anchor-label="WheelSettingsWV" id="1094925201%2FConstructors%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-wheel-settings-w-v.html"><span>Wheel</span><wbr></wbr><span>Settings</span><wbr></wbr><span><span>WV</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1094925201%2FConstructors%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Creates one whose functions a subclass overrides.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-171624500%2FProperties%2F-90274882" anchor-label="angularDamping" id="-171624500%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="angular-damping.html"><span>angular</span><wbr></wbr><span><span>Damping</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-171624500%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="angular-damping.html">angularDamping</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">Angular damping factor of the wheel: dw/dt = -c * w. Value should be zero or positive and is usually close to 0.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1198238920%2FProperties%2F-90274882" anchor-label="enableSuspensionForcePoint" id="1198238920%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/enable-suspension-force-point.html"><span>enable</span><wbr></wbr><span>Suspension</span><wbr></wbr><span>Force</span><wbr></wbr><span><span>Point</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1198238920%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/enable-suspension-force-point.html">enableSuspensionForcePoint</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Enables mSuspensionForcePoint, if disabled, the forces are applied at the collision contact point. This leads to a more accurate simulation when interacting with dynamic objects but makes the vehicle less stable. When setting this to true, all forces will be applied to a fixed point on the vehicle body.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="854034516%2FProperties%2F-90274882" anchor-label="inertia" id="854034516%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="inertia.html"><span><span>inertia</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="854034516%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="inertia.html">inertia</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">Moment of inertia (kg m^2), for a cylinder this would be 0.5 * M * R^2 which is 0.9 for a wheel with a mass of 20 kg and radius 0.3 m</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="688560669%2FProperties%2F-90274882" anchor-label="lateralFriction" id="688560669%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="lateral-friction.html"><span>lateral</span><wbr></wbr><span><span>Friction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="688560669%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="lateral-friction.html">lateralFriction</a><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.core/-linear-curve/index.html">LinearCurve</a></div><div class="brief "><p class="paragraph">On the Y-axis: friction in the sideways direction of the tire. Friction is normally between 0 (no friction) and 1 (full friction) although friction can be a little bit higher than 1 because of the profile of a tire. On the X-axis: the slip angle (degrees) defined as angle between relative contact velocity and tire direction.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1271381420%2FProperties%2F-90274882" anchor-label="longitudinalFriction" id="1271381420%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="longitudinal-friction.html"><span>longitudinal</span><wbr></wbr><span><span>Friction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1271381420%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="longitudinal-friction.html">longitudinalFriction</a><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.core/-linear-curve/index.html">LinearCurve</a></div><div class="brief "><p class="paragraph">On the Y-axis: friction in the forward direction of the tire. Friction is normally between 0 (no friction) and 1 (full friction) although friction can be a little bit higher than 1 because of the profile of a tire. On the X-axis: the slip ratio (fraction) defined as (omega_wheel * r_wheel - v_longitudinal) / |v_longitudinal|. You can see slip ratio as the amount the wheel is spinning relative to the floor: 0 means the wheel has full traction and is rolling perfectly in sync with the ground, 1 is for example when the wheel is locked and sliding over the ground.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1959149723%2FProperties%2F-90274882" anchor-label="maxBrakeTorque" id="1959149723%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-brake-torque.html"><span>max</span><wbr></wbr><span>Brake</span><wbr></wbr><span><span>Torque</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1959149723%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="max-brake-torque.html">maxBrakeTorque</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">How much torque (Nm) the brakes can apply to this wheel</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-87406550%2FProperties%2F-90274882" anchor-label="maxHandBrakeTorque" id="-87406550%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-hand-brake-torque.html"><span>max</span><wbr></wbr><span>Hand</span><wbr></wbr><span>Brake</span><wbr></wbr><span><span>Torque</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-87406550%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="max-hand-brake-torque.html">maxHandBrakeTorque</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">How much torque (Nm) the hand brake can apply to this wheel (usually only applied to the rear wheels)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="280099272%2FProperties%2F-90274882" anchor-label="maxSteerAngle" id="280099272%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-steer-angle.html"><span>max</span><wbr></wbr><span>Steer</span><wbr></wbr><span><span>Angle</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="280099272%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="max-steer-angle.html">maxSteerAngle</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">How much this wheel can steer (radians)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-488017052%2FProperties%2F-90274882" anchor-label="position" id="-488017052%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/position.html"><span><span>position</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-488017052%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/position.html">position</a><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div><div class="brief "><p class="paragraph">Attachment point of wheel suspension in local space of the body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-75856869%2FProperties%2F-90274882" anchor-label="radius" id="-75856869%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/radius.html"><span><span>radius</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-75856869%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/radius.html">radius</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">Radius of the wheel (m)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-313979653%2FProperties%2F-90274882" anchor-label="steeringAxis" id="-313979653%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/steering-axis.html"><span>steering</span><wbr></wbr><span><span>Axis</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-313979653%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/steering-axis.html">steeringAxis</a><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div><div class="brief "><p class="paragraph">Direction of the steering axis in local space of the body, should point up (e.g. for a bike would be -mSuspensionDirection)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="432064299%2FProperties%2F-90274882" anchor-label="suspensionDirection" id="432064299%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/suspension-direction.html"><span>suspension</span><wbr></wbr><span><span>Direction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="432064299%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/suspension-direction.html">suspensionDirection</a><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div><div class="brief "><p class="paragraph">Direction of the suspension in local space of the body, should point down</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="236899723%2FProperties%2F-90274882" anchor-label="suspensionForcePoint" id="236899723%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/suspension-force-point.html"><span>suspension</span><wbr></wbr><span>Force</span><wbr></wbr><span><span>Point</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="236899723%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/suspension-force-point.html">suspensionForcePoint</a><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div><div class="brief "><p class="paragraph">Where tire forces (suspension and traction) are applied, in local space of the body. A good default is the center of the wheel in its neutral pose. See mEnableSuspensionForcePoint.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1294201952%2FProperties%2F-90274882" anchor-label="suspensionMaxLength" id="-1294201952%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/suspension-max-length.html"><span>suspension</span><wbr></wbr><span>Max</span><wbr></wbr><span><span>Length</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1294201952%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/suspension-max-length.html">suspensionMaxLength</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">How long the suspension is in max droop position relative to the attachment point (m)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1337421042%2FProperties%2F-90274882" anchor-label="suspensionMinLength" id="1337421042%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/suspension-min-length.html"><span>suspension</span><wbr></wbr><span>Min</span><wbr></wbr><span><span>Length</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1337421042%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/suspension-min-length.html">suspensionMinLength</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">How long the suspension is in max raised position relative to the attachment point (m)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1931059163%2FProperties%2F-90274882" anchor-label="suspensionPreloadLength" id="1931059163%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/suspension-preload-length.html"><span>suspension</span><wbr></wbr><span>Preload</span><wbr></wbr><span><span>Length</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1931059163%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/suspension-preload-length.html">suspensionPreloadLength</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">The natural length (m) of the suspension spring is defined as mSuspensionMaxLength + mSuspensionPreloadLength. Can be used to preload the suspension as the spring is compressed by mSuspensionPreloadLength when the suspension is in max droop position. Note that this means when the vehicle touches the ground there is a discontinuity so it will also make the vehicle more bouncy as we're updating with discrete time steps.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-449867933%2FProperties%2F-90274882" anchor-label="suspensionSpring" id="-449867933%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/suspension-spring.html"><span>suspension</span><wbr></wbr><span><span>Spring</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-449867933%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/suspension-spring.html">suspensionSpring</a><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.constraints/-spring-settings/index.html">SpringSettings</a></div><div class="brief "><p class="paragraph">Settings for the suspension spring</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1338965187%2FProperties%2F-90274882" anchor-label="wheelForward" id="1338965187%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/wheel-forward.html"><span>wheel</span><wbr></wbr><span><span>Forward</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1338965187%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/wheel-forward.html">wheelForward</a><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div><div class="brief "><p class="paragraph">Forward direction when the wheel is in the neutral steering position (usually VehicleConstraintSettings::mForward but can be used to give the wheel toe, does not need to be perpendicular to mWheelUp)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="864536183%2FProperties%2F-90274882" anchor-label="wheelUp" id="864536183%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/wheel-up.html"><span>wheel</span><wbr></wbr><span><span>Up</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="864536183%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/wheel-up.html">wheelUp</a><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div><div class="brief "><p class="paragraph">Up direction when the wheel is in the neutral steering position (usually VehicleConstraintSettings::mUp but can be used to give the wheel camber or for a bike would be -mSuspensionDirection)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1595496953%2FProperties%2F-90274882" anchor-label="width" id="-1595496953%2FProperties%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/width.html"><span><span>width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1595496953%2FProperties%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-wheel-settings/width.html">width</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">Width of the wheel (m)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="-1670486118%2FFunctions%2F-90274882" anchor-label="addRef" id="-1670486118%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-ref.html"><span>add</span><wbr></wbr><span><span>Ref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1670486118%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="add-ref.html"><span class="token function">addRef</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1017296662%2FFunctions%2F-90274882" anchor-label="close" id="1017296662%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="close.html"><span><span>close</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1017296662%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1298593932%2FFunctions%2F-90274882" anchor-label="restoreBinaryState" id="1298593932%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/restore-binary-state.html"><span>restore</span><wbr></wbr><span>Binary</span><wbr></wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1298593932%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-wheel-settings/restore-binary-state.html"><span class="token function">restoreBinaryState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">stream<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.core/-stream-in/index.html">StreamIn</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Restores the contents in binary form to inStream.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="508073748%2FFunctions%2F-90274882" anchor-label="saveBinaryState" id="508073748%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-wheel-settings/save-binary-state.html"><span>save</span><wbr></wbr><span>Binary</span><wbr></wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="508073748%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-wheel-settings/save-binary-state.html"><span class="token function">saveBinaryState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">stream<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.core/-stream-out/index.html">StreamOut</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Saves the contents in binary form to inStream.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>BodyInterface</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+<link href="../../../styles/multimodule.css" rel="Stylesheet">
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../../index.html" tabindex="1">
+                    kolt
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kolt/io.github.erkko68.kolt.physics.body/-body-interface/index.html&quot;}">0.1.0</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true"
+                        data-filter=":kotlin:kolt/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":kotlin:kolt/commonMain"
+                                       data-filter=":kotlin:kolt/commonMain"/>
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kolt
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="kolt::io.github.erkko68.kolt.physics.body/BodyInterface///PointingToDeclaration//-90274882">
+  <div class="breadcrumbs"><a href="../../../index.html">kolt</a><span class="delimiter">/</span><a href="../index.html">io.github.erkko68.kolt.physics.body</a><span class="delimiter">/</span><span class="current">BodyInterface</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Body</span><wbr></wbr><span><span>Interface</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">BodyInterface</a> : <a href="../../io.github.erkko68.kolt.interop/-native-object/index.html">NativeObject</a>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><p class="paragraph">Class that provides operations on bodies using a body ID. Note that if you need to do multiple operations on a single body, it is more efficient to lock the body once and combine the operations. All quantities are in world space unless otherwise specified.</p><p class="paragraph">C++ <code class="lang-kotlin">JPH::BodyInterface</code>.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="-1747845713%2FConstructors%2F-90274882" anchor-label="BodyInterface" id="-1747845713%2FConstructors%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-body-interface.html"><span>Body</span><wbr></wbr><span><span>Interface</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1747845713%2FConstructors%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="760743125%2FFunctions%2F-90274882" anchor-label="activateBodies" id="760743125%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="activate-bodies.html"><span>activate</span><wbr></wbr><span><span>Bodies</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="760743125%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="activate-bodies.html"><span class="token function">activateBodies</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyIDs<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../-body-i-d/index.html">BodyID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">number<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="984846034%2FFunctions%2F-90274882" anchor-label="activateBodiesInAABox" id="984846034%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="activate-bodies-in-a-a-box.html"><span>activate</span><wbr></wbr><span>Bodies</span><wbr></wbr><span>In</span><wbr></wbr><span><span>AABox</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="984846034%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="activate-bodies-in-a-a-box.html"><span class="token function">activateBodiesInAABox</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">box<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.geometry/-a-a-box/index.html">AABox</a><span class="token punctuation">, </span></span><span class="parameter ">broadPhaseLayerFilter<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.collision.broadphase/-broad-phase-layer-filter/index.html">BroadPhaseLayerFilter</a><span class="token punctuation">, </span></span><span class="parameter ">objectLayerFilter<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.collision/-object-layer-filter/index.html">ObjectLayerFilter</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1936677326%2FFunctions%2F-90274882" anchor-label="activateBody" id="-1936677326%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="activate-body.html"><span>activate</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1936677326%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="activate-body.html"><span class="token function">activateBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Activate / deactivate a body. Note that you need to add a body to the physics system before you can activate it. { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1641414410%2FFunctions%2F-90274882" anchor-label="activateConstraint" id="-1641414410%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="activate-constraint.html"><span>activate</span><wbr></wbr><span><span>Constraint</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1641414410%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="activate-constraint.html"><span class="token function">activateConstraint</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">constraint<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.constraints/-two-body-constraint/index.html">TwoBodyConstraint</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Activate non-static bodies attached to a constraint. Note that the bodies involved in the constraint should be added to the physics system before activating a constraint.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1617378858%2FFunctions%2F-90274882" anchor-label="addAngularImpulse" id="1617378858%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-angular-impulse.html"><span>add</span><wbr></wbr><span>Angular</span><wbr></wbr><span><span>Impulse</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1617378858%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-angular-impulse.html"><span class="token function">addAngularImpulse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">angularImpulse<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2084119692%2FFunctions%2F-90274882" anchor-label="addBodiesAbort" id="-2084119692%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-bodies-abort.html"><span>add</span><wbr></wbr><span>Bodies</span><wbr></wbr><span><span>Abort</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2084119692%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-bodies-abort.html"><span class="token function">addBodiesAbort</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="../-body-i-d/index.html">BodyID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">number<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">addState<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.interop/-native-pointer/index.html">NativePointer</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Abort adding bodies to the PhysicsSystem, supply the return value of AddBodiesPrepare in inAddState. This can be done on a background thread without influencing the PhysicsSystem. Please ensure that the ioBodies array passed to AddBodiesPrepare is unmodified and passed again to this function.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-301601622%2FFunctions%2F-90274882" anchor-label="addBodiesFinalize" id="-301601622%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-bodies-finalize.html"><span>add</span><wbr></wbr><span>Bodies</span><wbr></wbr><span><span>Finalize</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-301601622%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-bodies-finalize.html"><span class="token function">addBodiesFinalize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="../-body-i-d/index.html">BodyID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">number<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">addState<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.interop/-native-pointer/index.html">NativePointer</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Finalize adding bodies to the PhysicsSystem, supply the return value of AddBodiesPrepare in inAddState. Please ensure that the ioBodies array passed to AddBodiesPrepare is unmodified and passed again to this function.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="186994338%2FFunctions%2F-90274882" anchor-label="addBodiesPrepare" id="186994338%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-bodies-prepare.html"><span>add</span><wbr></wbr><span>Bodies</span><wbr></wbr><span><span>Prepare</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="186994338%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-bodies-prepare.html"><span class="token function">addBodiesPrepare</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="../-body-i-d/index.html">BodyID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">number<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.interop/-native-pointer/index.html">NativePointer</a></div><div class="brief "><p class="paragraph">Prepare adding inNumber bodies at ioBodies to the PhysicsSystem, returns a handle that should be used in AddBodiesFinalize/Abort. This can be done on a background thread without influencing the PhysicsSystem. ioBodies may be shuffled around by this function and should be kept that way until AddBodiesFinalize/Abort is called.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-146322230%2FFunctions%2F-90274882" anchor-label="addBody" id="-146322230%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-body.html"><span>add</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-146322230%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-body.html"><span class="token function">addBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Add body to the physics system. Note that if you need to add multiple bodies, use the AddBodiesPrepare/AddBodiesFinalize function. Adding many bodies, one at a time, results in a really inefficient broadphase until PhysicsSystem::OptimizeBroadPhase is called or when PhysicsSystem::Update rebuilds the tree! After adding, to get a body by ID use the BodyLockRead or BodyLockWrite interface!</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1877568183%2FFunctions%2F-90274882" anchor-label="addForce" id="1877568183%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-force.html"><span>add</span><wbr></wbr><span><span>Force</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1877568183%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-force.html"><span class="token function">addForce</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">force<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Add forces to the body. Note that you should add a body to the physics system before applying forces or torques. { @</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-force.html"><span class="token function">addForce</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">force<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">point<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1043448030%2FFunctions%2F-90274882" anchor-label="addForceAndTorque" id="1043448030%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-force-and-torque.html"><span>add</span><wbr></wbr><span>Force</span><wbr></wbr><span>And</span><wbr></wbr><span><span>Torque</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1043448030%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-force-and-torque.html"><span class="token function">addForceAndTorque</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">force<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">torque<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="988053123%2FFunctions%2F-90274882" anchor-label="addImpulse" id="988053123%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-impulse.html"><span>add</span><wbr></wbr><span><span>Impulse</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="988053123%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-impulse.html"><span class="token function">addImpulse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">impulse<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Add an impulse to the body. Note that you should add a body to the physics system before applying impulses. { @</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-impulse.html"><span class="token function">addImpulse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">impulse<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">point<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2078841419%2FFunctions%2F-90274882" anchor-label="addLinearAndAngularVelocity" id="2078841419%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-linear-and-angular-velocity.html"><span>add</span><wbr></wbr><span>Linear</span><wbr></wbr><span>And</span><wbr></wbr><span>Angular</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2078841419%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-linear-and-angular-velocity.html"><span class="token function">addLinearAndAngularVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">linearVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">angularVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1682126567%2FFunctions%2F-90274882" anchor-label="addLinearVelocity" id="-1682126567%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-linear-velocity.html"><span>add</span><wbr></wbr><span>Linear</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1682126567%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-linear-velocity.html"><span class="token function">addLinearVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">linearVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1711802207%2FFunctions%2F-90274882" anchor-label="addTorque" id="1711802207%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-torque.html"><span>add</span><wbr></wbr><span><span>Torque</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1711802207%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-torque.html"><span class="token function">addTorque</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">torque<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="457338880%2FFunctions%2F-90274882" anchor-label="applyBuoyancyImpulse" id="457338880%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="apply-buoyancy-impulse.html"><span>apply</span><wbr></wbr><span>Buoyancy</span><wbr></wbr><span><span>Impulse</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="457338880%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="apply-buoyancy-impulse.html"><span class="token function">applyBuoyancyImpulse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">surfacePosition<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">surfaceNormal<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">buoyancy<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">linearDrag<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">angularDrag<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">fluidVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">gravity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">deltaTime<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1969821542%2FFunctions%2F-90274882" anchor-label="assignBodyID" id="1969821542%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="assign-body-i-d.html"><span>assign</span><wbr></wbr><span>Body</span><wbr></wbr><span><span>ID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1969821542%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="assign-body-i-d.html"><span class="token function">assignBodyID</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Advanced use only. Assigns the next available body ID to a body that was created using CreateBodyWithoutID. After this call, the body can be added to the physics system.</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="assign-body-i-d.html"><span class="token function">assignBodyID</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Advanced use only. Assigns a body ID to a body that was created using CreateBodyWithoutID. After this call, the body can be added to the physics system.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1113714322%2FFunctions%2F-90274882" anchor-label="close" id="-1113714322%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="close.html"><span><span>close</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1113714322%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="447297768%2FFunctions%2F-90274882" anchor-label="createAndAddBody" id="447297768%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-and-add-body.html"><span>create</span><wbr></wbr><span>And</span><wbr></wbr><span>Add</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="447297768%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-and-add-body.html"><span class="token function">createAndAddBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">settings<span class="token operator">: </span><a href="../-body-creation-settings/index.html">BodyCreationSettings</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></div><div class="brief "><p class="paragraph">Combines CreateBody and AddBody</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1792609262%2FFunctions%2F-90274882" anchor-label="createAndAddSoftBody" id="-1792609262%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-and-add-soft-body.html"><span>create</span><wbr></wbr><span>And</span><wbr></wbr><span>Add</span><wbr></wbr><span>Soft</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1792609262%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-and-add-soft-body.html"><span class="token function">createAndAddSoftBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">settings<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.softbody/-soft-body-creation-settings/index.html">SoftBodyCreationSettings</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></div><div class="brief "><p class="paragraph">Combines CreateSoftBody and AddBody</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="74824578%2FFunctions%2F-90274882" anchor-label="createBody" id="74824578%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-body.html"><span>create</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="74824578%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-body.html"><span class="token function">createBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">settings<span class="token operator">: </span><a href="../-body-creation-settings/index.html">BodyCreationSettings</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Create a rigid body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1991286115%2FFunctions%2F-90274882" anchor-label="createBodyWithID" id="1991286115%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-body-with-i-d.html"><span>create</span><wbr></wbr><span>Body</span><wbr></wbr><span>With</span><wbr></wbr><span><span>ID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1991286115%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-body-with-i-d.html"><span class="token function">createBodyWithID</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">settings<span class="token operator">: </span><a href="../-body-creation-settings/index.html">BodyCreationSettings</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Create a rigid body with specified ID. This function can be used if a simulation is to run in sync between clients or if a simulation needs to be restored exactly. The ID created on the server can be replicated to the client and used to create a deterministic simulation.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1451320397%2FFunctions%2F-90274882" anchor-label="createBodyWithoutID" id="1451320397%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-body-without-i-d.html"><span>create</span><wbr></wbr><span>Body</span><wbr></wbr><span>Without</span><wbr></wbr><span><span>ID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1451320397%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-body-without-i-d.html"><span class="token function">createBodyWithoutID</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">settings<span class="token operator">: </span><a href="../-body-creation-settings/index.html">BodyCreationSettings</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Advanced use only. Creates a rigid body without specifying an ID. This body cannot be added to the physics system until it has been assigned a body ID. This can be used to decouple allocation from registering the body. A call to CreateBodyWithoutID followed by AssignBodyID is equivalent to calling CreateBodyWithID.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1394297662%2FFunctions%2F-90274882" anchor-label="createConstraint" id="-1394297662%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-constraint.html"><span>create</span><wbr></wbr><span><span>Constraint</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1394297662%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-constraint.html"><span class="token function">createConstraint</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">settings<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.constraints/-two-body-constraint-settings/index.html">TwoBodyConstraintSettings</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">bodyID1<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">bodyID2<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.constraints/-two-body-constraint/index.html">TwoBodyConstraint</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Create a two body constraint</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1712742296%2FFunctions%2F-90274882" anchor-label="createSoftBody" id="1712742296%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-soft-body.html"><span>create</span><wbr></wbr><span>Soft</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1712742296%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-soft-body.html"><span class="token function">createSoftBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">settings<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.softbody/-soft-body-creation-settings/index.html">SoftBodyCreationSettings</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Create a soft body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="42960461%2FFunctions%2F-90274882" anchor-label="createSoftBodyWithID" id="42960461%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-soft-body-with-i-d.html"><span>create</span><wbr></wbr><span>Soft</span><wbr></wbr><span>Body</span><wbr></wbr><span>With</span><wbr></wbr><span><span>ID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="42960461%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-soft-body-with-i-d.html"><span class="token function">createSoftBodyWithID</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">settings<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.softbody/-soft-body-creation-settings/index.html">SoftBodyCreationSettings</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Create a soft body with specified ID. See comments at CreateBodyWithID.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1028216119%2FFunctions%2F-90274882" anchor-label="createSoftBodyWithoutID" id="1028216119%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-soft-body-without-i-d.html"><span>create</span><wbr></wbr><span>Soft</span><wbr></wbr><span>Body</span><wbr></wbr><span>Without</span><wbr></wbr><span><span>ID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1028216119%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-soft-body-without-i-d.html"><span class="token function">createSoftBodyWithoutID</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">settings<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.softbody/-soft-body-creation-settings/index.html">SoftBodyCreationSettings</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Advanced use only. Creates a body without specifying an ID. See comments at CreateBodyWithoutID.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1980146380%2FFunctions%2F-90274882" anchor-label="deactivateBodies" id="-1980146380%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="deactivate-bodies.html"><span>deactivate</span><wbr></wbr><span><span>Bodies</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1980146380%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="deactivate-bodies.html"><span class="token function">deactivateBodies</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyIDs<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../-body-i-d/index.html">BodyID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">number<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1231704623%2FFunctions%2F-90274882" anchor-label="deactivateBody" id="-1231704623%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="deactivate-body.html"><span>deactivate</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1231704623%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="deactivate-body.html"><span class="token function">deactivateBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1034697760%2FFunctions%2F-90274882" anchor-label="destroyBodies" id="-1034697760%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="destroy-bodies.html"><span>destroy</span><wbr></wbr><span><span>Bodies</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1034697760%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="destroy-bodies.html"><span class="token function">destroyBodies</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyIDs<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../-body-i-d/index.html">BodyID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">number<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Destroy multiple bodies Make sure that you remove the bodies from the physics system using BodyInterface::RemoveBody before calling this function.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1957115261%2FFunctions%2F-90274882" anchor-label="destroyBody" id="1957115261%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="destroy-body.html"><span>destroy</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1957115261%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="destroy-body.html"><span class="token function">destroyBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Destroy a body. Make sure that you remove the body from the physics system using BodyInterface::RemoveBody before calling this function.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-183862360%2FFunctions%2F-90274882" anchor-label="destroyBodyWithoutID" id="-183862360%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="destroy-body-without-i-d.html"><span>destroy</span><wbr></wbr><span>Body</span><wbr></wbr><span>Without</span><wbr></wbr><span><span>ID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-183862360%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="destroy-body-without-i-d.html"><span class="token function">destroyBodyWithoutID</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Advanced use only. Destroy a body previously created with CreateBodyWithoutID that hasn't gotten an ID yet through the AssignBodyID function, or a body that has had its body ID unassigned through UnassignBodyIDs. Bodies that have an ID should be destroyed through DestroyBody.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1672249602%2FFunctions%2F-90274882" anchor-label="getAngularVelocity" id="-1672249602%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-angular-velocity.html"><span>get</span><wbr></wbr><span>Angular</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1672249602%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-angular-velocity.html"><span class="token function">getAngularVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1442416903%2FFunctions%2F-90274882" anchor-label="getBodyType" id="1442416903%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-body-type.html"><span>get</span><wbr></wbr><span>Body</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1442416903%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-body-type.html"><span class="token function">getBodyType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-e-body-type/index.html">EBodyType</a></div><div class="brief "><p class="paragraph">Body type { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-268034566%2FFunctions%2F-90274882" anchor-label="getCenterOfMassPosition" id="-268034566%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-center-of-mass-position.html"><span>get</span><wbr></wbr><span>Center</span><wbr></wbr><span>Of</span><wbr></wbr><span>Mass</span><wbr></wbr><span><span>Position</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-268034566%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-center-of-mass-position.html"><span class="token function">getCenterOfMassPosition</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1997325871%2FFunctions%2F-90274882" anchor-label="getCenterOfMassTransform" id="-1997325871%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-center-of-mass-transform.html"><span>get</span><wbr></wbr><span>Center</span><wbr></wbr><span>Of</span><wbr></wbr><span>Mass</span><wbr></wbr><span><span>Transform</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1997325871%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-center-of-mass-transform.html"><span class="token function">getCenterOfMassTransform</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-mat44/index.html">Mat44</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-953369930%2FFunctions%2F-90274882" anchor-label="getCollisionGroup" id="-953369930%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-collision-group.html"><span>get</span><wbr></wbr><span>Collision</span><wbr></wbr><span><span>Group</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-953369930%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-collision-group.html"><span class="token function">getCollisionGroup</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.collision/-collision-group/index.html">CollisionGroup</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1965963959%2FFunctions%2F-90274882" anchor-label="getFriction" id="-1965963959%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-friction.html"><span>get</span><wbr></wbr><span><span>Friction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1965963959%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-friction.html"><span class="token function">getFriction</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2059114784%2FFunctions%2F-90274882" anchor-label="getGravityFactor" id="2059114784%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-gravity-factor.html"><span>get</span><wbr></wbr><span>Gravity</span><wbr></wbr><span><span>Factor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2059114784%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-gravity-factor.html"><span class="token function">getGravityFactor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-146517351%2FFunctions%2F-90274882" anchor-label="getInverseInertia" id="-146517351%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-inverse-inertia.html"><span>get</span><wbr></wbr><span>Inverse</span><wbr></wbr><span><span>Inertia</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-146517351%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-inverse-inertia.html"><span class="token function">getInverseInertia</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-mat44/index.html">Mat44</a></div><div class="brief "><p class="paragraph">Get inverse inertia tensor in world space</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1703685290%2FFunctions%2F-90274882" anchor-label="getLinearAndAngularVelocity" id="-1703685290%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-linear-and-angular-velocity.html"><span>get</span><wbr></wbr><span>Linear</span><wbr></wbr><span>And</span><wbr></wbr><span>Angular</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1703685290%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-linear-and-angular-velocity.html"><span class="token function">getLinearAndAngularVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1735515617%2FFunctions%2F-90274882" anchor-label="getLinearVelocity" id="1735515617%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-linear-velocity.html"><span>get</span><wbr></wbr><span>Linear</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1735515617%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-linear-velocity.html"><span class="token function">getLinearVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2009972546%2FFunctions%2F-90274882" anchor-label="getMaterial" id="-2009972546%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-material.html"><span>get</span><wbr></wbr><span><span>Material</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2009972546%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-material.html"><span class="token function">getMaterial</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">subShapeID<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.collision.shape/-sub-shape-i-d/index.html">SubShapeID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.collision/-physics-material/index.html">PhysicsMaterial</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the material for a particular sub shape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2039366136%2FFunctions%2F-90274882" anchor-label="getMaxAngularVelocity" id="-2039366136%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-max-angular-velocity.html"><span>get</span><wbr></wbr><span>Max</span><wbr></wbr><span>Angular</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2039366136%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-max-angular-velocity.html"><span class="token function">getMaxAngularVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="476747159%2FFunctions%2F-90274882" anchor-label="getMaxLinearVelocity" id="476747159%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-max-linear-velocity.html"><span>get</span><wbr></wbr><span>Max</span><wbr></wbr><span>Linear</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="476747159%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-max-linear-velocity.html"><span class="token function">getMaxLinearVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1307615628%2FFunctions%2F-90274882" anchor-label="getMotionQuality" id="-1307615628%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-motion-quality.html"><span>get</span><wbr></wbr><span>Motion</span><wbr></wbr><span><span>Quality</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1307615628%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-motion-quality.html"><span class="token function">getMotionQuality</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-e-motion-quality/index.html">EMotionQuality</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-901983309%2FFunctions%2F-90274882" anchor-label="getMotionType" id="-901983309%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-motion-type.html"><span>get</span><wbr></wbr><span>Motion</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-901983309%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-motion-type.html"><span class="token function">getMotionType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-e-motion-type/index.html">EMotionType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1847199701%2FFunctions%2F-90274882" anchor-label="getObjectLayer" id="-1847199701%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-object-layer.html"><span>get</span><wbr></wbr><span>Object</span><wbr></wbr><span><span>Layer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1847199701%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-object-layer.html"><span class="token function">getObjectLayer</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-155336065%2FFunctions%2F-90274882" anchor-label="getPointVelocity" id="-155336065%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-point-velocity.html"><span>get</span><wbr></wbr><span>Point</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-155336065%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-point-velocity.html"><span class="token function">getPointVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">point<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="344180922%2FFunctions%2F-90274882" anchor-label="getPosition" id="344180922%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-position.html"><span>get</span><wbr></wbr><span><span>Position</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="344180922%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-position.html"><span class="token function">getPosition</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="622889137%2FFunctions%2F-90274882" anchor-label="getPositionAndRotation" id="622889137%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-position-and-rotation.html"><span>get</span><wbr></wbr><span>Position</span><wbr></wbr><span>And</span><wbr></wbr><span><span>Rotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="622889137%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-position-and-rotation.html"><span class="token function">getPositionAndRotation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span><a href="../../io.github.erkko68.kolt.math/-quat/index.html">Quat</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-5816813%2FFunctions%2F-90274882" anchor-label="getRestitution" id="-5816813%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-restitution.html"><span>get</span><wbr></wbr><span><span>Restitution</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-5816813%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-restitution.html"><span class="token function">getRestitution</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="815160901%2FFunctions%2F-90274882" anchor-label="getRotation" id="815160901%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-rotation.html"><span>get</span><wbr></wbr><span><span>Rotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="815160901%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-rotation.html"><span class="token function">getRotation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-quat/index.html">Quat</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="557465916%2FFunctions%2F-90274882" anchor-label="getShape" id="557465916%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-shape.html"><span>get</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="557465916%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-shape.html"><span class="token function">getShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.collision.shape/-shape/index.html">Shape</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the current shape</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1796400531%2FFunctions%2F-90274882" anchor-label="getTransformedShape" id="-1796400531%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-transformed-shape.html"><span>get</span><wbr></wbr><span>Transformed</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1796400531%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-transformed-shape.html"><span class="token function">getTransformedShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.collision/-transformed-shape/index.html">TransformedShape</a></div><div class="brief "><p class="paragraph">Get transform and shape for this body, used to perform collision detection</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1729489465%2FFunctions%2F-90274882" anchor-label="getUseManifoldReduction" id="-1729489465%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-use-manifold-reduction.html"><span>get</span><wbr></wbr><span>Use</span><wbr></wbr><span>Manifold</span><wbr></wbr><span><span>Reduction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1729489465%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-use-manifold-reduction.html"><span class="token function">getUseManifoldReduction</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1737123762%2FFunctions%2F-90274882" anchor-label="getUserData" id="-1737123762%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-user-data.html"><span>get</span><wbr></wbr><span>User</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1737123762%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-user-data.html"><span class="token function">getUserData</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><p class="paragraph">Get the user data for a body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-347884023%2FFunctions%2F-90274882" anchor-label="getWorldTransform" id="-347884023%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-world-transform.html"><span>get</span><wbr></wbr><span>World</span><wbr></wbr><span><span>Transform</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-347884023%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-world-transform.html"><span class="token function">getWorldTransform</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-mat44/index.html">Mat44</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-723070582%2FFunctions%2F-90274882" anchor-label="invalidateContactCache" id="-723070582%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="invalidate-contact-cache.html"><span>invalidate</span><wbr></wbr><span>Contact</span><wbr></wbr><span><span>Cache</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-723070582%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="invalidate-contact-cache.html"><span class="token function">invalidateContactCache</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Set the Body::EFlags::InvalidateContactCache flag for the specified body. This means that the collision cache is invalid for any body pair involving that body until the next physics step.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1928771529%2FFunctions%2F-90274882" anchor-label="isActive" id="-1928771529%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-active.html"><span>is</span><wbr></wbr><span><span>Active</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1928771529%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-active.html"><span class="token function">isActive</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-735628669%2FFunctions%2F-90274882" anchor-label="isAdded" id="-735628669%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-added.html"><span>is</span><wbr></wbr><span><span>Added</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-735628669%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-added.html"><span class="token function">isAdded</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Check if a body has been added to the physics system.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-829593853%2FFunctions%2F-90274882" anchor-label="isSensor" id="-829593853%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-sensor.html"><span>is</span><wbr></wbr><span><span>Sensor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-829593853%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-sensor.html"><span class="token function">isSensor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="336890243%2FFunctions%2F-90274882" anchor-label="moveKinematic" id="336890243%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="move-kinematic.html"><span>move</span><wbr></wbr><span><span>Kinematic</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="336890243%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="move-kinematic.html"><span class="token function">moveKinematic</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">targetPosition<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">targetRotation<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-quat/index.html">Quat</a><span class="token punctuation">, </span></span><span class="parameter ">deltaTime<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Set velocity of body such that it will be positioned at inTargetPosition/Rotation in inDeltaTime seconds (will activate body if needed)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="543841184%2FFunctions%2F-90274882" anchor-label="notifyShapeChanged" id="543841184%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="notify-shape-changed.html"><span>notify</span><wbr></wbr><span>Shape</span><wbr></wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="543841184%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="notify-shape-changed.html"><span class="token function">notifyShapeChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">previousCenterOfMass<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">updateMassProperties<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Notify all systems to indicate that a shape has changed (usable for MutableCompoundShapes)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1457322496%2FFunctions%2F-90274882" anchor-label="removeBodies" id="1457322496%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="remove-bodies.html"><span>remove</span><wbr></wbr><span><span>Bodies</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1457322496%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="remove-bodies.html"><span class="token function">removeBodies</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="../-body-i-d/index.html">BodyID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">number<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Remove inNumber bodies in ioBodies from the PhysicsSystem. Note that bodies need to be added to the physics system before they can be removed. ioBodies may be shuffled around by this function.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-324417727%2FFunctions%2F-90274882" anchor-label="removeBody" id="-324417727%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="remove-body.html"><span>remove</span><wbr></wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-324417727%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="remove-body.html"><span class="token function">removeBody</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Remove body from the physics system. Note that you need to add a body to the physics system before you can remove it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1171670852%2FFunctions%2F-90274882" anchor-label="resetSleepTimer" id="-1171670852%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="reset-sleep-timer.html"><span>reset</span><wbr></wbr><span>Sleep</span><wbr></wbr><span><span>Timer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1171670852%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="reset-sleep-timer.html"><span class="token function">resetSleepTimer</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1962231429%2FFunctions%2F-90274882" anchor-label="setAngularVelocity" id="1962231429%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-angular-velocity.html"><span>set</span><wbr></wbr><span>Angular</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1962231429%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-angular-velocity.html"><span class="token function">setAngularVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">angularVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-376561912%2FFunctions%2F-90274882" anchor-label="setCollisionGroup" id="-376561912%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-collision-group.html"><span>set</span><wbr></wbr><span>Collision</span><wbr></wbr><span><span>Group</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-376561912%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-collision-group.html"><span class="token function">setCollisionGroup</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">collisionGroup<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.collision/-collision-group/index.html">CollisionGroup</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Collision group { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1674981389%2FFunctions%2F-90274882" anchor-label="setFriction" id="-1674981389%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-friction.html"><span>set</span><wbr></wbr><span><span>Friction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1674981389%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-friction.html"><span class="token function">setFriction</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">friction<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Friction { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1231693540%2FFunctions%2F-90274882" anchor-label="setGravityFactor" id="1231693540%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-gravity-factor.html"><span>set</span><wbr></wbr><span>Gravity</span><wbr></wbr><span><span>Factor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1231693540%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-gravity-factor.html"><span class="token function">setGravityFactor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">gravityFactor<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Gravity factor { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1237227215%2FFunctions%2F-90274882" anchor-label="setIsSensor" id="-1237227215%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-is-sensor.html"><span>set</span><wbr></wbr><span>Is</span><wbr></wbr><span><span>Sensor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1237227215%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-is-sensor.html"><span class="token function">setIsSensor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">isSensor<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sensor { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1399040554%2FFunctions%2F-90274882" anchor-label="setLinearAndAngularVelocity" id="1399040554%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-linear-and-angular-velocity.html"><span>set</span><wbr></wbr><span>Linear</span><wbr></wbr><span>And</span><wbr></wbr><span>Angular</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1399040554%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-linear-and-angular-velocity.html"><span class="token function">setLinearAndAngularVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">linearVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">angularVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Linear or angular velocity (functions will activate body if needed). Note that the linear velocity is the velocity of the center of mass, which may not coincide with the position of your object, to correct for this:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="232469146%2FFunctions%2F-90274882" anchor-label="setLinearVelocity" id="232469146%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-linear-velocity.html"><span>set</span><wbr></wbr><span>Linear</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="232469146%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-linear-velocity.html"><span class="token function">setLinearVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">linearVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-46176620%2FFunctions%2F-90274882" anchor-label="setMaxAngularVelocity" id="-46176620%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-max-angular-velocity.html"><span>set</span><wbr></wbr><span>Max</span><wbr></wbr><span>Angular</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-46176620%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-max-angular-velocity.html"><span class="token function">setMaxAngularVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">angularVelocity<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Max angular velocity { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1013904947%2FFunctions%2F-90274882" anchor-label="setMaxLinearVelocity" id="-1013904947%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-max-linear-velocity.html"><span>set</span><wbr></wbr><span>Max</span><wbr></wbr><span>Linear</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1013904947%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-max-linear-velocity.html"><span class="token function">setMaxLinearVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">linearVelocity<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Max linear velocity { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1370801707%2FFunctions%2F-90274882" anchor-label="setMotionQuality" id="1370801707%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-motion-quality.html"><span>set</span><wbr></wbr><span>Motion</span><wbr></wbr><span><span>Quality</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1370801707%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-motion-quality.html"><span class="token function">setMotionQuality</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">motionQuality<span class="token operator">: </span><a href="../-e-motion-quality/index.html">EMotionQuality</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Body motion quality { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1249319941%2FFunctions%2F-90274882" anchor-label="setMotionType" id="-1249319941%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-motion-type.html"><span>set</span><wbr></wbr><span>Motion</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1249319941%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-motion-type.html"><span class="token function">setMotionType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">motionType<span class="token operator">: </span><a href="../-e-motion-type/index.html">EMotionType</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Body motion type { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2045846726%2FFunctions%2F-90274882" anchor-label="setObjectLayer" id="2045846726%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-object-layer.html"><span>set</span><wbr></wbr><span>Object</span><wbr></wbr><span><span>Layer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2045846726%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-object-layer.html"><span class="token function">setObjectLayer</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">layer<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Object layer of a body { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="957296511%2FFunctions%2F-90274882" anchor-label="setPosition" id="957296511%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-position.html"><span>set</span><wbr></wbr><span><span>Position</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="957296511%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-position.html"><span class="token function">setPosition</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">position<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-399885637%2FFunctions%2F-90274882" anchor-label="setPositionAndRotation" id="-399885637%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-position-and-rotation.html"><span>set</span><wbr></wbr><span>Position</span><wbr></wbr><span>And</span><wbr></wbr><span><span>Rotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-399885637%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-position-and-rotation.html"><span class="token function">setPositionAndRotation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">position<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">rotation<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-quat/index.html">Quat</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Position and rotation of a body { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1083004911%2FFunctions%2F-90274882" anchor-label="setPositionAndRotationWhenChanged" id="1083004911%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-position-and-rotation-when-changed.html"><span>set</span><wbr></wbr><span>Position</span><wbr></wbr><span>And</span><wbr></wbr><span>Rotation</span><wbr></wbr><span>When</span><wbr></wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1083004911%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-position-and-rotation-when-changed.html"><span class="token function">setPositionAndRotationWhenChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">position<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">rotation<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-quat/index.html">Quat</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1383060132%2FFunctions%2F-90274882" anchor-label="setPositionRotationAndVelocity" id="1383060132%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-position-rotation-and-velocity.html"><span>set</span><wbr></wbr><span>Position</span><wbr></wbr><span>Rotation</span><wbr></wbr><span>And</span><wbr></wbr><span><span>Velocity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1383060132%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-position-rotation-and-velocity.html"><span class="token function">setPositionRotationAndVelocity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">position<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">rotation<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-quat/index.html">Quat</a><span class="token punctuation">, </span></span><span class="parameter ">linearVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a><span class="token punctuation">, </span></span><span class="parameter ">angularVelocity<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-vec3/index.html">Vec3</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Set the complete motion state of a body. Note that the linear velocity is the velocity of the center of mass, which may not coincide with the position of your object, to correct for this:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="201093585%2FFunctions%2F-90274882" anchor-label="setRestitution" id="201093585%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-restitution.html"><span>set</span><wbr></wbr><span><span>Restitution</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="201093585%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-restitution.html"><span class="token function">setRestitution</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">restitution<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Restitution { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1708948674%2FFunctions%2F-90274882" anchor-label="setRotation" id="1708948674%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-rotation.html"><span>set</span><wbr></wbr><span><span>Rotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1708948674%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-rotation.html"><span class="token function">setRotation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">rotation<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.math/-quat/index.html">Quat</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1618749532%2FFunctions%2F-90274882" anchor-label="setShape" id="-1618749532%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-shape.html"><span>set</span><wbr></wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1618749532%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-shape.html"><span class="token function">setShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">shape<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics.collision.shape/-shape/index.html">Shape</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">updateMassProperties<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">activationMode<span class="token operator">: </span><a href="../../io.github.erkko68.kolt.physics/-e-activation/index.html">EActivation</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Set a new shape on the body</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1859847447%2FFunctions%2F-90274882" anchor-label="setUseManifoldReduction" id="-1859847447%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-use-manifold-reduction.html"><span>set</span><wbr></wbr><span>Use</span><wbr></wbr><span>Manifold</span><wbr></wbr><span><span>Reduction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1859847447%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-use-manifold-reduction.html"><span class="token function">setUseManifoldReduction</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">useReduction<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Manifold reduction { @</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-101644260%2FFunctions%2F-90274882" anchor-label="setUserData" id="-101644260%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-user-data.html"><span>set</span><wbr></wbr><span>User</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-101644260%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-user-data.html"><span class="token function">setUserData</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a><span class="token punctuation">, </span></span><span class="parameter ">userData<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="281796226%2FFunctions%2F-90274882" anchor-label="unassignBodyID" id="281796226%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="unassign-body-i-d.html"><span>unassign</span><wbr></wbr><span>Body</span><wbr></wbr><span><span>ID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="281796226%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="unassign-body-i-d.html"><span class="token function">unassignBodyID</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyID<span class="token operator">: </span><a href="../-body-i-d/index.html">BodyID</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-body/index.html">Body</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Advanced use only. See UnassignBodyIDs. Unassigns the ID of a single body.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-532861566%2FFunctions%2F-90274882" anchor-label="unassignBodyIDs" id="-532861566%2FFunctions%2F-90274882" data-filterable-set=":kotlin:kolt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kotlin:kolt/commonMain" data-filterable-set=":kotlin:kolt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="unassign-body-i-ds.html"><span>unassign</span><wbr></wbr><span>Body</span><wbr></wbr><span><span>IDs</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-532861566%2FFunctions%2F-90274882"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin:kolt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="unassign-body-i-ds.html"><span class="token function">unassignBodyIDs</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bodyIDs<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../-body-i-d/index.html">BodyID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">number<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">bodies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="../-body/index.html">Body</a><span class="token operator">?</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Advanced use only. Removes a number of body IDs from their bodies and returns the body pointers. Before calling this, the body should have been removed from the physics system. The body can be destroyed through DestroyBodyWithoutID. This can be used to decouple deallocation. A call to UnassignBodyIDs followed by calls to DestroyBodyWithoutID is equivalent to calling DestroyBodies.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
