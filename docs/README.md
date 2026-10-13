@@ -21,6 +21,7 @@ the names are the same.
 | [Native Builds](internals/native-builds.md) | How CMake builds Jolt and the C API for each target, the JNI layer, the wasm image. |
 | [Testing](internals/testing.md) | The two test suites, running them per target, measured coverage. |
 | [Upgrading Jolt](internals/upgrading-jolt.md) | Moving the submodule to a new Jolt release. |
+| [CI and Releasing](../.github/workflows/README.md) | The workflows, the API reference on GitHub Pages, publishing to Maven Central. |
 
 ## The short version
 

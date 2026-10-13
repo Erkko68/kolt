@@ -1,0 +1,141 @@
+name: Pages
+
+on:
+  # PRs build the site but never deploy, to catch site-build breaks before they land. Only build
+  # config can break it: Dokka doesn't fail on warnings and CI already compiles the sources, so
+  # plain source changes don't run this. No `push` trigger: a main build would be a second copy of
+  # the PR's validation, since only releases deploy.
+  pull_request:
+    branches: [main]
+    paths:
+      - 'kotlin/*/build.gradle.kts'
+      - 'desktop/**/build.gradle.kts'
+      - '*.gradle.kts'
+      - 'gradle.properties'
+      - 'gradle/**'
+      - 'build-logic/**'
+      - '.github/actions/**'
+      - '.github/workflows/pages.yml'
+  # A published release is the only event that DEPLOYS, and the only one that writes a version
+  # into the docs archive: the live site therefore always matches a release, never an in-flight
+  # main. publish.yml creates the release once Maven Central accepts.
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      archive:
+        description: 'Also store these docs in docs-archive under their version (run from a release tag)'
+        type: boolean
+        default: false
+
+# Concurrency: per-ref so PR runs don't cancel a deploy; within a ref the latest run wins.
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  docs:
+    # `contents: write` so the docs archive branch can be pushed (see below).
+    permissions:
+      contents: write
+    # macOS: Dokka documents every platform, so it builds each one for its analysis classpath, and
+    # iOS's klib (Jolt and the C API inside) is only buildable with Xcode.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: true }
+      - uses: actions/setup-java@v6
+        with: { java-version: '17', distribution: 'temurin' }
+      - uses: ./.github/actions/setup-gradle-cached
+      - run: brew install ninja
+
+      # Android source sets need the SDK licenses accepted.
+      - name: Accept Android SDK licenses
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+
+      # A tag's docs carry the tag's version, as its artifacts do (publish.yml); anything else,
+      # gradle.properties'.
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "version=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=$(sed -n 's/^VERSION_NAME=//p' gradle.properties)" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Previously published versions live as <version>/ dirs on the orphan `docs-archive` branch;
+      # Dokka's versioning plugin renders the dropdown from them and re-emits them under older/, so
+      # one deploy serves every version. Fetched only when this run deploys or archives: a
+      # validation build proves as much rendering the current version alone, and the archive push
+      # force-pushes this directory, so it must be complete first.
+      - name: Restore archived doc versions
+        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git clone -q --depth 1 --single-branch --branch docs-archive \
+            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" \
+            build/previousDocs || mkdir -p build/previousDocs
+          rm -rf build/previousDocs/.git
+          # One docs set per minor line, its newest patch: patches don't change the API, and GitHub
+          # Pages caps a site at 1 GB. The line being rendered is this version's, so its archived
+          # patches go; of the other lines, the seven newest stay (eight with this one). Older
+          # releases stay reachable through their git tags.
+          cd build/previousDocs
+          rm -rf "${VERSION%.*}".*
+          ls -1 | sort -Vr | awk -F. 'seen[$1"."$2]++ || ++lines > 7' | while read -r stale; do rm -rf "$stale"; done
+
+      - name: Generate API docs
+        # :kotlin:kolt's reference, into kotlin/kolt/build/dokka/html (Dokka v2).
+        run: ./gradlew :kotlin:kolt:dokkaGenerate "-PVERSION_NAME=${{ steps.version.outputs.version }}"
+
+      # Releases only, so a version lands in the archive exactly once, built from its tag; other
+      # events generate the docs purely to prove Dokka still works. Force-push a single orphan
+      # commit: the branch is a store, not a history, so the repo doesn't grow a copy of the whole
+      # site per build.
+      - name: Archive this version's docs
+        if: github.event_name == 'release' || inputs.archive
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          cp -R kotlin/kolt/build/dokka/html "build/previousDocs/$VERSION"
+          rm -rf "build/previousDocs/$VERSION/older"  # don't archive the nested copies
+          cd build/previousDocs
+          git init -q -b docs-archive
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "API docs @ $VERSION"
+          git push -qf \
+            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" \
+            docs-archive
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: docs
+          path: kotlin/kolt/build/dokka/html
+
+  deploy:
+    # PRs are validation builds only: a release (or a manual dispatch, which publishes whatever
+    # the chosen ref holds) is what goes live.
+    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    needs: docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      # The API reference is the site.
+      - uses: actions/download-artifact@v8
+        with: { name: docs, path: site }
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with: { path: site }
+      - id: deploy
+        uses: actions/deploy-pages@v5

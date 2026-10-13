@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Jolt Physics bug (simulation behavior, asserts, crashes inside the engine)
+    url: https://github.com/jrouwe/JoltPhysics/issues
+    about: >-
+      If the problem reproduces using Jolt directly from C++ (not specific to the Kotlin wrapper),
+      please report it upstream to Jolt Physics. Feel free to link it back here with the
+      `upstream-jolt` label.
+  - name: Question / usage help
+    url: https://github.com/Erkko68/kolt/discussions
+    about: For how-to questions and general discussion.

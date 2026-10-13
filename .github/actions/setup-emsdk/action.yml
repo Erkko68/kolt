@@ -1,0 +1,24 @@
+name: Setup emsdk
+description: |
+  The Emscripten SDK :setupEmsdk installs into .emsdk/ (emsdkVersion in gradle.properties), cached per version:
+  a miss is a download of about a gigabyte.
+
+runs:
+  using: composite
+  steps:
+    - id: plan
+      shell: bash
+      run: echo "emsdk=$(sed -n 's/^emsdkVersion=//p' gradle.properties)" >> "$GITHUB_OUTPUT"
+    # restore/save split: the SDK is saved right away, even if a later step fails.
+    - id: emsdk
+      uses: actions/cache/restore@v6
+      with:
+        path: .emsdk
+        key: emsdk-${{ steps.plan.outputs.emsdk }}-${{ runner.os }}-${{ runner.arch }}
+    - shell: bash
+      run: ./gradlew setupEmsdk
+    - if: steps.emsdk.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v6
+      with:
+        path: .emsdk
+        key: ${{ steps.emsdk.outputs.cache-primary-key }}

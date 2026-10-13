@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#
+# Prints `jvm=… web=… ios=… android=…` (true/false) for ci.yml: which platform jobs the changed
+# files need. Any path not listed below runs everything, so a new directory is safe by default.
+#
+# CI env: EVENT, PR, BEFORE, ONLY (dispatch input), GITHUB_REPOSITORY, GITHUB_SHA, GH_TOKEN.
+# Local check: printf '%s\n' docs/x.md c/kolt/jni/KoltJni.cpp | .github/scripts/ci-changes.sh -
+
+set -euo pipefail
+
+jvm=false web=false ios=false android=false
+all() { jvm=true web=true ios=true android=true; }
+
+classify() {
+    case "$1" in
+        # Nothing to build.
+        *.md|docs/*|LICENSE*|.github/ISSUE_TEMPLATE/*|.github/dependabot.yml) ;;
+        .github/workflows/pages.yml|.github/workflows/publish.yml|.github/workflows/status-*) ;;
+        # The JNI layer both the desktop and Android build in; the globals only the wasm image has.
+        c/kolt/jni/*|kotlin/*/src/jniMain/*) jvm=true android=true ;;
+        c/kolt/web/*|kotlin/*/src/web*|kotlin/*/src/js*|kotlin/*/src/wasmJs*|kotlin/*/karma.config.d/*|kotlin-js-store/*) web=true ;;
+        # The rest of c/ is the C API every target builds (jolt, the submodule, is below: everything).
+        c/*|build-logic/*) all ;;
+        desktop/*|kotlin/*/src/jvm*) jvm=true ;;
+        kotlin/*/src/native*|kotlin/*/src/ios*) ios=true ;;
+        kotlin/*/src/android*) android=true ;;
+        *) all ;;
+    esac
+}
+
+files() {
+    case "${EVENT:-}" in
+        -) cat ;;
+        pull_request) gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --paginate -q '.[].filename' ;;
+        # compare lists at most 300 files; a longer push falls back to everything below.
+        push) gh api "repos/$GITHUB_REPOSITORY/compare/$BEFORE...$GITHUB_SHA" -q '.files[].filename' ;;
+        *) return 1 ;;
+    esac
+}
+
+[[ "${1:-}" == - ]] && EVENT=-
+if [[ -n "${ONLY:-}" ]]; then
+    [[ "$ONLY" == all ]] && all || printf -v "$ONLY" true
+elif [[ "${BEFORE:-}" =~ ^0+$ ]] || ! list="$(files)" || [[ $(wc -l <<<"$list") -ge 300 ]]; then
+    all
+else
+    while IFS= read -r f; do [[ -n "$f" ]] && classify "$f"; done <<<"$list"
+fi
+
+echo "jvm=$jvm"
+echo "web=$web"
+echo "ios=$ios"
+echo "android=$android"

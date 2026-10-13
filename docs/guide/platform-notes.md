@@ -7,8 +7,7 @@ library gets loaded.
 | :--- | :--- | :--- | :--- | :--- |
 | Android | `arm64-v8a`, `x86_64` | API 24 | `libkolt.so` (JNI) | the app, from the library's jniLibs |
 | iOS | `iosArm64`, `iosSimulatorArm64` | iOS 15 | `libkolt-c.a` + `libJolt.a` | the linker: nothing to load |
-| macOS | `macosArm64` | macOS 12 | `libkolt-c.a` + `libJolt.a` | the linker: nothing to load |
-| JVM | the build host's (macOS arm64) | n/a | `libkolt` (JNI) | `System.loadLibrary`, from `java.library.path` |
+| JVM | macOS arm64; Linux and Windows, x64 and arm64 | JDK 17 | `libkolt` (JNI) | `KoltLoader`, out of the platform's runtime jar |
 | Web | `js`, `wasmJs` (browser) | wasm SIMD | `kolt.js` + `kolt.wasm` | the page, then `loadJolt()` |
 
 ## Android
@@ -16,29 +15,36 @@ library gets loaded.
 `libkolt.so` is built per ABI with the NDK and packaged in the library's jniLibs, so an app depending on kolt needs no
 setup. The library's classes are JVM 11 bytecode. It is linked with 16 KB page alignment, as Android 15 requires. Only the 64-bit ABIs are built.
 
-## iOS and macOS
+## iOS
 
 Jolt and the C API are static libraries embedded in the klib, and Kotlin/Native calls the C functions directly: no
 glue, nothing to load at run time. There is no `iosX64` (Intel Mac simulator) target.
 
 ## JVM
 
-The JNI library is `libkolt` (`libkolt.dylib` on macOS). It is **not packaged in the jar yet**: `Jolt.init()` calls
-`System.loadLibrary("kolt")`, so the library has to be on `java.library.path`:
+The JNI library is `libkolt` (`libkolt.dylib`, `libkolt.so`, `kolt.dll`), and it comes with the dependency: `kolt`'s
+JVM artifact depends on `kolt-desktop`, which brings a `kolt-runtime-<os>-<arch>` jar per platform. On the first call,
+`KoltLoader` extracts the one for the machine into `~/.kolt/` and loads it; nothing to set up.
 
-```sh
-java -Djava.library.path=build/kolt-c/macos-arm64 …
-```
+| System property | What it does |
+| :--- | :--- |
+| `kolt.library.path` | Load `libkolt` from this directory instead of a jar. |
+| `kolt.data.path` | Where it's extracted (default `~/.kolt`). |
+| `kolt.data.cleanup.days` | Extracted copies of older versions are deleted after this many days unused (default 30; `0` keeps them). |
 
-`./gradlew :kotlin:kolt:cmakeBuild` builds it into `build/kolt-c/macos-arm64/`. The build only produces the host's
-library, and the host is an Apple Silicon Mac today; Linux and Windows aren't built.
+An app that ships for one platform can depend on that platform's runtime alone: see
+[`desktop/README.md`](../../desktop/README.md).
+
+Building from source, `./gradlew :desktop:cmakeBuild` builds the host's library into `desktop/build/kolt-c/<os>-<arch>/`,
+and the host's runtime jar takes it from there. On Linux it needs only glibc: the C++ runtime is linked in.
 
 ## Web (JS and wasmJs)
 
 Jolt is compiled to WebAssembly with Emscripten, as `kolt.js` and `kolt.wasm`. Both Kotlin targets, `js` and `wasmJs`,
 call the same image.
 
-**Include the runtime.** The two files aren't in the klib yet. Build them with `./gradlew :kotlin:kolt:cmakeBuild_wasm`
+**Include the runtime.** The two files aren't in the klib (webpack never sees a klib's resources): each GitHub
+release carries them as assets. Or build them with `./gradlew :kotlin:kolt:cmakeBuild_wasm`
 (into `kotlin/kolt/build/koltWasm/`), serve them next to each other, and include `kolt.js` in the page before your
 Kotlin code:
 

@@ -22,8 +22,7 @@ There are two suites: one tests the library against Jolt, the other tests the ge
 
 ```sh
 ./gradlew :kotlin:kolt:jvmTest                      # the JVM, through JNI
-./gradlew :kotlin:kolt:macosArm64Test               # Kotlin/Native
-./gradlew :kotlin:kolt:iosSimulatorArm64Test        # an iOS simulator
+./gradlew :kotlin:kolt:iosSimulatorArm64Test        # Kotlin/Native, in an iOS simulator
 ./gradlew :kotlin:kolt:connectedAndroidDeviceTest   # an Android device or emulator
 ./gradlew :kotlin:kolt:jsBrowserTest :kotlin:kolt:wasmJsBrowserTest   # headless Chrome
 ```

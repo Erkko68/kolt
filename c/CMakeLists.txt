@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.22)
 
-# The Jph* C API over Jolt, built by :kotlin:kolt's cmakeBuild: libkolt-c.a and the libJolt.a it calls, both into
-# KOLT_OUTPUT_DIR for Kotlin/Native to link; and with KOLT_BINDINGS_DIR, libkolt, the same as a JNI library, or with
+# The Jph* C API over Jolt, built by the cmakeBuild tasks: for iOS, libkolt-c.a and the libJolt.a it calls, both into
+# KOLT_OUTPUT_DIR for Kotlin/Native to link; with KOLT_BINDINGS_DIR, libkolt, the same as a JNI library, or with
 # Emscripten kolt.{js,wasm}.
 project(kolt-c C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-# Android's and the web's output dirs hold only what an app packages: libkolt.so, kolt.{js,wasm}.
-if (NOT ANDROID AND NOT EMSCRIPTEN)
+# The static libraries, for Kotlin/Native to link. The other output dirs hold only what's packaged: libkolt, kolt.{js,wasm}.
+if (IOS)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${KOLT_OUTPUT_DIR}")
 endif()
 
@@ -26,6 +26,8 @@ if (ANDROID)
         set(${feature} OFF CACHE BOOL "")
     endforeach()
 endif()
+# The static C runtime on Windows, as Jolt's default: a DLL in a JVM can't count on the JVM's msvcp140.dll being its own.
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 # With RTTI: the C API asks which class an object is (the generated _dynamicType), for Kotlin to wrap it as that.
 # Forced, as a build dir from before this has it off.
 set(CPP_RTTI_ENABLED ON CACHE BOOL "" FORCE)
@@ -58,7 +60,9 @@ if (EMSCRIPTEN)
 elseif (KOLT_BINDINGS_DIR)
     file(GLOB forwarders CONFIGURE_DEPENDS "${KOLT_BINDINGS_DIR}/jni/*.c")
     add_library(kolt-jni SHARED kolt/jni/KoltJni.cpp ${forwarders})
-    set_target_properties(kolt-jni PROPERTIES OUTPUT_NAME kolt LIBRARY_OUTPUT_DIRECTORY "${KOLT_OUTPUT_DIR}")
+    # RUNTIME is where Windows puts a DLL, and _RELEASE keeps Visual Studio from adding a Release/ to it.
+    set_target_properties(kolt-jni PROPERTIES OUTPUT_NAME kolt LIBRARY_OUTPUT_DIRECTORY "${KOLT_OUTPUT_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY "${KOLT_OUTPUT_DIR}" RUNTIME_OUTPUT_DIRECTORY_RELEASE "${KOLT_OUTPUT_DIR}")
     target_link_libraries(kolt-jni PRIVATE kolt-c)
     # The forwarders include the C headers as `kolt/generated/…`.
     target_include_directories(kolt-jni PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -69,6 +73,11 @@ elseif (KOLT_BINDINGS_DIR)
         target_link_options(kolt-jni PRIVATE "LINKER:--version-script=${seal}" "LINKER:-z,max-page-size=16384" "LINKER:--gc-sections" "LINKER:--strip-all")
         set_target_properties(kolt-jni PROPERTIES LINK_DEPENDS "${seal}")
     else()
+        # Linux: sealed as Android's, and with the C++ runtime inside, so it loads whatever libstdc++ the machine has.
+        if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+            target_link_options(kolt-jni PRIVATE "LINKER:--version-script=${seal}" "LINKER:--gc-sections" "LINKER:--strip-all" -static-libstdc++ -static-libgcc)
+            set_target_properties(kolt-jni PROPERTIES LINK_DEPENDS "${seal}")
+        endif()
         # jni.h is the JDK's running the build.
         if (APPLE)
             set(jni_os darwin)

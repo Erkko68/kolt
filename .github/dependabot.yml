@@ -1,0 +1,35 @@
+version: 2
+updates:
+  # The root build and build-logic (where the plugins' versions are) in one entry: Kotlin, AGP and
+  # the rest must move together, so a group spanning both lands as one PR.
+  - package-ecosystem: "gradle"
+    directories:
+      - "/"
+      - "/build-logic"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "org.jetbrains.kotlinx*"
+      android:
+        patterns:
+          - "com.android*"
+          - "androidx.*"
+      # Catch-all (incl. the Gradle wrapper). A dependency joins the first matching group, so the
+      # named groups above claim theirs and this sweeps the rest into one PR.
+      gradle:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      actions:
+        patterns:
+          - "*"

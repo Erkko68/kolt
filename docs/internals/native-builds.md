@@ -6,13 +6,14 @@ depend on the task that builds it. You rarely run these by hand.
 
 | Task | Target | Produces | In |
 | :--- | :--- | :--- | :--- |
-| `cmakeBuild` | the host (macOS arm64) | `libkolt-c.a`, `libJolt.a`, and the JNI `libkolt` | `build/kolt-c/macos-arm64/` |
+| `:desktop:cmakeBuild` | the host, for the JVM | the JNI `libkolt` | `desktop/build/kolt-c/<os>-<arch>/` (`macos-arm64`, `linux-x64`, `windows-x64`, …) |
 | `cmakeBuild_iosArm64` | an iOS device | `libkolt-c.a`, `libJolt.a` | `build/kolt-c/iosArm64/` |
 | `cmakeBuild_iosSimulatorArm64` | an Apple Silicon simulator | `libkolt-c.a`, `libJolt.a` | `build/kolt-c/iosSimulatorArm64/` |
 | `cmakeBuild_arm64-v8a`, `cmakeBuild_x86_64` | Android | `libkolt.so` | `kotlin/kolt/build/jniLibs/<abi>/` |
 | `cmakeBuild_wasm` | the web | `kolt.js`, `kolt.wasm` | `kotlin/kolt/build/koltWasm/` |
 
-All are prefixed `:kotlin:kolt:`. Each is a Ninja release build in `build/cmake/<target>/`.
+All but the first are prefixed `:kotlin:kolt:`. Each is a Ninja release build in `build/cmake/<target>/`; on Windows the host's is
+Visual Studio's, CMake's default there.
 
 ## What gets built
 
@@ -21,12 +22,12 @@ All are prefixed `:kotlin:kolt:`. Each is a Ninja release build in `build/cmake/
 - **`kolt-c`**, a static library of `c/kolt/generated/**/*.cpp` and `c/kolt/manual/*.cpp`.
 - Then, per platform, what makes those reachable from Kotlin:
 
-### Kotlin/Native (macOS, iOS)
+### Kotlin/Native (iOS)
 
 Nothing more. A header-less cinterop carries `libkolt-c.a` and `libJolt.a` into the klib, and each Kotlin external
 links to its C symbol by `@SymbolName`.
 
-The deployment targets match Kotlin/Native's minimums: macOS 12, iOS 15.
+The deployment target matches Kotlin/Native's minimum: iOS 15.
 
 ### JNI (JVM, Android)
 
@@ -36,8 +37,12 @@ The deployment targets match Kotlin/Native's minimums: macOS 12, iOS 15.
 - the **JNI forwarders**, one per C function, written by `generateBindings` into `build/generated/bindings/jni/`;
 - `kolt-c` and Jolt.
 
-Only the JNI entry points are exported (`kolt-jni.map` on Android, `-exported_symbol` on macOS), so Jolt's C++ stays
-local and the linker drops what's never reached.
+Only the JNI entry points are exported (`kolt-jni.map` on Android and Linux, `-exported_symbol` on macOS), so Jolt's
+C++ stays local and the linker drops what's never reached.
+
+For a desktop, `:desktop` packs the library into its platform's runtime jar, and `KoltLoader` extracts and loads it
+([`desktop/README.md`](../../desktop/README.md)). On Linux the C++ runtime is linked in statically; on Windows, the
+static C runtime.
 
 On Android the build uses the SDK's own CMake (3.22.1) and NDK (29.0.14206865), targets API 24 with a static
 `libc++`, and links for 16 KB pages. On x86_64 the instruction sets above SSE4.2 are off, as that is all Android's ABI
@@ -57,9 +62,8 @@ The Emscripten SDK is pinned by `emsdkVersion` in `gradle.properties`. `./gradle
 
 ## Not done yet
 
-- The desktop JVM library is built for the host only, and isn't packaged in the jar: it's found on
-  `java.library.path`.
-- `kolt.js` and `kolt.wasm` aren't in the klib or an npm package: a page includes them itself.
+- `kolt.js` and `kolt.wasm` aren't in the klib or an npm package: a page includes them itself, from the GitHub release.
+- A desktop's library is built on that desktop: a release's come from CI's runners, one per platform.
 - Android builds the 64-bit ABIs only; there is no `iosX64`.
 
 These are marked in the build with `ponytail:` comments naming what the fuller version would be.

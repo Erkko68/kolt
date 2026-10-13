@@ -3,15 +3,16 @@ package io.github.erkko68.kolt.interop
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+/** Loads libkolt: on Android from the app's native libraries, on a desktop from its runtime jar (:desktop's KoltLoader). */
+internal expect fun loadLibrary()
+
 /**
  * The hand-written half of the JNI layer (native side: c/kolt/jni/KoltJni.cpp): native memory, strings, and the
  * function C++ calls a Kotlin class's overrides through. Loads libkolt, the C API and its JNI forwarders.
- * Android finds it in the app's native libraries. ponytail: the desktop JVM, on java.library.path; a loader extracting
- * it from the jar once one is published.
  */
 internal object KoltJni {
     init {
-        System.loadLibrary("kolt")
+        loadLibrary()
     }
 
     /** Zero-filled native memory (calloc). */

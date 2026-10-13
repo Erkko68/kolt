@@ -1,0 +1,143 @@
+name: Publish to Maven Central
+
+on:
+  push:
+    tags:
+      - '[0-9]*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 0.1.0)'
+        required: true
+
+jobs:
+  # ── Build libkolt per desktop platform ──────────────────────────────────────
+  # The JNI image (the C API, its JNI layer, Jolt) each :desktop:runtime-<id> jar ships. Uploaded as
+  # <id>/libkolt.*; download-artifact + merge-multiple collapses them into c-artifacts/, passed as
+  # -PcArtifactsDir.
+  build-natives:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-latest, target: macos-arm64 }
+          - { os: ubuntu-latest, target: linux-x64 }
+          - { os: ubuntu-24.04-arm, target: linux-arm64 }
+          - { os: windows-latest, target: windows-x64 }
+          - { os: windows-11-arm, target: windows-arm64 }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: true }
+      - uses: actions/setup-java@v6
+        # Temurin ships no Windows ARM64 JDK 17; Microsoft's build does.
+        with: { java-version: '17', distribution: "${{ matrix.target == 'windows-arm64' && 'microsoft' || 'temurin' }}" }
+      - uses: ./.github/actions/setup-gradle-cached
+      - name: Install CMake + Ninja (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build
+      - name: Install Ninja (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja
+      - name: Build libkolt
+        shell: bash
+        run: ./gradlew :desktop:cmakeBuild
+      - name: Check libkolt needs no C++ runtime (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          ! readelf -d desktop/build/kolt-c/*/libkolt.so | grep -E 'NEEDED.*(libstdc\+\+|libc\+\+|libgcc_s)'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: c-${{ matrix.target }}
+          path: desktop/build/kolt-c/
+          if-no-files-found: error
+
+  # ── Publish all modules ─────────────────────────────────────────────────────
+  publish:
+    needs: build-natives
+    # macOS: the only host that builds every other target, iOS's klibs among them.
+    runs-on: macos-latest
+    permissions:
+      contents: write   # gh release create
+      actions: write    # gh workflow run pages.yml
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: true }
+      - uses: actions/setup-java@v6
+        with: { java-version: '17', distribution: 'temurin' }
+      - uses: ./.github/actions/setup-gradle-cached
+      - run: brew install ninja
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "version=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          fi
+      # The NDK and CMake kotlin/kolt/build.gradle.kts pins: the AAR ships libkolt.so per ABI.
+      - name: Install NDK + CMake
+        run: |
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" "ndk;29.0.14206865" "cmake;3.22.1" > /dev/null
+      - name: Download desktop natives
+        uses: actions/download-artifact@v8
+        with:
+          pattern: c-*
+          path: c-artifacts/
+          merge-multiple: true
+      # Every project with a publication publishes: :kotlin:kolt (each target; iOS's klibs and
+      # Android's AAR carry Jolt), :desktop and its runtime jars (which take the other platforms'
+      # libraries from -PcArtifactsDir, and refuse to publish empty). The upload is validated and
+      # then waits on central.sonatype.com for "Publish".
+      - name: Publish to Maven Central
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVENCENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVENCENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+        run: |
+          ./gradlew \
+            -PVERSION_NAME=${{ steps.version.outputs.version }} \
+            -PcArtifactsDir=${{ github.workspace }}/c-artifacts \
+            publishToMavenCentral
+
+      # Web apps serve these next to their bundle (klib resources don't reach webpack), so each
+      # release carries them as assets; see docs/guide/platform-notes.md.
+      - uses: ./.github/actions/setup-emsdk
+      - name: Build web runtime assets
+        run: ./gradlew :kotlin:kolt:cmakeBuild_wasm
+
+      # ── GitHub release ────────────────────────────────────────────────────
+      # Only after Maven Central succeeded, and only for a real tag push: a dispatch run has no
+      # tag to hang a release off. Notes are the tag's own CHANGELOG section; a missing section
+      # falls back to generated notes rather than publishing an empty release.
+      - name: Create GitHub release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" { f = 1; next }
+            f && /^## \[/ { exit }
+            f { print }
+          ' CHANGELOG.md > release-notes.md
+          if [ -s release-notes.md ]; then
+            gh release create "$VERSION" --title "$VERSION" --notes-file release-notes.md
+          else
+            echo "::warning::no CHANGELOG section for $VERSION — using generated notes"
+            gh release create "$VERSION" --title "$VERSION" --generate-notes
+          fi
+          gh release upload "$VERSION" kotlin/kolt/build/koltWasm/kolt.js kotlin/kolt/build/koltWasm/kolt.wasm
+
+      # A release created with GITHUB_TOKEN doesn't fire `release: published` in other
+      # workflows, so deploy and archive the docs explicitly; workflow_dispatch is exempt.
+      - name: Deploy API docs
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: gh workflow run pages.yml --ref "$VERSION" -f archive=true

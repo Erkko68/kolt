@@ -1,0 +1,23 @@
+name: Feature request
+description: Missing API, platform support, or an improvement
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What do you need?
+      description: >-
+        What you're trying to do that you can't today. For a Jolt API that isn't bound yet
+        (`c/api-coverage.txt` lists them), the upstream class/method name is enough.
+    validations: { required: true }
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: API shape or alternatives, if you have one in mind.
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: Platform(s)
+      multiple: true
+      options: [Android, iOS, JVM/Desktop, Web/JS, Web/Wasm, All]

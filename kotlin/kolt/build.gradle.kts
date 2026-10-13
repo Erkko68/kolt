@@ -1,52 +1,33 @@
+import buildlogic.cmake.PackagedCMakeBuild
+import buildlogic.cmake.cmake
 import buildlogic.emsdk.emscriptenToolchain
 import buildlogic.emsdk.emsdkEnvironment
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
+// The plugins' versions are build-logic's (build-logic/build.gradle.kts).
 plugins {
-    kotlin("multiplatform") version "2.4.20"
-    id("com.android.kotlin.multiplatform.library") version "9.4.1"
-    id("org.jetbrains.kotlinx.kover") version "0.9.11"
+    kotlin("multiplatform")
+    id("com.android.kotlin.multiplatform.library")
+    id("org.jetbrains.kotlinx.kover")
+    id("org.jetbrains.dokka")
+    id("kolt-publish")
 }
 
-// A build whose [outputDir] holds only what's packaged: libkolt.so under <abi>, as an app's jniLibs are laid out, or kolt.{js,wasm}.
-abstract class PackagedCMakeBuild : Exec() {
-    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+// The API reference: ./gradlew :kotlin:kolt:dokkaGenerate, into build/dokka/html, labelled with the version. The
+// versioning plugin adds the version dropdown and copies each build/previousDocs/<version> into the site under older/,
+// so one deploy serves every release: CI restores that directory from the docs-archive branch (.github/workflows/pages.yml);
+// locally it's absent and only this version renders.
+dependencies {
+    dokkaPlugin("org.jetbrains.dokka:versioning-plugin:2.2.0")
 }
-
-val cDir = rootProject.layout.projectDirectory.dir("c")
-val bindings = rootProject.layout.buildDirectory.dir("generated/bindings")
-
-/**
- * Configures c/ (the C API and Jolt) as a Ninja release build in build/cmake/<[dir]> with [args], and builds [target]
- * (all of them, for null) into [output]. [glue]: it compiles what :generateBindings writes, the JNI forwarders or the
- * wasm tables. [cmake]: the binary, where it isn't the PATH's.
- */
-fun Exec.cmake(dir: String, output: File, args: String, target: String? = null, glue: Boolean = true, cmake: String = "cmake") {
-    val build = rootProject.layout.buildDirectory.dir("cmake/$dir").get().asFile
-    inputs.dir(cDir).withPropertyName("c")
-    inputs.dir(rootProject.layout.projectDirectory.dir("jolt/Jolt")).withPropertyName("jolt")
-    // Compiles what it writes, and tasks run in parallel.
-    mustRunAfter(":generateCApi")
-    if (glue) {
-        dependsOn(":generateBindings")
-        inputs.dir(bindings).withPropertyName("bindings")
+dokka {
+    pluginsConfiguration.versioning {
+        version = providers.gradleProperty("VERSION_NAME")
+        olderVersionsDir = rootProject.layout.buildDirectory.dir("previousDocs")
     }
-    commandLine(
-        "sh", "-c",
-        "'$cmake' -S '${cDir.asFile}' -B '$build' -G Ninja -DCMAKE_BUILD_TYPE=Release $args -DKOLT_OUTPUT_DIR='$output'" +
-            (if (glue) " -DKOLT_BINDINGS_DIR='${bindings.get().asFile}'" else "") +
-            " && '$cmake' --build '$build'" + (target?.let { " --target $it" } ?: ""),
-    )
-}
-
-// The static libraries, and the JVM's JNI library, for the host, at Kotlin/Native's minimum macOS (konan.properties'
-// minVersion.macos).
-val cLibDir = rootProject.layout.buildDirectory.dir("kolt-c/macos-arm64")
-val cmakeBuild = tasks.register<Exec>("cmakeBuild") {
-    outputs.dir(cLibDir)
-    cmake("macos-arm64", cLibDir.get().asFile, "-DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 -DJNI_HOME='${System.getProperty("java.home")}'")
 }
 
 // The static libraries alone for iOS, a device's and an Apple Silicon simulator's, at Kotlin/Native's minimum iOS
@@ -121,12 +102,13 @@ kotlin {
             }
         }
     }
-    macosArm64 { linkCApi(cLibDir, cmakeBuild) }
     iosArm64 { iosLibs.getValue(name).let { (libDir, build) -> linkCApi(libDir, build) } }
     iosSimulatorArm64 { iosLibs.getValue(name).let { (libDir, build) -> linkCApi(libDir, build) } }
 
-    // The externals are JNI methods of libkolt (c/kolt/jni), which the tests find next to the static libraries.
+    // The externals are JNI methods of libkolt (c/kolt/jni), which :desktop builds, ships in a jar per platform and
+    // loads.
     jvm()
+    sourceSets.jvmMain.dependencies { api(project(":desktop")) }
 
     // And of libkolt.so, in the library's jniLibs. The tests run on a device or emulator (connectedAndroidDeviceTest).
     android {
@@ -138,11 +120,14 @@ kotlin {
     }
 
     // The externals are the globals kolt.js installs from kolt.wasm's exports (c/kolt/web), which the page includes:
-    // the tests' is a resource. ponytail: not in the klib; a release asset or an npm package once one is published.
+    // the tests' is a resource. Not in the klib, as webpack never sees a klib's resources: a release carries them as
+    // assets. KOLT_WASM_PREBUILT=<dir> tests an already built pair (CI's js and wasm jobs take the web-runtime job's)
+    // instead of running Emscripten.
     js { browser() }
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs { browser() }
-    sourceSets.webTest { resources.srcDir(cmakeBuildWasm.flatMap { it.outputDir }) }
+    val wasmRuntime = providers.environmentVariable("KOLT_WASM_PREBUILT").orNull?.let { files(it) } ?: files(cmakeBuildWasm.flatMap { it.outputDir })
+    sourceSets.webTest { resources.srcDir(wasmRuntime) }
 
     // jniMain: shared by jvm and android, which both reach the C API through JNI.
     applyDefaultHierarchyTemplate {
@@ -153,9 +138,9 @@ kotlin {
             }
         }
     }
-    tasks.withType<Test>().configureEach {
-        dependsOn(cmakeBuild)
-        systemProperty("java.library.path", cLibDir.get().asFile.path)
+    // The simulator the iOS tests run in: Kotlin/Native's default, or -PiosSimulatorDevice's where Xcode hasn't that one.
+    tasks.withType<KotlinNativeSimulatorTest>().configureEach {
+        providers.gradleProperty("iosSimulatorDevice").orNull?.let { device.set(it) }
     }
 
     sourceSets.commonTest.dependencies { implementation(kotlin("test")) }

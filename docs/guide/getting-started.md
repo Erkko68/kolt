@@ -13,12 +13,12 @@ git clone --recurse-submodules <this repository>
 git submodule update --init
 ```
 
-The build host is an Apple Silicon Mac. What each target needs on top of that:
+The build host is an Apple Silicon Mac; the JVM target alone also builds on Linux and Windows. What each target needs:
 
 | To build | You need |
 | :--- | :--- |
-| Anything | JDK 17, `cmake` and `ninja` on the `PATH` |
-| macOS, iOS | Xcode |
+| Anything | JDK 17, `cmake` and `ninja` on the `PATH` (on Windows: Visual Studio's C++ tools, and Git's `sh`, in place of `ninja`) |
+| iOS | Xcode |
 | JVM | nothing more: the JNI headers are the JDK's |
 | Android | the Android SDK (`sdk.dir` in `local.properties`), with `sdkmanager "ndk;29.0.14206865" "cmake;3.22.1"` |
 | Web | nothing more: `./gradlew setupEmsdk` installs the pinned Emscripten SDK into `.emsdk/`, and the web build runs it for you |
@@ -29,8 +29,7 @@ few minutes the first time:
 
 ```sh
 ./gradlew :kotlin:kolt:jvmTest                      # the JVM, through JNI
-./gradlew :kotlin:kolt:macosArm64Test               # Kotlin/Native
-./gradlew :kotlin:kolt:iosSimulatorArm64Test        # an iOS simulator
+./gradlew :kotlin:kolt:iosSimulatorArm64Test        # Kotlin/Native, in an iOS simulator
 ./gradlew :kotlin:kolt:connectedAndroidDeviceTest   # an Android device or emulator
 ./gradlew :kotlin:kolt:jsBrowserTest :kotlin:kolt:wasmJsBrowserTest   # headless Chrome
 ```
