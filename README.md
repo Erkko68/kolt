@@ -1,85 +1,101 @@
 # kolt
 
-Prototype: Kotlin Multiplatform bindings for [Jolt Physics](https://github.com/jrouwe/JoltPhysics), through a C API
-generated from Jolt's headers (by `buildlogic.apigen`, in `build-logic/`).
+[![Jolt Physics](https://img.shields.io/badge/Jolt%20Physics-5.6.0-orange)](https://github.com/jrouwe/JoltPhysics)
+[![Kotlin](https://img.shields.io/badge/Kotlin-Multiplatform-7F52FF?logo=kotlin)](https://kotlinlang.org/docs/multiplatform.html)
 
+**kolt** is [Jolt Physics](https://github.com/jrouwe/JoltPhysics) for Kotlin Multiplatform: the same rigid body, character,
+vehicle, soft body and ragdoll simulation on **Android**, **iOS**, **macOS**, the **JVM** and the **Web (JS & Wasm)**, from one
+API in `commonMain`.
+
+> [!NOTE]
+> **Unofficial project.** A community-maintained Kotlin wrapper around Jolt Physics, not affiliated with or endorsed by
+> its authors.
+
+```kotlin
+Jolt.init()
+
+val temp = TempAllocatorImpl(10 * 1024 * 1024)
+val jobs = JobSystemThreadPool(2048, 8, 1)
+// One object layer in one broad phase layer, colliding with itself.
+val broadPhaseLayers = BroadPhaseLayerInterfaceTable(1, 1).also { it.mapObjectToBroadPhaseLayer(0, BroadPhaseLayer(0)) }
+val layerPairs = ObjectLayerPairFilterTable(1).also { it.enableCollision(0, 0) }
+val objectVsBroadPhase = ObjectVsBroadPhaseLayerFilterTable(broadPhaseLayers, 1, layerPairs, 1)
+val system = PhysicsSystem().also { it.init(1024, 0, 1024, 1024, broadPhaseLayers, objectVsBroadPhase, layerPairs) }
+val bodies = system.bodyInterface
+
+val sphere = SphereShape(0.5f, null)
+val ball = BodyCreationSettings(sphere, Vec3(0f, 10f, 0f), Quat.IDENTITY, EMotionType.Dynamic, 0).use { settings ->
+    bodies.createAndAddBody(settings, EActivation.Activate)
+}
+
+repeat(60) { system.update(1f / 60, 1, temp, jobs) }
+println(bodies.getPosition(ball)) // about 5 m lower, a second later
 ```
-jolt/                 Jolt Physics, pinned (submodule)
-c/api-headers.txt     which Jolt headers are API
-c/kolt/generated/     the generated C API, grouped as Jolt's dirs: physics/body/JphBody.h (./gradlew generateCApi)
-c/api-manifest.json   each C function's ABI signature, by header; what the Kotlin stages read
-c/kolt/manual/        hand-written C for what the generator can't map, and the helpers only Jolt can write (JphBridge.hpp)
-c/kolt/jni/           the hand-written half of the JVM's and Android's JNI layer; the forwarders are generated (./gradlew generateBindings)
-c/kolt/web/           what installs the wasm's exports as the globals the js and wasmJs externals bind
-c/api-coverage.txt    each C function the API calls for: wrapped by Kotlin or not yet, or why it isn't bound (./gradlew apiCoverage)
-c/CMakeLists.txt      builds Jolt and the C API as static libraries, and as the JNI library (./gradlew :kotlin:kolt:cmakeBuild;
-                      cmakeBuild_<abi> for Android's, with the SDK's NDK; cmakeBuild_<target> for iOS's), or with Emscripten as kolt.{js,wasm}
-                      (cmakeBuild_wasm; ./gradlew setupEmsdk installs the SDK into .emsdk/)
-kotlin/kolt/          the Kotlin module: interop/ and, per group, a package whose capi/ is the generated externals
-                      (physics.body.capi; ./gradlew generateKotlinExternals)
-                      and the rest the generated classes over them (./gradlew generateKotlinApi); math/ is hand-written
-build-logic/          the generator: cpp/ (clang AST → model), c/ (model → C, and what it bound), kotlin/ (manifest →
-                      externals), kotlin/api/ (what C bound → classes), glue/ (manifest → JNI and wasm glue),
-                      report/ (coverage), gradle/ (the tasks); ApiGen.kt runs the stages
+
+If you know Jolt, you know kolt: the classes, methods and enums are Jolt's, in the package of their header's directory
+(`physics.body.BodyInterface`). [Getting Started](docs/guide/getting-started.md) continues this example, down to closing
+what it created.
+
+## Platform support
+
+Every platform runs on **one C API generated from Jolt's C++ headers**, and the Kotlin API is generated once, in
+`commonMain`, on top of it. The API and its behavior are the same everywhere:
+
+| Platform | Targets | How Kotlin reaches Jolt |
+| :--- | :--- | :--- |
+| **Android** | `arm64-v8a`, `x86_64`, minSdk 24 | JNI, `libkolt.so` in the library's jniLibs |
+| **iOS** | `iosArm64`, `iosSimulatorArm64`, iOS 15 | Kotlin/Native, linked statically |
+| **macOS** | `macosArm64`, macOS 12 | Kotlin/Native, linked statically |
+| **JVM** | the host's (macOS arm64 today) | JNI, `libkolt` on `java.library.path` |
+| **Web** | `js`, `wasmJs`, in a browser | Jolt compiled to wasm with Emscripten, `kolt.js` + `kolt.wasm` |
+
+What differs per platform (loading the native library, threads on the web) is in
+[Platform Notes](docs/guide/platform-notes.md).
+
+## Status
+
+Pre-release: nothing is published yet, so kolt is built from source. Clone with the Jolt submodule and run the tests:
+
+```sh
+git clone --recurse-submodules <this repository>
+./gradlew :kotlin:kolt:jvmTest :kotlin:kolt:macosArm64Test
 ```
 
-`./gradlew :kotlin:kolt:macosArm64Test :kotlin:kolt:jvmTest` runs Jolt through the generated classes, on Kotlin/Native
-(an Apple Silicon Mac, which needs no glue) and on the JVM (the host's, through JNI; `libkolt` is found on
-`java.library.path`, not packaged yet); `./gradlew :kotlin:kolt:connectedAndroidDeviceTest` on an Android device or
-emulator, whose `libkolt.so` (arm64-v8a, x86_64) is in the library's jniLibs.
+The toolchain each target needs is listed in [Getting Started](docs/guide/getting-started.md#building-from-source).
 
-The tests (`kotlin/kolt/src/commonTest`) are laid out as the library's packages. `interop/` is how the generated classes
-reach Jolt: a falling sphere and a ray cast, a convex hull from points, contact listeners, filters, a hit collector and a
-collision callback written in Kotlin, a batch of bodies, a shape's triangles and a character on a moving floor through
-out-parameters and arrays, and a step listener, a state recorder, a stream and a skeleton. The rest is what Jolt does
-through them: `math/` (the hand-written types, against Jolt's), `geometry/`, `core/`, and under `physics/` bodies, each
-kind of shape, the broad and narrow phase queries, constraints, characters, vehicles, soft bodies and ragdolls. `World.kt`
-is the system they share: `world { … }` runs between `Jolt.init()` and `Jolt.shutdown()`.
+## API strategy
 
-`./gradlew :kotlin:kolt:iosSimulatorArm64Test` runs them on an iOS simulator; `iosArm64` is the device's (iOS 15, as
-Kotlin/Native's).
+The public API follows **Jolt's C++ API**, the one [Jolt's documentation](https://jrouwe.github.io/JoltPhysics/) and
+headers describe, adapted only where Kotlin has its own shape:
 
-`./gradlew :kotlin:kolt:jsBrowserTest :kotlin:kolt:wasmJsBrowserTest` runs them in a headless Chrome, on Jolt compiled to
-wasm. A page includes `kolt.js` with `kolt.wasm` next to it (`kotlin/kolt/build/koltWasm`, not packaged yet) and waits
-for `loadJolt()` before `Jolt.init()`. The wasm is single-threaded: a job system runs its jobs on the caller.
+- **Kotlin properties** for `GetX`/`SetX` pairs and fields (`system.gravity`, `settings.motionType`); statics lose their
+  `s` (`ConstraintSettings::sRestoreFromBinaryState` is `ConstraintSettings.restoreFromBinaryState`).
+- **`close()` gives back** what Kotlin created; what Jolt keeps is borrowed, and closing it does nothing.
+- **Subclass to listen**: `object : ContactListener() { override fun onContactAdded(…) }`. A `std::function` is a Kotlin
+  lambda.
+- **Results, not out-parameters**: `getPositionAndRotation(id)` returns a `Pair<Vec3, Quat>`; an error result throws
+  `NativeException`.
+- **Nothing invented**: no wrappers C++ doesn't have. Of Jolt's bindable API, 3604 of 3622 functions are wrapped;
+  [`c/api-coverage.txt`](c/api-coverage.txt) names the rest.
 
-## The Kotlin API
+The full set of rules is in [API Conventions](docs/guide/api-conventions.md).
 
-`Jolt.init()` first, `Jolt.shutdown()` last. Classes, methods and enums are named as Jolt's, in the package of their
-header's directory (`physics.body.BodyInterface`); `GetX`/`SetX` are a property `x`, statics lose their `s`.
+## Documentation
 
-- A class Kotlin creates, or that Jolt hands over a reference to, is the wrapper's to `close()`; one read from an object
-  Jolt keeps is borrowed, and `close()` leaves it alone.
-- A class with virtual functions is open to Kotlin: `object : ContactListener() { override fun onContactAdded(…) }`.
-  Jolt calls the overrides, from its job threads too, and keeps its own for the rest. The other classes are final.
-- A `std::function` is a Kotlin function, or null for none: `vehicle.setPreStepCallback { vehicle, context -> … }`.
-  What Jolt takes back through a reference argument, the function returns.
-- A result that's a value or an error returns the value, or throws `NativeException` with the error.
-- What Jolt writes through a reference parameter is returned: `getPositionAndRotation(id)` is a `Pair<Vec3, Quat>`,
-  after the function's own result if it has one. An `io` parameter is passed in and returned.
-- A pointer to an array is a `List` or a primitive array, with the count where Jolt takes it; one Jolt writes to is a
-  `MutableList`, changed in place. A `void*` is a `NativePointer`.
-- A class Jolt returns by value is a copy the wrapper owns: `shape.stats.use { … }`.
-- A second C++ base is a function: `vehicle.asPhysicsStepListener()`.
-- What Jolt returns as a base is the class it is: `vehicle.controller as WheeledVehicleController`, `shape is BoxShape`.
-  C++ tells which, Jolt being built with RTTI for it (`c/CMakeLists.txt`). It can't for a class with no virtual
-  functions, where a function says so, unchecked: `body.motionProperties!!.asSoftBodyMotionProperties()`.
-- `c/api-coverage.txt` lists what isn't bound yet (the stream save and restore maps, plain function pointers,
-  `std::pair`s), and what `c/api-headers.txt` leaves out as Jolt's own machinery.
+### Using kolt
+- **[Getting Started](docs/guide/getting-started.md)**: building from source, a first simulation, cleaning up.
+- **[API Conventions](docs/guide/api-conventions.md)**: how Jolt's C++ reads in Kotlin: names, ownership, callbacks,
+  out-parameters, arrays, casts.
+- **[Platform Notes](docs/guide/platform-notes.md)**: targets, native libraries, what the web does differently.
 
-`./gradlew apiModel` reports the C++ API clang sees in the listed headers.
+### Working on kolt
+- **[Repository Structure](docs/internals/repo-structure.md)**: what lives where, and what is generated.
+- **[The Generator](docs/internals/generator.md)**: from C++ headers to a C API to Kotlin, and its config.
+- **[Native Builds](docs/internals/native-builds.md)**: CMake, JNI, the wasm image.
+- **[Testing](docs/internals/testing.md)**: the suites, how to run them per target, coverage.
+- **[Upgrading Jolt](docs/internals/upgrading-jolt.md)**: moving the submodule to a new release.
 
-## The generator
-
-`./gradlew generateApi` regenerates everything committed, in order: the C API and its manifest, the Kotlin externals,
-the typed Kotlin API and `c/api-coverage.txt`. `./gradlew apiCheck` fails when what's committed isn't what that would
-write; run it after touching the generator, `c/api-headers.txt` or the Jolt submodule.
-
-`buildlogic.apigen` knows no library. Everything it is told about Jolt is one `ApiGenConfig`, in
-`build-logic/src/main/kotlin/kolt-root.gradle.kts`: `sources` (where the headers are, the clang arguments), `c` (how C
-names and files are built, and whether the library has RTTI), `naming` (the prefixes Jolt's names carry), `types` (scalars, math mirrors, containers,
-strings, reference counting, result types) and `templates` (the instantiations bound).
-
-`./gradlew -p build-logic test` runs every stage on a small fixture library (`build-logic/src/test/fixture`) against
-its committed output, the options Jolt's config doesn't use among them; `-Papigen.update` rewrites that output. Pointing it at another library is another config, an `api-headers.txt`, and, only if the library has
-smart pointers, result types or math types needing fix-ups, a small bridge header on top of the generated `Bridge.hpp`.
+### Upstream Jolt (authoritative for physics concepts)
+- **[Jolt Physics documentation](https://jrouwe.github.io/JoltPhysics/)**: architecture, layers, shapes, constraints.
+- **[HelloWorld.cpp](https://github.com/jrouwe/JoltPhysics/blob/master/HelloWorld/HelloWorld.cpp)**: the C++ this README's
+  example mirrors.

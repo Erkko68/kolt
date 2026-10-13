@@ -1,5 +1,6 @@
 plugins {
     `kotlin-dsl`
+    id("org.jetbrains.kotlinx.kover") version "0.9.11"
 }
 
 repositories {

@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 plugins {
     kotlin("multiplatform") version "2.4.20"
     id("com.android.kotlin.multiplatform.library") version "9.4.1"
+    id("org.jetbrains.kotlinx.kover") version "0.9.11"
 }
 
 // A build whose [outputDir] holds only what's packaged: libkolt.so under <abi>, as an app's jniLibs are laid out, or kolt.{js,wasm}.
