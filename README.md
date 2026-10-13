@@ -59,19 +59,21 @@ Every platform runs on **one C API generated from Jolt's C++ headers**, and the 
 What differs per platform (loading the native library, threads on the web) is in
 [Platform Notes](docs/guide/platform-notes.md).
 
-## Status
+## Installation
 
-Pre-release: nothing is published yet, so kolt is built from source. Once it is, it's one dependency, native code
-included on every target:
+kolt is on Maven Central: one dependency, native code included on every target.
 
 ```kotlin
-commonMain.dependencies { implementation("io.github.erkko68.kolt:kolt:<version>") }
+commonMain.dependencies { implementation("io.github.erkko68.kolt:kolt:0.1.0") }
 ```
 
-Until then, clone with the Jolt submodule and run the tests:
+On the web, serve `kolt.js` and `kolt.wasm` (each release's assets) next to your bundle; see
+[Platform Notes](docs/guide/platform-notes.md).
+
+To build it from source, clone with the Jolt submodule and run the tests:
 
 ```sh
-git clone --recurse-submodules <this repository>
+git clone --recurse-submodules https://github.com/Erkko68/kolt.git
 ./gradlew :kotlin:kolt:jvmTest :kotlin:kolt:iosSimulatorArm64Test
 ```
 
