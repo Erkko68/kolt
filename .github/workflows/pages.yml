@@ -1,13 +1,17 @@
 name: Pages
 
 on:
-  # PRs build the site but never deploy, to catch site-build breaks before they land. Only build
-  # config can break it: Dokka doesn't fail on warnings and CI already compiles the sources, so
-  # plain source changes don't run this. No `push` trigger: a main build would be a second copy of
+  # PRs build the site (web sample + docs) but never deploy, to catch site-build breaks before they
+  # land. Only build config and the web sample's own sources can break it: Dokka doesn't fail on
+  # warnings and CI already compiles the library, so plain library changes don't run this. No `push` trigger: a main build would be a second copy of
   # the PR's validation, since only releases deploy.
   pull_request:
     branches: [main]
     paths:
+      - 'samples/src/commonMain/**'
+      - 'samples/src/webMain/**'
+      - 'samples/*.gradle.kts'
+      - 'samples/gradle.properties'
       - 'kotlin/*/build.gradle.kts'
       - 'desktop/**/build.gradle.kts'
       - '*.gradle.kts'
@@ -39,6 +43,33 @@ permissions:
   id-token: write
 
 jobs:
+  # The web sample and the API docs are built in separate jobs (the web one needs Emscripten, the
+  # docs one macOS). Pages serves a single artifact, so both pieces are merged in `deploy` below.
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: true }
+      - uses: actions/setup-java@v6
+        with: { java-version: '17', distribution: 'temurin' }
+      - uses: ./.github/actions/setup-gradle-cached
+      - run: sudo apt-get update && sudo apt-get install -y cmake ninja-build
+      - uses: ./.github/actions/setup-emsdk
+
+      # The sample has an Android target too, which needs the SDK licenses accepted.
+      - name: Accept Android SDK licenses
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+
+      - name: Build production webpack bundle
+        # The static site, under samples/build/dist/js/productionExecutable/: the sample, kolt.{js,wasm}
+        # built from this checkout, and Filament's runtime from its release.
+        run: ./gradlew -p samples jsBrowserDistribution
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: web
+          path: samples/build/dist/js/productionExecutable
+
   docs:
     # `contents: write` so the docs archive branch can be pushed (see below).
     permissions:
@@ -70,7 +101,7 @@ jobs:
           fi
 
       # Previously published versions live as <version>/ dirs on the orphan `docs-archive` branch;
-      # Dokka's versioning plugin renders the dropdown from them and re-emits them under older/, so
+      # Dokka's versioning plugin renders the dropdown from them and re-emits them under api/older/, so
       # one deploy serves every version. Fetched only when this run deploys or archives: a
       # validation build proves as much rendering the current version alone, and the archive push
       # force-pushes this directory, so it must be complete first.
@@ -125,15 +156,17 @@ jobs:
     # PRs are validation builds only: a release (or a manual dispatch, which publishes whatever
     # the chosen ref holds) is what goes live.
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
-    needs: docs
+    needs: [web, docs]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      # The API reference is the site.
+      # Web sample at the site root, API docs under /api: one combined artifact.
       - uses: actions/download-artifact@v8
-        with: { name: docs, path: site }
+        with: { name: web, path: site }
+      - uses: actions/download-artifact@v8
+        with: { name: docs, path: site/api }
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with: { path: site }
