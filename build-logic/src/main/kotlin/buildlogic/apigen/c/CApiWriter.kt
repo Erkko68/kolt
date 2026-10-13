@@ -13,7 +13,8 @@ import buildlogic.apigen.cpp.CppType
 /**
  * Writes the C API for what [headers] declare: per top-level class or namespace a header and its C++ forwarders, and
  * what a module's share ([CModuleFiles]). What can't be bridged becomes a `TODO(handwritten)` comment where its
- * declaration would be; for one [manual] writes by hand, a note it's done. [write] once.
+ * declaration would be; for one [manual] writes by hand, a note it's done. A function [manual] names that could be
+ * bridged is left to it too, and is to keep the forwarder's signature. [write] once.
  */
 internal class CApiWriter(
     private val api: CppApi, private val config: ApiGenConfig, private val apiHeaders: ApiHeaders, private val headers: Set<String>,
@@ -295,9 +296,14 @@ internal class CApiWriter(
             val forwarder = build()
             val (signature, body) = forwarder.signature to forwarder.body
             if (!functionNames.add(name)) throw Unsupported("$name is already generated for another overload")
-            section.declarations.appendLine("$signature;")
-            val guarded = if (guard == null) "    $body" else "#if $guard\n    $body\n#else\n    $h::unavailable(\"$name\");\n#endif"
-            section.definitions.appendLine("$signature {\n$guarded\n}\n")
+            if (name in manual) {
+                // Written by hand in place of the forwarder, to its signature: what wraps the C API can't tell.
+                section.declarations.appendLine("// handwritten in manual/ $name: $cpp")
+            } else {
+                section.declarations.appendLine("$signature;")
+                val guarded = if (guard == null) "    $body" else "#if $guard\n    $body\n#else\n    $h::unavailable(\"$name\");\n#endif"
+                section.definitions.appendLine("$signature {\n$guarded\n}\n")
+            }
             bindings += Binding(name, cpp, null, forwarder.bound)
         } catch (e: Unsupported) {
             // By hand as itself, or as one function per case (`_aux_float2`, … for a std::variant).

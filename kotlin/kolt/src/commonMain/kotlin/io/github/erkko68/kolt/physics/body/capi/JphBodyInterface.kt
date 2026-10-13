@@ -64,15 +64,6 @@ internal external fun JphBodyInterface_CreateAndAddBody(self: NativePointer, inS
 @ExternalSymbolName("JphBodyInterface_CreateAndAddSoftBody")
 internal external fun JphBodyInterface_CreateAndAddSoftBody(self: NativePointer, inSettings: NativePointer, inActivationMode: Int): Int
 
-@ExternalSymbolName("JphBodyInterface_AddBodiesPrepare")
-internal external fun JphBodyInterface_AddBodiesPrepare(self: NativePointer, ioBodies: NativePointer, inNumber: Int): NativePointer
-
-@ExternalSymbolName("JphBodyInterface_AddBodiesFinalize")
-internal external fun JphBodyInterface_AddBodiesFinalize(self: NativePointer, ioBodies: NativePointer, inNumber: Int, inAddState: NativePointer, inActivationMode: Int)
-
-@ExternalSymbolName("JphBodyInterface_AddBodiesAbort")
-internal external fun JphBodyInterface_AddBodiesAbort(self: NativePointer, ioBodies: NativePointer, inNumber: Int, inAddState: NativePointer)
-
 @ExternalSymbolName("JphBodyInterface_RemoveBodies")
 internal external fun JphBodyInterface_RemoveBodies(self: NativePointer, ioBodies: NativePointer, inNumber: Int)
 

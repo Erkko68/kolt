@@ -30,9 +30,9 @@ void JphBodyInterface_RemoveBody(JphBodyInterface* self, uint32_t inBodyID);
 bool JphBodyInterface_IsAdded(const JphBodyInterface* self, uint32_t inBodyID);
 uint32_t JphBodyInterface_CreateAndAddBody(JphBodyInterface* self, const JphBodyCreationSettings* inSettings, JphEActivation inActivationMode);
 uint32_t JphBodyInterface_CreateAndAddSoftBody(JphBodyInterface* self, const JphSoftBodyCreationSettings* inSettings, JphEActivation inActivationMode);
-void* JphBodyInterface_AddBodiesPrepare(JphBodyInterface* self, uint32_t* ioBodies, int32_t inNumber);
-void JphBodyInterface_AddBodiesFinalize(JphBodyInterface* self, uint32_t* ioBodies, int32_t inNumber, void* inAddState, JphEActivation inActivationMode);
-void JphBodyInterface_AddBodiesAbort(JphBodyInterface* self, uint32_t* ioBodies, int32_t inNumber, void* inAddState);
+// handwritten in manual/ JphBodyInterface_AddBodiesPrepare: AddState JPH::BodyInterface::AddBodiesPrepare(BodyID * ioBodies, int inNumber)
+// handwritten in manual/ JphBodyInterface_AddBodiesFinalize: void JPH::BodyInterface::AddBodiesFinalize(BodyID * ioBodies, int inNumber, AddState inAddState, EActivation inActivationMode)
+// handwritten in manual/ JphBodyInterface_AddBodiesAbort: void JPH::BodyInterface::AddBodiesAbort(BodyID * ioBodies, int inNumber, AddState inAddState)
 void JphBodyInterface_RemoveBodies(JphBodyInterface* self, uint32_t* ioBodies, int32_t inNumber);
 void JphBodyInterface_ActivateBody(JphBodyInterface* self, uint32_t inBodyID);
 void JphBodyInterface_ActivateBodies(JphBodyInterface* self, const uint32_t* inBodyIDs, int32_t inNumber);
