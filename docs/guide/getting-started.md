@@ -1,14 +1,24 @@
 # Getting Started
 
-kolt isn't published yet, so for now it is built from source. This page gets the tests running, then walks through a
-first simulation.
+This page adds kolt to a project, or builds it from source, then walks through a first simulation.
+
+## Adding kolt
+
+kolt is on Maven Central, as one dependency with the native code of every target:
+
+```kotlin
+commonMain.dependencies { implementation("io.github.erkko68.kolt:kolt:0.1.0") }
+```
+
+What each platform needs besides (the web's `kolt.js` and `kolt.wasm`, a desktop app's runtime jar) is in
+[Platform Notes](platform-notes.md).
 
 ## Building from source
 
 Clone with Jolt, which is a submodule pinned to the release kolt is generated from:
 
 ```sh
-git clone --recurse-submodules <this repository>
+git clone --recurse-submodules https://github.com/Erkko68/kolt.git
 # or, in an existing clone
 git submodule update --init
 ```
