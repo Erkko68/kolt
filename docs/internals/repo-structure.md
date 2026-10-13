@@ -19,7 +19,7 @@ Most of the repository is generated and committed. Generated files start with a 
 | :--- | :--- | :--- |
 | `api-headers.txt` | hand | Which Jolt headers are API, and what in them is left out. The generator's input. |
 | `kolt/generated/` | `generateCApi` | The C API: a `.h` and `.cpp` per class, grouped as Jolt's directories (`physics/body/JphBody.h`), plus `Types.h`, `Bridge.hpp`, `Includes.hpp`. |
-| `kolt/manual/` | hand | C for what the generator can't map (`JphJoltManual`), and `JphBridge.hpp`, the helpers only Jolt can write. |
+| `kolt/manual/` | hand | C for what the generator can't map, and for what a plain forwarder gets wrong: a function declared here replaces the generated one of its name (`JphJoltManual`). And `JphBridge.hpp`, the helpers only Jolt can write. |
 | `kolt/jni/` | hand | The hand-written half of the JNI layer (`KoltJni.cpp`) and the linker script that exports only JNI entry points. |
 | `kolt/web/` | hand | `kolt-globals.js`, which installs the wasm's exports as the globals Kotlin's externals bind. |
 | `api-manifest.json` | `generateCApi` | Each C function's ABI signature, by header. What the Kotlin stages read. |

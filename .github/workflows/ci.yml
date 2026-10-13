@@ -129,6 +129,7 @@ jobs:
             kotlin/*/build/reports/tests/
             desktop/build/reports/tests/
             build-logic/build/reports/tests/
+            kotlin/*/hs_err_pid*.log
 
   # The Emscripten half of the web targets, done once: builds kolt.{js,wasm} and hands them to the
   # js and wasm jobs as an artifact.

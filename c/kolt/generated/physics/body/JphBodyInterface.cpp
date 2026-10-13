@@ -84,18 +84,6 @@ uint32_t JphBodyInterface_CreateAndAddSoftBody(JphBodyInterface* self, const Jph
     return (kolt::cpp(self)->CreateAndAddSoftBody(*kolt::cpp(inSettings), static_cast<JPH::EActivation>(inActivationMode))).GetIndexAndSequenceNumber();
 }
 
-void* JphBodyInterface_AddBodiesPrepare(JphBodyInterface* self, uint32_t* ioBodies, int32_t inNumber) {
-    return kolt::cpp(self)->AddBodiesPrepare(reinterpret_cast<JPH::BodyID*>(ioBodies), static_cast<int>(inNumber));
-}
-
-void JphBodyInterface_AddBodiesFinalize(JphBodyInterface* self, uint32_t* ioBodies, int32_t inNumber, void* inAddState, JphEActivation inActivationMode) {
-    kolt::cpp(self)->AddBodiesFinalize(reinterpret_cast<JPH::BodyID*>(ioBodies), static_cast<int>(inNumber), inAddState, static_cast<JPH::EActivation>(inActivationMode));
-}
-
-void JphBodyInterface_AddBodiesAbort(JphBodyInterface* self, uint32_t* ioBodies, int32_t inNumber, void* inAddState) {
-    kolt::cpp(self)->AddBodiesAbort(reinterpret_cast<JPH::BodyID*>(ioBodies), static_cast<int>(inNumber), inAddState);
-}
-
 void JphBodyInterface_RemoveBodies(JphBodyInterface* self, uint32_t* ioBodies, int32_t inNumber) {
     kolt::cpp(self)->RemoveBodies(reinterpret_cast<JPH::BodyID*>(ioBodies), static_cast<int>(inNumber));
 }

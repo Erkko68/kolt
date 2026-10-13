@@ -602,9 +602,6 @@
 {"name":"JphBodyInterface_IsAdded","returns":"bool","params":[["self","ptr"],["inBodyID","i32"]]},
 {"name":"JphBodyInterface_CreateAndAddBody","returns":"i32","params":[["self","ptr"],["inSettings","ptr"],["inActivationMode","i32"]]},
 {"name":"JphBodyInterface_CreateAndAddSoftBody","returns":"i32","params":[["self","ptr"],["inSettings","ptr"],["inActivationMode","i32"]]},
-{"name":"JphBodyInterface_AddBodiesPrepare","returns":"ptr","params":[["self","ptr"],["ioBodies","ptr"],["inNumber","i32"]]},
-{"name":"JphBodyInterface_AddBodiesFinalize","returns":"void","params":[["self","ptr"],["ioBodies","ptr"],["inNumber","i32"],["inAddState","ptr"],["inActivationMode","i32"]]},
-{"name":"JphBodyInterface_AddBodiesAbort","returns":"void","params":[["self","ptr"],["ioBodies","ptr"],["inNumber","i32"],["inAddState","ptr"]]},
 {"name":"JphBodyInterface_RemoveBodies","returns":"void","params":[["self","ptr"],["ioBodies","ptr"],["inNumber","i32"]]},
 {"name":"JphBodyInterface_ActivateBody","returns":"void","params":[["self","ptr"],["inBodyID","i32"]]},
 {"name":"JphBodyInterface_ActivateBodies","returns":"void","params":[["self","ptr"],["inBodyIDs","ptr"],["inNumber","i32"]]},
@@ -4046,6 +4043,9 @@
 "kolt/manual/JphJoltManual.h": [
 {"name":"Jph_RegisterDefaultAllocator","returns":"void","params":[]},
 {"name":"JphFactory_GetInstance","returns":"ptr","params":[]},
-{"name":"JphFactory_SetInstance","returns":"void","params":[["factory","ptr"]]}
+{"name":"JphFactory_SetInstance","returns":"void","params":[["factory","ptr"]]},
+{"name":"JphBodyInterface_AddBodiesPrepare","returns":"ptr","params":[["self","ptr"],["ioBodies","ptr"],["inNumber","i32"]]},
+{"name":"JphBodyInterface_AddBodiesFinalize","returns":"void","params":[["self","ptr"],["ioBodies","ptr"],["inNumber","i32"],["inAddState","ptr"],["inActivationMode","i32"]]},
+{"name":"JphBodyInterface_AddBodiesAbort","returns":"void","params":[["self","ptr"],["ioBodies","ptr"],["inNumber","i32"],["inAddState","ptr"]]}
 ]
 }

@@ -12,3 +12,12 @@ internal external fun JphFactory_GetInstance(): NativePointer
 
 @ExternalSymbolName("JphFactory_SetInstance")
 internal external fun JphFactory_SetInstance(factory: NativePointer)
+
+@ExternalSymbolName("JphBodyInterface_AddBodiesPrepare")
+internal external fun JphBodyInterface_AddBodiesPrepare(self: NativePointer, ioBodies: NativePointer, inNumber: Int): NativePointer
+
+@ExternalSymbolName("JphBodyInterface_AddBodiesFinalize")
+internal external fun JphBodyInterface_AddBodiesFinalize(self: NativePointer, ioBodies: NativePointer, inNumber: Int, inAddState: NativePointer, inActivationMode: Int)
+
+@ExternalSymbolName("JphBodyInterface_AddBodiesAbort")
+internal external fun JphBodyInterface_AddBodiesAbort(self: NativePointer, ioBodies: NativePointer, inNumber: Int, inAddState: NativePointer)
