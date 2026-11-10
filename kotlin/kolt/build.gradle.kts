@@ -21,7 +21,7 @@ plugins {
 // so one deploy serves every release: CI restores that directory from the docs-archive branch (.github/workflows/pages.yml);
 // locally it's absent and only this version renders.
 dependencies {
-    dokkaPlugin("org.jetbrains.dokka:versioning-plugin:2.2.0")
+    dokkaPlugin("org.jetbrains.dokka:versioning-plugin:2.3.0")
 }
 dokka {
     pluginsConfiguration.versioning {
